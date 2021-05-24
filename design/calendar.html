@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="flex.css">
+    <link rel="stylesheet" href="calendar.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Menu</title>
+</head>
+<body>
+    <header>
+        <div class="row">
+            <h1>Kantodo</h1>
+            <div class="tabs">
+                <div class="tab active"><p>Projects</p></div>
+                <div class="tab"><p>Calendar</p></div>
+            </div>
+        </div>
+        <div class="actions">
+            <button class="icon-big flat">
+                <span class="material-icons-outlined">notifications</span>
+            </button>
+            <div class="avatar arrow"></div>
+        </div>
+    </header>
+    <aside>
+        <div class="row main-space-between">
+            <h3 id="teams">Teams</h3>
+            <button class="primary icon round floating" id="addTeam">
+                <span class="material-icons-round">
+                add
+                </span>
+            </button>
+        </div>
+        <div class="teams container">
+            <div class="team">
+                <div class="icon"></div>
+                <div>
+                    <div class="name">Managment</div>
+                    <div class="members-count">5 members</div>
+                </div>
+            </div>
+            <div class="team">
+                <div class="icon"></div>
+                <div>
+                    <div class="name">Managment</div>
+                    <div class="members-count">5 members</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+    <main>
+            <div class="sort">
+                <div class="category">
+                    <div class="name">Teams</div>
+                    <div class="items">
+                        <label>
+                            <input type="checkbox" checked='checked'>
+                            <span class="checkbox">
+                                <span class="bg"></span>
+                            </span>
+                            <span>Managment</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="category">
+                    <div class="name">Priority</div>
+                    <div class="items">
+                        <label>
+                            <input type="checkbox" checked='checked'>
+                            <span class="checkbox">
+                                <span class="bg"></span>
+                            </span>
+                            <span>High</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" checked='checked'>
+                            <span class="checkbox">
+                                <span class="bg"></span>
+                            </span>
+                            <span>Medium</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" checked='checked'>
+                            <span class="checkbox">
+                                <span class="bg"></span>
+                            </span>
+                            <span>Small</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div id="mainCalendar">
+                <div class="row">
+                    <button class="flat border bold" id="todayBtn">Today</button>
+                    <div class="row" id="buttons">
+                        <button id="before" class="icon flat">
+                            <span class="material-icons-round">navigate_before</span>
+                        </button>
+                        <button id="after" class="icon flat">
+                            <span class="material-icons-round">navigate_next</span>
+                        </button>
+                    </div>
+                    <div id="date">Jan 2021</div>
+                    <div id="switch">
+                        <button class="flat">Day</button>
+                        <button class="flat primary">Week</button>
+                        <button class="flat">Month</button>
+                    </div>
+                </div>
+                <div class="calendar">
+                    <div class="days">
+                        <div class="day">
+                            <div class="name">Sun</div>
+                            <div class="number">24</div>
+                        </div>
+                        <div class="day today">
+                            <div class="name">Mon</div>
+                            <div class="number">25</div>
+                        </div>
+                        <div class="day">
+                            <div class="name">Tue</div>
+                            <div class="number">26</div>
+                        </div>
+                        <div class="day">
+                            <div class="name">Wed</div>
+                            <div class="number">27</div>
+                        </div>
+                        <div class="day">
+                            <div class="name">Thu</div>
+                            <div class="number">28</div>
+                        </div>
+                        <div class="day">
+                            <div class="name">Fri</div>
+                            <div class="number">29</div>
+                        </div>
+                        <div class="day">
+                            <div class="name">Sat</div>
+                            <div class="number">30</div>
+                        </div>
+                    </div>
+                    <div class="assignments">
+                        <div class="hours">
+                            <div class="hour">01:00</div>
+                            <div class="hour">02:00</div>
+                            <div class="hour">03:00</div>
+                            <div class="hour">04:00</div>
+                            <div class="hour">05:00</div>
+                            <div class="hour">06:00</div>
+                            <div class="hour">07:00</div>
+                            <div class="hour">08:00</div>
+                            <div class="hour">09:00</div>
+                            <div class="hour">10:00</div>
+                            <div class="hour">11:00</div>
+                            <div class="hour">12:00</div>
+                            <div class="hour">13:00</div>
+                            <div class="hour">14:00</div>
+                            <div class="hour">15:00</div>
+                            <div class="hour">16:00</div>
+                            <div class="hour">17:00</div>
+                            <div class="hour">18:00</div>
+                            <div class="hour">19:00</div>
+                            <div class="hour">20:00</div>
+                            <div class="hour">21:00</div>
+                            <div class="hour">22:00</div>
+                            <div class="hour">23:00</div>
+                        </div>
+                        <div class="lines">
+                            <div class="horizontal">
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                            </div>
+                            <div class="vertical">
+                                <div class="line"></div>
+                                <div class="line today"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="flex.css">
+    <link rel="stylesheet" href="projects.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Menu</title>
+</head>
+<body>
+    <header>
+        <div class="row">
+            <h1>Kantodo</h1>
+            <div class="tabs">
+                <div class="tab active"><p>Projects</p></div>
+                <div class="tab"><p>Calendar</p></div>
+            </div>
+        </div>
+        <div class="actions">
+            <button class="icon-big flat">
+                <span class="material-icons-outlined">notifications</span>
+            </button>
+            <div class="avatar arrow"></div>
+        </div>
+    </header>
+    <aside>
+        <div class="row main-space-between">
+            <h3 id="teams">Teams</h3>
+            <button class="primary icon round floating" id="addTeam">
+                <span class="material-icons-round">
+                add
+                </span>
+            </button>
+        </div>
+        <div class="teams container">
+            <div class="team">
+                <div class="icon"></div>
+                <div>
+                    <div class="name">Managment</div>
+                    <div class="members-count">5 members</div>
+                </div>
+            </div>
+            <div class="team">
+                <div class="icon"></div>
+                <div>
+                    <div class="name">Managment</div>
+                    <div class="members-count">5 members</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+    <main>
+        <table class="projects">
+            <thead>
+                <tr>
+                    <td id="status">
+                        <div>
+                            <div class="active">1 Open</div>
+                            <div>0 Close</div>        
+                        </div>
+                    </td>
+                    <td></td>
+                    <td id="filter">
+                        <div>
+                            <span class="material-icons-round">
+                            filter_alt
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div>
+                            <h3>Managment</h3>
+                            <div class="progress">
+                                <div class="failed" style="width: 10px;"></div>
+                                <div class="completed" style="width: 50px;"></div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="description">No description</td>
+                    <td>Lukas Koliandr</td>
+                </tr>
+                       
+            </tbody>
+            <tfoot></tfoot>
+        </table>
+    </main>
+</body>
+</html>

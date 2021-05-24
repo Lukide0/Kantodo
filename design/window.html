@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="js/Window.js"></script>
+    <script src="js/Animation.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>Window</title>
+    <style>
+        button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 0;
+            background: transparent;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- <div class="window">
+        <div class="head">
+            <div class="title">title</div>
+            <button class="flat text"><span class="material-icons-round">close</span></button>
+        </div>
+        <div class="content">aaa</div>
+    </div> -->
+    <script>
+        for (let i = 0; i < 10; i++) {
+            let w = new Window("TEST");
+            w.show();
+            w.setMove();
+            w.move(Math.random() * 1000, Math.random() * 700);
+            w.setClose(false);            
+        }
+        //let modal = new ModalWindow(document.getElementById("test"), "Test");
+
+        //modal.open();
+
+        
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>        
+        /*
+        ╭───╮
+        │ 1 │
+        ├───┴────────────────────┬─────────┬───────┬─────╮
+        │ Maximum přidání mezi   │ 127     │ 251   │ 393 │
+        ├────────────────────────┼─────────┼───────┼─────┤
+        │ Maximální velikost     │ 5       │ 10    │ 15  │
+        ├────────────────────────┼─────────┼───────┼─────┤
+        │ Velikost jednoho znaku │ 3       │ 2     │ 1   │
+        ╰────────────────────────┴─────────┴───────┴─────╯
+        ╭───╮
+        │ 2 │
+        ├───┴────────────────────┬─────────┬───────┬─────╮
+        │ Maximum přidání mezi   │ 169 003 │ 6 503 │ 213 │
+        ├────────────────────────┼─────────┼───────┼─────┤
+        │ Maximální velikost     │ 5       │ 10    │ 15  │
+        ├────────────────────────┼─────────┼───────┼─────┤
+        │ Velikost jednoho znaku │ 3       │ 2     │ 1   │
+        ╰────────────────────────┴─────────┴───────┴─────╯
+        
+        ╭───╮
+        │ 4 │
+        ├───┴────────────────────┬─────────┬───────┬─────╮
+        │ Maximum přidání mezi   │ 84 504  │ 3 254 │ 124 │
+        ├────────────────────────┼─────────┼───────┼─────┤
+        │ Maximální velikost     │ 5       │ 10    │ 15  │
+        ├────────────────────────┼─────────┼───────┼─────┤
+        │ Velikost jednoho znaku │ 3       │ 2     │ 1   │
+        ╰────────────────────────┴─────────┴───────┴─────╯
+        
+        ╭───╮
+        │ 8 │
+        ├───┴────────────────────┬─────────┬───────┬─────╮
+        │ Maximum přidání mezi   │ 42 255  │ 1 635 │ 80  │
+        ├────────────────────────┼─────────┼───────┼─────┤
+        │ Maximální velikost     │ 5       │ 10    │ 15  │
+        ├────────────────────────┼─────────┼───────┼─────┤
+        │ Velikost jednoho znaku │ 3       │ 2     │ 1   │
+        ╰────────────────────────┴─────────┴───────┴─────╯
+        */
+        function Generate(before, after) 
+        {   
+            
+            const JUMP = 1;
+            const SIZE = 5; // 5 
+            const CHAR_SIZE = 2; // 3
+
+            // neupravovat !!!
+            const MAX = 'z'; 
+            const MIN = 'A'; 
+            
+            const MIN_VALUE = MIN.repeat(CHAR_SIZE);
+            const MAX_VALUE = MAX.repeat(CHAR_SIZE);
+            
+            const COMB = Norm(MAX.charCodeAt(0));
+            if (before == '' || !before) before = MIN;
+            if (after == '' || !after) after = MAX;
+            
+            let stringLexo = "";
+            let index = 0;
+            console.log(ConvertToNumber(MAX_VALUE));
+            
+            
+            while(true) 
+            {
+                if (index > SIZE * CHAR_SIZE) break;
+                
+                let prev = getChar(before, index, MIN);
+                let next = getChar(after, index, MAX);
+                
+                
+                if (prev === next) 
+                {
+                    stringLexo += prev;
+                    index += CHAR_SIZE;
+                    continue;
+                }
+                
+                let mid = Mid(prev, next);
+                
+                if (mid === prev || mid === next) 
+                {
+                    stringLexo += prev;
+                    index += CHAR_SIZE;
+                    continue;
+                    
+                }
+                
+                stringLexo += mid;
+ 
+                break;         
+            }           
+            
+            return stringLexo;
+            
+ 
+            function getChar(str, i, defaultChar){
+                let tmpIndex = 0;
+                let tmpChar = "";
+                while(tmpIndex < CHAR_SIZE) 
+                {
+                    if (tmpIndex + i >= str.length) {
+                        tmpChar += defaultChar;
+                    }
+                    else {
+                        tmpChar += str.charAt(tmpIndex + i);
+                    }
+                    tmpIndex++;
+                }
+                return tmpChar;
+ 
+            }
+ 
+            function Mid(min, max) 
+            {
+                let minN = ConvertToNumber(min);
+                let maxN = ConvertToNumber(max);
+                if (min === MIN_VALUE && max === MAX_VALUE)
+                {
+                    mid = Math.floor((minN + maxN) / 2);               
+                    return ConvertToASCII(mid);
+                }
+                
+                if (min === MIN_VALUE)
+                {
+                    let jumpTMP = JUMP;
+                    while(maxN - jumpTMP <= minN - 1) 
+                    {
+                        jumpTMP /= 2;
+                        if (jumpTMP < 1) 
+                        {
+                            jumpTMP = 0;
+                            break;
+                        }
+                    }
+                    
+                    mid = maxN - jumpTMP;
+                    
+                    return ConvertToASCII(mid);
+                }
+ 
+                let jumpTMP = JUMP;
+                while(minN + jumpTMP >= maxN) 
+                {
+                    jumpTMP /= 2;
+ 
+                    if (jumpTMP < 1) 
+                    {
+                        jumpTMP = 0;
+                        break;
+                    }
+                }
+                mid = minN + jumpTMP;
+                return ConvertToASCII(mid);
+            }
+            
+            /*
+            */
+ 
+            function ConvertToNumber(str) 
+            {
+                // COMB * COMB * (F - 1) + COMB * (S - 1) + T
+                
+                let tmp = 0;
+                for (let i = 0; i < str.length - 1; i++) {
+                    let num = (Norm(str.charCodeAt(i)) - 1) * Math.pow(COMB, CHAR_SIZE - i - 1); // ?
+                    tmp += num;
+                }
+                tmp += Norm(str.charCodeAt(str.length - 1));
+                return tmp;                
+                
+            }
+            function Norm(n) 
+            {
+                if (n <= 90) return n - 64; // upper case
+                return n - 70; // lower case
+            }
+ 
+            function ConvertToASCII(num)
+            {
+                // X = COMB**(CHAR_SIZE - 1) * (F - 1) + COMB**(CHAR_SIZE - 2) * (S - 1) + COMB**(CHAR_SIZE - 3) * (T - 1)
+                let ascii = "";
+                for(let i = CHAR_SIZE - 1; i >= 0; i--) 
+                {
+                    let p = Math.pow(COMB, i);
+                    let quotient = Math.floor(num / p);
+                    
+                    num = (num % p);
+                    if (num > 0) 
+                    {
+                        quotient++;
+                    }
+ 
+                    if (quotient > 0) 
+                    {
+                        if (quotient <= 26) ascii += String.fromCharCode(quotient + 64);
+                        else ascii += String.fromCharCode(quotient + 70);
+                    } else 
+                    {
+                        ascii += MIN;
+                    }
+    
+                }
+ 
+                return ascii;
+            }
+        }
+
+
+        let next = Generate();
+        let tmp = null;
+        let last = "A";
+        let i = 1;
+
+        /*for (; true; i++) {
+            tmp = last;
+            last = Generate(last ,next);
+            
+            if (tmp == last) 
+            {
+                break;
+            }
+        }*/
+
+        /*while(tmp != last) 
+        {
+            tmp = last;
+            last = Generate(last ,next);
+            //console.log(tmp ,last, next);
+            i++;
+        }*/
+
+        console.log(i);
+
+        </script>
+</body>
+</html>
