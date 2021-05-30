@@ -1,0 +1,8 @@
+@startuml "Token format"
+
+class Token 
+{
+    
+}
+
+@enduml

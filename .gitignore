@@ -1,3 +1,5 @@
 .vscode/
 .htaccess
 *.wsd
+
+!security/*.wsd

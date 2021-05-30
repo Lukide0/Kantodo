@@ -13,7 +13,7 @@ class Window {
         <button class="flat text" style="display: none;"><span class="material-icons-round">close</span></button>
         </div>
         <div class="content">${content}</div>`;
-        
+            
         
         parent.appendChild(this.__element);
     }

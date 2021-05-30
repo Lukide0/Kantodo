@@ -1,3 +1,10 @@
+<?php 
+    session_start();
+
+
+    $_SESSION['test'] = 1;
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,7 +32,7 @@
 
         }
 
-        var socket = new WebSocket("ws://localhost:8090/Maturita - Kantodo/testing/websocket/server.php");
+        var socket = new WebSocket("ws://localhost:8090/Kantodo/src/Websocket/server.php");
         //var socket = new WebSocket("ws://127.0.0.1:9000/server.php");
 
         socket.addEventListener('open', function (event) {
@@ -34,7 +41,7 @@
 
         // Listen for messages
         socket.addEventListener('message', function (event) {
-            //console.log('Message from server ', event.data);
+            console.log('Message from server ', event.data);
         });
 
     </script>

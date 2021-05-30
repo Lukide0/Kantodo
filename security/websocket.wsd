@@ -1,0 +1,14 @@
+@startuml "Websocket"
+!define DARKBLUE
+!includeurl https://raw.githubusercontent.com/Drakemor/RedDress-PlantUML/master/style.puml
+
+actor Client as c
+participant "HTTP server" as http
+participant "Websocket server" as ws
+
+c -> http : POST action
+http <- http : - verify client\n- generate new token
+http -> ws : - new token\n- action result
+ws -> everyone : broadcast action with result
+http -> c : - action status
+@enduml

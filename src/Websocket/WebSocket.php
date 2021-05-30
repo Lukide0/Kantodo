@@ -3,25 +3,13 @@
 include_once "./Client.php";
 include_once "./Console.php"; // DEBUG
 
-/*$decodedData['type'] = 'text';
-                break;
-            case 2:
-                $decodedData['type'] = 'binary';
-                break;
-            case 8:
-                $decodedData['type'] = 'close';
-                break;
-            case 9:
-                $decodedData['type'] = 'ping';
-                break;
-            case 10:
-                $decodedData['type'] = 'pong';*/
 define("TEXT", 0x81);
 define("BINARY", 0x82);
 define("CLOSE", 0x88);
 define("PING", 0x89);
 define("PONG", 0x8A);
 
+session_start();
 class WebSocket
 {
     /**
@@ -210,6 +198,9 @@ class WebSocket
     private function handshake($socket, $buffer)
     {
         $headers = $this->parseHeaders($buffer);
+
+
+        var_dump($_SESSION);
 
         if (empty($headers["Sec-WebSocket-Key"])) {
             $this->disconnect($socket, "WEBSOCKET-KEY");
