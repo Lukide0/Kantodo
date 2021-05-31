@@ -1,5 +1,8 @@
 <?php 
 
+
+
+namespace Kantodo\Websocket\Server;
 include_once "./Client.php";
 include_once "./Console.php"; // DEBUG
 
@@ -157,7 +160,7 @@ class WebSocket
         }
     }
 
-    public function sendToSocket($socket, $message, $type = TEXT)
+    public function sendToSocket($socket,string $message, $type = TEXT)
     {
         $message = $this->encodeData($message, $type);
         socket_write($socket, $message, strlen($message));
@@ -378,7 +381,7 @@ class WebSocket
      *        0x89 - ping
      *        0x8A - pong
      *
-     * @return  [type]         [return description]
+     * @return  string  message
      */
     private function encodeData($data, $type = 0x81)
     {

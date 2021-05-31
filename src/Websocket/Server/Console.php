@@ -1,5 +1,7 @@
 <?php 
 
+namespace Kantodo\Websocket\Server;
+
 class Console {
     static function log($message) 
     {

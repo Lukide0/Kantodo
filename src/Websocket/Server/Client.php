@@ -1,4 +1,5 @@
 <?php 
+namespace Kantodo\Websocket\Server;
 
 class Client 
 {

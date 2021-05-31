@@ -7,35 +7,35 @@
 }
 
 .projects > thead > tr > td:first-child {
-    border-radius: var(--border-radius-medium) 0 0 0;
-    -webkit-border-radius: var(--border-radius-medium) 0 0 0;
-    -moz-border-radius: var(--border-radius-medium) 0 0 0;
-    -ms-border-radius: var(--border-radius-medium) 0 0 0;
-    -o-border-radius: var(--border-radius-medium) 0 0 0;
+    border-radius: var(--border-radius-small) 0 0 0;
+    -webkit-border-radius: var(--border-radius-small) 0 0 0;
+    -moz-border-radius: var(--border-radius-small) 0 0 0;
+    -ms-border-radius: var(--border-radius-small) 0 0 0;
+    -o-border-radius: var(--border-radius-small) 0 0 0;
 }
 
 .projects > thead > tr > td:last-child {
-    border-radius: 0 var(--border-radius-medium) 0 0;
-    -webkit-border-radius: 0 var(--border-radius-medium) 0 0;
-    -moz-border-radius: 0 var(--border-radius-medium) 0 0;
-    -ms-border-radius: 0 var(--border-radius-medium) 0 0;
-    -o-border-radius: 0 var(--border-radius-medium) 0 0;
+    border-radius: 0 var(--border-radius-small) 0 0;
+    -webkit-border-radius: 0 var(--border-radius-small) 0 0;
+    -moz-border-radius: 0 var(--border-radius-small) 0 0;
+    -ms-border-radius: 0 var(--border-radius-small) 0 0;
+    -o-border-radius: 0 var(--border-radius-small) 0 0;
 }
 
 .projects > tbody > tr:last-child > td:last-child {
-    border-radius: 0 0 var(--border-radius-medium) 0;
-    -webkit-border-radius: 0 0 var(--border-radius-medium) 0;
-    -moz-border-radius: 0 0 var(--border-radius-medium) 0;
-    -ms-border-radius: 0 0 var(--border-radius-medium) 0;
-    -o-border-radius: 0 0 var(--border-radius-medium) 0;
+    border-radius: 0 0 var(--border-radius-small) 0;
+    -webkit-border-radius: 0 0 var(--border-radius-small) 0;
+    -moz-border-radius: 0 0 var(--border-radius-small) 0;
+    -ms-border-radius: 0 0 var(--border-radius-small) 0;
+    -o-border-radius: 0 0 var(--border-radius-small) 0;
 }
 
 .projects > tbody > tr:last-child > td:first-child {
-    border-radius: 0 0 0 var(--border-radius-medium);
-    -webkit-border-radius: 0 0 0 var(--border-radius-medium);
-    -moz-border-radius: 0 0 0 var(--border-radius-medium);
-    -ms-border-radius: 0 0 0 var(--border-radius-medium);
-    -o-border-radius: 0 0 0 var(--border-radius-medium);
+    border-radius: 0 0 0 var(--border-radius-small);
+    -webkit-border-radius: 0 0 0 var(--border-radius-small);
+    -moz-border-radius: 0 0 0 var(--border-radius-small);
+    -ms-border-radius: 0 0 0 var(--border-radius-small);
+    -o-border-radius: 0 0 0 var(--border-radius-small);
 }
 
 .projects td {

@@ -26,9 +26,9 @@
     /* BG */
     --bg-primary: rgb(0, 27, 41);
     --bg-secondary: rgb(255, 255, 255);
-    --bg-third: rgb(250, 251, 255); /* FFFCF8 */
-    --bg-table: rgb(62, 71, 91);
-    --bg-table-header: rgb(78, 92, 115);
+    --bg-third: rgb(250, 251, 255);
+    --bg-table: rgb(72, 72, 72);
+    --bg-table-header: rgb(33, 33, 33);
     
     --color: var(--bg-secondary);
     --font-color: var(--font-color-secondary);
@@ -68,8 +68,8 @@
     /* BUTTONS*/
 
     /* --border-color: #d9d9d9; */
-    --button-disabled: #676767;
-    --button-disabled-color: #FFFFFF;
+    --button-disabled: rgb(103, 103, 103);
+    --button-disabled-color: rgb(255, 255, 255);
 
     /* SHADOWS */
     --shadow-1dp: 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12), 0px 1px 3px rgba(0, 0, 0, 0.2);
@@ -84,21 +84,23 @@
     --shadow-24dp: 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12), 0px 11px 15px -7px rgba(0, 0, 0, 0.2);
 
     /* COMPONENTS */
-    --window-head: hsl(222, 19%, 30%);
-    --bg-column: hsl(0, 0%, 92%);
+    --window-head: rgb(62, 71, 91);
+
+    --bg-column: rgb(235, 235, 235);
     --tag-color: var(--info);
     --tag-priority: var(--info);
 
-    --border-color: hsl(0, 0%, 49%);
+    --border-color: rgb(125, 125, 125);
     
-    --bg-scrollbar: hsl(0, 0%, 83%);
-    --bg-scrollbar-thumb: hsl(0, 0%, 48%);
-    --bg-search:hsl(0, 0%, 96%);
+    --bg-scrollbar: rgb(212, 212, 212);
+    --bg-scrollbar-thumb: rgb(122, 122, 122);
+
+    --bg-search:rgb(245, 245, 245);
 
 
-    --progress: var(--primary);
-    --progress-completed: var(--success);
-    --progress-failed: var(--error);
+    --progress-failed: rgb(255, 23, 68);
+    --progress-completed: rgb(118, 255, 3);
+    --progress: rgb(213, 0, 249);
     --projects-border-color: var(--border-color);
 }
 
