@@ -6,15 +6,21 @@ namespace Kantodo\Websocket\Server;
 include_once "./Client.php";
 include_once "./Console.php"; // DEBUG
 
-define("TEXT", 0x81);
-define("BINARY", 0x82);
-define("CLOSE", 0x88);
-define("PING", 0x89);
-define("PONG", 0x8A);
+define("WS_MSG_TEXT", 0x81);
+define("WS_MSG_BINARY", 0x82);
+define("WS_MSG_CLOSE", 0x88);
+define("WS_MSG_PING", 0x89);
+define("WS_MSG_PONG", 0x8A);
 
 session_start();
 class WebSocket
 {
+    public $onMessage = null;
+    public $onConnect = null;
+    public $onDisconnect = null;
+    public $onHandshake = null;
+
+
     /**
      * Websocket secret key
      *
@@ -22,6 +28,7 @@ class WebSocket
      */
     private $secret = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
+    private $path;
     private $address;
     private $port;
     private $listen;
@@ -47,17 +54,18 @@ class WebSocket
      */
     private $clients = array();
 
-    public function __construct(string $address, int $port, int $listen = 20) {
+    public function __construct(string $address, int $port, int $listen = 20, string $path = '/') {
         //max execution time
         set_time_limit(0);
 
         $this->address = $address;
         $this->port    = $port;
         $this->listen  = $listen;
+        $this->path    = $path;
 
     }
 
-    public function run()
+    public function Run()
     {
         // TCP socket
         $this->master = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
@@ -90,7 +98,7 @@ class WebSocket
 
                     if ($newSocket < 0) continue;
 
-                    $this->connect($newSocket);
+                    $this->Connect($newSocket);
                     unset($newSocket);
                     continue;
                 }
@@ -112,40 +120,41 @@ class WebSocket
                 // message is empty
                 if ($bytes == 0) 
                 {
-                    $this->disconnect($socket, "MESSAGE");
+                    $this->Disconnect($socket, "MESSAGE");
                     continue;
                 }
 
-                $clientIndex = $this->getClientIndexBySocket($socket);
+                $clientIndex = $this->GetClientIndexBySocket($socket);
                 $client = $this->clients[$clientIndex];
 
                 if ($client->handshake == false) 
                 {
                     $client->handshake = true;
-                    $this->handshake($socket, $buffer);
+                    $this->Handshake($socket, $buffer);
 
                     unset($buffer);
                     unset($client);
                     continue;
                 }
 
-                $data = $this->decodeData($socket, $buffer);
+                $data = $this->DecodeData($socket, $buffer);
 
                 
                 if (!empty($data)) 
                 {
                     switch ($data['type']) {
-                        case 'text':
-                            Console::log("TEXT");
+                        case  WS_MSG_TEXT:
+                            if (!$this->onMessage)
+                                call_user_func($this->onMessage, $data);
                             break;
-                        case 'ping':
-                            $this->sendToSocket($socket, "", PONG);
+                        case WS_MSG_PING:
+                            $this->SendToSocket($socket, "", WS_MSG_PONG);
                             break;
-                        case 'pong':
+                        case WS_MSG_PONG:
                             Console::log("PONG");
                             break;
-                        case 'close':
-                            $this->disconnect($socket);
+                        case WS_MSG_CLOSE:
+                            $this->Disconnect($socket);
                             break;
                         default:
                             break;
@@ -160,14 +169,14 @@ class WebSocket
         }
     }
 
-    public function sendToSocket($socket,string $message, $type = TEXT)
+    public function SendToSocket(&$socket,string $message, $type = WS_MSG_TEXT)
     {
-        $message = $this->encodeData($message, $type);
+        $message = $this->EncodeData($message, $type);
         socket_write($socket, $message, strlen($message));
     }
 
     
-    private function getClientIndexBySocket($socket) 
+    private function GetClientIndexBySocket(&$socket) 
     {
         $index = -1;
         foreach ($this->clients as $client) {
@@ -178,35 +187,41 @@ class WebSocket
         return $index;
     }
 
-    private function connect($socket)
+    private function Connect($socket)
     {
         $this->sockets[] = $socket;
+
+        
+        if (!$this->onConnect)
+            call_user_func($this->onConnect, $socket);
+
         $this->clients[] = new Client($socket);
-        Console::warning("CLIENT CONNECT");
+        
+
     }
 
-    private function disconnect($socket, $desc = "") 
+    private function Disconnect($socket, $code = 0) 
     {
-        $clientIndex = $this->getClientIndexBySocket($socket);
-        if ($clientIndex >= 0) array_splice($this->clients, $clientIndex, 1);
+        $clientIndex = $this->GetClientIndexBySocket($socket);
+        
+        if (!$this->onDisconnect)
+            call_user_func($this->onDisconnect, $this->clients[$clientIndex], $code);
 
+
+        if ($clientIndex >= 0) array_splice($this->clients, $clientIndex, 1);
         
         $socketIndex = array_search($socket, $this->sockets);
 
         socket_close($socket);
         if ($socketIndex >= 0) array_splice($this->sockets, $socketIndex, 1);
-        Console::error("CLIENT DISCONNECT : " . $desc);
     }
 
-    private function handshake($socket, $buffer)
+    private function Handshake($socket, $buffer)
     {
-        $headers = $this->parseHeaders($buffer);
-
-
-        var_dump($_SESSION);
+        $headers = $this->ParseHeaders($buffer);
 
         if (empty($headers["Sec-WebSocket-Key"])) {
-            $this->disconnect($socket, "WEBSOCKET-KEY");
+            $this->Disconnect($socket, "WEBSOCKET-KEY");
         }
 
         $key = $headers["Sec-WebSocket-Key"];
@@ -216,14 +231,18 @@ class WebSocket
                 "Upgrade: WebSocket\r\n" .
                 "Connection: Upgrade\r\n" .
                 "Sec-WebSocket-Origin: {$this->address}\r\n" .
-                "Sec-WebSocket-Location: ws://{$this->address}:{$this->port}/Maturita%20-%20Kantodo/testing/\r\n" . //nahradit za _DIR_
+                "Sec-WebSocket-Location: ws://{$this->address}:{$this->port}{$this->path}\r\n" .
                 "Sec-WebSocket-Accept: " . $key  . "\r\n". "\r\n";
+
+
+        if (!$this->onHandshake)
+            call_user_func($this->onHandshake, $socket, $header);
 
         socket_write($socket, $header, strlen($header));
     }
 
 
-    private function parseHeaders($header)
+    private function ParseHeaders($header)
     {
         $headers = array();
         $key = '';
@@ -254,7 +273,7 @@ class WebSocket
         return $headers;
     }
 
-    private function decodeData($socket, $data)
+    private function DecodeData($socket, $data)
     {
         //https://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-10#section-4.2
         /*
@@ -299,22 +318,22 @@ class WebSocket
 
         switch ($opcode) {
             case 1:
-                $decodedData['type'] = 'text';
+                $decodedData['type'] = WS_MSG_TEXT;
                 break;
             case 2:
-                $decodedData['type'] = 'binary';
+                $decodedData['type'] = WS_MSG_BINARY;
                 break;
             case 8:
-                $decodedData['type'] = 'close';
+                $decodedData['type'] = WS_MSG_CLOSE;
                 break;
             case 9:
-                $decodedData['type'] = 'ping';
+                $decodedData['type'] = WS_MSG_PING;
                 break;
             case 10:
-                $decodedData['type'] = 'pong';
+                $decodedData['type'] = WS_MSG_PONG;
                 break;
             default:
-                $this->disconnect($socket, "decodedData");
+                $this->Disconnect($socket, "decodedData");
                 return array();
         }
 
@@ -383,7 +402,7 @@ class WebSocket
      *
      * @return  string  message
      */
-    private function encodeData($data, $type = 0x81)
+    private function EncodeData($data, $type = 0x81)
     {
 
 
