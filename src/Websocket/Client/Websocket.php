@@ -6,7 +6,6 @@ namespace Kantodo\Websocket\Client;
 class Websocket
 {
     private string $host;
-    private int $port;
     private string $address;
     private float $timeout = 10;
     private $ctx;
@@ -15,7 +14,6 @@ class Websocket
     public function __construct(string $host, int $port = 80, bool $ssl = false, float $timeout = 10) {
         $this->address = ($ssl ? 'ssl://' : '') . $host . ':' . $port;
         $this->host = $host;
-        $this->port = $port;
         $this->timeout = $timeout;
     }
 

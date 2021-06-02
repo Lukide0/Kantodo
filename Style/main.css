@@ -425,10 +425,14 @@ button.text:hover, button.text:focus {
     box-shadow: var(--shadow-2dp);
 }
 
+button.long 
+{
+    padding: var(--gap-medium) var(--gap-huge); 
+}
+
 
 /* #endregion */
 /* #region AVATAR */
-
 .avatar {
     --avatar-color: var(--primary);
     display: flex;
@@ -480,7 +484,6 @@ button.text:hover, button.text:focus {
     box-shadow: 0 0 0 4px var(--bg-secondary);
 }
 /*#endregion*/
-
 /* #region MAIN*/
 main > h2 {
     margin-bottom: var(--gap-big);
@@ -696,7 +699,7 @@ label.text input ~ span, label.text input:focus ~ span {
 label.text input:focus {
     border-color: var(--border-focus);
 }
-
+/* #endregion */
 /*#region WINDOW*/
 .window {
     display: none;
@@ -752,37 +755,3 @@ label.text input:focus {
 }
 
 /*#endregion*/
-
-.search {
-    padding-left: 3px;
-    display: flex;
-    align-items: center;
-}
-
-.search > span {
-    -webkit-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none;
-    height: 27px;
-    display: block;
-    background: var(--bg-search);
-    padding: 3px;
-    border-radius: var(--border-radius-medium) 0 0 var(--border-radius-medium);
-}
-
-.search > input {
-    height: 27px;
-    width: 150px;
-    font-size: var(--font-size-regular);
-    border: 0;
-    border-radius: 0 var(--border-radius-medium) var(--border-radius-medium) 0;
-    position: relative;
-    padding: 3px;
-    background: var(--bg-search);
-}
-
-.search > input:focus {
-    outline: none;
-}
-/*#endregion */

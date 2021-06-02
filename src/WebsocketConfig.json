@@ -1,0 +1,11 @@
+{
+    "privateKey": "",
+    "server": {
+        "listen": 20,
+        "port": 8090
+    },
+    "client": {
+        "timeout": 10,
+        "port": 80
+    }
+}
