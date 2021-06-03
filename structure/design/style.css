@@ -694,9 +694,13 @@ input[type='checkbox'] {
     height: 0;
 }
 
+input::-ms-reveal,
+input::-ms-clear {
+display: none;
+}
 
-
-input[type=text], input[type=password] {
+input[type=text],
+input[type=password] {
     width: 100%;
     transition: border-color 250ms;
     outline: none;
@@ -722,7 +726,7 @@ label.text span:not(.error) {
             user-select: none;
     position: absolute;
     left: 15px;
-    padding: 0 5px;
+    padding: 0 5px 2px 5px;
     background: var(--bg-secondary);
     transition: top 250ms;
     font-size: var(--font-size-regular);
@@ -738,7 +742,8 @@ label.text input:not(:valid) ~ span {
     -o-transform: translateY(-50%);
 }
 
-label.text input ~ span, label.text input:focus ~ span {
+label.text input ~ span,
+label.text input:focus ~ span {
     top: 0;
     transform: translateY(-50%);
     -webkit-transform: translateY(-50%);
