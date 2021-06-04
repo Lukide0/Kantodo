@@ -1,0 +1,6 @@
+
+class ParserMD
+{
+    line = "";
+    char = "";
+}
