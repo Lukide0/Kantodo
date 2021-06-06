@@ -57,7 +57,7 @@
     --border-radius-small: 2px;
     --border-radius-medium: 5px;
     --border-radius-big: 10px;
-    --border-radius-circle: 9999px;
+    --border-radius-circle: 50%;
 
     /* PADDING / MARGIN */
     --gap-small: 0.5rem;
@@ -102,6 +102,11 @@
     --progress-completed: rgb(118, 255, 3);
     --progress: rgb(213, 0, 249);
     --projects-border-color: var(--border-color);
+
+
+    --requirement-color: rgb(161, 161, 161);
+    --requirement-success: rgb(0,191,165);
+    --requirement-error: rgb(244,67,54);
 }
 
 * {
@@ -533,6 +538,12 @@ main > .avatars > button {
 
 /* #endregion */
 /*#region INPUTS */
+
+.label-error {
+    display: flex;
+    flex-direction: column;
+}
+
 label {
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -544,7 +555,7 @@ label {
     position: relative;
 }
 
-label.error span 
+label.error > span 
 {
     color: var(--error) !important; 
 }
@@ -715,10 +726,40 @@ input[type=password] {
     -o-border-radius: var(--border-radius-medium);
 }
 
+label.input-open input {
+    border: 2px solid var(--border-color);
+    border-right: 0;
+    border-radius: var(--border-radius-medium) 0 0 var(--border-radius-medium);
+    -webkit-border-radius: var(--border-radius-medium) 0 0 var(--border-radius-medium);
+    -moz-border-radius: var(--border-radius-medium) 0 0 var(--border-radius-medium);
+    -ms-border-radius: var(--border-radius-medium) 0 0 var(--border-radius-medium);
+    -o-border-radius: var(--border-radius-medium) 0 0 var(--border-radius-medium);
+}
 
+.input-close {
+    display: flex;
+    align-items: center;
+    padding-right: 8px;
+    justify-content: center;
+    transition: border-color 250ms;
+    border: 2px solid var(--border-color);
+    font-weight: var(--font-weight-bold);
+    background: var(--bg-secondary);
+    border-left: 0;
+    color: var(--font-color-secondary);
+    height: 100%;
+    border-radius: 0 var(--border-radius-medium) var(--border-radius-medium) 0;
+    -webkit-border-radius: 0 var(--border-radius-medium) var(--border-radius-medium) 0;
+    -moz-border-radius: 0 var(--border-radius-medium) var(--border-radius-medium) 0;
+    -ms-border-radius: 0 var(--border-radius-medium) var(--border-radius-medium) 0;
+    -o-border-radius: 0 var(--border-radius-medium) var(--border-radius-medium) 0;
+    -webkit-transition: border-color 250ms;
+    -moz-transition: border-color 250ms;
+    -ms-transition: border-color 250ms;
+    -o-transition: border-color 250ms;
+}
 
-
-label.text span:not(.error) {
+label.text > span:not(.error) {
     line-height: 1;
     -webkit-user-select: none;
        -moz-user-select: none;
@@ -752,9 +793,59 @@ label.text input:focus ~ span {
     -o-transform: translateY(-50%);
 }
 
-label.text input:focus {
+label.text input:focus, label.text input:focus ~ .input-close {
     border-color: var(--border-focus);
 }
+
+
+.requirements {
+    margin-left: var(--gap-huge);
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-direction: column;
+    list-style: none;
+    font-size: var(--font-size-small);
+}
+
+.requirements > li {
+    display: inline;
+    float: left;
+    padding-left: 25px;
+    position: relative;
+    margin: var(--gap-small) 0;
+    color: var(--requirement-color);
+}
+
+.requirements > li::before {
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0;
+    background: var(--requirement-color, --color);
+    top: 50%;
+    width: 15px;
+    height: 15px;
+    border-radius: var(--border-radius-circle);
+    -webkit-border-radius: var(--border-radius-circle);
+    -moz-border-radius: var(--border-radius-circle);
+    -ms-border-radius: var(--border-radius-circle);
+    -o-border-radius: var(--border-radius-circle);
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+}
+
+.requirements > li.success {
+    --requirement-color: var(--requirement-success);
+}
+
+.requirements > li.error {
+    --requirement-color: var(--requirement-error);
+}
+
 /* #endregion */
 /*#region WINDOW*/
 .window {

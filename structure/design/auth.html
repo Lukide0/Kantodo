@@ -14,85 +14,173 @@
     <title>Přihlášení</title>
     <style>
         body {
-            background: rgb(214, 218, 241);
+            all: unset;
+            background: var(--info);
             display: flex;
-            align-items: center;
-            justify-content: center;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        header {
+            all: unset;
+            background: rgb(0, 27, 41);
+            display: inline;
+            box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.14), 0px 1px 18px rgba(0, 0, 0, 0.12), 0px 3px 5px -1px rgba(0, 0, 0, 0.2);
+        }
+
+        main {
+            all: unset;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            clip-path: polygon(0 0, 50% 0, 40% 100%, 0 100%);
+            transition: clip-path 500ms ease-in;
+            background: var(--bg-third);
+        }
+
+        main.right {
+            clip-path: polygon(40% 0, 100% 0, 100% 100%, 50% 100%);
+        }
+
+        main > div.container {
             padding: var(--gap-huge);
         }
 
-        #authDiv {
-            background: var(--bg-secondary);
-            box-shadow: var(--shadow-6dp);
-            border-radius: var(--border-radius-medium);
-            overflow: hidden;
-            width: 500px;
+        .container > .row {
+            margin-bottom: var(--gap-huge);
         }
 
-        #header {
-            padding: var(--gap-medium);
-            background: var(--bg-primary);
+        h2 {
+            align-self: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
         }
-
-        #header>button {
-            margin-top: 0;
-            background: var(--bg-primary);
-            color: var(--font-color-primary) !important;
-        }
-
-        #signInDiv>.row,
-        #createAccountDiv>.row {
-            padding: 0 var(--gap-big) var(--gap-big) var(--gap-big);
-            margin-top: var(--gap-medium);
-        }
-
-        #createAccountDiv {
-            display: none;
+        button {
+            margin-top: 2rem;
         }
     </style>
 </head>
 
 <body>
+    <header>
+        <h1>Kantodo</h1>
+    </header>
+    <main class="main-space-between">
+        <div class="col-5 container main-center">
+            <h2>Welcome back</h2>
+            <div class="row main-center">
+                <label class="text info-focus">
+                    <input type="text" required>
+                    <span>Email</span>
+                </label>
+                <div class="error-text"></div>
+            </div>
+            <div class="row main-center">
+                <label class="text info-focus">
+                    <input type="password" required>
+                    <span>Heslo</span>
+                </label>
+                <div class="error-text"></div>
+            </div>
+            <div class="row main-center">
+                <button class="info long">Sign in</button>
+            </div>
+            <div class="row main-center">
+                <button class="text flat">Create account</button>
+            </div>
+        </div>
+        <div class="col-5 container main-center">
+            <h2>Welcome to Kantodo</h2>
+            <div class="row main-space-between">
+                <label class="text info-focus">
+                    <input type="text" required>
+                    <span>Jmeno</span>
+                    <div class="error-text"></div>
+                </label>
+                <label class="text info-focus">
+                    <input type="text" required>
+                    <span>Prijmeni</span>
+                    <div class="error-text"></div>
+                </label>
+            </div>
+            <div class="row">
+                <div class="container">
+                    <label class="text info-focus">
+                        <input type="text" required>
+                        <span>Email</span>
+                    </label>
+                    <div class="error-text"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="container">
+                    <label class="text info-focus input-open">
+                        <input type="password" required>
+                        <span>Heslo</span>
+                        <div class="input-close"><span class="material-icons-outlined">visibility</span></div>
+                    </label>
+                    <div class="error-text"></div>
+                </div>
+            </div>
+            <div class="row">
+                <ul class="requirements">
+                    <li class="success">At least 8 characters</li>
+                    <li>One lowercase character</li>
+                    <li>One uppercase character</li>
+                    <li class="error">One number</li>
+                    <li>One special character</li>
+                </ul>
+            </div>
+            <!-- <div class="row">
+                <ul>
+                    <li>Special characters</li>
+                    <li>number</li>
+                    <li>length 6+</li>
+                </ul>
+            </div> -->
+            <div class="row main-center">
+                <button class="info long">Create account</button>
+            </div>
+        </div>
+        </div>
+    </main>
+
     <!-- 
         pridat tlacitko zobrazit heslo + css 
         pridelat error div
     -->
-    <div class="row" id="authDiv">
+    <!-- <div class="row" id="authDiv">
         <div class="container">
-            <div class="row main-center" id="header">
-                <button class="text">Create account</button>
+            <div class="row main-center">
+                <h1>Welcome back</h1>
             </div>
             <div class="container">
-
-                <div class="container" id="signInDiv">
-                    <div class="row">
-                        <label class="text col-8 info-focus">
-                            <input type="text" required>
-                            <span>Email</span>
-                        </label>
-                        <div class="error-text"></div>
-                    </div>
-                    <div class="row">
-                        <label class="text col-8 info-focus">
-                            <input type="password" required>
-                            <span>Heslo</span>
-                        </label>
-                        <div class="error-text"></div>
-                    </div>
-                    <div class="row main-center">
-                        <button class="info long">Sign in</button>
-                    </div>
-                </div>
                 <div class="container" id="createAccountDiv">
+                    <div class="row main-space-between">
+                        <div class="col-6">
+                            <label class="text col info-focus">
+                                <input type="text" required>
+                                <span>Jmeno</span>
+                            </label>
+                            <div class="error-text"></div>
+                        </div>
+                        <div class="col-6">
+                            <label class="text col info-focus">
+                                <input type="text" required>
+                                <span>Prijmeni</span>
+                            </label>
+                            <div class="error-text"></div>
+                        </div>
+                    </div>
                     <div class="row">
-                        <label class="text col-8 info-focus">
+                        <label class="text col-6 info-focus">
                             <input type="text" required>
                             <span>Email</span>
                         </label>
                         <div class="error-text"></div>
                     </div>
                     <div class="row">
-                        <label class="text col-8 info-focus">
+                        <label class="text col-6 info-focus">
                             <input type="password" required>
                             <span>Heslo</span>
                         </label>
@@ -104,18 +192,7 @@
                 </div>
             </div>
         </div>
-    </div>
-    <script>
-        let buttonCA = document.querySelector("#createAccountDiv button");
-
-        let divCA = document.getElementById("createAccount");
-        let divSI = document.getElementById("signInDiv");
-        buttonCA.onclick = function() 
-        {
-            divSI.style.display = "none";
-        }
-
-    </script>
+    </div> -->
 </body>
 
 </html>

@@ -5,8 +5,18 @@
     display: -webkit-flex;
     display: flex;
     flex-flow: column wrap;
-    flex: 1;
     height: 100%;
+}
+
+.container-full {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    flex-flow: column wrap;
+    height: 100%;
+    flex: 1;
 }
 
 .row {
