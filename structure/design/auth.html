@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
+    
+    <head>
+        <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="flex.css">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
+    rel="stylesheet">
     <script src="js/Animation.js"></script>
     <title>Přihlášení</title>
+    <script src="js/Components.js"></script>
     <style>
         body {
             all: unset;
@@ -42,11 +43,11 @@
             clip-path: polygon(40% 0, 100% 0, 100% 100%, 50% 100%);
         }
 
-        main > div.container {
+        main>div.container {
             padding: var(--gap-huge);
         }
 
-        .container > .row {
+        .container>.row {
             margin-bottom: var(--gap-huge);
         }
 
@@ -55,6 +56,7 @@
             margin-bottom: 3rem;
             font-size: 2.5rem;
         }
+
         button {
             margin-top: 2rem;
         }
@@ -86,19 +88,21 @@
                 <button class="info long">Sign in</button>
             </div>
             <div class="row main-center">
-                <button class="text flat">Create account</button>
+                <button class="text flat"
+                    onclick="(function() { let x = document.getElementsByTagName('main')[0]; x.classList.add('right'); switchInputDisable(x.querySelector('div'));  switchInputDisable(x.querySelector('div:nth-child(1)', false))})()">Create
+                    account</button>
             </div>
         </div>
         <div class="col-5 container main-center">
             <h2>Welcome to Kantodo</h2>
             <div class="row main-space-between">
                 <label class="text info-focus">
-                    <input type="text" required>
+                    <input type="text" disabled required>
                     <span>Jmeno</span>
                     <div class="error-text"></div>
                 </label>
                 <label class="text info-focus">
-                    <input type="text" required>
+                    <input type="text" disabled required>
                     <span>Prijmeni</span>
                     <div class="error-text"></div>
                 </label>
@@ -106,7 +110,7 @@
             <div class="row">
                 <div class="container">
                     <label class="text info-focus">
-                        <input type="text" required>
+                        <input type="text" disabled required>
                         <span>Email</span>
                     </label>
                     <div class="error-text"></div>
@@ -115,9 +119,9 @@
             <div class="row">
                 <div class="container">
                     <label class="text info-focus input-open">
-                        <input type="password" required>
+                        <input type="password" disabled required>
                         <span>Heslo</span>
-                        <div class="input-close"><span class="material-icons-outlined">visibility</span></div>
+                        <div class="input-close"><span class="material-icons-outlined" data-show="false" onclick="switchPasswordVisibility(event)">visibility</span></div>
                     </label>
                     <div class="error-text"></div>
                 </div>
@@ -131,15 +135,13 @@
                     <li>One special character</li>
                 </ul>
             </div>
-            <!-- <div class="row">
-                <ul>
-                    <li>Special characters</li>
-                    <li>number</li>
-                    <li>length 6+</li>
-                </ul>
-            </div> -->
             <div class="row main-center">
                 <button class="info long">Create account</button>
+            </div>
+            <div class="row main-center">
+                <button class="text flat"
+                    onclick="(function() { document.getElementsByTagName('main')[0].classList.remove('right') })()">Sign
+                    in</button>
             </div>
         </div>
         </div>
