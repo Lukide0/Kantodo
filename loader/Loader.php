@@ -48,6 +48,7 @@ class Loader
         $namespaces = explode("\\", $className);
         $class = array_pop($namespaces);
 
+
         $tmp = "";
         $match = null;
         $skip = 0;
@@ -76,6 +77,9 @@ class Loader
         {
             $class = $this->classMap[$class];
         }
+
+        if (strlen($file) == 0)
+            return false;
 
         if ($file[strlen($file) - 1] != '/')
             $file .= '/';
