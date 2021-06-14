@@ -76,7 +76,7 @@ class AuthLayout extends Layout
             <header>
                 <h1>Kantodo</h1>
             </header>
-            <main class="main-space-between">
+            <main class="main-space-between {$authType}">
                 <div class="col-5 container main-center">
                     <h2>Welcome back</h2>
                     <div class="row main-center">

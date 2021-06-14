@@ -2,7 +2,7 @@
 
 namespace Kantodo\Controllers;
 
-use Kantodo\Core\Controller;
+use Kantodo\Core\AuthController;
 use Kantodo\Views\Layouts\ClientLayout;
 use Kantodo\Views\HomeView;
 use Kantodo\Views\Layouts\AuthLayout;
@@ -10,7 +10,7 @@ use Kantodo\Core\Auth;
 
 
 
-class HomeController extends Controller
+class HomeController extends AuthController
 {
     public function Handle()
     {

@@ -6,7 +6,26 @@ use InvalidArgumentException;
 
 abstract class Controller
 {
-    public abstract function Handle();
+
+    public $action = '';
+    public $access = [];
+
+    /**
+     * @var BaseMiddleware[]
+     */
+    protected $middlewares = [];
+
+    public function RegisterMiddleware(BaseMiddleware $bm) 
+    {
+        $this->middlewares[] = $bm;
+    }
+
+    public function ExecuteAllMiddlewares() 
+    {
+        foreach ($this->middlewares as $middleware) {
+            $middleware->Execute();
+        }
+    }
 
     public function RenderView(string $class, array $params = [], string $layout = null)
     {

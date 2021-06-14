@@ -12,6 +12,7 @@ class Router
     ];
     
     protected $notFoundRoute = false;
+    protected $errorHandler = null;
     protected $response;
    
 
@@ -21,19 +22,24 @@ class Router
         $this->response = $res;
     }
 
-    public function Get(string $path, $callback)
+    public function Get(string $path, $callback, array $access = [0])
     {
-        $this->routes['get'][$path] = $callback;
+        $this->routes['get'][$path] =  ['callback' => $callback, 'access' => $access];
     }
 
-    public function Post(string $path, $callback)
+    public function Post(string $path, $callback, array $access = [0])
     {
-        $this->routes['post'][$path] = $callback;
+        $this->routes['post'][$path] = ['callback' => $callback, 'access' => $access];
     }
 
     public function NotFound($callback)
     {
         $this->notFoundRoute = $callback;
+    }
+
+    public function SetErrorHandler($callback)
+    {
+        $this->errorHandler = $callback;
     }
 
     public function Resolve()
@@ -52,16 +58,37 @@ class Router
             exit;
         }
 
-        if (is_array($callback)) 
+        if (is_array($callback['callback'])) 
         {
-            $class = new $callback[0];
-            $classMethod = $callback[1];
+            $classMethod = $callback['callback'][1];
 
-            call_user_func([$class, $classMethod]);
+            /**
+             * @var Controller
+             */
+            $controller = new $callback['callback'][0];
+
+            $controller->action = $classMethod;
+            $controller->access = $callback['access'];
+
+            Application::$APP->controller = $controller;
+
+            try {
+                $controller->ExecuteAllMiddlewares();
+            } catch (\Throwable $th) {
+                if ($this->errorHandler) 
+                {
+                    call_user_func($this->errorHandler, $th);
+                }
+                http_response_code($th->getCode());
+                exit;
+            }
+
+
+            call_user_func([$controller, $classMethod]);
             exit;
         }
 
-        call_user_func($callback);
+        call_user_func($callback, $this->request, $this->response);
     }
 }
 

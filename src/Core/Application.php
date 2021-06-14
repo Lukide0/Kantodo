@@ -2,8 +2,15 @@
 
 namespace Kantodo\Core;
 
+
 class Application
 {
+    const EVERYONE = 0;
+    const GUEST = 1;
+    const USER = 2;
+    const TEAM_ADMIN = 3;
+    const ADMIN = 4;
+
     public static $APP;
     public static $ROOT_DIR;
     public static $PAGES_DIR;
@@ -11,11 +18,26 @@ class Application
     public static $SCRIPT_URL;
     public static $STYLE_URL;
 
+    /**
+     * @var Router
+     */
     public $router;
+    /**
+     * @var Request
+     */
     public $request;
+    /**
+     * @var Response
+     */
     public $response;
+    /**
+     * @var HeaderHTML
+     */
     public $header;
-
+    /**
+     * @var Controller
+     */
+    public $controller;
 
     private $eventListeners = array();
 
@@ -62,6 +84,22 @@ class Application
         foreach ($callbacks as $callback) {
             call_user_func($callback);
         }
+    }
+
+    public static function GetRole() 
+    {
+        if (empty($_SESSION) OR
+            empty($_SESSION['userID']) OR
+            empty($_SESSION['exp']))
+        {
+            return Application::GUEST;
+        }
+
+        if ($_SESSION['exp'] <= time()) return Application::GUEST;
+
+
+        // DB user EXISTS
+        return Application::USER;
     }
 }
 
