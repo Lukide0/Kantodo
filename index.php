@@ -2,13 +2,20 @@
 
 use Kantodo\Core\Application;
 
-include_once "config.php";
 include_once "loader/load.php";
 
 
 $APP = new Kantodo\Core\Application();
 
-$APP->router->Get("/", [Kantodo\Controllers\HomeController::class, 'Handle'], [Application::GUEST]);
+
+if (!Application::ConfigExits())
+{
+    $APP->router->Run([Kantodo\Controllers\FrontController::class, 'Install']);
+    exit;
+}
+
+include_once "config.php";
+
 $APP->Run();
 
 //////////

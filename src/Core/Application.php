@@ -101,6 +101,11 @@ class Application
         // DB user EXISTS
         return Application::USER;
     }
+
+    public static function ConfigExits() 
+    {
+        return file_exists(Application::$ROOT_DIR . '/config.php');
+    }
 }
 
 

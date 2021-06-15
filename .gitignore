@@ -3,3 +3,4 @@
 *.wsd
 
 !security/*.wsd
+/Tests

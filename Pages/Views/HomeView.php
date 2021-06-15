@@ -8,7 +8,7 @@ class HomeView implements IView
 {
     public function Render(array $params = [])
     {
-        echo "AHOJDA";
+        
     }
 }
 

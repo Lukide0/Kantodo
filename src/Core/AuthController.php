@@ -1,7 +1,6 @@
 <?php 
 namespace Kantodo\Core;
 
-use InvalidArgumentException;
 
 abstract class AuthController extends Controller
 {

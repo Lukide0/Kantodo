@@ -80,15 +80,47 @@ class Router
                     call_user_func($this->errorHandler, $th);
                 }
                 http_response_code($th->getCode());
+                return;
+            }
+
+
+            call_user_func([$controller, $classMethod]);
+            return;
+        }
+
+        call_user_func($callback, $this->request, $this->response);
+    }
+
+
+    public function Run($callback, array $access = [Application::EVERYONE]) 
+    {
+        if (is_array($callback)) 
+        {
+            $classMethod = $callback[1];
+            $controller = new $callback[0];
+
+            $controller->action = $classMethod;
+            $controller->access = $access;
+
+            Application::$APP->controller = $controller;
+
+            try {
+                $controller->ExecuteAllMiddlewares();
+            } catch (\Throwable $th) {
+                if ($this->errorHandler) 
+                {
+                    call_user_func($this->errorHandler, $th);
+                }
+                http_response_code($th->getCode());
                 exit;
             }
 
 
             call_user_func([$controller, $classMethod]);
-            exit;
+            return;
         }
 
-        call_user_func($callback, $this->request, $this->response);
+        call_user_func($callback);
     }
 }
 
