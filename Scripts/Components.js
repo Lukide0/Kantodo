@@ -19,3 +19,26 @@ function switchInputDisable(parent, disable = true){
         el.disabled = disable;
     }
 }
+
+function setAttributeToElements(queryString, attribute, value) {
+
+    let elements = document.querySelectorAll(queryString);
+
+    elements.forEach(el => 
+    {
+        el.setAttribute(attribute, value);
+    });
+
+}
+
+
+function removeAttributeToElements(queryString, attribute) {
+
+    let elements = document.querySelectorAll(queryString);
+
+    elements.forEach(el => 
+    {
+        el.removeAttribute(attribute);
+    });
+
+}

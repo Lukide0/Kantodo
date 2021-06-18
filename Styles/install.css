@@ -28,11 +28,11 @@ main {
     -ms-border-radius: var(--border-radius-medium);
     -o-border-radius: var(--border-radius-medium);
 }
-#content > .container {
+#content > form > div > .container {
     margin-bottom: 4rem;
 }
 
-#content > .container > .row {
+#content > form > div > .container > .row {
     margin-bottom: var(--gap-big);
 }
 

@@ -2,6 +2,8 @@
 
 namespace Kantodo\Core;
 
+use Closure;
+
 class Router
 {
     public $request;
@@ -88,11 +90,12 @@ class Router
             return;
         }
 
-        call_user_func($callback, $this->request, $this->response);
+
+        call_user_func($callback['callback'], $this->request, $this->response);
     }
 
 
-    public function Run($callback, array $access = [Application::EVERYONE]) 
+    public function Run($callback, array $access = [Application::EVERYONE], array $params = []) 
     {
         if (is_array($callback)) 
         {
@@ -116,11 +119,11 @@ class Router
             }
 
 
-            call_user_func([$controller, $classMethod]);
+            call_user_func_array([$controller, $classMethod], $params);
             return;
         }
 
-        call_user_func($callback);
+        call_user_func_array($callback, $params);
     }
 }
 

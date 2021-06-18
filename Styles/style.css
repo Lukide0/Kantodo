@@ -715,7 +715,7 @@ input[type=password] {
     width: 100%;
     transition: border-color 250ms;
     outline: none;
-    padding: 8px;
+    padding: var(--gap-medium);
     font-weight: var(--font-weight-bold);
     border: 2px solid var(--border-color);
     border-radius: var(--border-radius-medium);
@@ -740,7 +740,8 @@ label.input-open input {
     cursor: pointer;
     display: flex;
     align-items: center;
-    padding-right: 8px;
+    padding: calc(var(--gap-medium) - 1px);
+    padding-left: 0;
     justify-content: center;
     transition: border-color 250ms;
     border: 2px solid var(--border-color);
