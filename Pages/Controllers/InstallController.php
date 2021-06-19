@@ -21,15 +21,17 @@ class InstallController extends Controller
 
     private function InstallAction() 
     {
+        Application::$APP->response->SetContentType();
         $body = Application::$APP->request->GetBody();
-
+        
         $keys = ['dbName', 'dbUser', 'dbHost', 'dbPass', 'adminName', 'adminSurname', 'adminEmail', 'adminPass'];
-
+        
         $emptyKeys = Data::Empty($body, $keys);
-
+        
         if (count($emptyKeys) != 0) 
         {
-            var_dump($emptyKeys);
+            Application::$APP->response->AddResponseError("Empty field|s");
+            Application::$APP->response->OutputResponse();
             exit;
         }
 

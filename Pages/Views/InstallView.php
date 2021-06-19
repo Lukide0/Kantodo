@@ -134,7 +134,7 @@ class InstallView implements IView
                         </div>
                         <div data-page="3" style="display:none">
                             <h2>Summary</h2>
-                            <div class="container">´
+                            <div class="container">
                                 <button type="submit">Setup</button>
                             </div>
                         </div>
