@@ -38,8 +38,13 @@ class Application
      * @var Controller
      */
     public $controller;
+    /**
+     * @var Lang
+     */
+    public $lang;
 
     private $eventListeners = array();
+    private $userRole = self::EVERYONE;
 
     public function __construct() 
     {
@@ -65,10 +70,12 @@ class Application
         $this->response = new Response();
         $this->header = new HeaderHTML();
         $this->router = new Router($this->request, $this->response);
+        $this->lang = new Lang();
     }
 
     public function Run()
     {
+        $this->lang->Load();
         $this->router->Resolve();
     }
 
@@ -88,23 +95,30 @@ class Application
 
     public static function GetRole() 
     {
+
+        if (self::$APP->userRole != self::EVERYONE)
+            return self::$APP->userRole;
+
+        self::$APP->userRole = self::GUEST;
+
         if (empty($_SESSION) OR
             empty($_SESSION['userID']) OR
             empty($_SESSION['exp']))
         {
-            return Application::GUEST;
+            return self::GUEST;
         }
 
-        if ($_SESSION['exp'] <= time()) return Application::GUEST;
+        if ($_SESSION['exp'] <= time()) return self::GUEST;
 
 
         // DB user EXISTS
-        return Application::USER;
+        self::$APP->userRole = self::USER;
+        return self::USER;
     }
 
     public static function ConfigExits() 
     {
-        return file_exists(Application::$ROOT_DIR . '/config.php');
+        return file_exists(self::$ROOT_DIR . '/config.php');
     }
 }
 
