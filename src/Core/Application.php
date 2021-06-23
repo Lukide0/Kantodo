@@ -10,14 +10,15 @@ class Application
     const USER = 2;
     const TEAM_ADMIN = 3;
     const ADMIN = 4;
-
+    
     public static $APP;
     public static $ROOT_DIR;
     public static $PAGES_DIR;
     public static $URL_PATH;
     public static $SCRIPT_URL;
     public static $STYLE_URL;
-
+    public static $LANG = 'en';
+    
     /**
      * @var Router
      */
@@ -38,14 +39,11 @@ class Application
      * @var Controller
      */
     public $controller;
-    /**
-     * @var Lang
-     */
-    public $lang;
-
+    
+    
     private $eventListeners = array();
     private $userRole = self::EVERYONE;
-
+    
     public function __construct() 
     {
         self::$APP = $this;
@@ -70,7 +68,6 @@ class Application
         $this->response = new Response();
         $this->header = new HeaderHTML();
         $this->router = new Router($this->request, $this->response);
-        $this->lang = new Lang();
     }
 
     public function Run()

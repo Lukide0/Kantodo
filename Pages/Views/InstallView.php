@@ -2,12 +2,14 @@
 
 namespace Kantodo\Views;
 
-use Kantodo\Core\IView;
+use Kantodo\Core\ViewLang;
 
-class InstallView implements IView
+class InstallView extends ViewLang
 {
     public function Render(array $params = [])
     {
+        $this->lang->Load("install");
+
         echo <<<HTML
         <!DOCTYPE html>
         <html lang="en">
@@ -49,21 +51,21 @@ class InstallView implements IView
                                         <input type="text" name="dbName" required>
                                         <span>DB Name</span>
                                     </label>
-                                    <span class="description">Name of database</span>
+                                    <span class="description">{$this->lang->Get("database-name-desc")}</span>
                                 </div>
                                 <div class="row main-space-between cross-baseline">
                                     <label class="text info-focus col-4">
                                         <input type="text" name="dbHost" required>
                                         <span>DB Host</span>
                                     </label>
-                                    <span class="description">Address of database (e.g. localhost, 127.0.0.1)</span>
+                                    <span class="description">{$this->lang->Get("database-host-desc")}</span>
                                 </div>
                                 <div class="row main-space-between cross-baseline">
                                     <label class="text info-focus col-4">
                                         <input type="text" name="dbUser" required>
                                         <span>DB User</span>
                                     </label>
-                                    <span class="description">Database user</span>
+                                    <span class="description">{$this->lang->Get("database-user-desc")}</span>
                                 </div>
                                 <div class="row main-space-between cross-baseline">
                                     <label class="text info-focus col-4 input-open">
@@ -72,37 +74,37 @@ class InstallView implements IView
                                         <div class="input-close"><span class="material-icons-outlined" data-show="false" onclick="switchPasswordVisibility(event)">visibility</span></div>
                                         <span>DB Password</span>
                                     </label>
-                                    <span class="description">Database user password</span>
+                                    <span class="description">{$this->lang->Get("database-pass-desc")}</span>
                                 </div>
                                 <div class="row main-space-between cross-baseline">
                                     <label class="text info-focus col-4">
                                         <input type="text" value="todo_" name="dbPrefix" required>
                                         <span>DB Prefix</span>
                                     </label>
-                                    <span class="description">Database table prefix</span>
+                                    <span class="description">{$this->lang->Get("database-prefix-desc")}</span>
                                 </div>
                             </div>
                         </div>
                         <div data-page="2" style="display:none">
                             <h2>Admin</h2>
                             <div class="container">
-                                <div class="row main-space-between">
+                                <div class="row">
                                     <div class="container">
                                         <label class="text info-focus">
                                             <input type="text" name="adminName" required>
-                                            <span>Jmeno</span>
+                                            <span>{$this->lang->Get("firstname")}</span>
                                         </label>
                                         <div class="error-text"></div>
                                     </div>
-                                    <div class="container">
+                                    <div class="container" style="margin-left: var(--gap-huge)">
                                         <label class="text info-focus">
                                             <input type="text" name="adminSurname" required>
-                                            <span>Prijmeni</span>
+                                            <span>{$this->lang->Get("lastname")}</span>
                                         </label>
                                         <div class="error-text">A</div>
                                     </div>
                                 </div>
-                                <div class="row main-space-between">
+                                <div class="row">
                                     <div class="container">
                                         <label class="text info-focus">
                                             <input type="text" name="adminEmail" required>
@@ -111,11 +113,11 @@ class InstallView implements IView
                                         <div class="error-text"></div>
                                     </div>
                                 </div>
-                                <div class="row main-space-between">
+                                <div class="row">
                                     <div class="container">
                                         <label class="text info-focus input-open">
                                             <input type="password" name="adminPass" required>
-                                            <span>Heslo</span>
+                                            <span>{$this->lang->Get("password")}</span>
                                             <div class="input-close"><span class="material-icons-outlined" data-show="false" onclick="switchPasswordVisibility(event)">visibility</span></div>
                                         </label>
                                         <div class="error-text"></div>
@@ -140,8 +142,8 @@ class InstallView implements IView
                         </div>
                     </form>
                     <div class="row main-space-around">
-                        <button id="previusPageBtn" disabled>Back</button>
-                        <button id="nextPageBtn" class="info">Next</button>
+                        <button id="previusPageBtn" disabled>{$this->lang->Get("back")}</button>
+                        <button id="nextPageBtn" class="info">{$this->lang->Get("next")}</button>
                     </div>
                     </div>
             </main>

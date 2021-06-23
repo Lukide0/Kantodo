@@ -32,7 +32,7 @@ abstract class Controller
 
         if ($layout == null) 
         {
-            call_user_func_array([$class, 'Render'], $params);
+            call_user_func_array([new $class, 'Render'], $params);
             return;
         }
 
