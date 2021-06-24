@@ -18,6 +18,7 @@ class Application
     public static $SCRIPT_URL;
     public static $STYLE_URL;
     public static $LANG = 'en';
+    public static $DEBUG_MODE = false;
     
     /**
      * @var Router

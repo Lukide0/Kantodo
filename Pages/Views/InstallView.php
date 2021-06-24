@@ -23,6 +23,7 @@ class InstallView extends ViewLang
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet">
             <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
             <script src="Scripts/Components.js"></script>
+            <script src="Scripts/Request.js"></script>
             <title>Install</title>
         </head>
         <body>
@@ -42,7 +43,7 @@ class InstallView extends ViewLang
             </nav>
             <main>
                 <div id="content">
-                    <form action="" method="post">
+                    <form onsubmit="formSubmit(event)">
                         <div data-page="1" style="display:block">
                             <h2>Database</h2>
                             <div class="container">
@@ -203,6 +204,23 @@ class InstallView extends ViewLang
                     pages[pageNum].style.display = 'none';
 
                     pages[pageNum - 1].style.display = 'block';
+                }
+
+                function formSubmit(e) 
+                {
+                    e.preventDefault();
+                    let obj = {};
+                    for (let index = 0; index < e.target.elements.length; index++) {
+                        const element = e.target.elements[index];
+
+                        if (element.name.length != 0)
+                            obj[element.name] = element.value;
+                    }
+                    const request = Request(window.location, "POST", obj);
+
+                    request.then(res => {
+                        console.log(res);
+                    });
                 }
 
 

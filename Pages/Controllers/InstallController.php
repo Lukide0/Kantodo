@@ -23,9 +23,9 @@ class InstallController extends Controller
     {
         Application::$APP->response->SetContentType();
         $body = Application::$APP->request->GetBody();
-        
+
         $keys = ['dbName', 'dbUser', 'dbHost', 'dbPass', 'adminName', 'adminSurname', 'adminEmail', 'adminPass'];
-        
+
         $emptyKeys = Data::Empty($body, $keys);
         
         if (count($emptyKeys) != 0) 

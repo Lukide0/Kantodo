@@ -30,12 +30,12 @@ class Request
 
         if ($this->GetMethod() == 'get') 
         {
-            return filter_input_array(INPUT_GET, FILTER_SANITIZE_SPECIAL_CHARS);
+            return filter_input_array(INPUT_GET, FILTER_SANITIZE_SPECIAL_CHARS) ?? [];
         }
 
         if ($this->GetMethod() == 'post') 
         {
-            return filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);
+            return filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS) ?? [];
         }
         return $body;
     }
