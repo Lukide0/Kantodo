@@ -21,6 +21,28 @@ class Data
 
     }
 
+    public static function NotSet(array $data, array $keys)
+    {
+        $notSetKeys = [];
+        foreach ($keys as $key) {
+            if (!isset($data[$key])) 
+            {
+                $notSetKeys[] = $key;
+            }
+        }
+        return $notSetKeys;
+    }
+
+    public static function SetIfNotSet(array &$data, array $keys, $value) 
+    {
+        foreach ($keys as $key) {
+            if (!isset($data[$key])) 
+            {
+                $data[$key] = $value;
+            }
+        }
+    }
+
 }
 
 

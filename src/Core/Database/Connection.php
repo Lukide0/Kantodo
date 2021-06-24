@@ -32,11 +32,7 @@ class Connection
     public static function TryConnect(string $dns, string $username = null, string $password = null)
     {
         try {
-            $con = new PDO($dns, $username, $password, array(
-                PDO::ATTR_PERSISTENT => true,
-                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
-                PDO::MYSQL_ATTR_INIT_COMMAND => "SET CHARACTER SET utf8",
-            ));
+            $con = new PDO($dns, $username, $password);
     
             $errorMode = (Application::$DEBUG_MODE) ? PDO::ERRMODE_EXCEPTION : PDO::ERRMODE_SILENT;
     

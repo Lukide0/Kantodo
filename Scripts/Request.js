@@ -6,15 +6,22 @@ const CONTENT_TYPE = {
     "JSON": "application/json"
 };
 
-function Request(url, method = 'GET', params = {}, contentType = CONTENT_TYPE['FORM']) {
+function Request(url, method = 'GET', params = {}, sentEmpty = false, contentType = CONTENT_TYPE['FORM']) {
     return new Promise(function(resolve, reject) {
         const xhr = new XMLHttpRequest();
     
 
-
-        params = Object.keys(params).filter(key => params[key].length > 0).map(function (key) {
-            return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
-        }).join('&');
+        if (!sentEmpty) 
+        {
+            params = Object.keys(params).filter(key => params[key].length > 0).map(function (key) {
+                return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
+            }).join('&');
+        } else 
+        {
+            params = Object.keys(params).map(function (key) {
+                return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
+            }).join('&');
+        }
         xhr.open(method, url);
         xhr.setRequestHeader("Content-Type", contentType);
         xhr.onload = function() {
