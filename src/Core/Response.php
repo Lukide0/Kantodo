@@ -5,7 +5,10 @@ namespace Kantodo\Core;
 class Response
 {
     const CONTENT_TYPE_JSON = 'application/json';
+    const CONTENT_TYPE_EVENT_STREAM = 'text/event-stream';
 
+
+    const CACHE_NON = 'no-cache';
     protected $responseJSON = [
         'errors' => [],
         'meta' => [],
@@ -22,6 +25,11 @@ class Response
         $url = Application::$URL_PATH . $location;
 
         header("location:$url");
+    }
+
+    public function SetCacheControl(string $cache = self::CACHE_NON) 
+    {
+        header("Cache-Control: $cache");
     }
 
     public function SetContentType(string $type = self::CONTENT_TYPE_JSON) 
@@ -57,6 +65,24 @@ class Response
     public function OutputResponse() 
     {
         echo json_encode($this->responseJSON);
+    }
+    
+    public function ClearResponse() 
+    {
+        $this->responseJSON = [
+            'errors' => [],
+            'meta' => [],
+            'data' => []
+        ];
+    }
+
+    public function FlushResponse() 
+    {
+        $this->OutputResponse();
+        ob_flush();
+        flush();
+
+        $this->ClearResponse();
     }
 }
 

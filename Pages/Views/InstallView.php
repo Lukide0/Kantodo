@@ -216,11 +216,16 @@ class InstallView extends ViewLang
                         if (element.name.length != 0)
                             obj[element.name] = element.value;
                     }
-                    const request = Request(window.location, "POST", obj);
+                    const xhrOBJ = XHR(window.location, "POST", obj);
+                    
 
-                    request.then(res => {
-                        console.log(res);
-                    });
+
+                    xhrOBJ.xhr.onreadystatechange = function () {
+                        console.log('LOADING', xhrOBJ.xhr.responseText); // readyState will be 3
+                    };
+
+                    xhrOBJ.xhr.send(xhrOBJ.params);
+
                 }
 
 
