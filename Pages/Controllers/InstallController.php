@@ -22,10 +22,7 @@ class InstallController extends Controller
 
     private function InstallAction() 
     {
-
-        Application::$APP->response->AddResponseData("Installation started");
-        Application::$APP->response->FlushResponse();
-
+        
         $body = Application::$APP->request->GetBody();
 
 
@@ -41,19 +38,19 @@ class InstallController extends Controller
             Application::$APP->response->OutputResponse();
             exit;
         }
-        Application::$APP->response->AddResponseData("Connection to database");
-        Application::$APP->response->FlushResponse();
-        $connectionStatus = Connection::TryConnect("mysql:host={$body['dbHost']};dbname={$body['dbName']}", $body['dbUser'], $body['dbPass'] ?? "");
 
+        $connectionStatus = Connection::TryConnect("mysql:host={$body['dbHost']};dbname={$body['dbName']}", $body['dbUser'], $body['dbPass'] ?? "");
+        
         if (!$connectionStatus) 
         {
             Application::$APP->response->AddResponseError("Could not connect to database");
             Application::$APP->response->OutputResponse();
-            exit; 
+            exit;
         }
-        
-        Application::$APP->response->AddResponseData("Installation completed");
+
+        Application::$APP->response->SetResponseData(true);
         Application::$APP->response->OutputResponse();
+
     }
 }
 

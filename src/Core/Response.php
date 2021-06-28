@@ -37,27 +37,43 @@ class Response
         header("Content-Type: $type");
     }
 
+    public function AddResponseMeta($key, $value)
+    {
+        if (isset($this->responseJSON['header'][$key])) 
+        {
+            if (is_array($this->responseJSON['header'][$key]))
+                $this->responseJSON['header'][$key][] = $value;
+            else 
+            {
+                $tmp = $this->responseJSON['header'][$key];
+                $this->responseJSON['header'][$key] = [$tmp, $value];
+            }
+        }
+        else
+            $this->responseJSON['header'][$key] = $value;
+    }
+
     public function AddResponseError(string $error) 
     {
         $this->responseJSON['errors'][] = $error;
     }
 
-    public function AddResponseData(string $data) 
+    public function AddResponseData($data) 
     {
         $this->responseJSON['data'][] = $data;
     }
 
-    public function SetResponeMeta($meta) 
+    public function SetResponseMeta($meta) 
     {
         $this->responseJSON['meta'] = $meta;
     }
 
-    public function SetResponeErrors(array $errors) 
+    public function SetResponseErrors(array $errors) 
     {
         $this->responseJSON['errors'] = $errors;
     }
 
-    public function SetResponeData(array $data) 
+    public function SetResponseData($data) 
     {
         $this->responseJSON['data'] = $data;
     }
@@ -82,7 +98,7 @@ class Response
         ob_flush();
         flush();
 
-        $this->ClearResponse();
+        //$this->ClearResponse();
     }
 }
 
