@@ -47,24 +47,23 @@ class Loader
 
         $namespaces = explode("\\", $className);
         $class = array_pop($namespaces);
-
-
+        
         $tmp = "";
         $match = null;
         $skip = 0;
         for ($i=0; $i < count($namespaces); $i++) { 
             $tmp .= $namespaces[$i] . "\\";
-
+            
             if (isset($this->namespaceMap[$tmp])) 
             {   
                 $skip = $i;
                 $match = $this->namespaceMap[$tmp];
             }
         }
-
+        
         unset($tmp);
 
-
+        
         $file = "";
         if ($match != null) 
         {
@@ -72,21 +71,21 @@ class Loader
         } else {
             $file = implode('/', $namespaces);
         }
-
+        
         if (isset($this->classMap[$class])) 
         {
             $class = $this->classMap[$class];
         }
-
+        
         if (strlen($file) == 0)
             return false;
-
+        
         if ($file[strlen($file) - 1] != '/')
-            $file .= '/';
+        $file .= '/';
         
         $file .= $class . ".php";
-
-
+        
+        
         if (!file_exists($file)) 
             return false;
         return $file;
@@ -103,5 +102,32 @@ class Loader
 
 function IncludeFile(string $file) 
 {
-    include $file;
+    require $file;
+}
+
+
+
+class Autoloader
+{
+    public static function GetLoader() 
+    {
+        $loader = new Loader();
+
+        $map = require __DIR__ . '/map_namespaces.php';
+
+        foreach ($map as $alias => $path) {
+            $loader->SetNamespace($alias, $path);
+        }
+
+        $map = require __DIR__ . '/map_classes.php';
+        
+        foreach ($map as $alias => $className) {
+            $loader->SetClass($alias, $className);
+        }
+
+
+        $loader->Register();
+
+        return $loader;
+    }
 }

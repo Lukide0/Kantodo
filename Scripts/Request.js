@@ -12,22 +12,22 @@ function Request(url, method = 'GET', params = {}, sentEmpty = false, contentTyp
         const xhrOBJ = XHR(url, method, params, sentEmpty, contentType);
         xhrOBJ.xhr.onload = function() {
             if (this.status >= 200 && this.status < 300) {
-                resolve(xhr.response);
+                resolve(xhrOBJ.xhr.response);
             } else {
                 reject({
                     status: this.status,
-                    statusText: xhrOBJ.xh.statusText
+                    statusText: xhrOBJ.xhr.statusText
                 });
             }
         };
 
-        xhrOBJ.xh.onerror = function () {
+        xhrOBJ.xhr.onerror = function () {
             reject({
               status: this.status,
-              statusText: xhrOBJ.xh.statusText
+              statusText: xhrOBJ.xhr.statusText
             });
         };
-        xhrOBJ.xh.send(xhrOBJ.params);
+        xhrOBJ.xhr.send(xhrOBJ.params);
     })
 
     

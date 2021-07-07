@@ -14,11 +14,14 @@ class Application
     public static $APP;
     public static $ROOT_DIR;
     public static $PAGES_DIR;
+    public static $MIGRATION_DIR;
     public static $URL_PATH;
     public static $SCRIPT_URL;
     public static $STYLE_URL;
+    public static $DB_TABLE_PREFIX = "";
     public static $LANG = 'en';
     public static $DEBUG_MODE = false;
+    public static $CONFIG_LOADED = false;
     
     /**
      * @var Router
@@ -61,14 +64,24 @@ class Application
 
         self::$URL_PATH = str_replace($_SERVER['DOCUMENT_ROOT'], '',(str_replace("\\",'/',self::$ROOT_DIR)));
         self::$PAGES_DIR = self::$ROOT_DIR . '/Pages';
+        self::$MIGRATION_DIR = self::$ROOT_DIR . '/Migrations';
 
         self::$SCRIPT_URL = self::$URL_PATH . '/Scripts/';
         self::$STYLE_URL = self::$URL_PATH . '/Styles/';
+
         
         $this->request = new Request();
         $this->response = new Response();
         $this->header = new HeaderHTML();
         $this->router = new Router($this->request, $this->response);
+    }
+
+    public function LoadConfig() 
+    {
+        if (self::$CONFIG_LOADED)
+            return;
+
+        include self::$ROOT_DIR . '/config.php';
     }
 
     public function Run()

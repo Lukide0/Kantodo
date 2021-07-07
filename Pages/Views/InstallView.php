@@ -2,6 +2,7 @@
 
 namespace Kantodo\Views;
 
+use Kantodo\Core\Database\Migration\Runner;
 use Kantodo\Core\ViewLang;
 
 class InstallView extends ViewLang
@@ -10,7 +11,11 @@ class InstallView extends ViewLang
     {
         $this->lang->Load("install");
 
-        echo <<<HTML
+        $runner = new Runner();
+
+        $runner->Run("2_0");
+
+        /*echo <<<HTML
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -216,23 +221,15 @@ class InstallView extends ViewLang
                         if (element.name.length != 0)
                             obj[element.name] = element.value;
                     }
-                    const xhrOBJ = XHR(window.location, "POST", obj);
-                    
-
-
-                    xhrOBJ.xhr.onreadystatechange = function () {
-                        console.log('LOADING', xhrOBJ.xhr.responseText); // readyState will be 3
-                    };
-
-                    xhrOBJ.xhr.send(xhrOBJ.params);
-
+                    const request = Request(window.location, "POST", obj);
+                    request.then(response => console.log(response));
                 }
 
 
             </script>
         </body>
         </html>
-HTML;
+HTML;*/
     }
 }
 

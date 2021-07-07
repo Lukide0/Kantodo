@@ -43,6 +43,51 @@ class Data
         }
     }
 
+    public static function IsValidPassword(string $password ,bool $mustContainNumber = false, bool $mustContainSpecialChar = false, bool $mustContainUppercaseChar = false) 
+    {
+        if (strlen($password) == 0 )
+            return false;
+
+        if ($mustContainNumber && !preg_match('[0-9]', $password))
+            return false;
+
+        if ($mustContainSpecialChar && !preg_match('[\W]', $password))
+            return false;
+        
+        if ($mustContainUppercaseChar && !preg_match('[A-Z]', $password))
+            return false;
+        
+        return true;
+
+    }
+
+    public static function HashPassword(string $password, string $salt = '') 
+    {
+        $middle = floor( strlen($salt) / 2 );
+
+        $password = substr($salt, 0, $middle) . $password . substr($salt, $middle);
+
+        return hash('sha256', $password);
+    }
+
+    public static function FormatName(string $name) 
+    {
+        // remove space, tab
+        $name = trim($name);
+        
+        // name contains only spaces or tabs
+        if (strlen($name) == 0)
+            return false;
+        
+        // name contains space
+        if (strpos($name, ' '))
+            return false;
+
+        // first char uppercase
+        $name = ucfirst( strtolower($name) );
+        return $name;
+    }
+
 }
 
 

@@ -2,7 +2,7 @@
 
 use Kantodo\Core\Application;
 
-include_once "loader/load.php";
+include_once "Loader/load.php";
 
 $APP = new Kantodo\Core\Application();
 

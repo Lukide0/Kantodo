@@ -2,11 +2,13 @@
 
 namespace Kantodo\Controllers;
 
-use Kantodo\Core\Application;
-use Kantodo\Core\Controller;
+use Kantodo\Core\{
+    Application,
+    Controller,
+    Database\Connection,
+    Validation\Data
+};
 use Kantodo\Views\InstallView;
-use Kantodo\Core\Database\Connection;
-use Kantodo\Core\Validation\Data;
 
 
 class InstallController extends Controller
@@ -48,9 +50,52 @@ class InstallController extends Controller
             exit;
         }
 
+        // validation
+
+        $adminFirstname = Data::FormatName($body['adminName']);
+        $adminLastname  = Data::FormatName($body['adminSurname']);
+        $adminEmail     = filter_var($body['adminEmail'], FILTER_SANITIZE_EMAIL);
+        $adminPass      = $body['adminPass'];
+
+
+        if ($adminFirstname === false)
+        {
+            Application::$APP->response->AddResponseError("Invalid firstname");
+            Application::$APP->response->OutputResponse();
+            exit;
+        }
+
+        if ($adminLastname === false)
+        {
+            Application::$APP->response->AddResponseError("Invalid lastname");
+            Application::$APP->response->OutputResponse();
+            exit;
+        }
+
+
+        if (!filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) 
+        {
+            Application::$APP->response->AddResponseError("Invalid email");
+            Application::$APP->response->OutputResponse();
+            exit;
+        }
+
+        if (!Data::IsValidPassword($adminPass)) 
+        {
+            Application::$APP->response->AddResponseError("Invalid password");
+            Application::$APP->response->OutputResponse();
+            exit; 
+        }
+
+        $adminPassHash = Data::HashPassword($adminPass, $adminEmail);
+
+        // insert to admin to db       
+
+
+
+
         Application::$APP->response->SetResponseData(true);
         Application::$APP->response->OutputResponse();
-
     }
 }
 

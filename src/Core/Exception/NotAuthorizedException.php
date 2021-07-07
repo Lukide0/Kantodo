@@ -2,9 +2,8 @@
 
 namespace Kantodo\Core\Exception;
 
-use Exception;
 
-class NotAuthorizedException extends Exception {
+class NotAuthorizedException extends KantodoException {
     public $code = 401;
 }
 
