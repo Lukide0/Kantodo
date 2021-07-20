@@ -6,8 +6,8 @@ use \InvalidArgumentException;
 
 abstract class Layout 
 {
-    public abstract function Render(string $content = "", array $params = []);
-    public function RenderView(string $view, array $params = []) 
+    public abstract function render(string $content = "", array $params = []);
+    public function renderView(string $view, array $params = []) 
     {
         if (!class_exists($view)) 
         {
@@ -24,10 +24,10 @@ abstract class Layout
         }
 
         ob_start();
-        $viewInstance->Render($params);
+        $viewInstance->render($params);
         $viewHTML = ob_get_clean();
 
-        $this->Render($viewHTML, $params);
+        $this->render($viewHTML, $params);
     }
 }
 

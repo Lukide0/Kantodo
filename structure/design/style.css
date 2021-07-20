@@ -61,6 +61,7 @@
 
     /* PADDING / MARGIN */
     --gap-small: 0.5rem;
+    --gap-regular: 0.75rem;
     --gap-medium: 1rem;
     --gap-big: 1.5rem;
     --gap-huge: 1.75rem;

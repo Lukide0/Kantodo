@@ -45,7 +45,7 @@ class Blueprint
     ];
     
     const ACTION_NON = 'RESTRICT';
-    const ACTION_AFFECT_CHILDREN = 'CASCADE';
+    const ACTION_AFFECT = 'CASCADE';
     const ACTION_SET_NULL = 'SET NULL';
 
     
@@ -77,16 +77,35 @@ class Blueprint
      *
      * @return  self 
      */
-    public function AddColumn(string $column, string $type, array $options = [])
+    public function addColumn(string $column, string $type, array $options = [])
     {
 
-        if ($this->ColumnExits($column))
+        if ($this->columnExits($column))
             throw new ColumnException("Column `$column` already exists in table `{$this->tableName}`");
 
         $type = strtoupper($type);
 
         if (!in_array($type, self::VALID_DATA_TYPES))
             throw new ColumnException("Column data type `$type` is not supported");
+
+        switch ($type) {
+            case 'BOOL':
+                $type = "TINYINT(1)";
+                break;
+            case 'TINYINT':
+            case 'SMALLINT':
+            case 'MEDIUMINT':
+            case 'INT':
+            case 'BIGINT':
+                break;
+            case 'VARCHAR':
+                $options['length'] = 255;
+                $options['unsigned'] = false;
+            default:
+                $options['unsigned'] = false;
+                break;
+        }
+
 
         $this->columns[$column] = [
             'type' => $type,
@@ -116,9 +135,9 @@ class Blueprint
      * @return  self 
      * 
      */
-    public function ModifyColumn(string $column, string $type, array $options = []) 
+    public function modifyColumn(string $column, string $type, array $options = []) 
     {
-        if (!$this->ColumnExits($column))
+        if (!$this->columnExits($column))
             throw new ColumnException("Column `$column` doesn't exists in table `{$this->tableName}`");
         
         $type = strtoupper($type);
@@ -138,32 +157,32 @@ class Blueprint
     }
 
 
-    public function RemoveColumn(string $column)
+    public function removeColumn(string $column)
     {
-        if (!$this->ColumnExits($column))
+        if (!$this->columnExits($column))
             throw new ColumnException("Column `$column` doesn't exists in table `{$this->tableName}`");
         
         
             
-        $this->RemoveAllKeys($column);
+        $this->removeAllKeys($column);
         unset($this->columns[$column]);
 
         return true;
     }
 
-    public function RemoveAllKeys(string $column) 
+    public function removeAllKeys(string $column) 
     {
-        if (!$this->ColumnExits($column))
+        if (!$this->columnExits($column))
             throw new ColumnException("Column `$column` doesn't exists in table `{$this->tableName}`");
         
-        $this->RemovePrimaryKey($column);
-        $this->RemoveForeignKey($column);
-        $this->RemoveUnique($column);
+        $this->removePrimaryKey($column);
+        $this->removeForeignKey($column);
+        $this->removeUnique($column);
     }
 
-    public function AddPrimaryKey(string $column) 
+    public function addPrimaryKey(string $column) 
     {
-        if (!$this->ColumnExits($column))
+        if (!$this->columnExits($column))
             throw new ColumnException("Column `$column` doesn't exists in table `{$this->tableName}`");
         
         // column is primary key
@@ -175,9 +194,9 @@ class Blueprint
         return true;
     }
 
-    public function RemovePrimaryKey(string $column) 
+    public function removePrimaryKey(string $column) 
     {
-        if (!$this->ColumnExits($column))
+        if (!$this->columnExits($column))
             throw new ColumnException("Column `$column` doesn't exists in table `{$this->tableName}`");
         
         // column is not primary key
@@ -189,7 +208,7 @@ class Blueprint
         return true;
     }
 
-    public function AddUnique(array $columns) 
+    public function addUnique(array $columns) 
     {
         sort($columns);
 
@@ -201,7 +220,7 @@ class Blueprint
         $this->unique[] = $key;
     }
 
-    public function RemoveUnique($columns)
+    public function removeUnique($columns)
     {
         if (is_array($columns)) 
         {
@@ -250,20 +269,29 @@ class Blueprint
      * @throws ColumnException When column or reference column doesn't exists
      * @throws ForeignKeyException When foreign key already exists
      */
-    public function AddForeignKey(string $column, Blueprint $reference, string $referenceColumn, string $onDelete = self::ACTION_NON, string $onUpdate = self::ACTION_NON) 
+    public function addForeignKey(string $column, Blueprint $reference, string $referenceColumn, string $onDelete = self::ACTION_NON, string $onUpdate = self::ACTION_NON) 
     {
-        if (!$this->ColumnExits($column))
+        if (!$this->columnExits($column))
             throw new ColumnException("Column `$column` doesn't exists in table `{$this->tableName}`");
         
-        if (!$reference->ColumnExits($referenceColumn))
-            throw new ColumnException("Column `$referenceColumn` doesn't exists in table `{$reference->GetName()}`");
+        if (!$reference->columnExits($referenceColumn))
+            throw new ColumnException("Column `$referenceColumn` doesn't exists in table `{$reference->getName()}`");
 
         if (isset($this->foreign[$column]))
             return false;
         
+        $columnDataType = $this->getColumn($column);
+        $referenceDataType = $reference->getColumn($referenceColumn);
+
+        if ($columnDataType['type'] != $referenceDataType['type'] OR 
+            $columnDataType['length'] != $referenceDataType['length'] OR 
+            $columnDataType['unsigned'] != $referenceDataType['unsigned'])
+            throw new ColumnException("Column {$column} must have same data type as reference column {$reference} in table {$reference->getName()}.");
+
+
         $this->foreign[$column] = [
-            'key' => "FK_{$reference->GetFullName()}{$referenceColumn}",
-            'table' => $reference->GetFullName(),
+            'key' => "FK_{$this->getFullName()}_{$reference->getFullName()}_{$referenceColumn}",
+            'table' => $reference->getFullName(),
             'column' => $referenceColumn,
             'onDelete' => $onDelete,
             'onUpdate' => $onUpdate
@@ -272,9 +300,9 @@ class Blueprint
         return true;
     }
 
-    public function RemoveForeignKey(string $column)
+    public function removeForeignKey(string $column)
     {
-        if (!$this->ColumnExits($column))
+        if (!$this->columnExits($column))
             throw new ColumnException("Column `$column` doesn't exists in table `{$this->tableName}`");
         
         if (!isset($this->foreign[$column]))
@@ -285,12 +313,12 @@ class Blueprint
         return true;
     }
 
-    public function GetColumn(string $name) 
+    public function getColumn(string $name) 
     {
-        return $this->columns[$name] ?? false;
+        return $this->columns[$name];
     }
 
-    public function ColumnExits(string $column) 
+    public function columnExits(string $column) 
     {
         return isset($this->columns[$column]);
 
@@ -301,32 +329,32 @@ class Blueprint
      *
      * @return  string  table name
      */
-    public function GetName() 
+    public function getName() 
     {
         return $this->tableName;
     }
 
-    public function GetPrefix()
+    public function getPrefix()
     {
         return $this->prefix;
     }
 
-    public function GetFullName() 
+    public function getFullName() 
     {
         return $this->prefix . $this->tableName;
     }
 
-    public function GetColumns() 
+    public function getColumns() 
     {
         return $this->columns;
     }
 
-    public function GetPrimaryKeys() 
+    public function getPrimaryKeys() 
     {
         return $this->primary;
     }
 
-    public function GetUniqueKeys(bool $formated = false) 
+    public function getUniqueKeys(bool $formated = false) 
     {
         if ($formated)
             return array_map(function($key)
@@ -337,7 +365,7 @@ class Blueprint
         return $this->unique;
     }
 
-    public function GetForeignKeys() 
+    public function getForeignKeys() 
     {
         return $this->foreign;
     }
@@ -355,7 +383,7 @@ class Blueprint
      * @see GetColumn
      * @return  array  table detail (see above)
      */
-    public function Get() 
+    public function get() 
     {
         return [
             'table' => $this->tableName,
@@ -375,7 +403,7 @@ class Blueprint
      *
      * @return  array            array of changes
      */
-    public static function CompareColumn(array $original, array $modified)
+    public static function compareColumn(array $original, array $modified)
     {
         $changes = [];
 
@@ -396,7 +424,7 @@ class Blueprint
      * 
      * @throws ColumnException When is not set primary key
      */
-    public function CreateTableSQL()
+    public function createTableSQL()
     {
         if (count($this->columns) == 0) 
             throw new TableException("Table `{$this->tableName}` has 0 columns");
@@ -406,19 +434,15 @@ class Blueprint
 
         $sqlColumns = [];
         foreach ($this->columns as $columnName => $columnOptions) {            
-            $sqlColumns[] = self::ColumnToSQL($columnName, $columnOptions);
+            $sqlColumns[] = self::columnToSQL($columnName, $columnOptions);
         }
 
         $sqlKeys = array();
-        $sqlKeys[] = "PRIMARY KEY (" . implode(",",
-                                                    array_map(function($key){ return "`{$key}`"; },
-                                                            $this->primary
-                                                    )
-                                            ) . ")";
+        $sqlKeys[] = "PRIMARY KEY (" . implode(",",array_map([$this,"GetStringInBackticks"], $this->primary)) . ")";
         foreach ($this->unique as $key) {
             $keys = explode(";", $key);
-            $keysString = implode(',', $keys);
-            $keyName = "UN_" . implode("_", $keys);
+            $keysString = implode(',', array_map([$this, "GetStringInBackticks"], $keys));
+            $keyName = "`UN_" . implode("_", $keys) . "`";
 
             $sqlKeys[] = "CONSTRAINT {$keyName} UNIQUE ({$keysString})";
         }
@@ -427,11 +451,16 @@ class Blueprint
             $sqlKeys[] = "CONSTRAINT `{$foreign['key']}` FOREIGN KEY (`{$column}`) REFERENCES {$foreign['table']}(`{$foreign['column']}`) ON DELETE {$foreign['onDelete']} ON UPDATE {$foreign['onUpdate']}";
         }
 
-        $sql = "CREATE TABLE {$this->GetFullName()} (\n" . implode(",\n",$sqlColumns) . "," . implode(",", $sqlKeys) . ") ENGINE = INNODB DEFAULT CHARSET=utf8;";
+        $sql = "CREATE TABLE {$this->getFullName()} (\n" . implode(",\n",$sqlColumns) . ",\n\t" . implode(",\n\t", $sqlKeys) . ") ENGINE = INNODB DEFAULT CHARSET=utf8;";
         return $sql;
     }
 
-    public static function ColumnToSQL(string $column, array $opt) 
+    public static function getStringInBackticks(string $s) 
+    {
+        return "`{$s}`";
+    }
+
+    public static function columnToSQL(string $column, array $opt) 
     {
         $sqlColumn = "  `{$column}` {$opt['type']}";
 
@@ -453,7 +482,7 @@ class Blueprint
         return $sqlColumn;
     }
 
-    public function IsValid() 
+    public function isValid() 
     {
         if (count($this->columns) == 0) 
             return false;

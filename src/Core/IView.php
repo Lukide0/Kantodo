@@ -3,7 +3,7 @@ namespace Kantodo\Core;
 
 interface IView
 {
-    public function Render(array $params = []);
+    public function render(array $params = []);
 }
 
 

@@ -5,40 +5,41 @@ namespace Kantodo\Core;
 
 class Lang
 {
-    private $json = [];
-    private $default = 'en.json';
+    private $data = [];
+    private $default = "en";
 
-    public function Load(string $group = 'global'):bool
+    public function load(string $group = 'global'):bool
     {
-        $path = Application::$ROOT_DIR . "/Lang/";
-
+        $path = Application::$ROOT_DIR . "/Lang";
         $lang = Application::$LANG;
+
         $status = true;
 
-        if (!file_exists($path . $lang . '.json')) 
+        if (!file_exists("{$path}/{$lang}")) 
         {
             $lang = $this->default;
             $status = false;
         }
 
-        $text = file_get_contents($path . $lang . '.json');
-        $json = @json_decode($text, true);
+        if (!file_exists("{$path}/{$lang}/{$group}.php")) 
+        {
+            $group = 'global';
+            $status = false;
+        }
 
-        if (!$json)
-            return false;
-        
-        if (!isset($json[$group]))
-            return false;
-        
-        $this->json = array_merge($json['global'],$json[$group]);
+        if (isset($this->data[$group]))
+            return $status;
+
+
+        $this->data[$group] = include "{$path}/{$lang}/{$group}.php";
 
         return $status;
+
     }
 
-    public function Get(string $name) 
+    public function get(string $name, string $group = "global") 
     {
-        return $this->json[$name] ?? "";
-
+        return $this->data[$group][$name] ?? "";
     }
 }
 

@@ -8,13 +8,13 @@ class HeaderHTML
     private $scripts = array();
     private $title = 'Kantodo';
 
-    public function RegisterStyle(string $url, string $media = 'all') 
+    public function registerStyle(string $url, string $media = 'all') 
     {
         $this->styles[] = ['url' => $url, 'media' => $media];
     }
 
 
-    public function RegisterScript(string $url, bool $defer = false, bool $async = false, string $type = '') 
+    public function registerScript(string $url, bool $defer = false, bool $async = false, string $type = '') 
     {
 
         $this->scripts[] = [
@@ -25,22 +25,22 @@ class HeaderHTML
         ];
     }
 
-    public function SetTitle(string $title)
+    public function setTitle(string $title)
     {
         $this->title = $title;
     }
 
-    public function GetStyles() 
+    public function getStyles() 
     {
         return $this->styles;
     }
 
-    public function GetScripts() 
+    public function getScripts() 
     {
         return $this->scripts;
     }
 
-    public function GetContent() 
+    public function getContent() 
     {
         $header = '';
 

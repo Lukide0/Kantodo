@@ -2,12 +2,13 @@
 
 namespace Kantodo\Core\Validation;
 
+use Kantodo\Core\Application;
 
 class Data
 {
     private function __construct() { }
 
-    public static function Empty(array $data, array $keys) 
+    public static function empty(array $data, array $keys) 
     {
         $emptyKeys = [];
         foreach ($keys as $key) {
@@ -21,7 +22,18 @@ class Data
 
     }
 
-    public static function NotSet(array $data, array $keys)
+    public static function isEmpty(array $data, array $keys) 
+    {
+        foreach ($keys as $key) {
+            if (empty($data[$key]))
+                return true;
+        }
+
+        return false;
+
+
+    }
+    public static function notSet(array $data, array $keys)
     {
         $notSetKeys = [];
         foreach ($keys as $key) {
@@ -33,7 +45,7 @@ class Data
         return $notSetKeys;
     }
 
-    public static function SetIfNotSet(array &$data, array $keys, $value) 
+    public static function setIfNotSet(array &$data, array $keys, $value) 
     {
         foreach ($keys as $key) {
             if (!isset($data[$key])) 
@@ -43,25 +55,39 @@ class Data
         }
     }
 
-    public static function IsValidPassword(string $password ,bool $mustContainNumber = false, bool $mustContainSpecialChar = false, bool $mustContainUppercaseChar = false) 
+    public static function fillEmpty(array &$data, array $keys, $value) 
+    {
+        foreach ($keys as $key) {
+            if (empty($data[$key])) 
+            {
+                $data[$key] = $value;
+            }
+        }
+    }
+
+    public static function isValidPassword(string $password ,bool $mustContainNumber = false, bool $mustContainSpecialChar = false, bool $mustContainUppercaseChar = false) 
     {
         if (strlen($password) == 0 )
             return false;
 
-        if ($mustContainNumber && !preg_match('[0-9]', $password))
+        if ($mustContainNumber && !preg_match('/[0-9]/', $password))
             return false;
 
-        if ($mustContainSpecialChar && !preg_match('[\W]', $password))
+        if ($mustContainSpecialChar && !preg_match('/[`!@#$%^&*()_+\-=\[\]{};\':\"\\|,.<>\/?~]/', $password))
             return false;
         
-        if ($mustContainUppercaseChar && !preg_match('[A-Z]', $password))
+        if ($mustContainUppercaseChar && !preg_match('/[A-Z]/', $password))
             return false;
-        
         return true;
 
     }
 
-    public static function HashPassword(string $password, string $salt = '') 
+    public static function isValidEmail(string $email)
+    {
+        return filter_var($email, FILTER_VALIDATE_EMAIL);
+    }
+
+    public static function hashPassword(string $password, string $salt = '') 
     {
         $middle = floor( strlen($salt) / 2 );
 
@@ -70,7 +96,7 @@ class Data
         return hash('sha256', $password);
     }
 
-    public static function FormatName(string $name) 
+    public static function formatName(string $name) 
     {
         // remove space, tab
         $name = trim($name);
@@ -86,6 +112,19 @@ class Data
         // first char uppercase
         $name = ucfirst( strtolower($name) );
         return $name;
+    }
+
+    public static function isURLExternal(string $url)
+    {
+        $link = parse_url($url);
+        $home = parse_url($_SERVER['HTTP_HOST']);
+        if (empty($link['host'])) 
+            return false;
+
+        if ($link['host'] == $home['host'])
+            return false;
+
+        return true;
     }
 
 }

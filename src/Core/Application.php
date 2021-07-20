@@ -2,15 +2,22 @@
 
 namespace Kantodo\Core;
 
+use DateTime;
+use Kantodo\Core\Database\Connection;
+use Kantodo\Models\UserModel;
 
 class Application
 {
-    const EVERYONE = 0;
-    const GUEST = 1;
-    const USER = 2;
-    const TEAM_ADMIN = 3;
-    const ADMIN = 4;
-    
+    // roles
+    const GUEST = 0;
+    const USER = 1;
+    const ADMIN = 2;
+
+    // errors
+
+    const ERROR_NOT_AUTHORIZED = 401; // 401
+    const ERROR_NOT_FOUND = 404; // 404
+
     public static $APP;
     public static $ROOT_DIR;
     public static $PAGES_DIR;
@@ -22,7 +29,7 @@ class Application
     public static $LANG = 'en';
     public static $DEBUG_MODE = false;
     public static $CONFIG_LOADED = false;
-    
+    public static $INSTALLING = false;
     /**
      * @var Router
      */
@@ -43,10 +50,17 @@ class Application
      * @var Controller
      */
     public $controller;
-    
+    /**
+     * @var Lang
+     */
+    public $lang;
+    /**
+     * @var Session
+     */
+    public $session;
     
     private $eventListeners = array();
-    private $userRole = self::EVERYONE;
+    private $userRole = NULL;
     
     public function __construct() 
     {
@@ -73,29 +87,60 @@ class Application
         $this->request = new Request();
         $this->response = new Response();
         $this->header = new HeaderHTML();
+        $this->session = new Session();
         $this->router = new Router($this->request, $this->response);
+        $this->lang = new Lang();
+
+        $this->lang->load();
     }
 
-    public function LoadConfig() 
+    public static function debugMode(bool $enable = true) 
+    {
+        // application
+        self::$DEBUG_MODE = $enable;
+
+        // datable
+        if (self::$CONFIG_LOADED)
+            Connection::debugMode();
+        
+    }
+
+    public function loadConfig() 
     {
         if (self::$CONFIG_LOADED)
             return;
 
         include self::$ROOT_DIR . '/config.php';
+        self::$CONFIG_LOADED = true;
+        self::$DB_TABLE_PREFIX = DB_TABLE_PREFIX;
     }
 
-    public function Run()
+    public static function overrideConfig(array $constants) 
     {
-        $this->lang->Load();
-        $this->router->Resolve();
+        $content = "";
+
+        foreach ($constants as $key => $value) {
+            $content .= "define(\"{$key}\", {$value});\n";
+        }
+
+        $content = "<?php\n {$content}\n?>";
+
+        file_put_contents(self::$ROOT_DIR . '/config.php', $content);
+
     }
 
-    public function On($eventName, $callback) 
+    public function run()
+    {
+        $this->loadConfig();
+        $this->router->resolve();
+    }
+
+    public function on($eventName, $callback) 
     {
         $this->eventListeners[$eventName][] = $callback;
     }
 
-    public function Trigger($eventName) 
+    public function trigger($eventName) 
     {
         $callbacks = $this->eventListeners[$eventName] ?? [];
 
@@ -104,30 +149,21 @@ class Application
         }
     }
 
-    public static function GetRole() 
+    public static function getRole() 
     {
-
-        if (self::$APP->userRole != self::EVERYONE)
+        if (self::$APP->userRole !== NULL)
             return self::$APP->userRole;
-
-        self::$APP->userRole = self::GUEST;
-
-        if (empty($_SESSION) OR
-            empty($_SESSION['userID']) OR
-            empty($_SESSION['exp']))
+        
+        if (!Auth::isLogged()) 
         {
+            self::$APP->userRole = self::GUEST;
             return self::GUEST;
         }
-
-        if ($_SESSION['exp'] <= time()) return self::GUEST;
-
-
-        // DB user EXISTS
-        self::$APP->userRole = self::USER;
-        return self::USER;
+    
+        return self::$APP->userRole = self::$APP->session->get("role", Application::GUEST);
     }
 
-    public static function ConfigExits() 
+    public static function configExits() 
     {
         return file_exists(self::$ROOT_DIR . '/config.php');
     }

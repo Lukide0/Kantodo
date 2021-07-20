@@ -2,5 +2,5 @@
 
 require_once __DIR__ . '/Loader.php';
 
-return Autoloader::GetLoader();
+return Autoloader::getLoader();
 ?>

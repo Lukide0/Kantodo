@@ -61,7 +61,7 @@ class Window {
             head.onmousedown = mouseDownListener;
             head.onmouseup =  mouseUpListener;
         } else {
-            head.onmousedown = null;
+            head.onmousedown = NULL;
 
         }
         
@@ -75,7 +75,7 @@ class Window {
         }
 
         function mouseUpListener() {
-            self.__element.onmousemove = null;
+            self.__element.onmousemove = NULL;
             self.__element.style.zIndex = 10;
         }
 

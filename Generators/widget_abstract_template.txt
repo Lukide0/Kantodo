@@ -1,0 +1,18 @@
+<?php 
+
+
+namespace Kantodo\Widgets;
+
+use Kantodo\Core\AbstractWidget;
+
+class {{NAME}} extends AbstractWidget
+{
+    public function GetHTML()
+    {
+
+    }
+}
+
+
+
+?>

@@ -6,7 +6,7 @@ use Kantodo\Core\IView;
 
 class HomeView implements IView
 {
-    public function Render(array $params = [])
+    public function render(array $params = [])
     {
         
     }

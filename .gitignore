@@ -1,6 +1,7 @@
 .vscode/
 .htaccess
 *.wsd
+*.pyc
 
 !security/*.wsd
 /Tests

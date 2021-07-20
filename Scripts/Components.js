@@ -12,10 +12,9 @@ function switchPasswordVisibility(e) {
 
 function switchInputDisable(parent, disable = true){
     let els = parent.getElementsByTagName("input");
-    console.log(disable);
+
     for (let index = 0; index < els.length; index++) {
         let el = els[index];
-        console.log(el);
         el.disabled = disable;
     }
 }
@@ -30,7 +29,6 @@ function setAttributeToElements(queryString, attribute, value) {
     });
 
 }
-
 
 function removeAttributeToElements(queryString, attribute) {
 

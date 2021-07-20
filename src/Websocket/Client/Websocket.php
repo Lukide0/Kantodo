@@ -5,11 +5,11 @@ namespace Kantodo\Websocket\Client;
 
 class Websocket
 {
-    private string $host;
-    private string $address;
-    private float $timeout = 10;
+    private $host;
+    private $address;
+    private $timeout = 10;
     private $ctx;
-    private $streamSocket = null;
+    private $streamSocket = NULL;
 
     public function __construct(string $host, int $port = 80, bool $ssl = false, float $timeout = 10) {
         $this->address = ($ssl ? 'ssl://' : '') . $host . ':' . $port;
@@ -17,15 +17,15 @@ class Websocket
         $this->timeout = $timeout;
     }
 
-    public function Connect(string $path = '/') : bool
+    public function connect(string $path = '/') : bool
     {
-        $errorCode = null;
+        $errorCode = NULL;
         $this->ctx = stream_context_create();
         $this->streamSocket = stream_socket_client($this->address, $errorCode, $errorMsg, $this->timeout, STREAM_CLIENT_CONNECT);
 
-        if ($errorCode != null) return false;
+        if ($errorCode != NULL) return false;
 
-        $key=base64_encode(openssl_random_pseudo_bytes(16));
+        $key = base64_encode(openssl_random_pseudo_bytes(16));
 
         $header = "GET " . $path . " HTTP/1.1\r\n"
             ."Host: {$this->host}\r\n"
@@ -47,12 +47,12 @@ class Websocket
         return stripos($response, ' 101 ') && stripos($response, 'Sec-WebSocket-Accept: ');
     }
 
-    public function Disconnect()
+    public function disconnect()
     {
-        if ($this->streamSocket != null) fclose($this->streamSocket);
+        if ($this->streamSocket != NULL) fclose($this->streamSocket);
     }
 
-    public function Send(string $message)
+    public function send(string $message)
     {
         $header = "";
         if(strlen($message)<126) $header.=chr(0x80 | strlen($message));
@@ -70,7 +70,7 @@ class Websocket
         return fwrite($this->streamSocket,$header.$message);
     }
 
-    public function Read()
+    public function read()
     {
         $data = "";
 
@@ -136,7 +136,7 @@ class Websocket
             //close
             if ($opcode == 8) 
             {
-                $this->Disconnect();
+                $this->disconnect();
                 return;
             }
 

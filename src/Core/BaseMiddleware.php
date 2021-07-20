@@ -5,7 +5,7 @@ namespace Kantodo\Core;
 
 abstract class BaseMiddleware
 {
-    public abstract function Execute();
+    public abstract function execute();
 }
 
 

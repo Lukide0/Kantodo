@@ -2,7 +2,10 @@
 
 namespace Kantodo\Core;
 
-use Closure;
+use Exception;
+use Kantodo\Core\Exception\KantodoException;
+use Kantodo\Core\Exception\NotAuthorizedException;
+use Kantodo\Core\Exception\NotFoundException;
 
 class Router
 {
@@ -13,8 +16,7 @@ class Router
         'post' => []
     ];
     
-    protected $notFoundRoute = false;
-    protected $errorHandler = null;
+    protected $errorHandlers = [];
     protected $response;
    
 
@@ -24,78 +26,45 @@ class Router
         $this->response = $res;
     }
 
-    public function Get(string $path, $callback, array $access = [0])
+    public function get(string $path, $callback, int $access = Application::GUEST, bool $strict = false)
     {
-        $this->routes['get'][$path] =  ['callback' => $callback, 'access' => $access];
+        $this->routes['get'][$path] =  ['callback' => $callback, 'access' => $access, 'strict' => $strict ];
     }
 
-    public function Post(string $path, $callback, array $access = [0])
+    public function post(string $path, $callback, int $access = Application::GUEST, bool $strict = false)
     {
-        $this->routes['post'][$path] = ['callback' => $callback, 'access' => $access];
+        $this->routes['post'][$path] = ['callback' => $callback, 'access' => $access, 'strict' => $strict];
     }
 
-    public function NotFound($callback)
+    public final function registerErrorCodeHandler(int $code, $callback)
     {
-        $this->notFoundRoute = $callback;
+        $this->errorHandlers["{$code}"] = $callback;
     }
 
-    public function SetErrorHandler($callback)
+    public final function handleErrorCode(int $code, array $params = []) 
+    {
+        if (isset($this->errorHandlers["{$code}"]))
+        {
+            call_user_func_array($this->errorHandlers["{$code}"], $params);
+            return;
+        }
+        http_response_code($code);
+    }
+
+    public function setErrorHandler($callback)
     {
         $this->errorHandler = $callback;
     }
 
-    public function Resolve()
+    public function resolve()
     {
-        $path = $this->request->GetPath();
-        $method = $this->request->GetMethod();
-
-        $callback = $this->routes[$method][$path] ?? false;
-
-        if ($callback === false) 
-        {
-            if ($this->notFoundRoute !== false)
-                call_user_func($this->notFoundRoute);
-            
-            $this->response->SetStatusCode(404);
-            exit;
-        }
-
-        if (is_array($callback['callback'])) 
-        {
-            $classMethod = $callback['callback'][1];
-
-            /**
-             * @var Controller
-             */
-            $controller = new $callback['callback'][0];
-
-            $controller->action = $classMethod;
-            $controller->access = $callback['access'];
-
-            Application::$APP->controller = $controller;
-
-            try {
-                $controller->ExecuteAllMiddlewares();
-            } catch (\Throwable $th) {
-                if ($this->errorHandler) 
-                {
-                    call_user_func($this->errorHandler, $th);
-                }
-                http_response_code($th->getCode());
-                return;
-            }
-
-
-            call_user_func([$controller, $classMethod]);
-            return;
-        }
-
-
-        call_user_func($callback['callback'], $this->request, $this->response);
+        $path = $this->request->getPath();
+        $method = $this->request->getMethod();
+        $this->runPath($path, $method);
     }
 
 
-    public function Run($callback, array $access = [Application::EVERYONE], array $params = []) 
+    public function run($callback, array $params = []) 
     {
         if (is_array($callback)) 
         {
@@ -103,12 +72,10 @@ class Router
             $controller = new $callback[0];
 
             $controller->action = $classMethod;
-            $controller->access = $access;
-
             Application::$APP->controller = $controller;
 
             try {
-                $controller->ExecuteAllMiddlewares();
+                $controller->executeAllMiddlewares();
             } catch (\Throwable $th) {
                 if ($this->errorHandler) 
                 {
@@ -117,13 +84,55 @@ class Router
                 http_response_code($th->getCode());
                 exit;
             }
-
-
             call_user_func_array([$controller, $classMethod], $params);
             return;
         }
 
         call_user_func_array($callback, $params);
+    }
+
+    public function runPath(string $path, string $method = Request::METHOD_GET)
+    {
+        $callback = $this->routes[$method][$path] ?? false;
+
+        if ($callback === false) 
+        {
+            $this->handleErrorCode(Application::ERROR_NOT_FOUND);
+            return;
+        }
+        if (is_array($callback['callback'])) 
+        {
+            $classMethod = $callback['callback'][1];
+            
+            /**
+             * @var Controller
+             */
+            $controller = new $callback['callback'][0];
+            
+            $controller->action = $classMethod;
+            $controller->access = $callback['access'];
+            
+            if (!$controller->hasAccess($callback['strict'])) 
+            {
+                $this->handleErrorCode(Application::ERROR_NOT_AUTHORIZED, [$callback['access'], Application::getRole(), $callback['strict']]);
+                return;
+            }
+            
+
+            Application::$APP->controller = $controller;
+
+            try {
+                $controller->executeAllMiddlewares();
+            } catch (KantodoException $ex) {
+                $controller->handleMiddlewareError($ex);
+                return;
+            }
+
+
+            call_user_func([$controller, $classMethod]);
+            return;
+        }
+        call_user_func($callback['callback'], $this->request, $this->response);
     }
 }
 

@@ -15,29 +15,30 @@ class Response
         'data' => []
     ];
 
-    public function SetStatusCode(int $code)
+    public function setStatusCode(int $code)
     {
         http_response_code($code);
     }
 
-    public function SetLocation(string $location = '/') 
+    public function setLocation(string $location = '/', bool $external = false) 
     {
-        $url = Application::$URL_PATH . $location;
+        if (!$external)
+            $url = Application::$URL_PATH . $location;
 
         header("location:$url");
     }
 
-    public function SetCacheControl(string $cache = self::CACHE_NON) 
+    public function setCacheControl(string $cache = self::CACHE_NON) 
     {
         header("Cache-Control: $cache");
     }
 
-    public function SetContentType(string $type = self::CONTENT_TYPE_JSON) 
+    public function setContentType(string $type = self::CONTENT_TYPE_JSON) 
     {
         header("Content-Type: $type");
     }
 
-    public function AddResponseMeta($key, $value)
+    public function addResponseMeta($key, $value)
     {
         if (isset($this->responseJSON['header'][$key])) 
         {
@@ -53,37 +54,37 @@ class Response
             $this->responseJSON['header'][$key] = $value;
     }
 
-    public function AddResponseError(string $error) 
+    public function addResponseError(string $error) 
     {
         $this->responseJSON['errors'][] = $error;
     }
 
-    public function AddResponseData($data) 
+    public function addResponseData($data) 
     {
         $this->responseJSON['data'][] = $data;
     }
 
-    public function SetResponseMeta($meta) 
+    public function setResponseMeta($meta) 
     {
         $this->responseJSON['meta'] = $meta;
     }
 
-    public function SetResponseErrors(array $errors) 
+    public function setResponseErrors(array $errors) 
     {
         $this->responseJSON['errors'] = $errors;
     }
 
-    public function SetResponseData($data) 
+    public function setResponseData($data) 
     {
         $this->responseJSON['data'] = $data;
     }
 
-    public function OutputResponse() 
+    public function outputResponse() 
     {
         echo json_encode($this->responseJSON);
     }
     
-    public function ClearResponse() 
+    public function clearResponse() 
     {
         $this->responseJSON = [
             'errors' => [],
@@ -92,13 +93,13 @@ class Response
         ];
     }
 
-    public function FlushResponse() 
+    public function flushResponse() 
     {
-        $this->OutputResponse();
+        $this->outputResponse();
         ob_flush();
         flush();
 
-        //$this->ClearResponse();
+        //$this->clearResponse();
     }
 }
 

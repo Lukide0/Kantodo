@@ -2,20 +2,18 @@
 
 namespace Kantodo\Views;
 
+use Kantodo\Core\Application;
 use Kantodo\Core\Database\Migration\Runner;
-use Kantodo\Core\ViewLang;
+use Kantodo\Core\IView;
 
-class InstallView extends ViewLang
+class InstallView implements IView
 {
-    public function Render(array $params = [])
+    public function render(array $params = [])
     {
-        $this->lang->Load("install");
+        $lang = Application::$APP->lang;
+        $lang->load("install");
 
-        $runner = new Runner();
-
-        $runner->Run("2_0");
-
-        /*echo <<<HTML
+        ?>
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -29,6 +27,7 @@ class InstallView extends ViewLang
             <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
             <script src="Scripts/Components.js"></script>
             <script src="Scripts/Request.js"></script>
+            <script src="Scripts/Validation.js"></script>
             <title>Install</title>
         </head>
         <body>
@@ -57,21 +56,21 @@ class InstallView extends ViewLang
                                         <input type="text" name="dbName" required>
                                         <span>DB Name</span>
                                     </label>
-                                    <span class="description">{$this->lang->Get("database-name-desc")}</span>
+                                    <span class="description"><?= $lang->get("database-name-desc", "install") ?></span>
                                 </div>
                                 <div class="row main-space-between cross-baseline">
                                     <label class="text info-focus col-4">
                                         <input type="text" name="dbHost" required>
                                         <span>DB Host</span>
                                     </label>
-                                    <span class="description">{$this->lang->Get("database-host-desc")}</span>
+                                    <span class="description"><?= $lang->get("database-host-desc", "install")?></span>
                                 </div>
                                 <div class="row main-space-between cross-baseline">
                                     <label class="text info-focus col-4">
                                         <input type="text" name="dbUser" required>
                                         <span>DB User</span>
                                     </label>
-                                    <span class="description">{$this->lang->Get("database-user-desc")}</span>
+                                    <span class="description"><?= $lang->get("database-user-desc", "install")?></span>
                                 </div>
                                 <div class="row main-space-between cross-baseline">
                                     <label class="text info-focus col-4 input-open">
@@ -80,14 +79,14 @@ class InstallView extends ViewLang
                                         <div class="input-close"><span class="material-icons-outlined" data-show="false" onclick="switchPasswordVisibility(event)">visibility</span></div>
                                         <span>DB Password</span>
                                     </label>
-                                    <span class="description">{$this->lang->Get("database-pass-desc")}</span>
+                                    <span class="description"><?= $lang->get("database-pass-desc", "install")?></span>
                                 </div>
                                 <div class="row main-space-between cross-baseline">
                                     <label class="text info-focus col-4">
                                         <input type="text" value="todo_" name="dbPrefix" required>
                                         <span>DB Prefix</span>
                                     </label>
-                                    <span class="description">{$this->lang->Get("database-prefix-desc")}</span>
+                                    <span class="description"><?= $lang->get("database-prefix-desc", "install")?></span>
                                 </div>
                             </div>
                         </div>
@@ -98,16 +97,16 @@ class InstallView extends ViewLang
                                     <div class="container">
                                         <label class="text info-focus">
                                             <input type="text" name="adminName" required>
-                                            <span>{$this->lang->Get("firstname")}</span>
+                                            <span><?= $lang->get("first-name")?></span>
                                         </label>
                                         <div class="error-text"></div>
                                     </div>
                                     <div class="container" style="margin-left: var(--gap-huge)">
                                         <label class="text info-focus">
                                             <input type="text" name="adminSurname" required>
-                                            <span>{$this->lang->Get("lastname")}</span>
+                                            <span><?= $lang->get("last-name")?></span>
                                         </label>
-                                        <div class="error-text">A</div>
+                                        <div class="error-text"></div>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -122,20 +121,20 @@ class InstallView extends ViewLang
                                 <div class="row">
                                     <div class="container">
                                         <label class="text info-focus input-open">
-                                            <input type="password" name="adminPass" required>
-                                            <span>{$this->lang->Get("password")}</span>
+                                            <input type="password" name="adminPass" data-password-validation="passwordValidation" required>
+                                            <span><?= $lang->get("password")?></span>
                                             <div class="input-close"><span class="material-icons-outlined" data-show="false" onclick="switchPasswordVisibility(event)">visibility</span></div>
                                         </label>
                                         <div class="error-text"></div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <ul class="requirements">
-                                        <li class="success">At least 8 characters</li>
-                                        <li>One lowercase character</li>
-                                        <li>One uppercase character</li>
-                                        <li class="error">One number</li>
-                                        <li>One special character</li>
+                                    <ul class="requirements" data-password-requirements='adminPass'>
+                                        <li data-error='MIN_LENGTH'>At least 8 characters</li>
+                                        <li data-error='LOWERCASE_CHAR_COUNT'>One lowercase character</li>
+                                        <li data-error='UPPERCASE_CHAR_COUNT'>One uppercase character</li>
+                                        <li data-error='NUMBERS_COUNT'>One number</li>
+                                        <li data-error='SPECIAL_CHARS_COUNT'>One special character</li>
                                     </ul>
                                 </div>
                             </div>
@@ -148,8 +147,8 @@ class InstallView extends ViewLang
                         </div>
                     </form>
                     <div class="row main-space-around">
-                        <button id="previusPageBtn" disabled>{$this->lang->Get("back")}</button>
-                        <button id="nextPageBtn" class="info">{$this->lang->Get("next")}</button>
+                        <button id="previusPageBtn" disabled><?= $lang->get("back")?></button>
+                        <button id="nextPageBtn" class="info"><?= $lang->get("next")?></button>
                     </div>
                     </div>
             </main>
@@ -222,14 +221,45 @@ class InstallView extends ViewLang
                             obj[element.name] = element.value;
                     }
                     const request = Request(window.location, "POST", obj);
-                    request.then(response => console.log(response));
+                    request.then(response => {
+                        console.log(response)
+                        if (response.status)
+                            location.reload();
+                    });
                 }
 
+                function passwordValidation(event, obj) {
+                    let el = event.target;
+                    let value = el.value;
 
+                    let errors = validatePassword(value, {'min': 8, 'lowercase': 1, 'uppercase': 1, 'number': 1, 'specialChar': 1});
+                    
+                    for (let i = 0; i < obj.parent.children.length; i++) {
+                        const el = obj.parent.children[i];
+                        el.classList.remove("error");
+                        el.classList.add("success");
+                    }
+
+
+                    if (errors.length == 0)
+                        return true;
+                    
+                    errors.forEach(error => {
+                        if (obj.hasOwnProperty(error)) 
+                        {
+                            let el = obj[error];
+
+                            el.classList.add("error");
+                        }
+                    });
+
+                    
+                    return false;
+                }
             </script>
         </body>
         </html>
-HTML;*/
+    <?php
     }
 }
 

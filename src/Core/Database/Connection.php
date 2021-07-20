@@ -2,26 +2,55 @@
 
 namespace Kantodo\Core\Database;
 
+use InvalidArgumentException;
 use Kantodo\Core\Application;
 use Kantodo\Core\Exception\ConfigException;
+use Kantodo\Core\Singleton;
 use PDO;
 
 class Connection
 {
-    //Singleton pattern
+
+    private static $instance = NULL;
 
     /**
-     * @var \PDO
+     * @return PDO
      */
-    private static $instance = null;
-    public static function GetInstance() 
+    public static function getInstance() 
     {
-        if (self::$instance == null)
-            return self::$instance = new Connection();
+        if (self::$instance == NULL)
+            new self();
         return self::$instance;
     }
+    private function __clone() { }
+    
+    
+    private final function __construct()
+    {
+        if (!Application::$CONFIG_LOADED && Application::$INSTALLING == false)
+            throw new ConfigException("Config is not loaded");
+            
+            $dns = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME;
+            
+            $con = new PDO($dns, DB_USER, DB_PASS, array(
+                PDO::ATTR_PERSISTENT => true,
+                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
+                PDO::MYSQL_ATTR_INIT_COMMAND => "SET CHARACTER SET utf8",
+            ));
+            
+        $errorMode = (Application::$DEBUG_MODE) ? PDO::ERRMODE_EXCEPTION : PDO::ERRMODE_SILENT;        
+        $con->setAttribute(PDO::ATTR_ERRMODE, $errorMode);
+        self::$instance = $con;
+        
+    }
 
-    public static function TryConnect(string $dns, string $username = null, string $password = null)
+    public static function debugMode(bool $enable = true) 
+    {
+        $errorMode = ($enable) ? PDO::ERRMODE_EXCEPTION : PDO::ERRMODE_SILENT;
+        self::getInstance()->setAttribute(PDO::ATTR_ERRMODE, $errorMode);
+    }
+    
+    public static function tryConnect(string $dns, string $username = NULL, string $password = NULL)
     {
         try {
             $con = new PDO($dns, $username, $password);
@@ -35,58 +64,47 @@ class Connection
         
         return true;
     }
-    
-    /**
-     * @var \PDO
-     */
-    protected $con;
-    
-    private final function __construct()
+    public static function runInTransaction($queries, array $data = [])
     {
-        if (!Application::$CONFIG_LOADED)
-            throw new ConfigException("Config is not loaded");
-
-        $dns = "mysql:host=" . DB_HOST . ";dbname=" . DB_TABLE;
         
+        if (is_string($queries))
+            $queries = [$queries];
+        
+        if (!is_array($queries))
+            throw new InvalidArgumentException("Parameter \$queries is not string|array.");
+        
+        $errorMode = (Application::$DEBUG_MODE) ? PDO::ERRMODE_EXCEPTION : PDO::ERRMODE_SILENT;
+        $con = self::getInstance();
+
+        if ($errorMode != PDO::ERRMODE_EXCEPTION)
+            $con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
         try {
-            $this->con = new PDO($dns, DB_USER, DB_PASS, array(
-                PDO::ATTR_PERSISTENT => true,
-                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
-                PDO::MYSQL_ATTR_INIT_COMMAND => "SET CHARACTER SET utf8",
-            ));
-    
-            $errorMode = (Application::$DEBUG_MODE) ? PDO::ERRMODE_EXCEPTION : PDO::ERRMODE_SILENT;
-    
-            $this->con->setAttribute(PDO::ATTR_ERRMODE, $errorMode);
+            $con->beginTransaction();
+            
+            foreach ($queries as $query) {
+                $pdoStatement = $con->prepare($query);
+                $pdoStatement->execute($data);
+            }
+
+            $con->commit();
+
+            if ($errorMode != PDO::ERRMODE_EXCEPTION)
+                $con->setAttribute(PDO::ATTR_ERRMODE, $errorMode);
+
+
         } catch (\Throwable $th) {
-           $this->con = null;
+            if ($errorMode != PDO::ERRMODE_EXCEPTION)
+                $con->setAttribute(PDO::ATTR_ERRMODE, $errorMode);
+            $con->rollBack();
+            throw $th;
         }
-
-        self::$instance = $this->con;
     }
 
-    public static function RunInTransaction($callback)
+    public static function formatTableName(string $table) 
     {
-        self::$instance->beginTransaction();
-        
-        $commit = call_user_func($callback);
-        
-        if ($commit) 
-        {
-            self::$instance->commit();
-            return true;
-        }
-
-        self::$instance->rollBack();
-        return false;
-
+        return Application::$DB_TABLE_PREFIX . $table;
     }
-
-    public function GetConnection() 
-    {
-        return $this->con;
-    }
-
 }
 
 

@@ -10,6 +10,7 @@ use Kantodo\Core\Database\Migration\Exception\MigrationException;
 class Runner
 {
     private $version = NULL;
+    private $installVersion = NULL;
     /**
      * @var Schema
      */
@@ -19,18 +20,18 @@ class Runner
     const MIG_STAY = 0;
 
     public function __construct() {
-        $this->version = $this->GetCurrentVersion();
-        $this->schema = AbstractMigration::LoadSchema();
+        $this->version = $this->getCurrentVersion() ?? $this->getInstallVersion();
+        $this->schema = AbstractMigration::loadSchema();
     }
 
-    public function Run(string $version)
+    public function run(string $version)
     {
-        $mode = $this->CompareVersions($this->version, $version);
+        $mode = $this->compareVersions($this->version, $version);
 
         if ($mode == self::MIG_STAY)
             return;
 
-        $versions = $this->GetAllVersions();
+        $versions = $this->getAllVersions();
 
         uksort($versions, [$this, "CompareVersions"]);
 
@@ -73,10 +74,10 @@ class Runner
                  * @var Migration
                  */
                 $instance = new $mig($this->schema);
-                $instance->Down($this->schema);
+                $instance->down($this->schema);
             }
-            $con = Connection::GetInstance();
-            return $this->schema->GetSQL();
+            
+            Connection::runInTransaction($this->schema->getQueries());
         }
 
         if ($mode == self::MIG_UP) 
@@ -88,27 +89,41 @@ class Runner
                  * @var Migration
                  */
                 $instance = new $mig($this->schema);
-                $instance->Up($this->schema);
+                $instance->up($this->schema);
             }
-            $con = Connection::GetInstance();
-            return $this->schema->GetSQL();
+            Connection::runInTransaction($this->schema->getQueries());
         }
+
+        $this->updateConfigVersion($version);
     }
 
-    public function GetCurrentVersion() 
+    public function getCurrentVersion() 
     {
         if (!file_exists(Application::$MIGRATION_DIR . "/config.json"))
             throw new MigrationException("Config does not exist");
 
-        if ($this->version !== null)
+        if ($this->version !== NULL)
             return $this->version;
 
         $json = json_decode(file_get_contents(Application::$MIGRATION_DIR . "/config.json"), true);
-
+        $this->installVersion = str_replace(".", "_", $json['install_version']);
         return $this->version = str_replace(".", "_", $json['version']);
     }
 
-    public function GetAllVersions() 
+    public function getInstallVersion() 
+    {
+        if (!file_exists(Application::$MIGRATION_DIR . "/config.json"))
+            throw new MigrationException("Config does not exist");
+
+        if ($this->installVersion !== NULL)
+            return $this->installVersion;
+
+        $json = json_decode(file_get_contents(Application::$MIGRATION_DIR . "/config.json"), true);
+
+        return $this->installVersion = str_replace(".", "_", $json['install_version']);
+    }
+
+    public function getAllVersions() 
     {
         $pattern = Application::$MIGRATION_DIR . "/Versions/Version_*.php";
         $valid = [];
@@ -122,7 +137,16 @@ class Runner
         return $valid;
     }
 
-    public function CompareVersions(string $a, string $b)
+    public function updateConfigVersion(string $version) 
+    {
+        $json = json_decode(file_get_contents(Application::$MIGRATION_DIR . "/config.json"), true);
+        $json['version'] = str_replace("_", ".", $version);
+
+        file_put_contents(Application::$MIGRATION_DIR . "/config.json",json_encode($json, JSON_PRETTY_PRINT));
+
+    }
+
+    public function compareVersions(string $a, string $b)
     {
         $a = explode("_", $a);
         $b = explode("_", $b);

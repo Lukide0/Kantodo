@@ -21,64 +21,64 @@ class Schema
         $this->prefix = $prefix;
     }
 
-    public function Create(string $table, Closure $closure)
+    public function create(string $table, Closure $closure)
     {
-        if ($this->HasTable($table))
+        if ($this->hasTable($table))
             throw new SchemaException("Table `{$table}` already exists");
 
         $this->tables[$table] = $blueprint = new Blueprint($table, $this->prefix);
 
-        call_user_func($closure, $blueprint);
+        call_user_func($closure, $blueprint, $this);
 
         try {
-            $this->queries[] = $blueprint->CreateTableSQL();
+            $this->queries[] = $blueprint->createTableSQL();
         } catch (ColumnException $cE) {
             throw new ColumnException($cE->getMessage());
         }
     }
     
     
-    public function Modify(string $table, Closure $callback)
+    public function modify(string $table, Closure $callback)
     {
-        if (!$this->HasTable($table))
+        if (!$this->hasTable($table))
             throw new SchemaException("Table `{$table}` doesn't exists");
 
         $modified = clone $this->tables[$table];
         call_user_func($callback, $modified);
 
 
-        $changes = self::Compare($this->tables[$table], $modified);
+        $changes = self::compare($this->tables[$table], $modified);
         
 
         $this->tables[$table] = $modified;
-        $this->queries[] = $changes->GetChangesAsSQL();        
+        $this->queries[] = $changes->getChangesAsSQL();        
     }
 
-    public static function Compare(Blueprint $original, Blueprint $modified) 
+    public static function compare(Blueprint $original, Blueprint $modified) 
     {
         return new TableChanges($original, $modified);
     }
     
     
-    public function Drop(string $table)
+    public function drop(string $table)
     {
-        if (!$this->HasTable($table))
+        if (!$this->hasTable($table))
             throw new SchemaException("Table `{$table}` doesn't exists");
         
-        $this->queries[] = "DROP TABLE {$this->FormatTableName($table)};";
+        $this->queries[] = "DROP TABLE {$this->formatTableName($table)};";
         unset($this->tables[$table]);
     }
     
     
-    public function Rename(string $from, string $to)
+    public function rename(string $from, string $to)
     {
-        if (!$this->HasTable($from))
+        if (!$this->hasTable($from))
             throw new SchemaException("Table `{$from}` doesn't exists");
 
-        if ($this->HasTable($to))
+        if ($this->hasTable($to))
             throw new SchemaException("Can't rename table from `{$from}` to `{$to}` because table `{$to}` exists");
 
-        $this->queries[] = "RENAME TABLE {$this->FormatTableName($from)} TO {$this->FormatTableName($to)}";
+        $this->queries[] = "RENAME TABLE {$this->formatTableName($from)} TO {$this->formatTableName($to)}";
 
         // rename key
         $this->tables[$to] = $this->tables[$from];
@@ -86,27 +86,37 @@ class Schema
 
     }
 
-    public function GetQueries() 
+    public function getQueries() 
     {
         return $this->queries;
     }
 
-    public function GetSQL()
+    public function getSQL()
     {
         return implode("\n",$this->queries);
     }
 
-    public function HasTable(string $table)
+    public function hasTable(string $table)
     {
         return isset($this->tables[$table]);
     }
 
-    public function HasColumn(string $table, string $column)
+    public function getTable(string $table) 
     {
-        return $this->HasTable($table) && $this->tables[$table]->ColumnExits($column);
+        return $this->tables[$table];
+    }
+
+    public function hasColumn(string $table, string $column)
+    {
+        return $this->hasTable($table) && $this->tables[$table]->columnExits($column);
+    }
+
+    public function getTablesNames() 
+    {
+        return array_keys($this->tables);
     }
     
-    public function FormatTableName(string $table) 
+    public function formatTableName(string $table) 
     {
         return $this->prefix . $table;
     }

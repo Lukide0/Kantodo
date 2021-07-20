@@ -1,21 +1,31 @@
 <?php 
 
-namespace Kantodo\Views\Layouts;
+namespace Kantodo\Views;
 
-use Kantodo\Core\Layout;
+use Kantodo\Core\Application;
+use Kantodo\Core\IView;
+use Kantodo\Widgets\Form;
+use Kantodo\Widgets\Input;
 
-
-class AuthLayout extends Layout
+class AuthView implements IView
 {
-    public function Render(string $content = "", array $params = [])
+    public function render(array $params = [])
     {
         $authType = (isset($params['type']) && $params['type'] == 'register') ? 'right' : '';
+        $fromURL = (isset($params['path'])) ? "?path=" . urlencode($params['path']) : "";
+        $appUrl = Application::$URL_PATH;
 
-        echo <<<HTML
+        $signInAction = "{$appUrl}/auth/sign-in{$fromURL}";
+        $registerForm = new Form();
+
+        $email = Application::$APP->session->getFlashMessage("userEmail", "");
+        $errors = Application::$APP->session->getFlashMessage("signInErrors", []);
+
+        ?>
         <!DOCTYPE html>
         <html lang="en">
-            <head>
-                <meta charset="UTF-8">
+        <head>
+            <meta charset="UTF-8">
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <link rel="stylesheet" href="Styles/flex.css">
@@ -23,6 +33,7 @@ class AuthLayout extends Layout
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet">
             <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
             <script src="Scripts/Components.js"></script>
+            <script src="Scripts/Validation.js"></script>
             <title>Přihlášení</title>
             <style>
                 body {
@@ -45,7 +56,7 @@ class AuthLayout extends Layout
                     height: 100%;
                     display: flex;
                     clip-path: polygon(0 0, 50% 0, 40% 100%, 0 100%);
-                    transition: clip-path 500ms ease-in;
+                    transition: clip-path 400ms ease-in-out;
                     background: var(--bg-third);
                 }
                 
@@ -53,11 +64,11 @@ class AuthLayout extends Layout
                     clip-path: polygon(40% 0, 100% 0, 100% 100%, 50% 100%);
                 }
                 
-                main>div.container {
+                main > div.container {
                     padding: var(--gap-huge);
                 }
                 
-                .container>.row {
+                form > .row {
                     margin-bottom: var(--gap-huge);
                 }
                 
@@ -76,31 +87,26 @@ class AuthLayout extends Layout
             <header>
                 <h1>Kantodo</h1>
             </header>
-            <main class="main-space-between {$authType}">
+            <main class="main-space-between <?= $authType; ?>">
                 <div class="col-5 container main-center">
                     <h2>Welcome back</h2>
-                    <div class="row main-center">
-                        <label class="text info-focus">
-                            <input type="text" required>
-                            <span>Email</span>
-                        </label>
-                        <div class="error-text"></div>
-                    </div>
-                    <div class="row main-center">
-                        <label class="text info-focus">
-                            <input type="password" required>
-                            <span>Heslo</span>
-                        </label>
-                        <div class="error-text"></div>
-                    </div>
-                    <div class="row main-center">
-                        <button class="info long">Sign in</button>
-                    </div>
-                    <div class="row main-center">
-                        <button class="text flat"
-                            onclick="(function() { let x = document.getElementsByTagName('main')[0]; x.classList.add('right'); switchInputDisable(x.querySelector('div'));  switchInputDisable(document.querySelector('main > div:nth-child(2)'), false)})()">Create
-                            account</button>
-                    </div>
+                    <?= Form::start($signInAction); ?>
+                        <?= Form::tokenCSRF(); ?>
+                        <div class="row main-center">
+                            <?= Input::text("signInEmail", "Email", $email, $errors); ?>
+                        </div>
+                        <div class="row main-center">
+                            <?= Input::password("signInPassword", "Password", "", $errors, [], Input::AUTOCOMPLETE_CURRENT_PASSWORD); ?>
+                        </div>
+                        <div class="row main-center">
+                            <button class="info long">Sign in</button>
+                        </div>
+                        <div class="row main-center">
+                            <button class="text flat"
+                                onclick="(function() { let x = document.getElementsByTagName('main')[0]; x.classList.add('right'); switchInputDisable(x.querySelector('div'));  switchInputDisable(document.querySelector('main > div:nth-child(2)'), false)})()">Create
+                                account</button>
+                        </div>
+                    <?= Form::end(); ?>
                 </div>
                 <div class="col-5 container main-center">
                     <h2>Welcome to Kantodo</h2>
@@ -128,7 +134,7 @@ class AuthLayout extends Layout
                     <div class="row">
                         <div class="container">
                             <label class="text info-focus input-open">
-                                <input type="password" disabled required>
+                                <input type="password" name="registerPassword" data-password-validation="PasswordValidation" disabled required>
                                 <span>Heslo</span>
                                 <div class="input-close"><span class="material-icons-outlined" data-show="false" onclick="switchPasswordVisibility(event)">visibility</span></div>
                             </label>
@@ -136,12 +142,12 @@ class AuthLayout extends Layout
                         </div>
                     </div>
                     <div class="row">
-                        <ul class="requirements">
-                            <li class="success">At least 8 characters</li>
-                            <li>One lowercase character</li>
-                            <li>One uppercase character</li>
-                            <li class="error">One number</li>
-                            <li>One special character</li>
+                        <ul class="requirements" data-password-requirements='registerPassword'>
+                            <li data-error="MIN_LENGTH">At least 8 characters</li>
+                            <li data-error='LOWERCASE_CHAR_COUNT'>One lowercase character</li>
+                            <li data-error='UPPERCASE_CHAR_COUNT'>One uppercase character</li>
+                            <li data-error='NUMBERS_COUNT'>One number</li>
+                            <li data-error='SPECIAL_CHARS_COUNT'>One special character</li>
                         </ul>
                     </div>
                     <div class="row main-center">
@@ -155,14 +161,40 @@ class AuthLayout extends Layout
                 </div>
                 </div>
             </main>
+            <script>
+                function passwordValidation(event, obj) {
+                    let el = event.target;
+                    let value = el.value;
+
+                    let errors = validatePassword(value, {'min': 8, 'lowercase': 1, 'uppercase': 1, 'number': 1, 'specialChar': 1});
+                    for (let i = 0; i < obj.parent.children.length; i++) {
+                        const el = obj.parent.children[i];
+                        el.classList.remove("error");
+                        el.classList.add("success");
+                    }
+
+
+                    if (errors.length == 0)
+                        return true;
+                    
+                    errors.forEach(error => {
+                        if (obj.hasOwnProperty(error)) 
+                        {
+                            let el = obj[error];
+
+                            el.classList.add("error");
+                        }
+                    });
+
+                    
+                    return false;
+                }
+            </script>
         </body>
         </html>
-HTML;
-
-        
+    <?php
     }
 }
-
 
 
 ?>

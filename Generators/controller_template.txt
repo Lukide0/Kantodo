@@ -1,0 +1,15 @@
+<?php 
+
+
+namespace Kantodo\Controllers;
+
+use Kantodo\Core\Controller;
+
+class {{NAME}}Controller extends Controller
+{
+
+}
+
+
+
+?>

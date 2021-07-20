@@ -14,9 +14,6 @@ namespace Kantodo\Team\Board;
 
 use InvalidArgumentException;
 
-$LEXORANK = new Lexorank();
-
-
 class Lexorank
 {    
     
@@ -63,14 +60,14 @@ class Lexorank
     }
 
     /**
-     * Generate lexorank
+     * Generate rank
      *
      * @param   string  $previus  
      * @param   string  $next     
      *
      * @return  string|false  return false on not enough space between 2 lexoranks
      */
-    public function Generate(string $previus = NULL, string $next = NULL)
+    public function generate(string $previus = NULL, string $next = NULL)
     {
         // $before is not set
         if (strlen($previus) == 0 || $previus === NULL) 
@@ -90,8 +87,8 @@ class Lexorank
             if ($index > $this->RANK_SIZE) 
                 return false;
             
-            $before = $this->GetBlock($previus, $index, $this->MIN);
-            $after = $this->GetBlock($next, $index, $this->MAX);
+            $before = $this->getBlock($previus, $index, $this->MIN);
+            $after = $this->getBlock($next, $index, $this->MAX);
 
 
             if ($before === $next) 
@@ -101,7 +98,7 @@ class Lexorank
                 continue;
             }
 
-            $middle = $this->GetMiddle($before, $after);
+            $middle = $this->getMiddle($before, $after);
 
             if ($middle === $before OR $middle === $after) 
             {
@@ -128,7 +125,7 @@ class Lexorank
      *
      * @return  string block
      */
-    public function GetBlock(string $str, int $index, string $defaultChar)
+    public function getBlock(string $str, int $index, string $defaultChar)
     {
         $block = "";
         $strlen = strlen($str);
@@ -153,7 +150,7 @@ class Lexorank
      *
      * @return  int        normalized ascii numeric code
      */
-    public function Normalize(string $char)
+    public function normalize(string $char)
     {
         $ascii = ord($char);
         
@@ -174,7 +171,7 @@ class Lexorank
      * 
      * @return  int
      */
-    public function BlockToNumber(string $block)
+    public function blockToNumber(string $block)
     {
         /*
            ╭──────╮
@@ -216,11 +213,11 @@ class Lexorank
         
         for ($i = 0; $i < $this->BLOCK_SIZE - 1; $i++) 
         {
-            $tmp = ( $this->Normalize( $block[$i] ) - 1 ) * pow($this->COMB_COUNT, $this->BLOCK_SIZE - 1 - $i);
+            $tmp = ( $this->normalize( $block[$i] ) - 1 ) * pow($this->COMB_COUNT, $this->BLOCK_SIZE - 1 - $i);
             $num += $tmp;
         }
         
-        $num += $this->Normalize($block[$this->BLOCK_SIZE - 1]);
+        $num += $this->normalize($block[$this->BLOCK_SIZE - 1]);
         
         return $num;
     }
@@ -232,7 +229,7 @@ class Lexorank
      *
      * @return  string block
      */
-    public function NumberToBlock(int $number)
+    public function numberToBlock(int $number)
     {
         $block = "";
 
@@ -268,15 +265,15 @@ class Lexorank
      *
      * @return  string  
      */
-    public function GetMiddle(string $blockBefore, string $blockAfter) 
+    public function getMiddle(string $blockBefore, string $blockAfter) 
     {
-        $blockBeforeNum = $this->BlockToNumber($blockBefore);
-        $blockAfterNum = $this->BlockToNumber($blockAfter);
+        $blockBeforeNum = $this->blockToNumber($blockBefore);
+        $blockAfterNum = $this->blockToNumber($blockAfter);
 
         if ($blockBefore === $this->MIN_VALUE AND $blockAfter === $this->MAX_VALUE)
         {
             $middle = floor( ($blockBeforeNum + $blockAfterNum) / 2 );
-            return $this->NumberToBlock($middle);
+            return $this->numberToBlock($middle);
         }
 
         if ($blockBefore === $this->MIN_VALUE) 
@@ -296,7 +293,7 @@ class Lexorank
 
             $middle = $blockAfterNum - $tmpJump;
 
-            return $this->NumberToBlock($middle);
+            return $this->numberToBlock($middle);
         }
 
         $tmpJump = $this->JUMP;
@@ -314,10 +311,11 @@ class Lexorank
 
         $middle = $blockBeforeNum + $tmpJump;
 
-        return $this->NumberToBlock($middle);
+        return $this->numberToBlock($middle);
 
 
     }
     
 }
+
 ?>

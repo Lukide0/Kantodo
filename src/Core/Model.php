@@ -2,23 +2,19 @@
 
 namespace Kantodo\Core;
 
-class Model
+use Kantodo\Core\Database\Connection;
+
+abstract class Model
 {
-    protected $values = [];
-
-    public function Get(string $name)
-    {
-        return $this->values[$name] ?? null; 
-    }
-
-    public function Set(string $name, mixed $value) 
-    {
-        $this->values[$name] = $value;
+    protected $con;
+    protected $table;
+    private function __clone() { }
+    
+    public function __construct() {
+        $this->con = Connection::getInstance();
     }
 }
 
 
 
 ?>
-
-

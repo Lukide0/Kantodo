@@ -2,37 +2,59 @@
 
 namespace Kantodo\Core;
 
+
 use InvalidArgumentException;
+use Kantodo\Core\Exception\KantodoException;
+use Kantodo\Core\Exception\NotAuthorizedException;
 
 abstract class Controller
 {
 
     public $action = '';
-    public $access = [];
+    public $access = Application::GUEST;
+    public $middlewareErrorHandlers = [];
 
     /**
      * @var BaseMiddleware[]
      */
     protected $middlewares = [];
 
-    public function RegisterMiddleware(BaseMiddleware $bm) 
+    public final function registerMiddleware(BaseMiddleware $bm) 
     {
         $this->middlewares[] = $bm;
     }
 
-    public function ExecuteAllMiddlewares() 
+    public final function executeAllMiddlewares() 
     {
         foreach ($this->middlewares as $middleware) {
-            $middleware->Execute();
+            $middleware->execute();
         }
     }
 
-    public function RenderView(string $class, array $params = [], string $layout = null)
+    public final function registerMiddlewareErrorHandler(string $errorName, $callback)
+    {
+        $this->middlewareErrorHandlers[$errorName] = $callback;
+    }
+
+    public final function handleMiddlewareError(KantodoException $exception) 
+    {
+        $errorName = get_class($exception);
+
+        if (isset($this->middlewareErrorHandlers[$errorName])) 
+        {
+            call_user_func($this->middlewareErrorHandlers[$errorName], $exception);
+            return;
+        }
+
+        http_response_code($exception->getCode());
+    }
+
+    public final function renderView(string $class, array $params = [], string $layout = NULL)
     {
 
-        if ($layout == null) 
+        if ($layout == NULL) 
         {
-            call_user_func_array([new $class, 'Render'], $params);
+            call_user_func([new $class, 'Render'], $params);
             return;
         }
 
@@ -51,10 +73,10 @@ abstract class Controller
         }
 
 
-        $layoutInstance->RenderView($class, $params);
+        $layoutInstance->renderView($class, $params);
     }
 
-    public function RenderLayout(string $layout, array $params = []) 
+    public final function renderLayout(string $layout, array $params = []) 
     {
         if (!class_exists($layout)) 
         {
@@ -71,8 +93,27 @@ abstract class Controller
         }
 
 
-        $layoutInstance->Render("", $params);
+        $layoutInstance->render("", $params);
 
+    }
+
+    public final function hasAccess(bool $strict = false)
+    {
+        $role = Application::getRole();
+
+        if ($strict) 
+        {
+            if ($role !== $this->access) 
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        if ($role < $this->access)
+            return false;
+        return true;
     }
 }
 

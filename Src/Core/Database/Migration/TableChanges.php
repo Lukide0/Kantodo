@@ -19,15 +19,15 @@ class TableChanges
         $this->orig = $original;
         $this->mod = $modified;
 
-        $this->FindChanges();
+        $this->findChanges();
     }
 
-    public function GetChanges()
+    public function getChanges()
     {
         return ['remove' => $this->remove, 'update' => $this->update, 'add' => $this->add];
     }
 
-    public function GetChangesAsSQL() 
+    public function getChangesAsSQL() 
     {
         if ($this->sql != NULL)
             return $this->sql;
@@ -35,11 +35,11 @@ class TableChanges
         $tmpSQL = "";
         
         // rename table
-        $table = $this->orig->GetFullName();
+        $table = $this->orig->getFullName();
         if (!empty($this->update['tableName'])) 
         {
-            $tmpSQL .= "RENAME TABLE {$table} TO {$this->mod->GetFullName()}";
-            $table  = $this->mod->GetFullName();
+            $tmpSQL .= "RENAME TABLE {$table} TO {$this->mod->getFullName()}";
+            $table  = $this->mod->getFullName();
         }
         
         // drop foreign keys
@@ -95,7 +95,7 @@ class TableChanges
             $tmpSQL .= "ALTER TABLE {$table}";
 
             foreach ($this->update['columns'] as $columnName => $opt) {
-                $columnSQL = Blueprint::ColumnToSQL($columnName, $opt);
+                $columnSQL = Blueprint::columnToSQL($columnName, $opt);
                 $tmpSQL .= " MODIFY COLUMN {$columnSQL},";
             }
 
@@ -110,7 +110,7 @@ class TableChanges
             $tmpSQL .= "ALTER TABLE {$table}";
 
             foreach ($this->add['columns'] as $name => $opt) {
-                $columnSQL = Blueprint::ColumnToSQL($name, $opt);
+                $columnSQL = Blueprint::columnToSQL($name, $opt);
                 $tmpSQL .= " ADD COLUMN {$columnSQL},";
             }
 
@@ -148,49 +148,49 @@ class TableChanges
         return $this->sql = $tmpSQL;
     }
 
-    private function FindChanges() 
+    private function findChanges() 
     {
-        if (!$this->orig->IsValid()) 
-            throw new TableException("Table `{$this->orig->GetName()}` is not valid");
+        if (!$this->orig->isValid()) 
+            throw new TableException("Table `{$this->orig->getName()}` is not valid");
 
-        if (!$this->mod->IsValid())
-            throw new TableException("Table `{$this->mod->GetName()}` is not valid");
+        if (!$this->mod->isValid())
+            throw new TableException("Table `{$this->mod->getName()}` is not valid");
 
         // name
         $rename = false;
 
-        if ($this->orig->GetName() != $this->mod->GetName()) 
+        if ($this->orig->getName() != $this->mod->getName()) 
             $rename = true;
         
         // prefix
-        if ($this->orig->GetPrefix() != $this->mod->GetPrefix() OR $rename === true) 
+        if ($this->orig->getPrefix() != $this->mod->getPrefix() OR $rename === true) 
         {
-            $this->update['tableName'] = $this->mod->GetFullName();
+            $this->update['tableName'] = $this->mod->getFullName();
         }
         
         // columns
         $matches = 0;
-        foreach ($this->orig->GetColumns() as $columnName => $options) 
+        foreach ($this->orig->getColumns() as $columnName => $options) 
         {
-            if (!$this->mod->ColumnExits($columnName)) 
+            if (!$this->mod->columnExits($columnName)) 
             {
                 $this->remove['columns'][] = $columnName;
                 continue;
             }
             
-            $changes = Blueprint::CompareColumn($options, $this->mod->GetColumn($columnName));
+            $changes = Blueprint::compareColumn($options, $this->mod->getColumn($columnName));
             
             
             $matches++;
             if (count($changes) == 0)
                 continue;
             
-            $this->update['columns'][$columnName] = $this->mod->GetColumn($columnName);
+            $this->update['columns'][$columnName] = $this->mod->getColumn($columnName);
         }
 
-        if ($matches != count($this->mod->GetColumns())) 
+        if ($matches != count($this->mod->getColumns())) 
         {
-            foreach ($this->mod->GetColumns() as $columnName => $options) 
+            foreach ($this->mod->getColumns() as $columnName => $options) 
             {
                 $this->add['columns'][$columnName] = $options;
             }
@@ -199,30 +199,30 @@ class TableChanges
 
         // primary keys
 
-        $primaryOrig = $this->orig->GetPrimaryKeys();
-        $primaryMod = $this->mod->GetPrimaryKeys();
+        $primaryOrig = $this->orig->getPrimaryKeys();
+        $primaryMod = $this->mod->getPrimaryKeys();
 
         $diff = array_diff($primaryMod, $primaryOrig);
         if (count($diff) != 0)
             $this->update['primary'] = $primaryMod;
 
-        $primaryOrig = $primaryMod = null;
+        $primaryOrig = $primaryMod = NULL;
 
 
 
         // unique keys
-        $uniqueOrig = $this->orig->GetUniqueKeys();
-        $uniqueMod = $this->mod->GetUniqueKeys();
+        $uniqueOrig = $this->orig->getUniqueKeys();
+        $uniqueMod = $this->mod->getUniqueKeys();
 
 
         $this->remove['unique'] = array_diff($uniqueOrig, $uniqueMod);
         $this->add['unique'] = array_diff($uniqueMod, $uniqueOrig);
 
-        $uniqueOrig = $uniqueMod = null;
+        $uniqueOrig = $uniqueMod = NULL;
 
         // foreign keys
-        $foreignOrig = $this->orig->GetForeignKeys();
-        $foreignMod = $this->mod->GetForeignKeys();
+        $foreignOrig = $this->orig->getForeignKeys();
+        $foreignMod = $this->mod->getForeignKeys();
 
         $this->remove['foreign'] = array_diff_key($foreignOrig, $foreignMod);
         $this->add['foreign'] = array_diff_key($foreignMod, $foreignOrig);

@@ -31,7 +31,6 @@ function Request(url, method = 'GET', params = {}, sentEmpty = false, contentTyp
     })
 
     
-
 }
 
 function XHR(url, method = 'GET', params = {}, sentEmpty = false, contentType = CONTENT_TYPE['FORM']) {

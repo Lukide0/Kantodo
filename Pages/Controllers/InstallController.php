@@ -6,96 +6,139 @@ use Kantodo\Core\{
     Application,
     Controller,
     Database\Connection,
-    Validation\Data
+    Validation\Data,
+    Auth
 };
+use Kantodo\Core\Database\Migration\Runner;
+use Kantodo\Models\UserModel;
 use Kantodo\Views\InstallView;
 
 
 class InstallController extends Controller
 {
-    public function Install($method = 'get')
+    public function install($method = 'get')
     {
         if ($method == 'get')
-            $this->RenderView(InstallView::class);
+            $this->renderView(InstallView::class);
 
         else if ($method == 'post')
-            $this->InstallAction();
+        $this->installAction();
     }
-
-    private function InstallAction() 
+    
+    private function installAction() 
     {
+        Application::$INSTALLING = true;
         
-        $body = Application::$APP->request->GetBody();
-
+        $body = Application::$APP->request->getBody();
 
         $keys = ['dbName', 'dbUser', 'dbHost', 'adminName', 'adminSurname', 'adminEmail', 'adminPass'];
 
-        $emptyKeys = Data::Empty($body, $keys);
-        Data::SetIfNotSet($body, ['dbPass', 'dbPrefix'], "");
+        $emptyKeys = Data::empty($body["post"], $keys);
+        Data::setIfNotSet($body["post"], ['dbPass', 'dbPrefix'], "");
         
         
         if (count($emptyKeys) != 0) 
         {
-            Application::$APP->response->AddResponseError("Empty field|s");
-            Application::$APP->response->OutputResponse();
+            Application::$APP->response->addResponseError("Empty field|s");
+            Application::$APP->response->outputResponse();
             exit;
         }
 
-        $connectionStatus = Connection::TryConnect("mysql:host={$body['dbHost']};dbname={$body['dbName']}", $body['dbUser'], $body['dbPass'] ?? "");
+        $connectionStatus = Connection::tryConnect("mysql:host={$body["post"]['dbHost']};dbname={$body["post"]['dbName']}", $body["post"]['dbUser'], $body["post"]['dbPass'] ?? "");
         
         if (!$connectionStatus) 
         {
-            Application::$APP->response->AddResponseError("Could not connect to database");
-            Application::$APP->response->OutputResponse();
+            Application::$APP->response->addResponseError("Could not connect to database");
+            Application::$APP->response->outputResponse();
             exit;
         }
 
+        $dbConstants = [
+            "DB_HOST" => "'{$body["post"]['dbHost']}'",
+            "DB_NAME" => "'{$body["post"]['dbName']}'",
+            "DB_USER" => "'{$body["post"]['dbUser']}'",
+            "DB_PASS" => "'{$body["post"]['dbPass']}'",
+            "DB_TABLE_PREFIX" => "'{$body["post"]['dbPrefix']}'"
+        ];
+
+
         // validation
 
-        $adminFirstname = Data::FormatName($body['adminName']);
-        $adminLastname  = Data::FormatName($body['adminSurname']);
-        $adminEmail     = filter_var($body['adminEmail'], FILTER_SANITIZE_EMAIL);
-        $adminPass      = $body['adminPass'];
+        $adminFirstname = Data::formatName($body["post"]['adminName']);
+        $adminLastname  = Data::formatName($body["post"]['adminSurname']);
+        $adminEmail     = filter_var($body["post"]['adminEmail'], FILTER_SANITIZE_EMAIL);
+        $adminPass      = $body["post"]['adminPass'];
+        $adminSecret    = Auth::uuidV4();
 
 
         if ($adminFirstname === false)
         {
-            Application::$APP->response->AddResponseError("Invalid firstname");
-            Application::$APP->response->OutputResponse();
+            Application::$APP->response->addResponseError("Invalid firstname");
+            Application::$APP->response->outputResponse();
             exit;
         }
 
         if ($adminLastname === false)
         {
-            Application::$APP->response->AddResponseError("Invalid lastname");
-            Application::$APP->response->OutputResponse();
+            Application::$APP->response->addResponseError("Invalid lastname");
+            Application::$APP->response->outputResponse();
             exit;
         }
 
 
-        if (!filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) 
+        if (!Data::isValidEmail($adminEmail)) 
         {
-            Application::$APP->response->AddResponseError("Invalid email");
-            Application::$APP->response->OutputResponse();
+            Application::$APP->response->addResponseError("Invalid email");
+            Application::$APP->response->outputResponse();
             exit;
         }
 
-        if (!Data::IsValidPassword($adminPass)) 
+        if (!Data::isValidPassword($adminPass, true, true, true)) 
         {
-            Application::$APP->response->AddResponseError("Invalid password");
-            Application::$APP->response->OutputResponse();
+            Application::$APP->response->addResponseError("Invalid password");
+            Application::$APP->response->outputResponse();
             exit; 
         }
 
-        $adminPassHash = Data::HashPassword($adminPass, $adminEmail);
+        $adminPassHash = Data::hashPassword($adminPass, $adminEmail);
+        Application::$DB_TABLE_PREFIX = $body["post"]['dbPrefix'];
 
-        // insert to admin to db       
+        // create config
+
+        
+        // tmp constants
+        define("DB_HOST", $body["post"]['dbHost']);
+        define("DB_NAME", $body["post"]['dbName']);
+        define("DB_USER", $body["post"]['dbUser']);
+        define("DB_PASS", $body["post"]['dbPass']);
+
+        $migRunner = new Runner();
+        $migRunner->run($migRunner->getInstallVersion());
 
 
+        $userModel = new UserModel();
+        $userId = $userModel->insert($adminFirstname, $adminLastname, $adminEmail, $adminPassHash, $adminSecret);
 
+        if ($userId === false) 
+        {
+            Application::$APP->response->addResponseError("Admin account was not created.");
+            Application::$APP->response->outputResponse();
+            exit;
+        }
 
-        Application::$APP->response->SetResponseData(true);
-        Application::$APP->response->OutputResponse();
+        $metaId = $userModel->addMeta("position", "admin", $userId);
+
+        if ($metaId === false)
+        {
+            $userModel->remove($userId);
+            Application::$APP->response->addResponseError("Admin account was not created.");
+            Application::$APP->response->outputResponse();
+            exit;
+        }
+
+        Application::overrideConfig($dbConstants);
+        Application::$APP->response->setResponseData(true);
+        Application::$APP->response->outputResponse();
     }
 }
 

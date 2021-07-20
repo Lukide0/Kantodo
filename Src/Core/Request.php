@@ -4,9 +4,16 @@ namespace Kantodo\Core;
 
 class Request
 {
-    public function GetPath()
+    const METHOD_GET = 'get';
+    const METHOD_POST = 'post';
+
+    private $path = NULL;
+
+    public function getPath()
     {
 
+        if ($this->path !== NULL)
+            return $this->path;
 
         $path = str_replace(Application::$URL_PATH, '',$_SERVER['REQUEST_URI']);
 
@@ -15,27 +22,39 @@ class Request
         if ($questionMarkPos === false)
             return $path;
 
-        return substr($path, 0, $questionMarkPos);
+        return $this->path = substr($path, 0, $questionMarkPos);
 
     }
 
-    public function GetMethod()
+    public function getMethod()
     {
         return strtolower($_SERVER['REQUEST_METHOD']);
     }
 
-    public function GetBody()
+    public function getCookie(string $key) 
     {
-        $body = array();
+        return  $_COOKIE[$key] ?? NULL;
+    }
 
-        if ($this->GetMethod() == 'get') 
-        {
-            return filter_input_array(INPUT_GET, FILTER_SANITIZE_SPECIAL_CHARS) ?? [];
-        }
+    public function getPostTokenCSRF()
+    {
+        if (isset($_POST['CSRF_TOKEN']))
+            return $_POST['CSRF_TOKEN'];
+        return "";
+    }
 
-        if ($this->GetMethod() == 'post') 
+    public function getBody()
+    {
+        $body = [
+            "post" => [],
+            "get" => []
+        ];
+
+        $body["get"] = filter_input_array(INPUT_GET, FILTER_SANITIZE_SPECIAL_CHARS) ?? [];
+
+        if ($this->getMethod() == self::METHOD_POST) 
         {
-            return filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS) ?? [];
+            $body["post"] = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS) ?? [];
         }
         return $body;
     }

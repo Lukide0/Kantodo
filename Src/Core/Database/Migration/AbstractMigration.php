@@ -12,24 +12,24 @@ abstract class AbstractMigration
      */
     private $schema;
 
-    final public function __construct(Schema $schema = null) 
+    final public function __construct(Schema $schema = NULL) 
     {
         $this->schema = $schema;
     }
 
-    public function GetSQL() 
+    public function getSQL() 
     {
-        return $this->schema->GetSQL();
+        return $this->schema->getSQL();
     }
 
-    public static function SaveSchema(Schema $schema) 
+    public static function saveSchema(Schema $schema) 
     {
         $objSer = serialize($schema);
 
         return file_put_contents(Application::$MIGRATION_DIR . "/currentSchema.ser", $objSer);
     }
 
-    public static function LoadSchema() 
+    public static function loadSchema() 
     {
         if (!file_exists(Application::$MIGRATION_DIR . "/currentSchema.ser"))
             return new Schema(Application::$DB_TABLE_PREFIX);
@@ -38,8 +38,8 @@ abstract class AbstractMigration
 
     }
 
-    public abstract function Up(Schema $schema);
-    public abstract function Down(Schema $schema);
+    public abstract function up(Schema $schema);
+    public abstract function down(Schema $schema);
 }
 
 

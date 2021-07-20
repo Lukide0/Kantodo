@@ -8,7 +8,7 @@ class Loader
     private $missing = array();
 
 
-    public function SetNamespace(string $alias, string $path)
+    public function setNamespace(string $alias, string $path)
     {
 
         if (isset($this->namespaceMap[$alias])) 
@@ -17,7 +17,7 @@ class Loader
         $this->namespaceMap[$alias] = $path;
     }
 
-    public function SetClass(string $alias, string $className)
+    public function setClass(string $alias, string $className)
     {
 
         if (isset($this->classMap[$alias])) 
@@ -26,12 +26,12 @@ class Loader
         $this->classMap[$alias] = $className;
     }
 
-    public function LoadClass(string $className) 
+    public function loadClass(string $className) 
     {
 
         if (isset($this->missing[$className]))
             return false;
-        $file =  $this->FindFile($className);
+        $file =  $this->findFile($className);
 
         if (!$file)
         {
@@ -42,14 +42,14 @@ class Loader
         IncludeFile($file);
     }
     
-    public function FindFile(string $className) 
+    public function findFile(string $className) 
     {
 
         $namespaces = explode("\\", $className);
         $class = array_pop($namespaces);
         
         $tmp = "";
-        $match = null;
+        $match = NULL;
         $skip = 0;
         for ($i=0; $i < count($namespaces); $i++) { 
             $tmp .= $namespaces[$i] . "\\";
@@ -65,7 +65,7 @@ class Loader
 
         
         $file = "";
-        if ($match != null) 
+        if ($match != NULL) 
         {
             $file = $match .  implode( "/" ,array_slice($namespaces, $skip + 1));
         } else {
@@ -93,14 +93,14 @@ class Loader
 
     }
 
-    public function Register() 
+    public function register() 
     {
         spl_autoload_register([$this, 'LoadClass']);
     }
 
 }
 
-function IncludeFile(string $file) 
+function includeFile(string $file) 
 {
     require $file;
 }
@@ -109,24 +109,24 @@ function IncludeFile(string $file)
 
 class Autoloader
 {
-    public static function GetLoader() 
+    public static function getLoader() 
     {
         $loader = new Loader();
 
         $map = require __DIR__ . '/map_namespaces.php';
 
         foreach ($map as $alias => $path) {
-            $loader->SetNamespace($alias, $path);
+            $loader->setNamespace($alias, $path);
         }
 
         $map = require __DIR__ . '/map_classes.php';
         
         foreach ($map as $alias => $className) {
-            $loader->SetClass($alias, $className);
+            $loader->setClass($alias, $className);
         }
 
 
-        $loader->Register();
+        $loader->register();
 
         return $loader;
     }
