@@ -90,7 +90,7 @@ class Blueprint
 
         switch ($type) {
             case 'BOOL':
-                $type = "TINYINT(1)";
+                $type = 'TINYINT(1)';
                 break;
             case 'TINYINT':
             case 'SMALLINT':
@@ -212,7 +212,7 @@ class Blueprint
     {
         sort($columns);
 
-        $key = implode(";", $columns);
+        $key = implode(';', $columns);
 
         if (in_array($key, $this->unique))
             return;
@@ -226,7 +226,7 @@ class Blueprint
         {
             sort($columns);
             
-            $key = implode(";", $columns);
+            $key = implode(';', $columns);
     
             $index = array_search($key, $this->unique);
     
@@ -242,7 +242,7 @@ class Blueprint
         {
             $match = false;
             foreach ($this->unique as $index => $key) {
-                $keyColumns = explode(";", $key);
+                $keyColumns = explode(';', $key);
 
                 if (in_array($columns, $keyColumns)) 
                 {
@@ -290,7 +290,7 @@ class Blueprint
 
 
         $this->foreign[$column] = [
-            'key' => "FK_{$this->getFullName()}_{$reference->getFullName()}_{$referenceColumn}",
+            'key' => "FK_{$this->tableName}_{$referenceColumn}",
             'table' => $reference->getFullName(),
             'column' => $referenceColumn,
             'onDelete' => $onDelete,
@@ -359,8 +359,8 @@ class Blueprint
         if ($formated)
             return array_map(function($key)
             {
-                $columns = explode(";", $key);
-                return "UN_" . implode("_",$columns);
+                $columns = explode(';', $key);
+                return 'UN_' . implode('_',$columns);
             }, $this->unique);
         return $this->unique;
     }
@@ -438,11 +438,11 @@ class Blueprint
         }
 
         $sqlKeys = array();
-        $sqlKeys[] = "PRIMARY KEY (" . implode(",",array_map([$this,"GetStringInBackticks"], $this->primary)) . ")";
+        $sqlKeys[] = 'PRIMARY KEY (' . implode(',',array_map([$this,'GetStringInBackticks'], $this->primary)) . ')';
         foreach ($this->unique as $key) {
-            $keys = explode(";", $key);
-            $keysString = implode(',', array_map([$this, "GetStringInBackticks"], $keys));
-            $keyName = "`UN_" . implode("_", $keys) . "`";
+            $keys = explode(';', $key);
+            $keysString = implode(',', array_map([$this, 'GetStringInBackticks'], $keys));
+            $keyName = '`UN_' . implode('_', $keys) . '`';
 
             $sqlKeys[] = "CONSTRAINT {$keyName} UNIQUE ({$keysString})";
         }
@@ -451,7 +451,7 @@ class Blueprint
             $sqlKeys[] = "CONSTRAINT `{$foreign['key']}` FOREIGN KEY (`{$column}`) REFERENCES {$foreign['table']}(`{$foreign['column']}`) ON DELETE {$foreign['onDelete']} ON UPDATE {$foreign['onUpdate']}";
         }
 
-        $sql = "CREATE TABLE {$this->getFullName()} (\n" . implode(",\n",$sqlColumns) . ",\n\t" . implode(",\n\t", $sqlKeys) . ") ENGINE = INNODB DEFAULT CHARSET=utf8;";
+        $sql = "CREATE TABLE {$this->getFullName()} (\n" . implode(',\n',$sqlColumns) . ',\n\t' . implode(',\n\t', $sqlKeys) . ') ENGINE = INNODB DEFAULT CHARSET=utf8;';
         return $sql;
     }
 
@@ -469,16 +469,16 @@ class Blueprint
         $sqlColumn .= ' ';
         
         if ($opt['unsigned'] == true)
-            $sqlColumn .= "UNSIGNED ";
+            $sqlColumn .= 'UNSIGNED ';
 
         if ($opt['notNull'] == true)
-            $sqlColumn .= "NOT NULL ";
+            $sqlColumn .= 'NOT NULL ';
         
         if ($opt['default'] != NULL)
             $sqlColumn .= "DEFAULT {$opt['default']} ";
         
         if ($opt['autoincrement'] == true)
-            $sqlColumn .= "AUTO_INCREMENT";
+            $sqlColumn .= 'AUTO_INCREMENT';
         return $sqlColumn;
     }
 

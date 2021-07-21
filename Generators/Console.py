@@ -49,6 +49,7 @@ class Console:
         self.commands.register_command("add", add_command)
         self.commands.register_command("rename", rename_command)
         self.commands.register_command("clear", clear_command)
+        self.commands.register_command("mig", migration_command)
 
 
     @classmethod

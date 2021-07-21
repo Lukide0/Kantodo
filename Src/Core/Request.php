@@ -40,21 +40,21 @@ class Request
     {
         if (isset($_POST['CSRF_TOKEN']))
             return $_POST['CSRF_TOKEN'];
-        return "";
+        return '';
     }
 
     public function getBody()
     {
         $body = [
-            "post" => [],
-            "get" => []
+            self::METHOD_POST => [],
+            self::METHOD_GET => []
         ];
 
-        $body["get"] = filter_input_array(INPUT_GET, FILTER_SANITIZE_SPECIAL_CHARS) ?? [];
+        $body[self::METHOD_GET] = filter_input_array(INPUT_GET, FILTER_SANITIZE_SPECIAL_CHARS) ?? [];
 
         if ($this->getMethod() == self::METHOD_POST) 
         {
-            $body["post"] = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS) ?? [];
+            $body[self::METHOD_POST] = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS) ?? [];
         }
         return $body;
     }

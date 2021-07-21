@@ -1,7 +1,11 @@
 .vscode/
 .htaccess
+
 *.wsd
 *.pyc
+*.sql
+*.ser
 
-!security/*.wsd
+config.php
+**/config.json
 /Tests

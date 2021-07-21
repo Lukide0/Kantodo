@@ -6,11 +6,11 @@ namespace Kantodo\Core;
 class Lang
 {
     private $data = [];
-    private $default = "en";
+    private $default = 'en';
 
     public function load(string $group = 'global'):bool
     {
-        $path = Application::$ROOT_DIR . "/Lang";
+        $path = Application::$ROOT_DIR . '/Lang';
         $lang = Application::$LANG;
 
         $status = true;
@@ -37,9 +37,9 @@ class Lang
 
     }
 
-    public function get(string $name, string $group = "global") 
+    public function get(string $name, string $group = 'global') 
     {
-        return $this->data[$group][$name] ?? "";
+        return $this->data[$group][$name] ?? '';
     }
 }
 

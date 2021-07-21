@@ -1,6 +1,0 @@
-
-class ParserMD
-{
-    line = "";
-    char = "";
-}

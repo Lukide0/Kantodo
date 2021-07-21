@@ -17,7 +17,7 @@ class Schema
     private $queries = [];
     private $prefix;
 
-    public function __construct(string $prefix = "") {
+    public function __construct(string $prefix = '') {
         $this->prefix = $prefix;
     }
 
@@ -64,8 +64,8 @@ class Schema
     {
         if (!$this->hasTable($table))
             throw new SchemaException("Table `{$table}` doesn't exists");
-        
-        $this->queries[] = "DROP TABLE {$this->formatTableName($table)};";
+
+        $this->queries[] = "DROP TABLE IF EXISTS {$this->formatTableName($table)};";
         unset($this->tables[$table]);
     }
     
@@ -86,6 +86,11 @@ class Schema
 
     }
 
+    public function clearSQL()
+    {
+        $this->queries = [];
+    }
+
     public function getQueries() 
     {
         return $this->queries;
@@ -93,7 +98,7 @@ class Schema
 
     public function getSQL()
     {
-        return implode("\n",$this->queries);
+        return implode('\n\n',$this->queries);
     }
 
     public function hasTable(string $table)

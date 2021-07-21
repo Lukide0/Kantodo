@@ -11,7 +11,7 @@ class InstallView implements IView
     public function render(array $params = [])
     {
         $lang = Application::$APP->lang;
-        $lang->load("install");
+        $lang->load('install');
 
         ?>
         <!DOCTYPE html>
@@ -56,21 +56,21 @@ class InstallView implements IView
                                         <input type="text" name="dbName" required>
                                         <span>DB Name</span>
                                     </label>
-                                    <span class="description"><?= $lang->get("database-name-desc", "install") ?></span>
+                                    <span class="description"><?= $lang->get('database-name-desc', 'install') ?></span>
                                 </div>
                                 <div class="row main-space-between cross-baseline">
                                     <label class="text info-focus col-4">
                                         <input type="text" name="dbHost" required>
                                         <span>DB Host</span>
                                     </label>
-                                    <span class="description"><?= $lang->get("database-host-desc", "install")?></span>
+                                    <span class="description"><?= $lang->get('database-host-desc', 'install')?></span>
                                 </div>
                                 <div class="row main-space-between cross-baseline">
                                     <label class="text info-focus col-4">
                                         <input type="text" name="dbUser" required>
                                         <span>DB User</span>
                                     </label>
-                                    <span class="description"><?= $lang->get("database-user-desc", "install")?></span>
+                                    <span class="description"><?= $lang->get('database-user-desc', 'install')?></span>
                                 </div>
                                 <div class="row main-space-between cross-baseline">
                                     <label class="text info-focus col-4 input-open">
@@ -79,14 +79,14 @@ class InstallView implements IView
                                         <div class="input-close"><span class="material-icons-outlined" data-show="false" onclick="switchPasswordVisibility(event)">visibility</span></div>
                                         <span>DB Password</span>
                                     </label>
-                                    <span class="description"><?= $lang->get("database-pass-desc", "install")?></span>
+                                    <span class="description"><?= $lang->get('database-pass-desc', 'install')?></span>
                                 </div>
                                 <div class="row main-space-between cross-baseline">
                                     <label class="text info-focus col-4">
                                         <input type="text" value="todo_" name="dbPrefix" required>
                                         <span>DB Prefix</span>
                                     </label>
-                                    <span class="description"><?= $lang->get("database-prefix-desc", "install")?></span>
+                                    <span class="description"><?= $lang->get('database-prefix-desc', 'install')?></span>
                                 </div>
                             </div>
                         </div>
@@ -97,14 +97,14 @@ class InstallView implements IView
                                     <div class="container">
                                         <label class="text info-focus">
                                             <input type="text" name="adminName" required>
-                                            <span><?= $lang->get("first-name")?></span>
+                                            <span><?= $lang->get('first-name')?></span>
                                         </label>
                                         <div class="error-text"></div>
                                     </div>
                                     <div class="container" style="margin-left: var(--gap-huge)">
                                         <label class="text info-focus">
                                             <input type="text" name="adminSurname" required>
-                                            <span><?= $lang->get("last-name")?></span>
+                                            <span><?= $lang->get('last-name')?></span>
                                         </label>
                                         <div class="error-text"></div>
                                     </div>
@@ -122,7 +122,7 @@ class InstallView implements IView
                                     <div class="container">
                                         <label class="text info-focus input-open">
                                             <input type="password" name="adminPass" data-password-validation="passwordValidation" required>
-                                            <span><?= $lang->get("password")?></span>
+                                            <span><?= $lang->get('password')?></span>
                                             <div class="input-close"><span class="material-icons-outlined" data-show="false" onclick="switchPasswordVisibility(event)">visibility</span></div>
                                         </label>
                                         <div class="error-text"></div>
@@ -147,18 +147,18 @@ class InstallView implements IView
                         </div>
                     </form>
                     <div class="row main-space-around">
-                        <button id="previusPageBtn" disabled><?= $lang->get("back")?></button>
-                        <button id="nextPageBtn" class="info"><?= $lang->get("next")?></button>
+                        <button id="previusPageBtn" disabled><?= $lang->get('back')?></button>
+                        <button id="nextPageBtn" class="info"><?= $lang->get('next')?></button>
                     </div>
                     </div>
             </main>
             <script>
-                let previusBtn = document.getElementById("previusPageBtn");
-                let nextBtn = document.getElementById("nextPageBtn");
-                let contentDiv = document.getElementById("content");
+                let previusBtn = document.getElementById('previusPageBtn');
+                let nextBtn = document.getElementById('nextPageBtn');
+                let contentDiv = document.getElementById('content');
 
-                let pages = contentDiv.querySelectorAll("[data-page]");
-                let pagesStatus = document.querySelectorAll("nav [data-page]");
+                let pages = contentDiv.querySelectorAll('[data-page]');
+                let pagesStatus = document.querySelectorAll('nav [data-page]');
 
                 function setPageStatus(page, color) {
                     pagesStatus[page - 1].style = '--color: ' + color;
@@ -220,7 +220,7 @@ class InstallView implements IView
                         if (element.name.length != 0)
                             obj[element.name] = element.value;
                     }
-                    const request = Request(window.location, "POST", obj);
+                    const request = Request(window.location, 'POST', obj);
                     request.then(response => {
                         console.log(response)
                         if (response.status)
@@ -236,8 +236,8 @@ class InstallView implements IView
                     
                     for (let i = 0; i < obj.parent.children.length; i++) {
                         const el = obj.parent.children[i];
-                        el.classList.remove("error");
-                        el.classList.add("success");
+                        el.classList.remove('error');
+                        el.classList.add('success');
                     }
 
 
@@ -249,7 +249,7 @@ class InstallView implements IView
                         {
                             let el = obj[error];
 
-                            el.classList.add("error");
+                            el.classList.add('error');
                         }
                     });
 

@@ -12,14 +12,14 @@ class AuthView implements IView
     public function render(array $params = [])
     {
         $authType = (isset($params['type']) && $params['type'] == 'register') ? 'right' : '';
-        $fromURL = (isset($params['path'])) ? "?path=" . urlencode($params['path']) : "";
+        $fromURL = (isset($params['path'])) ? '?path=' . urlencode($params['path']) : '';
         $appUrl = Application::$URL_PATH;
 
         $signInAction = "{$appUrl}/auth/sign-in{$fromURL}";
         $registerForm = new Form();
 
-        $email = Application::$APP->session->getFlashMessage("userEmail", "");
-        $errors = Application::$APP->session->getFlashMessage("signInErrors", []);
+        $email = Application::$APP->session->getFlashMessage('userEmail', '');
+        $errors = Application::$APP->session->getFlashMessage('signInErrors', []);
 
         ?>
         <!DOCTYPE html>
@@ -93,10 +93,10 @@ class AuthView implements IView
                     <?= Form::start($signInAction); ?>
                         <?= Form::tokenCSRF(); ?>
                         <div class="row main-center">
-                            <?= Input::text("signInEmail", "Email", $email, $errors); ?>
+                            <?= Input::text('signInEmail', 'Email', $email, $errors); ?>
                         </div>
                         <div class="row main-center">
-                            <?= Input::password("signInPassword", "Password", "", $errors, [], Input::AUTOCOMPLETE_CURRENT_PASSWORD); ?>
+                            <?= Input::password('signInPassword', 'Password', '', $errors, [], Input::AUTOCOMPLETE_CURRENT_PASSWORD); ?>
                         </div>
                         <div class="row main-center">
                             <button class="info long">Sign in</button>
@@ -169,8 +169,8 @@ class AuthView implements IView
                     let errors = validatePassword(value, {'min': 8, 'lowercase': 1, 'uppercase': 1, 'number': 1, 'specialChar': 1});
                     for (let i = 0; i < obj.parent.children.length; i++) {
                         const el = obj.parent.children[i];
-                        el.classList.remove("error");
-                        el.classList.add("success");
+                        el.classList.remove('error');
+                        el.classList.add('success');
                     }
 
 
@@ -182,7 +182,7 @@ class AuthView implements IView
                         {
                             let el = obj[error];
 
-                            el.classList.add("error");
+                            el.classList.add('error');
                         }
                     });
 

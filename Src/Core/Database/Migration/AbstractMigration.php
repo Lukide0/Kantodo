@@ -24,17 +24,19 @@ abstract class AbstractMigration
 
     public static function saveSchema(Schema $schema) 
     {
+        $schema->clearSQL();
+
         $objSer = serialize($schema);
 
-        return file_put_contents(Application::$MIGRATION_DIR . "/currentSchema.ser", $objSer);
+        return file_put_contents(Application::$MIGRATION_DIR . '/currentSchema.ser', $objSer);
     }
 
     public static function loadSchema() 
     {
-        if (!file_exists(Application::$MIGRATION_DIR . "/currentSchema.ser"))
+        if (!file_exists(Application::$MIGRATION_DIR . '/currentSchema.ser'))
             return new Schema(Application::$DB_TABLE_PREFIX);
 
-        return unserialize(file_get_contents(Application::$MIGRATION_DIR . "/currentSchema.ser"));
+        return unserialize(file_get_contents(Application::$MIGRATION_DIR . '/currentSchema.ser'));
 
     }
 

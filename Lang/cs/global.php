@@ -2,11 +2,11 @@
 
 
 return [
-    "back" => "zpět",
-    "next" => "další",
-    "first-name" => "jméno",
-    "last-name" => "příjmení",
-    "password" => "heslo"
+    'back' => 'zpět',
+    'next' => 'další',
+    'first-name' => 'jméno',
+    'last-name' => 'příjmení',
+    'password' => 'heslo'
 ];
 
 ?>

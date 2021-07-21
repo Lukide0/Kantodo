@@ -4,6 +4,7 @@ namespace Kantodo\Models;
 
 use Kantodo\Core\Database\Connection;
 use Kantodo\Core\Model;
+use Kantodo\Core\Generator;
 use PDO;
 
 class UserModel extends Model
@@ -11,20 +12,21 @@ class UserModel extends Model
 
     public function __construct() {
         parent::__construct();
-        $this->table = Connection::formatTableName("users");
+        $this->table = Connection::formatTableName('users');
     }
 
-    public function insert(string $firstname, string $lastname, string $email, string $password, string $secret, string $nickname = NULL)
+    public function create(string $firstname, string $lastname, string $email, string $password, string $nickname = NULL)
     {
-        $nickname = $nickname ?? "NULL";
+        $secret = Generator::uuidV4();
+        $nickname = $nickname ?? 'NULL';
         $sth = $this->con->prepare("INSERT INTO {$this->table} (firstname, lastname, email, password, secret, nickname) VALUES ( :firstname, :lastname, :email, :password, :secret, :nickname)");
         $status = $sth->execute([
-            ":firstname" => $firstname,
-            ":lastname" => $lastname,
-            ":email" => $email,
-            ":password" => $password,
-            ":secret" => $secret,
-            ":nickname" => $nickname
+            ':firstname' => $firstname,
+            ':lastname' => $lastname,
+            ':email' => $email,
+            ':password' => $password,
+            ':secret' => $secret,
+            ':nickname' => $nickname
         ]);
 
         return ($status === true) ? $this->con->lastInsertId() : false;
@@ -40,12 +42,12 @@ class UserModel extends Model
 
     public function addMeta(string $key, string $value, int $userID) 
     {
-        $userMeta = Connection::formatTableName("user_meta");
+        $userMeta = Connection::formatTableName('user_meta');
         $sth = $this->con->prepare("INSERT INTO {$userMeta} (`key`, `value`, `user_id`) VALUES (:key, :value, :user_id)");
         $status = $sth->execute([
-            ":key" => $key,
-            ":value" => $value,
-            ":user_id" => $userID
+            ':key' => $key,
+            ':value' => $value,
+            ':user_id' => $userID
         ]);
 
         return ($status === true) ? $this->con->lastInsertId() : false;
@@ -55,7 +57,7 @@ class UserModel extends Model
     {
         $sth = $this->con->prepare("SELECT user_id FROM {$this->table} WHERE email = :email LIMIT 1");
         $sth->execute([
-            ":email" => $email
+            ':email' => $email
         ]);
 
         $user = $sth->fetch(PDO::FETCH_ASSOC);
@@ -74,7 +76,7 @@ class UserModel extends Model
     }
 
 
-    public function get(array $columns = ["*"], array $search = [], int $limit = 0) 
+    public function get(array $columns = ['*'], array $search = [], int $limit = 0) 
     {
         if (count($columns) == 0) 
             return [];
@@ -103,9 +105,9 @@ class UserModel extends Model
             }
         }
 
-        $query = "SELECT " . implode(", ", $columns) . " FROM {$this->table}";
+        $query = 'SELECT ' . implode(', ', $columns) . " FROM {$this->table}";
         if (count($search) != 0) 
-            $query .= " WHERE " . implode(" AND ", $searchData);
+            $query .= ' WHERE ' . implode(' AND ', $searchData);
         
         if ($limit >= 1)
             $query .= " LIMIT {$limit}";
@@ -118,17 +120,17 @@ class UserModel extends Model
 
     public function getMeta(int $userID, string $key, bool $multiple = false)
     {
-        $userMeta = Connection::formatTableName("user_meta");
+        $userMeta = Connection::formatTableName('user_meta');
 
-        $limit = " LIMIT 1";
+        $limit = ' LIMIT 1';
 
         if ($multiple)
-            $limit = "";
+            $limit = '';
 
         $sth = $this->con->prepare("SELECT `value` FROM {$userMeta} WHERE `user_id` = :user_id AND `key` = :key" . $limit);
         $sth->execute([
-            ":key" => $key,
-            ":user_id" => $userID
+            ':key' => $key,
+            ':user_id' => $userID
         ]);
 
         if ($multiple) 

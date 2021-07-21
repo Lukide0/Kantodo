@@ -20,11 +20,12 @@ class Runner
     const MIG_STAY = 0;
 
     public function __construct() {
-        $this->version = $this->getCurrentVersion() ?? $this->getInstallVersion();
+        $this->version = $this->getCurrentVersion();
+        $this->installVersion = $this->getInstallVersion();
         $this->schema = AbstractMigration::loadSchema();
     }
 
-    public function run(string $version)
+    public function run(string $version, bool $execute = true, bool $outputFile = false)
     {
         $mode = $this->compareVersions($this->version, $version);
 
@@ -33,15 +34,14 @@ class Runner
 
         $versions = $this->getAllVersions();
 
-        uksort($versions, [$this, "CompareVersions"]);
-
+        uksort($versions, [$this, 'CompareVersions']);
 
         $between = [];
         $tmp = 0;
         foreach ($versions as $ver => $_) {
 
             $fullname = "\Migrations\\Version_{$ver}";
-            if ($ver == $version OR $ver == $this->version) 
+            if ($ver == $version OR $ver == $this->version)
             {
                 if (!class_exists($fullname))
                     throw new MigrationException("`Version_{$ver}` is not a class");
@@ -65,25 +65,25 @@ class Runner
             if ($tmp == 2)
                 break;
         }
+
         if ($mode == self::MIG_DOWN) 
         {
+    
             for ($index = count($between) - 1; $index >= 0; $index--) { 
-                $mig = "\Migrations\\Version_" . $between[$index];
+                $mig = '\Migrations\\Version_' . $between[$index];
 
                 /**
                  * @var Migration
                  */
                 $instance = new $mig($this->schema);
                 $instance->down($this->schema);
-            }
-            
-            Connection::runInTransaction($this->schema->getQueries());
+            }           
         }
 
         if ($mode == self::MIG_UP) 
         {
             for ($index = 0; $index < count($between); $index++) { 
-                $mig = "\Migrations\\Version_" . $between[$index];
+                $mig = '\Migrations\\Version_' . $between[$index];
 
                 /**
                  * @var Migration
@@ -91,44 +91,58 @@ class Runner
                 $instance = new $mig($this->schema);
                 $instance->up($this->schema);
             }
-            Connection::runInTransaction($this->schema->getQueries());
         }
 
-        $this->updateConfigVersion($version);
+        if ($execute) 
+        {
+            Connection::runInTransaction($this->schema->getQueries());
+            AbstractMigration::saveSchema($this->schema);
+            $this->updateConfigVersion($version);
+        }
+
+        if ($outputFile) 
+        {
+            $sql = $this->schema->getSQL();
+
+            $output = Application::$ROOT_DIR . "/Migrations/Versions/{$version}.sql";
+
+            file_put_contents($output, $sql);
+        }
+
     }
 
     public function getCurrentVersion() 
     {
-        if (!file_exists(Application::$MIGRATION_DIR . "/config.json"))
-            throw new MigrationException("Config does not exist");
+
+        if (!file_exists(Application::$MIGRATION_DIR . '/config.json'))
+            return '0_0';
 
         if ($this->version !== NULL)
             return $this->version;
 
-        $json = json_decode(file_get_contents(Application::$MIGRATION_DIR . "/config.json"), true);
-        $this->installVersion = str_replace(".", "_", $json['install_version']);
-        return $this->version = str_replace(".", "_", $json['version']);
+        $json = json_decode(file_get_contents(Application::$MIGRATION_DIR . '/config.json'), true);
+        return $this->version = str_replace('.', '_', $json['version']);
     }
 
     public function getInstallVersion() 
     {
-        if (!file_exists(Application::$MIGRATION_DIR . "/config.json"))
-            throw new MigrationException("Config does not exist");
+        if (!file_exists(Application::$MIGRATION_DIR . '/info.json'))
+            throw new MigrationException('Info.json does not exist');
 
         if ($this->installVersion !== NULL)
             return $this->installVersion;
 
-        $json = json_decode(file_get_contents(Application::$MIGRATION_DIR . "/config.json"), true);
+        $json = json_decode(file_get_contents(Application::$MIGRATION_DIR . '/info.json'), true);
 
-        return $this->installVersion = str_replace(".", "_", $json['install_version']);
+        return $this->installVersion = str_replace('.', '_', $json['install_version']);
     }
 
     public function getAllVersions() 
     {
-        $pattern = Application::$MIGRATION_DIR . "/Versions/Version_*.php";
+        $pattern = Application::$MIGRATION_DIR . '/Versions/Version_*.php';
         $valid = [];
         foreach (glob($pattern) as $file) {
-            $file = str_replace(Application::$MIGRATION_DIR . "/Versions/", "", $file);       
+            $file = str_replace(Application::$MIGRATION_DIR . '/Versions/', '', $file);       
             if (preg_match("/^Version_(?<version>[0-9]+(_[0-9]+)*)\.php$/", $file, $matches)) 
             {
                 $valid[$matches['version']] = $file;
@@ -139,17 +153,17 @@ class Runner
 
     public function updateConfigVersion(string $version) 
     {
-        $json = json_decode(file_get_contents(Application::$MIGRATION_DIR . "/config.json"), true);
-        $json['version'] = str_replace("_", ".", $version);
+        $json = json_decode(file_get_contents(Application::$MIGRATION_DIR . '/config.json'), true);
+        $json['version'] = str_replace('_', '.', $version);
 
-        file_put_contents(Application::$MIGRATION_DIR . "/config.json",json_encode($json, JSON_PRETTY_PRINT));
+        file_put_contents(Application::$MIGRATION_DIR . '/config.json',json_encode($json, JSON_PRETTY_PRINT));
 
     }
 
     public function compareVersions(string $a, string $b)
     {
-        $a = explode("_", $a);
-        $b = explode("_", $b);
+        $a = explode('_', $a);
+        $b = explode('_', $b);
         $sizeA = count($a);
         $sizeB = count($b);
         $i = 0;

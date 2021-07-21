@@ -1,8 +1,23 @@
+const windowsContainer = document.createElement('div');
+
+window.onload = function() 
+{
+    let style = windowsContainer.style;
+
+    style.position = 'absolute';
+    style.left = 0;
+    style.right = 0;
+    style.top = 0;
+    style.bottom = 0;
+    document.body.append(windowsContainer);
+}
+
+
 let windows_count = 0;
 let window_last = null;
 
 
-function Window(title, content, parent = document.body) {
+function Window(title, content) {
     let __element = document.createElement('div');
     let __move = false;
     __element.className = 'window';
@@ -19,10 +34,10 @@ function Window(title, content, parent = document.body) {
         <div class='content'>${content}</div>
     `;
 
-    __element.style.left = '50%';
+    __element.style.left = '25%';
     __element.style.top = '50%';
 
-    parent.appendChild(__element);
+    windowsContainer.appendChild(__element);
 
     return {
         __element,

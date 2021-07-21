@@ -3,14 +3,14 @@
 
 
 namespace Kantodo\Websocket\Server;
-include_once "./Client.php";
-include_once "./Console.php"; // DEBUG
+include_once './Client.php';
+include_once './Console.php'; // DEBUG
 
-define("WS_MSG_TEXT", 0x81);
-define("WS_MSG_BINARY", 0x82);
-define("WS_MSG_CLOSE", 0x88);
-define("WS_MSG_PING", 0x89);
-define("WS_MSG_PONG", 0x8A);
+define('WS_MSG_TEXT', 0x81);
+define('WS_MSG_BINARY', 0x82);
+define('WS_MSG_CLOSE', 0x88);
+define('WS_MSG_PING', 0x89);
+define('WS_MSG_PONG', 0x8A);
 
 session_start();
 class WebSocket
@@ -26,7 +26,7 @@ class WebSocket
      *
      * @var string
      */
-    private $secret = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
+    private $secret = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11';
 
     private $path;
     private $address;
@@ -120,7 +120,7 @@ class WebSocket
                 // message is empty
                 if ($bytes == 0) 
                 {
-                    $this->disconnect($socket, "MESSAGE");
+                    $this->disconnect($socket, 'MESSAGE');
                     continue;
                 }
 
@@ -148,10 +148,10 @@ class WebSocket
                                 call_user_func($this->onMessage, $data);
                             break;
                         case WS_MSG_PING:
-                            $this->sendToSocket($socket, "", WS_MSG_PONG);
+                            $this->sendToSocket($socket, '', WS_MSG_PONG);
                             break;
                         case WS_MSG_PONG:
-                            Console::log("PONG");
+                            Console::log('PONG');
                             break;
                         case WS_MSG_CLOSE:
                             $this->disconnect($socket);
@@ -159,7 +159,7 @@ class WebSocket
                         default:
                             break;
                     }
-                    //$this->sendToSocket($socket,"Test");
+                    //$this->sendToSocket($socket,'Test');
                     //$this->sendToSocket($socket, $data['message']);
                 }
                 unset($client);
@@ -220,20 +220,19 @@ class WebSocket
     {
         $headers = $this->parseHeaders($buffer);
 
-        if (empty($headers["Sec-WebSocket-Key"])) {
-            $this->disconnect($socket, "WEBSOCKET-KEY");
+        if (empty($headers['Sec-WebSocket-Key'])) {
+            $this->disconnect($socket, 'WEBSOCKET-KEY');
         }
 
-        $key = $headers["Sec-WebSocket-Key"];
-        $key = base64_encode(pack("H*",sha1($key . $this->secret)));
+        $key = $headers['Sec-WebSocket-Key'];
+        $key = base64_encode(pack('H*',sha1($key . $this->secret)));
 
         $header = "HTTP/1.1 101 Websocket Protocol Handshake\r\n" .
                 "Upgrade: WebSocket\r\n" .
                 "Connection: Upgrade\r\n" .
                 "Sec-WebSocket-Origin: {$this->address}\r\n" .
                 "Sec-WebSocket-Location: ws://{$this->address}:{$this->port}{$this->path}\r\n" .
-                "Sec-WebSocket-Accept: " . $key  . "\r\n". "\r\n";
-
+                "Sec-WebSocket-Accept: {$key} \r\n\r\n";
 
         if (!$this->onHandshake)
             call_user_func($this->onHandshake, $socket, $header);
@@ -247,7 +246,7 @@ class WebSocket
         $headers = array();
         $key = '';
 
-        foreach(explode("\n", $header) as $i => $h) {
+        foreach(explode('\n', $header) as $i => $h) {
             $h = explode(':', $h, 2);
 
             if (isset($h[1])) {
@@ -263,8 +262,8 @@ class WebSocket
                 $key = $h[0];
             }
             else { 
-                if (substr($h[0], 0, 1) == "\t")
-                    $headers[$key] .= "\r\n\t".trim($h[0]);
+                if (substr($h[0], 0, 1) == '\t')
+                    $headers[$key] .= '\r\n\t'.trim($h[0]);
                 elseif (!$key) 
                     $headers[0] = trim($h[0]); 
             }
@@ -333,7 +332,7 @@ class WebSocket
                 $decodedData['type'] = WS_MSG_PONG;
                 break;
             default:
-                $this->disconnect($socket, "decodedData");
+                $this->disconnect($socket, 'decodedData');
                 return array();
         }
 

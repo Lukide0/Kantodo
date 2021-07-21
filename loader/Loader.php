@@ -45,14 +45,14 @@ class Loader
     public function findFile(string $className) 
     {
 
-        $namespaces = explode("\\", $className);
+        $namespaces = explode('\\', $className);
         $class = array_pop($namespaces);
         
-        $tmp = "";
+        $tmp = '';
         $match = NULL;
         $skip = 0;
         for ($i=0; $i < count($namespaces); $i++) { 
-            $tmp .= $namespaces[$i] . "\\";
+            $tmp .= $namespaces[$i] . '\\';
             
             if (isset($this->namespaceMap[$tmp])) 
             {   
@@ -64,10 +64,10 @@ class Loader
         unset($tmp);
 
         
-        $file = "";
+        $file = '';
         if ($match != NULL) 
         {
-            $file = $match .  implode( "/" ,array_slice($namespaces, $skip + 1));
+            $file = $match .  implode( '/' ,array_slice($namespaces, $skip + 1));
         } else {
             $file = implode('/', $namespaces);
         }
@@ -83,7 +83,7 @@ class Loader
         if ($file[strlen($file) - 1] != '/')
         $file .= '/';
         
-        $file .= $class . ".php";
+        $file .= $class . '.php';
         
         
         if (!file_exists($file)) 

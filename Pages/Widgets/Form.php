@@ -3,11 +3,12 @@
 namespace Kantodo\Widgets;
 
 use Kantodo\Core\Application;
+use Kantodo\Core\Request;
 
 class Form
 {
 
-    public static function start(string $action = "", string $method = "post")
+    public static function start(string $action = '', string $method = Request::METHOD_POST)
     {
         return "<form action='{$action}' method='{$method}'>";
     }
@@ -20,7 +21,7 @@ class Form
 
     public static function end()
     {
-        return "</form>";
+        return '</form>';
     }
 }
 

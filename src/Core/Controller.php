@@ -93,7 +93,7 @@ abstract class Controller
         }
 
 
-        $layoutInstance->render("", $params);
+        $layoutInstance->render('', $params);
 
     }
 

@@ -1,5 +1,5 @@
 const ERRORS = Object.freeze({
-    "PASSWORD": {
+    'PASSWORD': {
         'MIN_LENGTH': 0,
         'MAX_LENGTH': 1,
         'LOWERCASE_CHAR_COUNT': 2,
@@ -42,7 +42,7 @@ function validatePassword(password, opt = {})
         'specialChar': 0
     };
 
-    const format = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+    const format = /[`!@#$%^&*()_+\-=\[\]{};':'\\|,.<>\/?~]/;
 
     arrayChars.forEach((char) => {
         if (!isNaN(parseInt(char)))
@@ -72,11 +72,11 @@ function validatePassword(password, opt = {})
 }
 
 const ValidationMode = Object.freeze({
-    "agressive": function(element, callback) {
-        element.addEventListener("input", callback, false);
+    'agressive': function(element, callback) {
+        element.addEventListener('input', callback, false);
     },
-    "lazy": function(element, callback) {
-        element.addEventListener("change", callback, false);
+    'lazy': function(element, callback) {
+        element.addEventListener('change', callback, false);
     },
     
     /**
@@ -86,18 +86,18 @@ const ValidationMode = Object.freeze({
      * @param   {CallableFunction}  callback  validation callback that return bool if is valid value in element
      *
      */
-    "eager": function(element, callback, obj = {}) {
+    'eager': function(element, callback, obj = {}) {
         let lazy = true;
         callback = window[callback];
 
-        element.addEventListener("change", lazyFunc, false);
+        element.addEventListener('change', lazyFunc, false);
         function lazyFunc(event) {
             lazy = callback(event, obj) ?? true;
 
             if (!lazy)
             {
-                element.removeEventListener("change", lazyFunc);
-                element.addEventListener("input", agressiveFunc, false);
+                element.removeEventListener('change', lazyFunc);
+                element.addEventListener('input', agressiveFunc, false);
             }
 
         }
@@ -107,8 +107,8 @@ const ValidationMode = Object.freeze({
 
             if (lazy)
             {
-                element.removeEventListener("input", agressiveFunc);
-                element.addEventListener("change", lazyFunc);
+                element.removeEventListener('input', agressiveFunc);
+                element.addEventListener('change', lazyFunc);
             }
         }
 
@@ -120,7 +120,7 @@ const ValidationMode = Object.freeze({
 (function() {
     window.onload = function() 
     {
-        let passwordElements = document.querySelectorAll("[data-password-validation]");
+        let passwordElements = document.querySelectorAll('[data-password-validation]');
         passwordElements.forEach((el) => {
             let func = el.dataset.passwordValidation;
             let requirements = document.querySelector(`[data-password-requirements='${el.name}']`);
@@ -128,11 +128,11 @@ const ValidationMode = Object.freeze({
             if (requirements != null) 
             {
                 let obj = {
-                    "parent": requirements
+                    'parent': requirements
                 };
                 for (let i = 0; i < requirements.children.length; i++) {
                     const element = requirements.children[i];
-                    let error = element.dataset.error ?? "";
+                    let error = element.dataset.error ?? '';
                     let errorCode = ERRORS.PASSWORD[error] ?? null;
                     
                     if (errorCode != null)

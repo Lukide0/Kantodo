@@ -54,14 +54,14 @@ class Session
     
     private function configure() 
     {
-        ini_set("session.referer_check", '');
-        ini_set("session.use_cookies", '1');
-        ini_set("session.use_only_cookies", '1');
-        ini_set("session.use_trans_sid", '0');
-        ini_set("session.use_strict_mode", '1');
-        ini_set("session.cookie_httponly", '1');
+        ini_set('session.referer_check', '');
+        ini_set('session.use_cookies', '1');
+        ini_set('session.use_only_cookies', '1');
+        ini_set('session.use_trans_sid', '0');
+        ini_set('session.use_strict_mode', '1');
+        ini_set('session.cookie_httponly', '1');
         
-        register_shutdown_function([$this, "Clean"]);
+        register_shutdown_function([$this, 'Clean']);
         
     }
     

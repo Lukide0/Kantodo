@@ -46,32 +46,37 @@ const ANIMATIONS = {
      * @param   {int}  dur
      * @param   {Function}  timingFunc
      */
-    "fadeIn": function(element, duration, timingFunc = (e) => e) {
+    'fadeIn': function(element, duration, timingFunc = (e) => e) {
 
         let options = {
-            "duration": duration,
-            "start": function(element) {
-                element.style.display = "block";
+            'duration': duration,
+            'start': function(element) {
+                element.style.display = 'block';
             },
-            "end": function() {},
-            "timing": timingFunc,
-            "step": frame
+            'end': function() {},
+            'timing': timingFunc,
+            'step': frame
         }
 
         animationCreate(element, options);
 
         function frame(element, elapsed, dur) {
-            element.style.opacity = elapsed / dur;
+            let op = elapsed / dur;
+
+            if (op > 1)
+                op = 1
+
+            element.style.opacity = op;
         }
     },
-    "fadeOut": function(element, duration, timingFunc = (e) => e) {
+    'fadeOut': function(element, duration, timingFunc = (e) => e) {
 
         let options = {
-            "duration": duration,
-            "start": function(element) {   element.style.display = "block"; },
-            "end": function(element) { element.style.display = "none"; },
-            "timing": timingFunc,
-            "step": frame
+            'duration': duration,
+            'start': function(element) {   element.style.display = 'block'; },
+            'end': function(element) { element.style.display = 'none'; },
+            'timing': timingFunc,
+            'step': frame
         }
 
         animationCreate(element, options);

@@ -28,14 +28,14 @@ class Connection
     private final function __construct()
     {
         if (!Application::$CONFIG_LOADED && Application::$INSTALLING == false)
-            throw new ConfigException("Config is not loaded");
+            throw new ConfigException('Config is not loaded');
             
-            $dns = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME;
+            $dns = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME;
             
             $con = new PDO($dns, DB_USER, DB_PASS, array(
                 PDO::ATTR_PERSISTENT => true,
-                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
-                PDO::MYSQL_ATTR_INIT_COMMAND => "SET CHARACTER SET utf8",
+                PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
+                PDO::MYSQL_ATTR_INIT_COMMAND => 'SET CHARACTER SET utf8',
             ));
             
         $errorMode = (Application::$DEBUG_MODE) ? PDO::ERRMODE_EXCEPTION : PDO::ERRMODE_SILENT;        
@@ -71,7 +71,7 @@ class Connection
             $queries = [$queries];
         
         if (!is_array($queries))
-            throw new InvalidArgumentException("Parameter \$queries is not string|array.");
+            throw new InvalidArgumentException('Parameter $queries is not string|array.');
         
         $errorMode = (Application::$DEBUG_MODE) ? PDO::ERRMODE_EXCEPTION : PDO::ERRMODE_SILENT;
         $con = self::getInstance();

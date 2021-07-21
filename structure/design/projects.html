@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="flex.css">
     <link rel="stylesheet" href="projects.css">
+    <script src="js/Animation.js"></script>
+    <script src="js/Window.js"></script>
+    <script src="js/Request.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <title>Menu</title>
@@ -92,5 +95,59 @@
             <tfoot></tfoot>
         </table>
     </main>
+    <script>
+        (function() {
+            "use-strict"
+            
+            let addTeamBtn = document.getElementById("addTeam");
+            let content = `
+            <div class="container">
+                <div class="container" style="margin-top: var(--gap-medium)">
+                    <label class="text info-focus">
+                        <input type="text" name="teamName" required>
+                        <span>Name</span>
+                    </label>
+                    <div class="error-text"></div>
+                </div>
+                <div class="container" style="margin-top: var(--gap-medium)">
+                    <label class="text info-focus">
+                        <input type="text" name="teamDesc" required>
+                        <span>Description</span>
+                    </label>
+                    <div class="error-text"></div>
+                </div>
+                <div class='row main-center' style="margin-top: var(--gap-medium)">
+                    <button class='long primary'>Create</button>
+                <div>
+            </div>
+            `;
+            let formWindow, btn;
+            
+            create();
+
+            addTeamBtn.onclick = function() 
+            {
+                if (!formWindow.isOpened)
+                    formWindow.show()
+            }
+
+            function create() 
+            {
+                formWindow = Window("Create team", content);
+                formWindow.setMove()
+                formWindow.setClose()
+                formWindow.onDestroy = create;
+                btn = formWindow.$("button")[0];
+                btn.onclick = function() 
+                {
+                    const request = Request("/create/team", );
+                    console.log("A")
+                }
+            }
+
+
+        })()
+
+    </script>
 </body>
 </html>

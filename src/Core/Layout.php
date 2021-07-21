@@ -6,7 +6,7 @@ use \InvalidArgumentException;
 
 abstract class Layout 
 {
-    public abstract function render(string $content = "", array $params = []);
+    public abstract function render(string $content = '', array $params = []);
     public function renderView(string $view, array $params = []) 
     {
         if (!class_exists($view)) 

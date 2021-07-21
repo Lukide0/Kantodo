@@ -25,8 +25,9 @@ class Application
     public static $URL_PATH;
     public static $SCRIPT_URL;
     public static $STYLE_URL;
-    public static $DB_TABLE_PREFIX = "";
+    public static $DB_TABLE_PREFIX = '';
     public static $LANG = 'en';
+    public static $DATA_PATH;
     public static $DEBUG_MODE = false;
     public static $CONFIG_LOADED = false;
     public static $INSTALLING = false;
@@ -76,13 +77,13 @@ class Application
                             )
                         );
 
-        self::$URL_PATH = str_replace($_SERVER['DOCUMENT_ROOT'], '',(str_replace("\\",'/',self::$ROOT_DIR)));
+        self::$URL_PATH = str_replace($_SERVER['DOCUMENT_ROOT'], '',(str_replace('\\','/',self::$ROOT_DIR)));
         self::$PAGES_DIR = self::$ROOT_DIR . '/Pages';
         self::$MIGRATION_DIR = self::$ROOT_DIR . '/Migrations';
 
         self::$SCRIPT_URL = self::$URL_PATH . '/Scripts/';
         self::$STYLE_URL = self::$URL_PATH . '/Styles/';
-
+        self::$DATA_PATH = self::$ROOT_DIR . '/Data/';
         
         $this->request = new Request();
         $this->response = new Response();
@@ -92,6 +93,14 @@ class Application
         $this->lang = new Lang();
 
         $this->lang->load();
+
+        if ($this->configExits())
+            $this->loadConfig();
+    }
+
+    public static function systemPathToUrl(string $path)
+    {
+        return str_replace(self::$ROOT_DIR, self::$URL_PATH, $path, 1);
     }
 
     public static function debugMode(bool $enable = true) 
@@ -117,13 +126,13 @@ class Application
 
     public static function overrideConfig(array $constants) 
     {
-        $content = "";
+        $content = '';
 
         foreach ($constants as $key => $value) {
-            $content .= "define(\"{$key}\", {$value});\n";
+            $content .= "define('{$key}', {$value});\n";
         }
 
-        $content = "<?php\n {$content}\n?>";
+        $content = "<?php\n{$content}\n?>";
 
         file_put_contents(self::$ROOT_DIR . '/config.php', $content);
 
@@ -160,7 +169,7 @@ class Application
             return self::GUEST;
         }
     
-        return self::$APP->userRole = self::$APP->session->get("role", Application::GUEST);
+        return self::$APP->userRole = self::$APP->session->get('role', Application::GUEST);
     }
 
     public static function configExits() 

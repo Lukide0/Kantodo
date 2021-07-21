@@ -16,9 +16,9 @@ class AuthController extends Controller
     {
         $body = Application::$APP->request->getBody();
 
-        if (!empty($body["get"]['path']) AND !Data::isURLExternal($body["get"]["path"])) 
+        if (!empty($body['get']['path']) AND !Data::isURLExternal($body['get']['path'])) 
         {
-            $this->renderView(AuthView::class, ["path" => $body["get"]["path"]]);
+            $this->renderView(AuthView::class, ['path' => $body['get']['path']]);
             return;
         }
         $this->renderView(AuthView::class);
@@ -28,28 +28,28 @@ class AuthController extends Controller
     public function signOut()
     {
         Auth::signOut();
-        Application::$APP->response->setLocation("/auth");
+        Application::$APP->response->setLocation('/auth');
     }
 
     public function signIn() 
     {
         $body = Application::$APP->request->getBody();
 
-        $path = (isset($body["get"]["path"]) && Data::isURLExternal($body["get"]["path"]) === false) ? urlencode($body['get']['path']) : "";
+        $path = (isset($body['get']['path']) && Data::isURLExternal($body['get']['path']) === false) ? urlencode($body['get']['path']) : '';
 
-        if(Data::isEmpty($body["post"], ["signInEmail", "signInPassword"])) 
+        if(Data::isEmpty($body['post'], ['signInEmail', 'signInPassword'])) 
         {
             $empty = [];
 
-            if (!empty($body["post"]["signInEmail"]))
-                Application::$APP->session->addFlashMessage("userEmail", $body['post']['signInEmail']);
+            if (!empty($body['post']['signInEmail']))
+                Application::$APP->session->addFlashMessage('userEmail', $body['post']['signInEmail']);
             else
-                $empty['signInEmail'] = "Empty field";
+                $empty['signInEmail'] = 'Empty field';
 
             if (empty($body['post']['signInPassword']))
-                $empty['signInPassword'] = "Empty field";
+                $empty['signInPassword'] = 'Empty field';
 
-            Application::$APP->session->addFlashMessage("signInErrors", $empty);
+            Application::$APP->session->addFlashMessage('signInErrors', $empty);
 
 
             if (!empty($path))
@@ -57,7 +57,7 @@ class AuthController extends Controller
                 Application::$APP->response->setLocation("/auth?path={$path}");
                 exit;
             }        
-            Application::$APP->response->setLocation("/auth");
+            Application::$APP->response->setLocation('/auth');
             exit;
             
         }
@@ -69,10 +69,10 @@ class AuthController extends Controller
             
             if (!empty($path))
             {
-                Application::$APP->response->setLocation("{$body["get"]["path"]}");
+                Application::$APP->response->setLocation("{$body['get']['path']}");
                 exit;
             }
-            Application::$APP->response->setLocation("/");
+            Application::$APP->response->setLocation('/');
             exit;
 
         }
@@ -83,6 +83,6 @@ class AuthController extends Controller
 
     public function createAccount()
     {
-        echo "CREATE ACCOUNT";
+        echo 'CREATE ACCOUNT';
     }
 }

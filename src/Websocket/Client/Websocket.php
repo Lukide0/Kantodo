@@ -27,7 +27,7 @@ class Websocket
 
         $key = base64_encode(openssl_random_pseudo_bytes(16));
 
-        $header = "GET " . $path . " HTTP/1.1\r\n"
+        $header = "GET {$path} HTTP/1.1\r\n"
             ."Host: {$this->host}\r\n"
             ."pragma: no-cache\r\n"
             ."Upgrade: WebSocket\r\n"
@@ -54,13 +54,13 @@ class Websocket
 
     public function send(string $message)
     {
-        $header = "";
+        $header = '';
         if(strlen($message)<126) $header.=chr(0x80 | strlen($message));
-        elseif (strlen($message)<0xFFFF) $header.=chr(0x80 | 126) . pack("n",strlen($message));
-        else $header.=chr(0x80 | 127) . pack("N",0) . pack("N",strlen($message));
+        elseif (strlen($message)<0xFFFF) $header.=chr(0x80 | 126) . pack('n',strlen($message));
+        else $header.=chr(0x80 | 127) . pack('N',0) . pack('N',strlen($message));
 
         // Add mask
-        $mask=pack("N",rand(1,0x7FFFFFFF));
+        $mask=pack('N',rand(1,0x7FFFFFFF));
         $header.=$mask;
 
         // Mask application message.
@@ -72,7 +72,7 @@ class Websocket
 
     public function read()
     {
-        $data = "";
+        $data = '';
 
         do {
             $header = fread($this->streamSocket, 2);
@@ -129,7 +129,7 @@ class Websocket
             if ($opcode == 9) 
             {
                 //pong
-                fwrite($this->streamSocket, chr(0x8A) . chr(0x80) . pack("N", rand(1,0x7FFFFFFF)));
+                fwrite($this->streamSocket, chr(0x8A) . chr(0x80) . pack('N', rand(1,0x7FFFFFFF)));
                 continue;
             }
 

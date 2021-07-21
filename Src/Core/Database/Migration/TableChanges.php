@@ -32,7 +32,7 @@ class TableChanges
         if ($this->sql != NULL)
             return $this->sql;
 
-        $tmpSQL = "";
+        $tmpSQL = '';
         
         // rename table
         $table = $this->orig->getFullName();
@@ -124,9 +124,9 @@ class TableChanges
             $tmpSQL .= "ALTER TABLE {$table}";
             
             foreach ($this->add['unique'] as $columns) {
-                $columns = explode(";", $columns);
+                $columns = explode(';', $columns);
                 $keysString = implode(',', $columns);
-                $keyName = "UN_" . implode("_", $columns);
+                $keyName = 'UN_' . implode('_', $columns);
                 $tmpSQL .= " ADD CONSTRAINT {$keyName} UNIQUE ({$keysString}),";
             }
 

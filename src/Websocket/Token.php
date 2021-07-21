@@ -8,7 +8,7 @@ class Token
     
     public static function generate(string $data, string $publicKey, string $privateKey)
     {
-        $signature = hash_hmac("sha256", $data . $publicKey, $privateKey, true);
+        $signature = hash_hmac('sha256', $data . $publicKey, $privateKey, true);
         return base64_encode($signature);
     }
 

@@ -11,7 +11,7 @@ function switchPasswordVisibility(e) {
 }
 
 function switchInputDisable(parent, disable = true){
-    let els = parent.getElementsByTagName("input");
+    let els = parent.getElementsByTagName('input');
 
     for (let index = 0; index < els.length; index++) {
         let el = els[index];

@@ -9,7 +9,7 @@ class ProjectsListView implements IView
 {
     public function render(array $params = [])
     {
-        Application::$APP->header->registerStyle("Styles/projects.css");
+        Application::$APP->header->registerStyle('Styles/projects.css');
         ?>
         <table class="projects">
             <thead>

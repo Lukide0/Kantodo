@@ -1,5 +1,5 @@
 import re
-from os import rename, system, name, path
+from os import chdir, rename, system, name, path, getcwd
 from Console import Console
 
 CLASS_NAME_REGEX = r"^[A-Z][a-zA-Z0-9_]*$"
@@ -223,4 +223,31 @@ rename [options] NAME NEWNAME
         -v          rename view
         -w          rename widget
         -m          rename model
+""")
+#-----------------------------------------------------------
+# MIGRATION
+def migration_command(commands):
+    if len(commands) < 2:
+        migration_command_help()
+        return
+
+    version = commands.pop(0)
+    args = " ".join(commands)
+
+    chdir("../")
+
+    system('php -f Src/Core/Database/Migration/ConsoleRunner.php ' + version + " " + args)
+
+    chdir("./Generators/")
+
+
+def migration_command_help():
+    print("""
+mig VERSION [Options]
+
+    migration
+
+    Options
+        -o          put changes in sql file
+        -e          execute
 """)

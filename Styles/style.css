@@ -84,7 +84,7 @@
     --shadow-24dp: 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12), 0px 11px 15px -7px rgba(0, 0, 0, 0.2);
 
     /* COMPONENTS */
-    --window-head: rgb(62, 71, 91);
+    --window-head: var(--bg-primary);
 
     --bg-column: rgb(235, 235, 235);
     --tag-color: var(--info);
@@ -159,7 +159,7 @@ header,
 aside {
     display: flex;
     box-shadow: var(--shadow-1dp);
-    z-index: 999;
+    z-index: 100;
 }
 
 aside {
@@ -857,8 +857,8 @@ label.text input:focus, label.text input:focus ~ .input-close {
     position: absolute;
     left: 0;
     top: 0;
-    min-width: 150px;
-    max-width: 33%;
+    min-width: 50%;
+    max-width: 100%;
     overflow: auto;
     border-radius: var(--border-radius-medium);
     box-shadow: var(--shadow-8dp);
@@ -881,7 +881,7 @@ label.text input:focus, label.text input:focus ~ .input-close {
     display: inline;
     font-size: var(--font-size-regular);
     font-weight: var(--font-weight-regular);
-    color: var(--font-color-third);
+    color: var(--font-color-primary);
 }
 
 .window .head > button {
