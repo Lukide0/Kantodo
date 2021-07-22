@@ -283,8 +283,8 @@ class Blueprint
         $columnDataType = $this->getColumn($column);
         $referenceDataType = $reference->getColumn($referenceColumn);
 
-        if ($columnDataType['type'] != $referenceDataType['type'] OR 
-            $columnDataType['length'] != $referenceDataType['length'] OR 
+        if ($columnDataType['type'] != $referenceDataType['type'] || 
+            $columnDataType['length'] != $referenceDataType['length'] || 
             $columnDataType['unsigned'] != $referenceDataType['unsigned'])
             throw new ColumnException("Column {$column} must have same data type as reference column {$reference} in table {$reference->getName()}.");
 
@@ -451,7 +451,7 @@ class Blueprint
             $sqlKeys[] = "CONSTRAINT `{$foreign['key']}` FOREIGN KEY (`{$column}`) REFERENCES {$foreign['table']}(`{$foreign['column']}`) ON DELETE {$foreign['onDelete']} ON UPDATE {$foreign['onUpdate']}";
         }
 
-        $sql = "CREATE TABLE {$this->getFullName()} (\n" . implode(',\n',$sqlColumns) . ',\n\t' . implode(',\n\t', $sqlKeys) . ') ENGINE = INNODB DEFAULT CHARSET=utf8;';
+        $sql = "CREATE TABLE {$this->getFullName()} (\n" . implode(",\n",$sqlColumns) . ",\n\t" . implode(",\n\t", $sqlKeys) . ') ENGINE = INNODB DEFAULT CHARSET=utf8;';
         return $sql;
     }
 
@@ -478,7 +478,11 @@ class Blueprint
             $sqlColumn .= "DEFAULT {$opt['default']} ";
         
         if ($opt['autoincrement'] == true)
-            $sqlColumn .= 'AUTO_INCREMENT';
+            $sqlColumn .= 'AUTO_INCREMENT ';
+        
+        if ($opt['unique'] == true)
+            $sqlColumn .= 'UNIQUE';
+
         return $sqlColumn;
     }
 

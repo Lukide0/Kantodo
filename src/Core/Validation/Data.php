@@ -12,7 +12,7 @@ class Data
     {
         $emptyKeys = [];
         foreach ($keys as $key) {
-            if (!isset($data[$key]) OR empty($data[$key])) 
+            if (!isset($data[$key]) || empty($data[$key])) 
             {
                 $emptyKeys[] = $key;
             }

@@ -16,7 +16,7 @@ class AuthController extends Controller
     {
         $body = Application::$APP->request->getBody();
 
-        if (!empty($body['get']['path']) AND !Data::isURLExternal($body['get']['path'])) 
+        if (!empty($body['get']['path']) && !Data::isURLExternal($body['get']['path'])) 
         {
             $this->renderView(AuthView::class, ['path' => $body['get']['path']]);
             return;
@@ -35,7 +35,7 @@ class AuthController extends Controller
     {
         $body = Application::$APP->request->getBody();
 
-        $path = (isset($body['get']['path']) && Data::isURLExternal($body['get']['path']) === false) ? urlencode($body['get']['path']) : '';
+        $path = (isset($body['get']['path']) && Data::isURLExternal($body['get']['path']) === false) ? $body['get']['path'] : '';
 
         if(Data::isEmpty($body['post'], ['signInEmail', 'signInPassword'])) 
         {

@@ -242,7 +242,7 @@ class InstallView implements IView
 
 
                     if (errors.length == 0)
-                        return true;
+                        return;
                     
                     errors.forEach(error => {
                         if (obj.hasOwnProperty(error)) 
@@ -252,9 +252,6 @@ class InstallView implements IView
                             el.classList.add('error');
                         }
                     });
-
-                    
-                    return false;
                 }
             </script>
         </body>

@@ -71,7 +71,8 @@ class Version_1_0 extends AbstractMigration
             //columns
             $table->addColumn('team_id', 'bigint', ['unsigned' => true, 'autoincrement' => true]);
             $table->addColumn('name', 'varchar');
-            $table->addColumn('dir_name', 'varchar', ['unique' => true]);
+            $table->addColumn('uuid', 'varchar', ['length' => 36, 'unique' => true]);
+            $table->addColumn('dir_name', 'varchar', ['length' => 36, 'unique' => true]);
             $table->addColumn('description', 'text', ['length' => 500, 'notNull' => false]);
             $table->addColumn('is_public', 'bool');
 
@@ -87,12 +88,12 @@ class Version_1_0 extends AbstractMigration
             //columns
             $table->addColumn('team_position_id', 'bigint', ['unsigned' => true, 'autoincrement' => true]);
             $table->addColumn('name', 'varchar', ['unique' => true]);
-            $table->addColumn('can_edit_team_setting', 'bool');
+            $table->addColumn('can_edit_team_settings', 'bool');
             $table->addColumn('can_add_project', 'bool');
             $table->addColumn('can_remove_project', 'bool');
             $table->addColumn('can_add_people', 'bool');
             $table->addColumn('can_remove_people', 'bool');
-            $table->addColumn('can_modify_people_position', 'bool');
+            $table->addColumn('can_change_people_position', 'bool');
             //keys
             $table->addPrimaryKey('team_position_id');
         });
@@ -144,6 +145,7 @@ class Version_1_0 extends AbstractMigration
             $table->addColumn('can_edit_project_setting', 'bool');
             $table->addColumn('can_add_people', 'bool');
             $table->addColumn('can_remove_people', 'bool');
+            $table->addColumn('can_change_people_position', 'bool');
             //keys
             $table->addPrimaryKey('project_position_id');
         });

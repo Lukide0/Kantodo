@@ -98,7 +98,7 @@ class Schema
 
     public function getSQL()
     {
-        return implode('\n\n',$this->queries);
+        return implode("\n\n",$this->queries);
     }
 
     public function hasTable(string $table)

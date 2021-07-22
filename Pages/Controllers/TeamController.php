@@ -9,16 +9,14 @@ use Kantodo\Core\{
     Validation\Data
 };
 use Kantodo\Models\TeamModel;
-use Kantodo\Views\Layouts\ClientLayout;
-use Kantodo\Views\TeamsListView;
 
 class TeamController extends Controller
 {
     public function createTeam()
     {
         $body = Application::$APP->request->getBody();
-
         $response = Application::$APP->response;
+
 
         if (Data::isEmpty($body['post'], ['teamName'])) 
         {
@@ -29,8 +27,18 @@ class TeamController extends Controller
 
         $desc = $body['post']['teamDesc'] ?? '';
 
+        $userID = Application::$APP->session->get("userID", false);
+
+        if ($userID === false)
+        {
+            $response->addResponseError('Server error');
+            $response->outputResponse();
+            exit;
+        }
+
         $teamModel = new TeamModel();
-        $id = $teamModel->create($body['post']['teamName'], $desc);
+        
+        $id = $teamModel->create($body['post']['teamName'], $userID, $desc, false);
 
         if ($id === false) 
         {
@@ -38,19 +46,15 @@ class TeamController extends Controller
             $response->outputResponse();
             exit;
         }
-        $userID = Application::$APP->session->get('userID');
 
-        $status = $teamModel->setUserPosition($userID, $id, 'admin');
-
-        if ($status === false) 
-        {
-            $response->addResponseError('Server error');
-            $response->outputResponse();
-            exit;
-        }
         $response->setResponseData(true);
         $response->outputResponse();
         exit;
+    }
+
+    public function viewTeam()
+    {
+        # code...
     }
 }
 

@@ -19,10 +19,19 @@ class Runner
     const MIG_DOWN = 1;
     const MIG_STAY = 0;
 
-    public function __construct() {
-        $this->version = $this->getCurrentVersion();
+    public function __construct(bool $loadSchema = true, string $setCurrentVer = "") {
         $this->installVersion = $this->getInstallVersion();
-        $this->schema = AbstractMigration::loadSchema();
+
+        if ($setCurrentVer !== "")
+            $this->version = $setCurrentVer;
+        else
+            $this->version = $this->getCurrentVersion();
+            
+
+        if ($loadSchema)
+            $this->schema = AbstractMigration::loadSchema();
+        else
+            $this->schema = new Schema(Application::$DB_TABLE_PREFIX);
     }
 
     public function run(string $version, bool $execute = true, bool $outputFile = false)
@@ -41,14 +50,14 @@ class Runner
         foreach ($versions as $ver => $_) {
 
             $fullname = "\Migrations\\Version_{$ver}";
-            if ($ver == $version OR $ver == $this->version)
+            if ($ver == $version || $ver == $this->version)
             {
                 if (!class_exists($fullname))
                     throw new MigrationException("`Version_{$ver}` is not a class");
 
                 $tmp++;
 
-                if (($ver == $version AND $mode == self::MIG_UP) OR ($ver == $this->version AND $mode == self::MIG_DOWN))
+                if (($ver == $version && $mode == self::MIG_UP) || ($ver == $this->version && $mode == self::MIG_DOWN))
                     $between[] = $ver;
 
 
@@ -167,7 +176,7 @@ class Runner
         $sizeA = count($a);
         $sizeB = count($b);
         $i = 0;
-        while ($sizeA > $i AND $sizeB > $i) {
+        while ($sizeA > $i && $sizeB > $i) {
             $tmpA = intval($a[$i]);
             $tmpB = intval($b[$i]);
 

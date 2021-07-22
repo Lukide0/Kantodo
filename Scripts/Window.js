@@ -50,13 +50,13 @@ function Window(title, content) {
         'show': function(duration = 300) 
         {
             if (this.onShow !== null)
-                this.onShow(this);
+                this.onShow(this, duration);
             this.isOpened = true;
             ANIMATIONS.fadeIn(this.__element, duration);
         },
         'close': function(duration = 300) {
             if (this.onClose !== null)
-                this.onClose(this);
+                this.onClose(this, duration);
 
             this.isOpened = false;
             ANIMATIONS.fadeOut(this.__element, duration);

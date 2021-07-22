@@ -250,4 +250,6 @@ mig VERSION [Options]
     Options
         -o          put changes in sql file
         -e          execute
+        -n          don't load schema
+        -c VERSION  set temp. current version in format X_X
 """)

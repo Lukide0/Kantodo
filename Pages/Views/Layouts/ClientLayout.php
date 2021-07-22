@@ -13,9 +13,10 @@ class ClientLayout extends Layout
         $headerContent = Application::$APP->header->GetContent();
 
         $teamModel = new TeamModel();
-        $teams = $teamModel->getUserTeams();
-        // todo
-        // teams from database
+
+        $userID = Application::$APP->session->get("userID");
+
+        $teams = $teamModel->getUserTeams($userID);
 
         ?>
         <!DOCTYPE html>
@@ -60,20 +61,17 @@ class ClientLayout extends Layout
                     </button>
                 </div>
                 <div class="teams container">
+                    <?php
+                    foreach ($teams as $team) {
+                    ?>
                     <div class="team">
                         <div class="icon"></div>
                         <div>
-                            <div class="name">Managment</div>
-                            <div class="members-count">5 members</div>
+                            <div class="name"><?= $team['name'] ?></div>
+                            <div class="members-count"><?= $team['members'] ?> members</div>
                         </div>
                     </div>
-                    <div class="team">
-                        <div class="icon"></div>
-                        <div>
-                            <div class="name">Managment</div>
-                            <div class="members-count">5 members</div>
-                        </div>
-                    </div>
+                    <?php } ?>
                 </div>
             </aside>
             <main>
@@ -147,12 +145,24 @@ class ClientLayout extends Layout
 
                         if (error) 
                             return;
-
-                        console.log(params);
                         
 
                         const request = Request('<?= Application::$URL_PATH ?>/create/team', 'POST', params);
-                        console.log(request)
+                        request.then(result => {
+                            let res = JSON.parse(result);
+                            if (res.data == true) 
+                            {
+                                // TODO ADD TEAM TO LIST
+
+                                formWindow.onClose = function(_, dur) 
+                                {
+                                    setTimeout(function() {
+                                        formWindow.destroy();
+                                    }, dur);
+                                }
+                                formWindow.close();
+                            }
+                        });
                     }
                 }
 

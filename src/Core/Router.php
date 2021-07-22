@@ -12,8 +12,8 @@ class Router
     public $request;
     
     protected $routes = [
-        'get' => [],
-        'post' => []
+        Request::METHOD_GET => [],
+        Request::METHOD_POST => []
     ];
     
     protected $errorHandlers = [];
@@ -28,12 +28,52 @@ class Router
 
     public function get(string $path, $callback, int $access = Application::GUEST, bool $strict = false)
     {
-        $this->routes['get'][$path] =  ['callback' => $callback, 'access' => $access, 'strict' => $strict ];
+        $this->routes[Request::METHOD_GET][$path] =  ['callback' => $callback, 'access' => $access, 'strict' => $strict ];
     }
 
     public function post(string $path, $callback, int $access = Application::GUEST, bool $strict = false)
     {
-        $this->routes['post'][$path] = ['callback' => $callback, 'access' => $access, 'strict' => $strict];
+        $this->routes[Request::METHOD_POST][$path] = ['callback' => $callback, 'access' => $access, 'strict' => $strict];
+    }
+
+    public function match(string $path, string $method)
+    {
+
+        $routes = $this->routes[$method] ?? [];
+
+        if (isset($routes[$path]))
+            return [$routes[$path], []];
+
+        $path = ltrim($path, '/');
+        $pathParts = explode('/', $path);
+        $pathPartsCount = count($pathParts);
+
+        foreach ($routes as $route => $callback) 
+        {
+            $route = ltrim($route, '/');
+            $routeParts = explode('/', $route);
+
+
+            if (count($routeParts) != $pathPartsCount)
+                continue;
+
+            $tmp = [];
+            for ($i=0; $i < $pathPartsCount; $i++) 
+            {
+                if ($routeParts[$i][0] == '{') 
+                {
+                    $tmp[trim($routeParts[$i], "{}")] = $pathParts[$i];
+                    continue;
+                }
+                elseif ($routeParts[$i] !== $pathParts[$i]) 
+                    continue 2;                
+            }
+            
+            return [$callback, $tmp];
+        }
+        return [false, []];
+
+
     }
 
     public final function registerErrorCodeHandler(int $code, $callback)
@@ -93,7 +133,7 @@ class Router
 
     public function runPath(string $path, string $method = Request::METHOD_GET)
     {
-        $callback = $this->routes[$method][$path] ?? false;
+        [$callback, $args] = $this->match($path, $method);
 
         if ($callback === false) 
         {
@@ -129,10 +169,10 @@ class Router
             }
 
 
-            call_user_func([$controller, $classMethod]);
+            call_user_func([$controller, $classMethod], $args);
             return;
         }
-        call_user_func($callback['callback'], $this->request, $this->response);
+        call_user_func($callback['callback'], $this->request, $this->response, $args);
     }
 }
 

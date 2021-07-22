@@ -72,11 +72,17 @@ function validatePassword(password, opt = {})
 }
 
 const ValidationMode = Object.freeze({
-    'agressive': function(element, callback) {
-        element.addEventListener('input', callback, false);
+    'agressive': function(element, callback, obj = {}) {
+        callback = window[callback];
+        element.addEventListener('input', function(event) {
+            callback(event, obj)
+        }, false);
     },
-    'lazy': function(element, callback) {
-        element.addEventListener('change', callback, false);
+    'lazy': function(element, callback, obj = {}) {
+        callback = window[callback];
+        element.addEventListener('change', function(event) {
+            callback(event, obj)
+        }, false);
     },
     
     /**
@@ -116,41 +122,38 @@ const ValidationMode = Object.freeze({
 });
 
 /* PASSWORD VALIDATION */
+window.onload = function() 
+{
+    let passwordElements = document.querySelectorAll('[data-password-validation]');
+    passwordElements.forEach((el) => {
+        let func = el.dataset.passwordValidation;
+        let requirements = document.querySelector(`[data-password-requirements='${el.name}']`);
 
-(function() {
-    window.onload = function() 
-    {
-        let passwordElements = document.querySelectorAll('[data-password-validation]');
-        passwordElements.forEach((el) => {
-            let func = el.dataset.passwordValidation;
-            let requirements = document.querySelector(`[data-password-requirements='${el.name}']`);
+        if (requirements != null) 
+        {
+            let obj = {
+                'parent': requirements
+            };
+            for (let i = 0; i < requirements.children.length; i++) {
+                const element = requirements.children[i];
+                let error = element.dataset.error ?? '';
+                let errorCode = ERRORS.PASSWORD[error] ?? null;
+                
+                if (errorCode != null)
+                    obj[errorCode] = element;
 
-            if (requirements != null) 
-            {
-                let obj = {
-                    'parent': requirements
-                };
-                for (let i = 0; i < requirements.children.length; i++) {
-                    const element = requirements.children[i];
-                    let error = element.dataset.error ?? '';
-                    let errorCode = ERRORS.PASSWORD[error] ?? null;
-                    
-                    if (errorCode != null)
-                        obj[errorCode] = element;
-
-                }
-                ValidationMode.eager(el, func, obj);
-
-            } else 
-            {
-                ValidationMode.eager(el, func);
             }
-            
+            ValidationMode.agressive(el, func, obj);
+
+        } else 
+        {
+            ValidationMode.agressive(el, func);
+        }
+        
 
 
-        });
+    });
 
 
-        window.onload = null;
-    }
-})();
+    window.onload = null;
+}

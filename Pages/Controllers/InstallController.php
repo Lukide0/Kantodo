@@ -10,6 +10,7 @@ use Kantodo\Core\{
     Generator
 };
 use Kantodo\Core\Database\Migration\Runner;
+use Kantodo\Models\TeamModel;
 use Kantodo\Models\UserModel;
 use Kantodo\Views\InstallView;
 
@@ -133,6 +134,23 @@ class InstallController extends Controller
             Application::$APP->response->outputResponse();
             exit;
         }
+
+        $teamModel = new TeamModel();
+        $status = null;
+        foreach (TeamModel::POSITIONS as $name => $priv) {
+            $status = $teamModel->createPosition($name, $priv);
+            if ($status === false)
+                break;
+        }
+
+        if ($status === false) 
+        {
+            $migRunner->run("0_0");
+            Application::$APP->response->addResponseError('Server error');
+            Application::$APP->response->outputResponse();
+        }
+
+
 
         Application::overrideConfig($dbConstants);
         Application::$APP->response->setResponseData(true);

@@ -163,7 +163,7 @@ class TableChanges
             $rename = true;
         
         // prefix
-        if ($this->orig->getPrefix() != $this->mod->getPrefix() OR $rename === true) 
+        if ($this->orig->getPrefix() != $this->mod->getPrefix() || $rename === true) 
         {
             $this->update['tableName'] = $this->mod->getFullName();
         }

@@ -83,39 +83,7 @@ class UserModel extends Model
 
         $tableColumns = ['user_id', 'firstname', 'lastname', 'email', 'password', 'secret', 'nickname'];
 
-        if (in_array('*', $columns)) 
-        {
-            $columns = ['*'];
-        } else 
-        {
-            $columns = array_intersect($tableColumns, $columns);
-        }
-
-        if (count($columns) == 0) 
-            return [];
-
-        $searchData = [];
-        $queryData = [];
-
-        foreach ($tableColumns as $column) {
-            if (isset($search[$column])) 
-            {
-                $searchData[] = "{$column} = :{$column}";
-                $queryData[":$column"] = $search[$column];
-            }
-        }
-
-        $query = 'SELECT ' . implode(', ', $columns) . " FROM {$this->table}";
-        if (count($search) != 0) 
-            $query .= ' WHERE ' . implode(' AND ', $searchData);
-        
-        if ($limit >= 1)
-            $query .= " LIMIT {$limit}";
-
-        $sth = $this->con->prepare($query);
-        $sth->execute($queryData);
-        $users = $sth->fetchAll(PDO::FETCH_ASSOC);
-        return $users;
+        return $this->query($this->table, $tableColumns, $columns, $search, $limit);
     }
 
     public function getMeta(int $userID, string $key, bool $multiple = false)

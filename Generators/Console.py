@@ -103,11 +103,11 @@ class Console:
     def main_help(self):
         array_commands = self.commands.get_list()
         
-        commands = "\n\t".join(array_commands)
+        commands = "\n  ".join(array_commands)
 
         print(f"""
 Commands:
-    {commands}
+  {commands}
 """)
 
     

@@ -12,7 +12,7 @@ class AuthView implements IView
     public function render(array $params = [])
     {
         $authType = (isset($params['type']) && $params['type'] == 'register') ? 'right' : '';
-        $fromURL = (isset($params['path'])) ? '?path=' . urlencode($params['path']) : '';
+        $fromURL = (isset($params['path'])) ? '?path=' . $params['path'] : '';
         $appUrl = Application::$URL_PATH;
 
         $signInAction = "{$appUrl}/auth/sign-in{$fromURL}";
@@ -93,7 +93,7 @@ class AuthView implements IView
                     <?= Form::start($signInAction); ?>
                         <?= Form::tokenCSRF(); ?>
                         <div class="row main-center">
-                            <?= Input::text('signInEmail', 'Email', $email, $errors); ?>
+                            <?= Input::text('signInEmail', 'Email', $email, $errors, [], Input::AUTOCOMPLETE_EMAIL); ?>
                         </div>
                         <div class="row main-center">
                             <?= Input::password('signInPassword', 'Password', '', $errors, [], Input::AUTOCOMPLETE_CURRENT_PASSWORD); ?>

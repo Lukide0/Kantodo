@@ -45,7 +45,7 @@ class Lexorank
      **/
     public function __construct(int $JUMP = 8, int $BLOCK_COUNT = 5, int $BLOCK_SIZE = 3) 
     {
-        if ($JUMP < 1 OR $BLOCK_COUNT < 1 OR $BLOCK_SIZE < 1)
+        if ($JUMP < 1 || $BLOCK_COUNT < 1 || $BLOCK_SIZE < 1)
             throw new InvalidArgumentException();
 
         $this->JUMP = $JUMP;
@@ -100,7 +100,7 @@ class Lexorank
 
             $middle = $this->getMiddle($before, $after);
 
-            if ($middle === $before OR $middle === $after) 
+            if ($middle === $before || $middle === $after) 
             {
                 $rank .= $before;
                 $index += $this->BLOCK_SIZE;
@@ -270,7 +270,7 @@ class Lexorank
         $blockBeforeNum = $this->blockToNumber($blockBefore);
         $blockAfterNum = $this->blockToNumber($blockAfter);
 
-        if ($blockBefore === $this->MIN_VALUE AND $blockAfter === $this->MAX_VALUE)
+        if ($blockBefore === $this->MIN_VALUE && $blockAfter === $this->MAX_VALUE)
         {
             $middle = floor( ($blockBeforeNum + $blockAfterNum) / 2 );
             return $this->numberToBlock($middle);

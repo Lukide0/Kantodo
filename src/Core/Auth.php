@@ -38,7 +38,7 @@ class Auth
             $session->cleanData();
             return false;
         }
-        $session->set('exp', date('Y-m-d H:i:s', strtotime('+10 minutes')));
+        $session->set('exp', date('Y-m-d H:i:s', strtotime('+30 minutes')));
         return true;
         
     }
@@ -60,7 +60,7 @@ class Auth
            $session->set('userSecret', $user['secret']);
            $session->set('userEmail', $email);
            $session->set('role', Application::USER);
-           $session->set('exp', date('Y-m-d H:i:s', strtotime('+10 minutes')));
+           $session->set('exp', date('Y-m-d H:i:s', strtotime('+30 minutes')));
             
             return true;
         }
