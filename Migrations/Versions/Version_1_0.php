@@ -72,7 +72,6 @@ class Version_1_0 extends AbstractMigration
             $table->addColumn('team_id', 'bigint', ['unsigned' => true, 'autoincrement' => true]);
             $table->addColumn('name', 'varchar');
             $table->addColumn('uuid', 'varchar', ['length' => 36, 'unique' => true]);
-            $table->addColumn('dir_name', 'varchar', ['length' => 36, 'unique' => true]);
             $table->addColumn('description', 'text', ['length' => 500, 'notNull' => false]);
             $table->addColumn('is_public', 'bool');
 
@@ -127,9 +126,12 @@ class Version_1_0 extends AbstractMigration
             $table->addColumn('name', 'varchar');
             $table->addColumn('team_id', 'bigint', ['unsigned' => true]);
             $table->addColumn('is_open', 'bool');
-            
+            $table->addColumn("uuid", 'varchar', ['length' => 36]);
+            $table->addColumn('is_public', 'bool');
+
             //keys
             $table->addPrimaryKey('project_id');
+            $table->addUnique(['uuid', 'team_id']);
             
             $table->addForeignKey('team_id', $schema->getTable('teams'), 'team_id', Blueprint::ACTION_AFFECT);
         });
@@ -236,7 +238,7 @@ class Version_1_0 extends AbstractMigration
             $table->addColumn('end_date', 'datetime', ['notNull' => false]);
             $table->addColumn('index', 'varchar', ['length' => 50]);
             $table->addColumn('creator_id', 'bigint', ['unsigned' => true]);
-            $table->addColumn('milestone_id', 'bigint', ['unsigned' => true]);
+            $table->addColumn('milestone_id', 'bigint', ['unsigned' => true, 'notNull' => false]);
             $table->addColumn('column_id', 'bigint', ['unsigned' => true]);
             
             //keys

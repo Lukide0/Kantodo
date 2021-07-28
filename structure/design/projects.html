@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="flex.css">
-    <link rel="stylesheet" href="projects.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <link rel="stylesheet" href="../../styles/projects.css">
     <script src="js/Animation.js"></script>
     <script src="js/Window.js"></script>
     <script src="js/Request.js"></script>
@@ -14,13 +13,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <title>Menu</title>
 </head>
-<body>
+<body class="theme-light">
     <header>
         <div class="row">
             <h1>Kantodo</h1>
             <div class="tabs">
                 <div class="tab active"><p>Projects</p></div>
                 <div class="tab"><p>Calendar</p></div>
+                <div class="tab-indicator"></div>
             </div>
         </div>
         <div class="actions">
@@ -57,7 +57,7 @@
             </div>
         </div>
     </aside>
-    <main>
+    <main class="container">
         <table class="projects">
             <thead>
                 <tr>
@@ -95,7 +95,7 @@
             <tfoot></tfoot>
         </table>
     </main>
-    <script>
+    <!-- <script>
         (function() {
             "use-strict"
             
@@ -103,14 +103,14 @@
             let content = `
             <div class="container">
                 <div class="container" style="margin-top: var(--gap-medium)">
-                    <label class="text info-focus">
+                    <label class="text-field info-focus">
                         <input type="text" name="teamName" required>
                         <span>Name</span>
                     </label>
                     <div class="error-text"></div>
                 </div>
                 <div class="container" style="margin-top: var(--gap-medium)">
-                    <label class="text info-focus">
+                    <label class="text-field info-focus">
                         <input type="text" name="teamDesc" required>
                         <span>Description</span>
                     </label>
@@ -148,6 +148,109 @@
 
         })()
 
-    </script>
+    </script> -->
 </body>
 </html>
+<!-- 
+label {
+    --color: #{get-color("secondary")};
+    --border-color: var(--color);
+
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    user-select: none;
+
+    &.error {
+        color: #{get-color("error")};
+    }
+
+    & > span {
+        @include font("regular", "medium");
+        position: absolute;
+        left: 1.5rem;
+        top: 1.25rem;
+        color: get-font-color("secondary");
+        z-index: 1;
+        transition: all 300ms ease;
+    }
+
+    & > input {
+        padding: 2rem 1.5rem;
+        padding-bottom: 0.2rem;
+        border: none;
+        background: get-background("input");
+        border-radius: get-border-radius("medium") get-border-radius("medium") 0 0;
+        position: relative;
+        transition: background 250ms ease;
+
+        &::placeholder {
+            color: transparent;
+            transition: color 200ms ease;
+        }
+
+        &:hover:not(:focus) {
+            background: get-background("input-darker");
+        }
+
+        &:disabled {
+            background: var(--disabled);
+            color: var(--disabled-darker);
+
+            & ~ span, 
+            & ~ .error {
+                color: var(--disabled-darker) !important;
+            }
+
+        }
+
+        &:focus {
+            outline: none;
+
+            & ~ span {
+                @include font("small", "medium");
+                top: 0.3rem;
+                color: var(--color);         
+            }
+
+            &::placeholder {
+                color: grey;
+            }
+
+            & ~ .error::before {
+                transition: transform 250ms ease;
+                transform: scaleX(1);
+            }
+        }
+
+    }
+
+    & > .error {
+        @include font("small", "medium");
+
+
+        position: relative;
+        border-top: 1px solid rgba(0,0,0,0.4);
+        padding-left: 1.5rem;
+        padding-top: get-gap("small");
+        min-height: get-font-size("regular");
+        line-height: 1;
+
+
+        &::before {
+            content: "";
+            display: block;
+            position: absolute;
+            top: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--border-color);
+
+
+            // start at center
+            transform-origin: center bottom;
+            transform: scaleX(0);
+        }
+    }
+} -->

@@ -126,11 +126,19 @@
 
 ::-webkit-scrollbar-track {
     background: var(--bg-scrollbar);
-    border-radius: 5px;
+    border-radius: 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -ms-border-radius: 2px;
+    -o-border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb {
     background-color: var(--bg-scrollbar-thumb);
-    border-radius: 5px;
+    border-radius: 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -ms-border-radius: 2px;
+    -o-border-radius: 2px;
 }
 /*#endregion*/
 /* #region BASIC*/
@@ -533,7 +541,7 @@ main > .avatars > button {
     margin-left: var(--gap-huge);
 }
 
-.actions > *:not(first-child) {
+.actions > *:not(:first-child) {
     margin-left: var(--gap-medium);
 }
 

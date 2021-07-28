@@ -112,7 +112,7 @@
                         <button class="flat">Month</button>
                     </div>
                 </div>
-                <div class="calendar">
+                <div class="calendar day">
                     <div class="days">
                         <div class="day">
                             <div class="name">Sun</div>
@@ -169,7 +169,7 @@
                             <div class="hour">22:00</div>
                             <div class="hour">23:00</div>
                         </div>
-                        <div class="lines">
+                        <div class="calendar-content">
                             <div class="horizontal">
                                 <div class="line"></div>
                                 <div class="line"></div>
@@ -195,20 +195,253 @@
                                 <div class="line"></div>
                                 <div class="line"></div>
                             </div>
-                            <div class="vertical">
-                                <div class="line"></div>
-                                <div class="line today"></div>
-                                <div class="line"></div>
-                                <div class="line"></div>
-                                <div class="line"></div>
-                                <div class="line"></div>
-                                <div class="line"></div>
-                            </div>
+                            <div class="tasks">
+                                <div class="day">
+                                    <div class="task">asdadadsadadada</div>
+                                </div>
+                                <div class="day today"></div>
+                                <div class="day"></div>
+                                <div class="day"></div>
+                                <div class="day"></div>
+                                <div class="day"></div>
+                                <div class="day"></div>
+                            </div>                       
                         </div>
-                        
                     </div>
                 </div>
             </div>
     </main>
 </body>
 </html>
+
+<!-- main {
+    display: flex;
+    flex-direction: row;
+}
+
+#mainCalendar {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    flex: 1;
+}
+
+#mainCalendar > .row {
+    margin-bottom: var(--gap-huge);
+}
+
+
+.calendar 
+{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
+.calendar .days,
+.calendar .tasks
+{
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+
+
+.calendar.day .days,
+.calendar.day .tasks
+{
+    grid-template-columns: 1fr;
+}
+
+.calendar.day .days .day:not(.today),
+.calendar.day .tasks .day:not(.today)
+{
+    display: none;
+}
+
+.calendar .days
+{
+    margin-left: 50px;
+    margin-right: 10px; /* SCROLL BAR */
+    box-shadow: var(--shadow-1dp);
+}
+
+.calendar .days .name 
+{
+    font-size: var(--font-size-small);
+    font-size: var(--font-size-small);
+}
+
+.calendar .days .day:first-child
+{
+    border: 0;
+}
+
+.calendar .days .day 
+{
+    border-left: 1px solid var(--border-color-calendar);
+    padding: var(--gap-huge) 0 var(--gap-small)  var(--gap-big) ;
+    color: var(--border-color-calendar);
+}
+
+.calendar .days .today 
+{
+    background: var(--primary);
+    color: var(--font-color-secondary)
+}
+
+.calendar .days .number 
+{
+    font-size:  24px;
+    font-weight: var(--font-weight-bold);
+}
+
+.calendar .assignments 
+{
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: grid;
+    position: relative;
+    grid-template-columns: 45px auto;
+}
+
+
+
+.calendar .hours 
+{
+    display: grid;
+    margin-top: calc(75px / 2);
+    grid-template-rows: repeat(23, 75px) calc(75px / 2);
+}
+
+.calendar .hour 
+{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: var(--gap-medium);
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-light);
+}
+
+.calendar .calendar-content 
+{
+    position: relative;
+}
+
+
+.calendar .horizontal 
+{
+    width: 100%;
+    display: grid;
+    grid-template-rows: repeat(23, 75px);
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.tasks 
+{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: var(--gap-small);
+}
+.calendar .day {
+    position: relative;
+    border-left: 1px solid var(--border-color);
+}
+
+.calendar .tasks .day.today::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-color: var(--primary);
+    opacity: 0.15;
+}
+.calendar .tasks .task 
+{
+    position: absolute;
+    left: var(--gap-small);
+    right: var(--gap-small);
+    top: 50%;
+}
+
+.calendar .horizontal .line {
+    position: relative;
+}
+
+.calendar .horizontal .line::after {
+    content: "";
+    width: 100%;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    border-bottom: 1px solid var(--border-color);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.sort {
+    margin-right: 25px;
+    margin-top: 50px;
+}
+
+.sort .category {
+    margin-bottom: 15px;
+}
+
+.sort .name {
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-medium);
+}
+
+.sort .items {
+    display: flex;
+    flex-direction: column;
+    padding: 5px 0 0 25px;
+    font-size: var(--font-size-regular);
+}
+
+#date {
+    font-size: var(--font-size-big);
+    font-weight: var(--font-weight-regular);
+}
+
+#buttons {
+    margin: 0 20px;
+}
+
+#switch {
+    display: flex;
+    margin-left: auto;
+    margin-right: 10px;
+    padding: 4px;
+    border: 1px solid var(--border-color-calendar);
+    border-radius: var(--border-radius-medium);
+}
+
+#switch > button {
+    margin: 0 5px;
+}
+ -->

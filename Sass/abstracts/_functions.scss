@@ -1,0 +1,34 @@
+@function map-get-deep($map, $keys...) {
+    @each $key in $keys {
+        $map: map-get($map, $key);
+    }
+    @return $map;
+}
+
+@function get-border-radius($key) {
+    @return map-get-deep($border, "radius", $key);
+}
+
+@function get-gap($key) {
+    @return map-get($gap, $key);
+}
+
+@function get-font-size($key) {
+    @return map-get-deep($font, "size", $key);
+}
+
+@function get-font-weight($key) {
+    @return map-get-deep($font, "weight", $key);
+}
+
+@function get-font-color($key: "primary") {
+    @return var(--font-color-#{$key});
+}
+
+@function get-background($key: "primary") {
+    @return var(--background-#{$key});
+}
+
+@function get-color($key, $opacity: 1) {
+    @return unquote('rgba(var(--#{$key}), #{$opacity})');
+}

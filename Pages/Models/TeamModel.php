@@ -92,22 +92,20 @@ class TeamModel extends Model
         if (count($columns) == 0) 
             return [];
 
-        $tableColumns = ['team_id', 'name', 'dir_name', 'description', 'password', 'is_public'];
+        $tableColumns = ['team_id', 'name', 'uuid', 'description', 'password', 'is_public'];
 
         return $this->query($this->table, $tableColumns, $columns, $search, $limit);
     }
 
     public function create(string $name, int $userID ,string $desc = '', bool $public = false)
     {
-        $folder = Generator::uuidV4();
         $uuid = Generator::uuidV4();
         
-        $sth = $this->con->prepare("INSERT INTO {$this->table} ( `name`, `description`, `dir_name`, `is_public`, `uuid`) VALUES ( :name, :desc, :dir_name, :is_public, :uuid)");
+        $sth = $this->con->prepare("INSERT INTO {$this->table} ( `name`, `description`, `is_public`, `uuid`) VALUES ( :name, :desc, :is_public, :uuid)");
         $status = $sth->execute([
             ':name' => $name,
             ':desc' => $desc,
             ':is_public' => $public,
-            ':dir_name' =>  $folder,
             ':uuid' => $uuid
         ]);
 
@@ -131,7 +129,7 @@ class TeamModel extends Model
                 return false;
             }
 
-            mkdir(Application::$DATA_PATH . $folder);
+            mkdir(Application::$DATA_PATH . $uuid);
 
             return $this->con->lastInsertId();
         }
@@ -141,12 +139,12 @@ class TeamModel extends Model
 
     public function delete(int $teamID)
     {
-        $dir = $this->get(['dir_name'], ['team_id' => $teamID], 1);
+        $dir = $this->get(['uuid'], ['team_id' => $teamID], 1);
 
         if ($dir === false || count($dir) == 0)
             return false;
 
-        $dir = $dir[0]['dir_name'];
+        $dir = $dir[0]['uuid'];
 
 
         if (!rmdir(Application::$DATA_PATH . $dir)) 

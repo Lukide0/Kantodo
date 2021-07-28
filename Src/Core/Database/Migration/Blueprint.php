@@ -99,7 +99,7 @@ class Blueprint
             case 'BIGINT':
                 break;
             case 'VARCHAR':
-                $options['length'] = 255;
+                $options['length'] = $options['length'] ?? 255;
                 $options['unsigned'] = false;
             default:
                 $options['unsigned'] = false;

@@ -1,119 +1,105 @@
 .projects {
-    max-width: calc(100% - var(--gap-huge));
-    width: calc(100% - var(--gap-huge));
-    font-size: var(--font-size-medium);
-    color: var(--font-color-primary);
-    border-collapse: collapse;
-}
-
-.projects > thead > tr > td:first-child {
-    border-radius: var(--border-radius-small) 0 0 0;
-    -webkit-border-radius: var(--border-radius-small) 0 0 0;
-    -moz-border-radius: var(--border-radius-small) 0 0 0;
-    -ms-border-radius: var(--border-radius-small) 0 0 0;
-    -o-border-radius: var(--border-radius-small) 0 0 0;
-}
-
-.projects > thead > tr > td:last-child {
-    border-radius: 0 var(--border-radius-small) 0 0;
-    -webkit-border-radius: 0 var(--border-radius-small) 0 0;
-    -moz-border-radius: 0 var(--border-radius-small) 0 0;
-    -ms-border-radius: 0 var(--border-radius-small) 0 0;
-    -o-border-radius: 0 var(--border-radius-small) 0 0;
-}
-
-.projects > tbody > tr:last-child > td:last-child {
-    border-radius: 0 0 var(--border-radius-small) 0;
-    -webkit-border-radius: 0 0 var(--border-radius-small) 0;
-    -moz-border-radius: 0 0 var(--border-radius-small) 0;
-    -ms-border-radius: 0 0 var(--border-radius-small) 0;
-    -o-border-radius: 0 0 var(--border-radius-small) 0;
-}
-
-.projects > tbody > tr:last-child > td:first-child {
-    border-radius: 0 0 0 var(--border-radius-small);
-    -webkit-border-radius: 0 0 0 var(--border-radius-small);
-    -moz-border-radius: 0 0 0 var(--border-radius-small);
-    -ms-border-radius: 0 0 0 var(--border-radius-small);
-    -o-border-radius: 0 0 0 var(--border-radius-small);
+  font-size: 1.6rem;
+  color: var(--font-color-primary);
+  border-collapse: collapse;
 }
 
 .projects td {
-    padding: var(--gap-medium);
+  padding: 1rem;
 }
 
-.projects > thead  {
-    background: var(--bg-table-header);
+.projects > thead {
+  background: var(--background-table-head);
+}
+
+.projects > thead > tr > td:first-child {
+  border-top-left-radius: 2px;
+}
+
+.projects > thead > tr > td:last-child {
+  border-top-right-radius: 2px;
 }
 
 .projects > tbody {
-    background: var(--bg-table);
+  background: var(--background-table-body);
 }
 
 .projects > tbody > tr {
-    border-top: 1px solid var(--bg-table-header);
+  border-top: 1px solid var(--background-table-header);
 }
 
-.projects > tbody td:first-child div {
-    display: flex;
-    flex-direction: column;   
+.projects > tbody > tr > td:first-child {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
 }
 
-.projects > tbody td:first-child h3 {
-    margin-bottom: var(--gap-medium);
+.projects > tbody > tr > td:first-child > h3 {
+  margin-bottom: 1rem;
 }
 
-.projects > tbody td:first-child .progress {
-    height: 0.7rem;
-    width: 50%;
-    position: relative;
-    background: var(--progress);
-    display: block;
-    overflow: hidden;
-    border-radius: var(--border-radius-small);
-    -webkit-border-radius: var(--border-radius-small);
-    -moz-border-radius: var(--border-radius-small);
-    -ms-border-radius: var(--border-radius-small);
-    -o-border-radius: var(--border-radius-small);
+.projects > tbody > tr > td:first-child .progress {
+  height: 0.7rem;
+  width: 50%;
+  position: relative;
+  background: #d500f9;
+  display: block;
+  overflow: hidden;
+  border-radius: 2px;
 }
 
-.progress > .failed, .progress > .completed {
-    position: absolute;
-    height: 100%;
-    border-radius: var(--border-radius-small);
-    -webkit-border-radius: var(--border-radius-small);
-    -moz-border-radius: var(--border-radius-small);
-    -ms-border-radius: var(--border-radius-small);
-    -o-border-radius: var(--border-radius-small);
+.projects > tbody > tr > td:first-child .progress > .failed,
+.projects > tbody > tr > td:first-child .progress > .completed {
+  position: absolute;
+  height: 100%;
+  border-radius: inherit;
+  top: 0;
 }
 
-.progress > .failed {
-    left: 0;
-    top: 0;
-    background: var(--progress-failed);
+.projects > tbody > tr > td:first-child .progress > .failed {
+  left: 0;
+  background: #ff1744;
 }
 
-.progress > .completed {
-    right: 0;
-    top: 0;
-    background: var(--progress-completed);
+.projects > tbody > tr > td:first-child .progress > .completed {
+  right: 0;
+  background: #76ff03;
 }
 
-#status > div{
-    display: flex;
+.projects > tbody > tr:last-child > td:first-child {
+  border-bottom-left-radius: 2px;
+}
+
+.projects > tbody > tr:last-child > td:last-child {
+  border-bottom-right-radius: 2px;
+}
+
+#status > div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
 }
 
 #status > div > div {
-    margin-right: var(--gap-medium);
-    opacity: 0.75;
+  margin-right: 1rem;
+  opacity: 0.75;
 }
 
 #status > div > .active {
-    opacity: 1;
-    font-weight: var(--font-weight-bold);
+  opacity: 1;
+  font-weight: 600;
 }
 
 #filter > div {
-    display: flex;
-    justify-content: flex-end;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
 }
+/*# sourceMappingURL=projects.css.map */

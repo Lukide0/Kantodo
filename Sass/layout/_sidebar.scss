@@ -1,0 +1,45 @@
+aside {
+    color: get-font-color("primary");
+    background-color: get-background("primary");
+    grid-column: 1;
+    grid-row: 2;
+    flex-direction: column;
+    padding: get-gap("small");
+
+    .team {
+        margin-top: get-gap("big");
+        display: flex;
+        align-items: center;
+
+        .name {
+            @include font("regular", "regular");
+        }
+
+        .members-count {
+            @include font("regular", "regular");
+
+            color: get-font-color("third");
+        }
+
+        .icon {
+            width: 26px;
+            height: 26px;
+            margin-right: get-gap("small");
+            background: get-color("primary");
+            border-radius: 50%;
+            position: relative;
+
+            &::before {
+                @include absolute-center();
+
+                content: "";
+                display: block;
+                position: absolute;
+                background: get-background("primary");
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+            }
+        }
+    }
+}

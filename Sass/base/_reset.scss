@@ -1,0 +1,33 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Hind Siliguri', sans-serif;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
+h1 {
+    font-size: get-font-size("huge");
+    width: 190px;
+    background-color: get-background("primary");
+    padding: 1.5rem;
+    line-height: get-font-size("huge");
+    color: get-font-color("primary");
+}
+
+h2 {
+    @include font("big", "black");
+}
+
+h3 {
+    @include font("big", "bold");
+}

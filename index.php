@@ -33,7 +33,7 @@ $APP->router->post('/auth/create', [Kantodo\Controllers\AuthController::class, '
 
 
 // pages
-$APP->router->get('/', [Kantodo\Controllers\ProjectController::class, 'projectsList'], Application::USER);
+$APP->router->get('/', [Kantodo\Controllers\CalendarController::class, 'today'], Application::USER);
 $APP->router->get('/team/{teamUUID}', [Kantodo\Controllers\TeamController::class, 'viewTeam'], Application::USER);
 
 
