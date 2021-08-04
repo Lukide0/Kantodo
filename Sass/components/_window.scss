@@ -1,0 +1,52 @@
+.window {
+
+    @include material-shadow(8);
+
+    pointer-events: all;
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    min-width: 50%;
+    max-width: 100%;
+    overflow: auto;
+    border-radius: get-border-radius("medium");
+    z-index: 1;
+}
+
+.window .head {
+    width: 100%;
+    height: 45px;
+    background: get-background("primary");
+    display: flex;
+    align-content: center;
+    padding: get-gap("big") get-gap("medium");
+    user-select: none;
+}
+.window .title {
+    @include font("regular", "regular");
+
+    display: inline;
+    color: get-font-color("primary");
+}
+
+.window .head > button {
+    margin-left: auto;
+    padding: 0;
+    color: get-font-color("primary") !important;
+    background: transparent !important;
+    box-shadow: unset !important;
+    font-size: get-font-size("regular");
+}
+
+.window .head span {
+    font-size: get-font-size("medium");
+}
+
+
+.window .content {
+    min-height: 50px;
+    padding: get-gap("medium") get-gap("big");
+    background: get-background("secondary");
+    font-size: get-font-size("medium");
+}

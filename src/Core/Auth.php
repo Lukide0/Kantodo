@@ -7,30 +7,25 @@ use Kantodo\Models\UserModel;
 
 class Auth
 {
+    const EXP = 60 * 30;
+
     private function __construct() {}
 
     public static function isLogged()
     {
 
         $session = Application::$APP->session;
-        
-        if ($session->get('userID', false) === false)
-            return false;
-        
-        if ($session->get('userSecret', false) === false)
-            return false;
-        
-        $date = date('Y-m-d H:i:s');
 
-        if ($session->get('exp', $date) <= $date)
+        if ($session->getExpiration('user') <= time())
             return false;
         
         $userModel = new UserModel();
         
+
         $search = [
-            'user_id' => $session->get('userID'),
-            'email' => $session->get('userEmail'),
-            'secret' => $session->get('userSecret')
+            'user_id' => $session->get('user')['id'],
+            'email' => $session->get('user')['email'],
+            'secret' => $session->get('user')['secret']
         ];
 
         if ($userModel->exists($search) === false)
@@ -38,7 +33,7 @@ class Auth
             $session->cleanData();
             return false;
         }
-        $session->set('exp', date('Y-m-d H:i:s', strtotime('+30 minutes')));
+        $session->setExpiration('user', time() + self::EXP);
         return true;
         
     }
@@ -47,20 +42,20 @@ class Auth
     {
         $userModel = new UserModel();
         
-        $user = $userModel->getSingle(['user_id', 'secret'],[
+        $user = $userModel->getSingle(['user_id' => 'id', 'secret', 'firstname', 'lastname'],[
             'email' => $email,
             'password' => Data::hashPassword($password, $email)
         ]);
+
         
         $session = Application::$APP->session;
 
         if ($user !== false) 
         {
-           $session->set('userID', $user['user_id']);
-           $session->set('userSecret', $user['secret']);
-           $session->set('userEmail', $email);
-           $session->set('role', Application::USER);
-           $session->set('exp', date('Y-m-d H:i:s', strtotime('+30 minutes')));
+            $user['email'] = $email;
+            $user['role'] = Application::USER;
+
+            $session->set("user", $user, time() + self::EXP);
             
             return true;
         }

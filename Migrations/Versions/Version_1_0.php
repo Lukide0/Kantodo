@@ -87,12 +87,6 @@ class Version_1_0 extends AbstractMigration
             //columns
             $table->addColumn('team_position_id', 'bigint', ['unsigned' => true, 'autoincrement' => true]);
             $table->addColumn('name', 'varchar', ['unique' => true]);
-            $table->addColumn('can_edit_team_settings', 'bool');
-            $table->addColumn('can_add_project', 'bool');
-            $table->addColumn('can_remove_project', 'bool');
-            $table->addColumn('can_add_people', 'bool');
-            $table->addColumn('can_remove_people', 'bool');
-            $table->addColumn('can_change_people_position', 'bool');
             //keys
             $table->addPrimaryKey('team_position_id');
         });
@@ -144,10 +138,7 @@ class Version_1_0 extends AbstractMigration
             //columns
             $table->addColumn('project_position_id', 'bigint', ['unsigned' => true, 'autoincrement' => true]);
             $table->addColumn('name', 'varchar', ['unique' => true]);
-            $table->addColumn('can_edit_project_setting', 'bool');
-            $table->addColumn('can_add_people', 'bool');
-            $table->addColumn('can_remove_people', 'bool');
-            $table->addColumn('can_change_people_position', 'bool');
+
             //keys
             $table->addPrimaryKey('project_position_id');
         });
@@ -161,7 +152,7 @@ class Version_1_0 extends AbstractMigration
         {
             $table->addColumn('user_team_id', 'bigint', ['unsigned' => true]);
             $table->addColumn('project_id', 'bigint', ['unsigned' => true]);
-            $table->addColumn('project_position_id', 'bigint', ['unsigned' => true]);
+            $table->addColumn('project_position', 'bigint', ['unsigned' => true]);
                     
             //keys
             $table->addPrimaryKey('user_team_id');

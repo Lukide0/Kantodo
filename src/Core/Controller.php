@@ -4,15 +4,12 @@ namespace Kantodo\Core;
 
 
 use InvalidArgumentException;
-use Kantodo\Core\Exception\KantodoException;
-use Kantodo\Core\Exception\NotAuthorizedException;
 
 abstract class Controller
 {
 
     public $action = '';
     public $access = Application::GUEST;
-    public $middlewareErrorHandlers = [];
 
     /**
      * @var BaseMiddleware[]
@@ -24,29 +21,12 @@ abstract class Controller
         $this->middlewares[] = $bm;
     }
 
-    public final function executeAllMiddlewares() 
+    public final function executeAllMiddlewares(array $args = []) 
     {
-        foreach ($this->middlewares as $middleware) {
-            $middleware->execute();
-        }
-    }
-
-    public final function registerMiddlewareErrorHandler(string $errorName, $callback)
-    {
-        $this->middlewareErrorHandlers[$errorName] = $callback;
-    }
-
-    public final function handleMiddlewareError(KantodoException $exception) 
-    {
-        $errorName = get_class($exception);
-
-        if (isset($this->middlewareErrorHandlers[$errorName])) 
+        foreach ($this->middlewares as $middleware) 
         {
-            call_user_func($this->middlewareErrorHandlers[$errorName], $exception);
-            return;
+            $middleware->execute($args);
         }
-
-        http_response_code($exception->getCode());
     }
 
     public final function renderView(string $class, array $params = [], string $layout = NULL)

@@ -25,7 +25,7 @@ $colors: ();
 
 @each $color in $colors {
     .#{$color} {
-        --color: var(--#{$color});
+        --color: var(--#{$color}) !important;
         --border-color: var(--#{$color});
         --color-lighter: var(--#{$color}-lighter);
         --color-darker: var(--#{$color}-darker);

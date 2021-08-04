@@ -72,7 +72,6 @@ class UserModel extends Model
         if (count($user) == 1)
             return $user[0];
         return false;
-
     }
 
 

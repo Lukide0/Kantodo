@@ -2,10 +2,7 @@
 
 namespace Kantodo\Core;
 
-use Exception;
 use Kantodo\Core\Exception\KantodoException;
-use Kantodo\Core\Exception\NotAuthorizedException;
-use Kantodo\Core\Exception\NotFoundException;
 
 class Router
 {
@@ -53,14 +50,15 @@ class Router
             $route = ltrim($route, '/');
             $routeParts = explode('/', $route);
 
-
             if (count($routeParts) != $pathPartsCount)
                 continue;
 
             $tmp = [];
             for ($i=0; $i < $pathPartsCount; $i++) 
             {
-                if ($routeParts[$i][0] == '{') 
+
+
+                if (strlen($routeParts[$i]) > 0 && $routeParts[$i][0] == '{') 
                 {
                     $tmp[trim($routeParts[$i], "{}")] = $pathParts[$i];
                     continue;
@@ -78,14 +76,14 @@ class Router
 
     public final function registerErrorCodeHandler(int $code, $callback)
     {
-        $this->errorHandlers["{$code}"] = $callback;
+        $this->errorHandlers[$code] = $callback;
     }
 
     public final function handleErrorCode(int $code, array $params = []) 
     {
-        if (isset($this->errorHandlers["{$code}"]))
+        if (isset($this->errorHandlers[$code]))
         {
-            call_user_func_array($this->errorHandlers["{$code}"], $params);
+            call_user_func_array($this->errorHandlers[$code], $params);
             return;
         }
         http_response_code($code);
@@ -161,13 +159,7 @@ class Router
 
             Application::$APP->controller = $controller;
 
-            try {
-                $controller->executeAllMiddlewares();
-            } catch (KantodoException $ex) {
-                $controller->handleMiddlewareError($ex);
-                return;
-            }
-
+            $controller->executeAllMiddlewares($args);
 
             call_user_func([$controller, $classMethod], $args);
             return;

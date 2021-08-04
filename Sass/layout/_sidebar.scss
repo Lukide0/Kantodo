@@ -10,6 +10,8 @@ aside {
         margin-top: get-gap("big");
         display: flex;
         align-items: center;
+        text-decoration: none;
+        color: get-font-color("primary");
 
         .name {
             @include font("regular", "regular");

@@ -20,6 +20,29 @@ $sizes-names: map-keys($sizes);
     }
 }
 
+
+.space-around {
+    margin: get-gap("medium");
+}
+
+.space-left {
+    margin-left: get-gap("medium");
+}
+
+.space-right {
+    margin-right: get-gap("medium");
+}
+
+.space-top {
+    margin-top: get-gap("medium");
+}
+
+.space-bottom {
+    margin-bottom: get-gap("medium");
+}
+
+
+
 .container {
     display: flex;
     flex-flow: column wrap;

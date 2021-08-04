@@ -122,7 +122,7 @@ const ValidationMode = Object.freeze({
 });
 
 /* PASSWORD VALIDATION */
-window.onload = function() 
+window.addEventListener("load", function() 
 {
     let passwordElements = document.querySelectorAll('[data-password-validation]');
     passwordElements.forEach((el) => {
@@ -156,4 +156,4 @@ window.onload = function()
 
 
     window.onload = null;
-}
+}, { once: true });

@@ -25,9 +25,9 @@ class InstallView implements IView
             <link rel="stylesheet" href="Styles/install.css">
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet">
             <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
-            <script src="Scripts/Components.js"></script>
-            <script src="Scripts/Request.js"></script>
-            <script src="Scripts/Validation.js"></script>
+            <script src="scripts/components.js"></script>
+            <script src="scripts/request.js"></script>
+            <script src="scripts/validation.js"></script>
             <title>Install</title>
         </head>
         <body>

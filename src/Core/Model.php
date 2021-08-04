@@ -14,17 +14,28 @@ abstract class Model
         $this->con = Connection::getInstance();
     }
 
-    protected function query(string $formatedTableName, array $tableColumns, array $columns = ['*'], array $search = [], int $limit = 0)
+    protected function query(string $formatedTableName, array $tableColumns, array $select = ['*'], array $search = [], int $limit = 0)
     {
-        if (count($columns) == 0) 
+
+        if (count($select) == 0) 
             return [];
     
-        if (in_array('*', $columns)) 
+        if (in_array('*', $select)) 
         {
-            $columns = ['*'];
+            $select = ['*'];
         } else 
         {
-            $columns = array_intersect($tableColumns, $columns);
+            $columns = [];
+            foreach ($select as $key => $name) {
+                if (in_array($key, $tableColumns, true)) 
+                {
+                    $columns[] = "$key as $name";
+                } 
+                else if (in_array($name, $tableColumns)) 
+                {
+                    $columns[] = $name;
+                }
+            }
         }
 
         if (count($columns) == 0) 

@@ -71,45 +71,81 @@
 }
 
 .primary {
-  --color: var(--primary);
+  --color: var(--primary) !important;
   --border-color: var(--primary);
   --color-lighter: var(--primary-lighter);
   --color-darker: var(--primary-darker);
 }
 
 .secondary {
-  --color: var(--secondary);
+  --color: var(--secondary) !important;
   --border-color: var(--secondary);
   --color-lighter: var(--secondary-lighter);
   --color-darker: var(--secondary-darker);
 }
 
 .info {
-  --color: var(--info);
+  --color: var(--info) !important;
   --border-color: var(--info);
   --color-lighter: var(--info-lighter);
   --color-darker: var(--info-darker);
 }
 
 .warning {
-  --color: var(--warning);
+  --color: var(--warning) !important;
   --border-color: var(--warning);
   --color-lighter: var(--warning-lighter);
   --color-darker: var(--warning-darker);
 }
 
 .error {
-  --color: var(--error);
+  --color: var(--error) !important;
   --border-color: var(--error);
   --color-lighter: var(--error-lighter);
   --color-darker: var(--error-darker);
 }
 
 .success {
-  --color: var(--success);
+  --color: var(--success) !important;
   --border-color: var(--success);
   --color-lighter: var(--success-lighter);
   --color-darker: var(--success-darker);
+}
+
+.font-size-small {
+  font-size: 1.2rem;
+}
+
+.font-size-regular {
+  font-size: 1.4rem;
+}
+
+.font-size-medium {
+  font-size: 1.6rem;
+}
+
+.font-size-big {
+  font-size: 1.8rem;
+}
+
+.font-size-huge {
+  font-size: 2rem;
+}
+
+.font-weight-light {
+  font-weight: 400;
+}
+
+.font-weight-regular {
+  font-weight: 500;
+}
+
+.font-weight-bold {
+  font-weight: 600;
+}
+
+.font-weight-black {
+  font-weight: 700;
 }
 
 * {
@@ -252,6 +288,8 @@ aside .team {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+  text-decoration: none;
+  color: var(--font-color-primary);
 }
 
 aside .team .name {
@@ -377,6 +415,10 @@ button > span[class^=material-icons] {
   font-size: 2.25rem;
 }
 
+button.text {
+  color: var(--font-color-secondary);
+}
+
 button.flat, button.text {
   -webkit-box-shadow: none;
           box-shadow: none;
@@ -474,9 +516,31 @@ button.long {
           box-shadow: 0 0 0 4px var(--background-secondary);
 }
 
+label {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  position: relative;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+label .error-msg {
+  font-size: 1.2rem;
+  padding: 0.25rem 1.5rem;
+  color: rgba(var(--error), 1);
+}
+
 .text-field {
   --color: var(--primary);
   --border-color: rgba(var(--color), 1);
+  --default-border-color: var(--background-input-darker);
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -491,14 +555,23 @@ button.long {
   padding: 2rem 1.5rem;
   padding-bottom: 0.2rem;
   background: var(--background-input);
-  border-bottom: 2px solid var(--font-color-input);
+  border-bottom: 2px solid var(--default-border-color);
   border-radius: 5px 5px 0 0;
   position: relative;
   letter-spacing: 1px;
+  z-index: 1;
+}
+
+.text-field.focus {
+  --border-color: var(--default-border-color);
+}
+
+.text-field.focus > .label {
+  color: var(--font-color-input) !important;
 }
 
 .text-field:hover:not(:focus-within):not(.outline) {
-  background: var(--background-input-darker);
+  background: var(--default-border-color);
 }
 
 .text-field.disabled {
@@ -532,7 +605,7 @@ button.long {
   width: unset;
   border-radius: inherit;
   background: transparent;
-  border: 2px solid var(--font-color-input);
+  border: 2px solid var(--default-border-color);
   top: 0;
   left: 0;
   right: 0;
@@ -552,13 +625,13 @@ button.long {
           transform: translate(0, -50%);
 }
 
-.text-field.outline:focus-within::before, .text-field.outline.error::before {
+.text-field.outline:focus-within::before, .text-field.outline.error::before, .text-field.outline.focus::before {
   -webkit-transition: border-color 200ms ease-out;
   transition: border-color 200ms ease-out;
   border-color: var(--border-color);
 }
 
-.text-field.outline:focus-within > .label, .text-field.outline.error > .label {
+.text-field.outline:focus-within > .label, .text-field.outline.error > .label, .text-field.outline.focus > .label {
   top: 0;
 }
 
@@ -589,7 +662,7 @@ button.long {
           transform: scaleX(0);
 }
 
-.text-field:focus-within::before, .text-field.disabled:not(.outline)::before, .text-field.error::before {
+.text-field:focus-within::before, .text-field.disabled:not(.outline)::before, .text-field.error::before, .text-field.focus::before {
   -webkit-transition: -webkit-transform 250ms ease;
   transition: -webkit-transform 250ms ease;
   transition: transform 250ms ease;
@@ -601,30 +674,31 @@ button.long {
 .text-field:focus-within > .prefix,
 .text-field:focus-within > .surfix, .text-field.disabled:not(.outline) > .prefix,
 .text-field.disabled:not(.outline) > .surfix, .text-field.error > .prefix,
-.text-field.error > .surfix {
+.text-field.error > .surfix, .text-field.focus > .prefix,
+.text-field.focus > .surfix {
   opacity: 1;
 }
 
-.text-field:focus-within > .label, .text-field.disabled:not(.outline) > .label, .text-field.error > .label {
+.text-field:focus-within > .label, .text-field.disabled:not(.outline) > .label, .text-field.error > .label, .text-field.focus > .label {
   font-size: 1.2rem;
   font-weight: 600;
   top: 0.25rem;
   color: rgba(var(--color), 1);
 }
 
-.text-field:focus-within input::-webkit-input-placeholder, .text-field.disabled:not(.outline) input::-webkit-input-placeholder, .text-field.error input::-webkit-input-placeholder {
+.text-field:focus-within input::-webkit-input-placeholder, .text-field.disabled:not(.outline) input::-webkit-input-placeholder, .text-field.error input::-webkit-input-placeholder, .text-field.focus input::-webkit-input-placeholder {
   color: var(--font-color-input);
 }
 
-.text-field:focus-within input:-ms-input-placeholder, .text-field.disabled:not(.outline) input:-ms-input-placeholder, .text-field.error input:-ms-input-placeholder {
+.text-field:focus-within input:-ms-input-placeholder, .text-field.disabled:not(.outline) input:-ms-input-placeholder, .text-field.error input:-ms-input-placeholder, .text-field.focus input:-ms-input-placeholder {
   color: var(--font-color-input);
 }
 
-.text-field:focus-within input::-ms-input-placeholder, .text-field.disabled:not(.outline) input::-ms-input-placeholder, .text-field.error input::-ms-input-placeholder {
+.text-field:focus-within input::-ms-input-placeholder, .text-field.disabled:not(.outline) input::-ms-input-placeholder, .text-field.error input::-ms-input-placeholder, .text-field.focus input::-ms-input-placeholder {
   color: var(--font-color-input);
 }
 
-.text-field:focus-within input::placeholder, .text-field.disabled:not(.outline) input::placeholder, .text-field.error input::placeholder {
+.text-field:focus-within input::placeholder, .text-field.disabled:not(.outline) input::placeholder, .text-field.error input::placeholder, .text-field.focus input::placeholder {
   color: var(--font-color-input);
 }
 
@@ -636,6 +710,9 @@ button.long {
   background: transparent;
   font-size: inherit;
   color: var(--font-color-input-darker);
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
 }
 
 .text-field > input::-webkit-input-placeholder {
@@ -797,6 +874,65 @@ button.long {
   opacity: 0.16;
 }
 
+.window {
+  -webkit-box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
+          box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
+  pointer-events: all;
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  min-width: 50%;
+  max-width: 100%;
+  overflow: auto;
+  border-radius: 5px;
+  z-index: 1;
+}
+
+.window .head {
+  width: 100%;
+  height: 45px;
+  background: var(--background-primary);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-line-pack: center;
+      align-content: center;
+  padding: 1.5rem 1rem;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+.window .title {
+  font-size: 1.4rem;
+  font-weight: 500;
+  display: inline;
+  color: var(--font-color-primary);
+}
+
+.window .head > button {
+  margin-left: auto;
+  padding: 0;
+  color: var(--font-color-primary) !important;
+  background: transparent !important;
+  -webkit-box-shadow: unset !important;
+          box-shadow: unset !important;
+  font-size: 1.4rem;
+}
+
+.window .head span {
+  font-size: 1.6rem;
+}
+
+.window .content {
+  min-height: 50px;
+  padding: 1rem 1.5rem;
+  background: var(--background-secondary);
+  font-size: 1.6rem;
+}
+
 @media (min-width: 0px) {
   .col-xs-1 {
     max-width: 100%;
@@ -951,6 +1087,26 @@ button.long {
   .col-lg-12 {
     max-width: 8.33333%;
   }
+}
+
+.space-around {
+  margin: 1rem;
+}
+
+.space-left {
+  margin-left: 1rem;
+}
+
+.space-right {
+  margin-right: 1rem;
+}
+
+.space-top {
+  margin-top: 1rem;
+}
+
+.space-bottom {
+  margin-bottom: 1rem;
 }
 
 .container {

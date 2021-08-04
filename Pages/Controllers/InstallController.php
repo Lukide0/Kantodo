@@ -10,6 +10,7 @@ use Kantodo\Core\{
     Generator
 };
 use Kantodo\Core\Database\Migration\Runner;
+use Kantodo\Models\ProjectModel;
 use Kantodo\Models\TeamModel;
 use Kantodo\Models\UserModel;
 use Kantodo\Views\InstallView;
@@ -136,9 +137,19 @@ class InstallController extends Controller
         }
 
         $teamModel = new TeamModel();
+        $projectModel = new ProjectModel();
         $status = null;
-        foreach (TeamModel::POSITIONS as $name => $priv) {
-            $status = $teamModel->createPosition($name, $priv);
+
+        foreach (TeamModel::POSITIONS as $name => $priv) 
+        {
+            $status = $teamModel->createPosition($name);
+            if ($status === false)
+                break;
+        }
+
+        foreach (ProjectModel::POSITIONS as $name => $priv) 
+        {
+            $status = $projectModel->createPosition($name);
             if ($status === false)
                 break;
         }

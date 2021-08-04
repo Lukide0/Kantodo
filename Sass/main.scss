@@ -6,6 +6,7 @@
 
 // THEME
 @import "base/themes";
+@import "base/fonts";
 
 // RESET
 @import "base/reset";
@@ -21,8 +22,12 @@
 @import "components/scrollbar";
 @import "components/button";
 @import "components/avatar";
+
+@import "components/label";
+
 @import "components/text_field";
 @import "components/checkbox";
+@import "components/window";
 
 // FLEXBOX
 @import "layout/flexbox";

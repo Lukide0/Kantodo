@@ -29,16 +29,17 @@ class AuthView implements IView
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <link rel="stylesheet" href="Styles/flex.css">
-            <link rel="stylesheet" href="Styles/style.css">
+            <link rel="stylesheet" href="styles/main.css">
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet">
             <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
-            <script src="Scripts/Components.js"></script>
-            <script src="Scripts/Validation.js"></script>
+            <script src="scripts/components.js"></script>
+            <script src="scripts/validation.js"></script>
+            <script src="scripts/main.js"></script>
             <title>Přihlášení</title>
             <style>
                 body {
                     all: unset;
-                    background: var(--info);
+                    background: rgb(var(--info));
                     display: flex;
                     flex-direction: column;
                     height: 100%;
@@ -57,7 +58,7 @@ class AuthView implements IView
                     display: flex;
                     clip-path: polygon(0 0, 50% 0, 40% 100%, 0 100%);
                     transition: clip-path 400ms ease-in-out;
-                    background: var(--bg-third);
+                    background: white;
                 }
                 
                 main.right {
@@ -83,7 +84,7 @@ class AuthView implements IView
                 }
             </style>
         </head>
-        <body>
+        <body class="theme-light">
             <header>
                 <h1>Kantodo</h1>
             </header>
@@ -92,18 +93,38 @@ class AuthView implements IView
                     <h2>Welcome back</h2>
                     <?= Form::start($signInAction); ?>
                         <?= Form::tokenCSRF(); ?>
-                        <div class="row main-center">
-                            <?= Input::text('signInEmail', 'Email', $email, $errors, [], Input::AUTOCOMPLETE_EMAIL); ?>
+                        <div class="row main-center space-top">
+                            <?= Input::text(
+                                'signInEmail',
+                                'Email', 
+                                [
+                                    'outline' => true,
+                                    'color' => 'info',
+                                    'value' => $email,
+                                    'error' => $errors,
+                                    'autocomplete' => Input::AUTOCOMPLETE_EMAIL
+                                ]) 
+                            ?>
                         </div>
-                        <div class="row main-center">
-                            <?= Input::password('signInPassword', 'Password', '', $errors, [], Input::AUTOCOMPLETE_CURRENT_PASSWORD); ?>
+                        <div class="row main-center space-top">
+                            <?= Input::password(
+                                'signInPassword',
+                                'Password',
+                                [
+                                    'outline' => true,
+                                    'color' => 'info',
+                                    'value' => $email,
+                                    'error' => $errors,
+                                    'autocomplete' => Input::AUTOCOMPLETE_CURRENT_PASSWORD
+                                ])
+                            ?>
                         </div>
-                        <div class="row main-center">
+                        <div class="row main-center space-top">
                             <button class="info long">Sign in</button>
                         </div>
-                        <div class="row main-center">
+                        <div class="row main-center space-top">
                             <button class="text flat"
-                                onclick="(function() { let x = document.getElementsByTagName('main')[0]; x.classList.add('right'); switchInputDisable(x.querySelector('div'));  switchInputDisable(document.querySelector('main > div:nth-child(2)'), false)})()">Create
+                                onclick="(function(event) { event.preventDefault(); let x = document.getElementsByTagName('main')[0]; x.classList.add('right'); switchInputDisable(x.querySelector('div'));  switchInputDisable(document.querySelector('main > div:nth-child(2)'), false)})(event)">Create
                                 account</button>
                         </div>
                     <?= Form::end(); ?>

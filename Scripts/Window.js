@@ -1,7 +1,6 @@
 const windowsContainer = document.createElement('div');
 
-window.onload = function() 
-{
+window.addEventListener("load", function() {
     let style = windowsContainer.style;
 
     style.position = 'absolute';
@@ -9,15 +8,16 @@ window.onload = function()
     style.right = 0;
     style.top = 0;
     style.bottom = 0;
+    style.pointerEvents = "none";
     document.body.append(windowsContainer);
-}
+}, {once: true});
 
 
 let windows_count = 0;
 let window_last = null;
 
 
-function Window(title, content) {
+function Window(title, content, onLoad = null) {
     let __element = document.createElement('div');
     let __move = false;
     __element.className = 'window';
@@ -38,6 +38,9 @@ function Window(title, content) {
     __element.style.top = '50%';
 
     windowsContainer.appendChild(__element);
+
+    if (onLoad != null)
+        content.onLoad(); 
 
     return {
         __element,
@@ -155,3 +158,4 @@ function Window(title, content) {
         'isOpened': false
     };
 }
+

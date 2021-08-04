@@ -61,16 +61,16 @@ class TeamModel extends Model
 
     public function getUserTeams(int $userID)
     {
-        $user_teams = Connection::formatTableName('user_teams');
+        $userTeams = Connection::formatTableName('user_teams');
         $query = <<<SQL
         SELECT 
             t.name,
-            t.uuid,
+            t.team_id,
             COUNT(ut_count.user_team_id) as `members`
-        FROM `todo_user_teams` as ut 
-            INNER JOIN `todo_teams` as t 
+        FROM {$userTeams} as ut 
+            INNER JOIN {$this->table} as t 
                 ON t.team_id = ut.team_id
-            LEFT JOIN `todo_user_teams` as ut_count 
+            LEFT JOIN {$userTeams} as ut_count 
                 ON ut_count.team_id = ut.team_id 
         WHERE ut.user_id = :userID 
         GROUP BY t.name;
@@ -97,6 +97,37 @@ class TeamModel extends Model
         return $this->query($this->table, $tableColumns, $columns, $search, $limit);
     }
 
+
+    public function getInfo(int $teamID)
+    {
+        $userTeams = Connection::formatTableName('user_teams');
+        $projects = Connection::formatTableName("projects");
+
+        $query = <<<SQL
+        SELECT 
+            t.name,
+            t.description,
+            COUNT(ut_count.user_team_id) as `members`,
+            COUNT(proj.project_id) as `projects`
+        FROM {$this->table} as t
+            LEFT JOIN {$userTeams} as ut_count 
+                ON ut_count.team_id = t.team_id
+            LEFT JOIN {$projects} as proj
+                ON proj.team_id = t.team_id
+        WHERE t.team_id = :teamID
+        SQL;
+
+        $sth = $this->con->prepare($query);
+        $status = $sth->execute([
+            ":teamID" => $teamID
+        ]);
+
+        if ($status === true) 
+            return $sth->fetch(PDO::FETCH_ASSOC);
+
+        return false;
+    }
+
     public function create(string $name, int $userID ,string $desc = '', bool $public = false)
     {
         $uuid = Generator::uuidV4();
@@ -112,7 +143,7 @@ class TeamModel extends Model
         if ($status == true)
         {
             $teamID = $this->con->lastInsertId();
-            $posID  = $this->getPosition("admin", true);
+            $posID  = $this->getPosition('admin');
 
             if ($posID === false) 
             {
@@ -131,7 +162,7 @@ class TeamModel extends Model
 
             mkdir(Application::$DATA_PATH . $uuid);
 
-            return $this->con->lastInsertId();
+            return $teamID;
         }
 
         return false;
@@ -158,10 +189,41 @@ class TeamModel extends Model
         return $status;
     }
 
+    
+    
+    public function getUserTeamPosition(int $userID, int $teamID)
+    {
+        $teamPos = Connection::formatTableName('team_positions');
+        $userTeams = Connection::formatTableName('user_teams');
+        
+        
+        $query = <<<SQL
+        SELECT 
+            tp.name
+        FROM {$this->table} as t
+            INNER JOIN {$userTeams} as ut
+                ON ut.team_id = t.team_id
+            INNER JOIN {$teamPos} as tp
+                ON ut.team_position_id = tp.team_position_id
+        WHERE t.team_id = :teamID AND ut.user_id = :userID
+        SQL;
+        $sth = $this->con->prepare($query);
+        $status = $sth->execute([
+            ':teamID' => $teamID,
+            ':userID' => $userID
+        ]);
+        
+        if ($status === true) 
+        return $sth->fetch(PDO::FETCH_ASSOC);
+        
+        return false;
+        
+    }
+
     public function setUserPosition(int $userID, int $teamID, int $posID)
     {
-        $userTeam = Connection::formatTableName('user_teams');
-        $sth = $this->con->prepare("INSERT INTO {$userTeam} (`user_id`, `team_id`, `team_position_id`) VALUES ( :userID, :teamID, :posID)");
+        $userTeams = Connection::formatTableName('user_teams');
+        $sth = $this->con->prepare("INSERT INTO {$userTeams} (`user_id`, `team_id`, `team_position_id`) VALUES ( :userID, :teamID, :posID)");
         $status = $sth->execute([
             ':userID' => $userID,
             ':teamID' => $teamID,
@@ -170,15 +232,12 @@ class TeamModel extends Model
 
         return ($status === true) ? $this->con->lastInsertId() : false; 
     }
-
-    public function getPosition(string $name, bool $onlyID = false)
+    
+    public function getPosition(string $name)
     {
         $teamPos = Connection::formatTableName('team_positions');
 
-        if ($onlyID)
-            $sth = $this->con->prepare("SELECT `team_position_id` FROM {$teamPos} WHERE `name` = :name LIMIT 1");
-        else
-            $sth = $this->con->prepare("SELECT * FROM {$teamPos} WHERE `name` = :name LIMIT 1");
+        $sth = $this->con->prepare("SELECT `team_position_id` FROM {$teamPos} WHERE `name` = :name LIMIT 1");
         
         $status = $sth->execute([
             ':name' => $name
@@ -190,48 +249,18 @@ class TeamModel extends Model
 
         return false;
     }
-
-    public function createPosition(string $name, array $privileges)
+    
+    public function createPosition(string $name)
     {
-        $canEditTeamSettings    = $privileges['editTeamSettings'] ?? false;
-        $canAddProject          = $privileges['addProject'] ?? false;
-        $canRemoveProject       = $privileges['removeProject'] ?? false;
-        $canAddPeople           = $privileges['addPeople'] ?? false;
-        $canRemovePeople        = $privileges['removePeople'] ?? false;
-        $canChangePeoplePosition= $privileges['changePeoplePosition'] ?? false;
-
-        $teamPos = Connection::formatTableName("team_positions");
+        $teamPos = Connection::formatTableName('team_positions');
 
         $query = <<<SQL
-        INSERT INTO {$teamPos}
-                    (
-                    `name` ,
-                    `can_edit_team_settings` ,
-                    `can_add_project` ,
-                    `can_remove_project` ,
-                    `can_add_people` ,
-                    `can_remove_people` ,
-                    `can_change_people_position` )
-        VALUES      (
-                    :name,
-                    :can_edit_team_setting,
-                    :can_add_project,
-                    :can_remove_project,
-                    :can_add_people,
-                    :can_remove_people,
-                    :can_change_people_position
-                    ) 
+        INSERT INTO {$teamPos} ( `name` ) VALUES ( :name ) 
         SQL;
 
         $sth = $this->con->prepare($query);
         $status = $sth->execute([
-            ":name" => $name,
-            ":can_edit_team_setting" => $canEditTeamSettings,
-            ":can_add_project" => $canAddProject,
-            ":can_remove_project" => $canRemoveProject,
-            ":can_add_people" => $canAddPeople,
-            ":can_remove_people" => $canRemovePeople,
-            ":can_change_people_position" => $canChangePeoplePosition
+            ':name' => $name
         ]);
 
         return ($status === true) ? $this->con->lastInsertId() : false;

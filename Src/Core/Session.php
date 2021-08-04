@@ -29,7 +29,7 @@ class Session
         if (!is_array($kan)) 
             $kan = [];
 
-            $kan['META']['LAST_ACCESS'] = time();
+        $kan['META']['LAST_ACCESS'] = time();
             
             
             
@@ -70,14 +70,19 @@ class Session
         $kan = &$_SESSION['__KAN'];
         
         // different browser
-        if ($kan['META']['USER_AGENT'] != $_SERVER['HTTP_USER_AGENT'])
-        return false;
-        
+        if ($kan['META']['USER_AGENT'] != $_SERVER['HTTP_USER_AGENT']) 
+            return false;
+
         // older than 30 minutes
         if ($kan['META']['LAST_ACCESS'] < time() + 30*60)
-        return false;
+            return false;
         
         return true;
+    }
+
+    public function updateUserAgent()
+    {
+        $_SESSION['__KAN']['META']['USER_AGENT'] = $_SERVER['HTTP_USER_AGENT'];
     }
     
     public function getTokenCSRF()
@@ -97,14 +102,34 @@ class Session
         return hash_equals($this->getTokenCSRF(), $token);
     }
 
-    public function set(string $key, $value) 
+    public function set(string $key, $value, int $exp = -1) 
     {
-        $_SESSION['__KAN']['DATA'][$key] = $value;
+        $_SESSION['__KAN']['DATA'][$key] = ['value' => $value, 'exp' => $exp];
+    }
+
+    public function setExpiration(string $key, int $exp = -1)
+    {
+        if (isset($_SESSION['__KAN']['DATA'][$key]))
+            $_SESSION['__KAN']['DATA'][$key]['exp'] = $exp;
+    }
+
+    public function getExpiration(string $key)
+    {
+        if (isset($_SESSION['__KAN']['DATA'][$key]))
+            return $_SESSION['__KAN']['DATA'][$key]['exp'];
+        return 0;
     }
 
     public function get(string $key, $fallback = NULL) 
     {
-        return $_SESSION['__KAN']['DATA'][$key] ?? $fallback;
+        if (!isset($_SESSION['__KAN']['DATA'][$key]))
+            return $fallback;
+
+        $exp = $_SESSION['__KAN']['DATA'][$key]['exp'];
+        if ($exp != -1 && $exp <= time())
+            return $fallback;
+
+        return $_SESSION['__KAN']['DATA'][$key]['value'];
     }
 
     public function addFlashMessage(string $key, $value) 

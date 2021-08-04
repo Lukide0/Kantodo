@@ -169,7 +169,7 @@ class Application
             return self::GUEST;
         }
     
-        return self::$APP->userRole = self::$APP->session->get('role', Application::GUEST);
+        return self::$APP->userRole = self::$APP->session->get('user')['role'];
     }
 
     public static function configExits() 

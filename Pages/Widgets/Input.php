@@ -25,33 +25,52 @@ class Input extends AbstractWidget
 
     private $dataAttr = [];
 
-    public function __construct(string $name, string $label, string $type, $value = '', $error = '', array $dataAttributes = [], string $autocomplete = self::AUTOCOMPLETE_OFF) 
+    public function __construct(string $name, string $label, string $type, array $options = []) 
     {
+        // mandatory
         $this->setLabel($label);
         $this->setName($name);
         $this->setType($type);
-        $this->setValue($value);
-        $this->setError($error);
-        $this->setDataAtrributes($dataAttributes);
-        $this->setAutocomplete($autocomplete);
+
+
+        if (isset($options['outline']))
+            $this->setOutline($options['outline']);
+        
+        if (isset($options['value']))
+            $this->setValue($options['value']);
+        
+        if (isset($options['error']))
+            $this->setError($options['error']);
+        
+        if (isset($options['dataAttributes']))
+            $this->setDataAtrributes($options['dataAttributes']);
+
+        if (isset($options['autocomplete']))
+            $this->setAutocomplete($options['autocomplete']);
+
+        if (isset($options['color']))
+            $this->setOption("color",$options['color']);
     }
 
     // predefined inputs
 
-    public static function text(string $name, string $label, $value = '', $error = '', array $dataAttributes = [], string $autocomplete = self::AUTOCOMPLETE_OFF)
+    public static function text(string $name, string $label, array $options = [])
     {
-        $input = new Input($name, $label, 'text', $value, $error, $dataAttributes, $autocomplete);
+        $input = new Input($name, $label, 'text', $options);
         return $input->getHTML();
     }
 
-    public static function password(string $name, string $label, $value = '', $error = '', array $dataAttributes = [], string $autocomplete = self::AUTOCOMPLETE_OFF)
+    public static function password(string $name, string $label, array $options = [])
     {
-        $input = new Input($name, $label, 'password', $value, $error, $dataAttributes, $autocomplete);
+        $input = new Input($name, $label, 'password', $options);
         return $input->getHTML();
     }
 
-
-
+    public function setOutline(bool $outline = true)
+    {
+        $this->setOption('outline', $outline);
+        return $this;
+    }
 
     public function setLabel(string $label)
     {
@@ -134,17 +153,20 @@ class Input extends AbstractWidget
                                 array_keys($this->dataAttr)
                             )
                         );
-        
+        $outline = $this->getOption('outline') ? "outline" : "";
+        $color = $this->getOption("color", "");
+
         switch ($this->getOption('type')) {
             case 'password':
                 return <<<HTML
                     <div class='container'>
-                        <label class="text info-focus input-open {$error}">
-                            <input type="password" name="{$this->getOption('name')}" value="{$this->getOption('value', '')}" autocomplete="{$this->getOption('autocomplete', 'off')}" {$dataAttributes} required {$disabled}>
-                            <span>{$this->getOption('label', '')}</span>
-                            <div class="input-close"><span class="material-icons-outlined" data-show="false" onclick="switchPasswordVisibility(event)">visibility</span></div>
+                        <label>
+                            <div class="text-field {$outline} {$color} {$error}">
+                                <input type="{$this->getOption('type')}" name="{$this->getOption('name')}" value="{$this->getOption('value', '')}" autocomplete="{$this->getOption('autocomplete', 'off')}" required {$disabled} {$dataAttributes}>
+                                <div class="label">{$this->getOption('label', '')}</div>
+                            </div>
+                            <div class="error-msg">{$this->getOption('error', '')}</div>
                         </label>
-                        <div class="error-text">{$this->getOption('error', '')}</div>
                     </div>
                 HTML;
                 break;
@@ -152,11 +174,13 @@ class Input extends AbstractWidget
             default:
                 return <<<HTML
                     <div class='container'>
-                        <label class="text info-focus {$error}">
-                            <input type="{$this->getOption('type')}" name="{$this->getOption('name')}" value="{$this->getOption('value', '')}" autocomplete="{$this->getOption('autocomplete', 'off')}" required {$disabled}>
-                            <span>{$this->getOption('label', '')}</span>
+                        <label>
+                            <div class="text-field {$outline} {$color} {$error}">
+                                <input type="{$this->getOption('type')}" name="{$this->getOption('name')}" value="{$this->getOption('value', '')}" autocomplete="{$this->getOption('autocomplete', 'off')}" required {$disabled} {$dataAttributes}>
+                                <div class="label">{$this->getOption('label', '')}</div>
+                            </div>
+                            <div class="error-msg">{$this->getOption('error', '')}</div>
                         </label>
-                        <div class="error-text">{$this->getOption('error', '')}</div>
                     </div>
                 HTML;
                 break;

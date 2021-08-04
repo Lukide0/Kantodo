@@ -6,6 +6,8 @@ use Kantodo\Core\Application;
 use Kantodo\Core\Layout;
 use Kantodo\Models\TeamModel;
 
+use function Kantodo\Core\base64_encode_url;
+
 class ClientLayout extends Layout
 {
     public function Render(string $content = '', array $params = [])
@@ -13,11 +15,13 @@ class ClientLayout extends Layout
         $headerContent = Application::$APP->header->GetContent();
 
         $teamModel = new TeamModel();
+        $tabs = $params['tabs'] ?? [];
 
-        $userID = Application::$APP->session->get("userID");
+        $userID = Application::$APP->session->get('user')['id'];
 
         $teams = $teamModel->getUserTeams($userID);
 
+        $path = Application::$URL_PATH;
         ?>
         <!DOCTYPE html>
         <html lang="en">
@@ -25,22 +29,25 @@ class ClientLayout extends Layout
             <meta charset="UTF-8">
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <link rel="stylesheet" href="Styles/style.css">
-            <link rel="stylesheet" href="Styles/flex.css">
-            <script src="Scripts/Window.js"></script>
-            <script src="Scripts/Animation.js"></script>
-            <script src="Scripts/Request.js"></script>
+            <link rel="stylesheet" href="<?= $path ?>/styles/main.css">
+            <script src="<?= $path ?>/scripts/main.js"></script>
+            <script src="<?= $path ?>/scripts/window.js"></script>
+            <script src="<?= $path ?>/scripts/animation.js"></script>
+            <script src="<?= $path ?>/scripts/request.js"></script>
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet">
             <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
             <?= $headerContent ?>
         </head>
-        <body>
+        <body class="theme-light">
             <header>
                 <div class="row">
                     <h1>Kantodo</h1>
                     <div class="tabs">
-                        <div class="tab"><p>Projects</p></div>
-                        <div class="tab"><p>Calendar</p></div>
+                        <div class="tab"><a href="<?= $path ?>">Home page</a></div>
+                        <?php foreach ($tabs as $tab) {
+                            ?>
+                            <div class="tab"><a href="<?= $tab['path'] ?>"><?= $tab['name'] ?></a></div>
+                        <?php } ?>
                     </div>
                 </div>
                 <div class="actions">
@@ -64,13 +71,13 @@ class ClientLayout extends Layout
                     <?php
                     foreach ($teams as $team) {
                     ?>
-                    <div class="team">
+                    <a class="team" href="<?= $path ?>/team/<?= base64_encode_url($team['team_id']) ?>/">
                         <div class="icon"></div>
                         <div>
                             <div class="name"><?= $team['name'] ?></div>
                             <div class="members-count"><?= $team['members'] ?> members</div>
                         </div>
-                    </div>
+                    </a>
                     <?php } ?>
                 </div>
             </aside>
@@ -79,33 +86,37 @@ class ClientLayout extends Layout
             </main>
             <script>
             (function() {
-                'use-strict'
+                'use-strict';
                 
                 let addTeamBtn = document.getElementById('addTeam');
                 let content = `
                 <div class="container">
-                    <div class="container" style="margin-top: var(--gap-medium)">
-                        <label class="text info-focus">
-                            <input type="text" name="teamName" required>
-                            <span>Name</span>
+                    <div class="container" style="margin-top: 5px">
+                        <label>
+                            <div class="text-field outline">
+                                <input type="text" name="teamName" required>
+                                <div class="label">Name</div>
+                            </div>
+                            <div class="error-msg"></div>
                         </label>
-                        <div class="error-text"></div>
                     </div>
-                    <div class="container" style="margin-top: var(--gap-medium)">
-                        <label class="text info-focus">
-                            <input type="text" name="teamDesc" required>
-                            <span>Description</span>
+                    <div class="container" style="margin-top: 5px">
+                        <label>
+                            <div class="text-field outline">
+                                <input type="text" name="teamDesc" required>
+                                <div class="label">Description</div>
+                            </div>
+                            <div class="error-msg"></div>
                         </label>
-                        <div class="error-text"></div>
                     </div>
-                    <div class='row main-center' style="margin-top: var(--gap-medium)">
+                    <div class='row main-center' style="margin-top: 5px">
                         <button class='long primary'>Create</button>
                     <div>
                 </div>
                 `;
                 let formWindow, btn;
                 
-                create();
+                createFormWindow();
 
                 addTeamBtn.onclick = function() 
                 {
@@ -113,12 +124,25 @@ class ClientLayout extends Layout
                         formWindow.show()
                 }
 
-                function create() 
+                function createFormWindow() 
                 {
                     formWindow = Window('Create team', content);
                     formWindow.setMove()
                     formWindow.setClose()
-                    formWindow.onDestroy = create;
+                    formWindow.onDestroy = createFormWindow;
+                    formWindow.onShow = function() {
+                        let inputs = formWindow.$("input");
+                        inputs.forEach(el => {
+                            el.addEventListener("change", function() {
+                                if (el.value == "")
+                                    el.parentElement.classList.remove("focus");
+                                else
+                                    el.parentElement.classList.add("focus");
+                            });
+                        });
+                    }
+
+
                     btn = formWindow.$('button')[0];
                     btn.onclick = function() 
                     {
@@ -154,20 +178,19 @@ class ClientLayout extends Layout
                             {
                                 // TODO ADD TEAM TO LIST
 
-                                formWindow.onClose = function(_, dur) 
+                                formWindow.onClose = function() 
                                 {
-                                    setTimeout(function() {
-                                        formWindow.destroy();
-                                    }, dur);
+                                    let inputs = formWindow.$("input");
+                                    inputs.forEach(el => {
+                                        el.value = "";
+                                    });
                                 }
                                 formWindow.close();
                             }
                         });
                     }
                 }
-
-
-            })()
+            })();
             </script>
         </body>
         </html>

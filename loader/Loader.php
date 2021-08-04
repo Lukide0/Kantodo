@@ -125,6 +125,11 @@ class Autoloader
             $loader->setClass($alias, $className);
         }
 
+        $files = require __DIR__ . '/map_files.php';
+
+        foreach ($files as $file) {
+            includeFile($file);
+        }
 
         $loader->register();
 

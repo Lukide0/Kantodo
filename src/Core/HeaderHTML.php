@@ -8,14 +8,19 @@ class HeaderHTML
     private $scripts = array();
     private $title = 'Kantodo';
 
-    public function registerStyle(string $url, string $media = 'all') 
+    public function registerStyle(string $url, bool $external = false, string $media = 'all') 
     {
+        if (!$external)
+            $url = Application::$URL_PATH . $url;
+
         $this->styles[] = ['url' => $url, 'media' => $media];
     }
 
 
-    public function registerScript(string $url, bool $defer = false, bool $async = false, string $type = '') 
+    public function registerScript(string $url, bool $external = false, bool $defer = false, bool $async = false, string $type = '') 
     {
+        if (!$external)
+            $url = Application::$URL_PATH . $url;
 
         $this->scripts[] = [
             'url' => $url,

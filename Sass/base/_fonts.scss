@@ -1,0 +1,12 @@
+@each $name, $size in map-get($font, "size") {
+    .font-size-#{$name} {
+        font-size: #{$size};
+    }
+}
+
+
+@each $name, $weight in map-get($font, "weight") {
+    .font-weight-#{$name} {
+        font-weight: #{$weight};
+    }
+}

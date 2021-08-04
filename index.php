@@ -12,9 +12,10 @@ $APP->debugMode();
 
 /*
 - remove debug
-- sjednotit uvozovky
 - vytvoření účtu
-- 
+- komentáře, uvozovky, zavorky
+- namespace upravit = use Kantodo/Core/... use Kantodo/Core/... => use Kantodo/Core/{ ... }
+- generovani cest pomoci docblock ( @route("/cesta/") ) a json
 */
 
 if (!Application::configExits())
@@ -34,16 +35,15 @@ $APP->router->post('/auth/create', [Kantodo\Controllers\AuthController::class, '
 
 // pages
 $APP->router->get('/', [Kantodo\Controllers\CalendarController::class, 'today'], Application::USER);
-$APP->router->get('/team/{teamUUID}', [Kantodo\Controllers\TeamController::class, 'viewTeam'], Application::USER);
-
+$APP->router->get('/team/{teamID}/', [Kantodo\Controllers\TeamController::class, 'viewTeam'], Application::USER);
+$APP->router->get('/team/{teamID}/project', [Kantodo\Controllers\ProjectController::class, 'projectsList'], Application::USER);
 
 // actions
 $APP->router->post('/create/team', [Kantodo\Controllers\TeamController::class, 'createTeam'], Application::USER);
-
+$APP->router->post('/team/{teamID}/create/project', [Kantodo\Controllers\ProjectController::class, 'createProject'], Application::USER);
 
 
 // errors
-
 $APP->router->registerErrorCodeHandler(Application::ERROR_NOT_AUTHORIZED, function(int $role, int $userRole)
 {
     $path = Application::$APP->request->getPath();
@@ -56,6 +56,7 @@ $APP->router->registerErrorCodeHandler(Application::ERROR_NOT_AUTHORIZED, functi
     
     if ($userRole == Application::GUEST) 
     {
+        $path = urlencode($path);
         Application::$APP->response->setLocation("/auth?path={$path}");
         exit;
     }

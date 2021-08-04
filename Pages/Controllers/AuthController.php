@@ -18,7 +18,7 @@ class AuthController extends Controller
 
         if (!empty($body['get']['path']) && !Data::isURLExternal($body['get']['path'])) 
         {
-            $this->renderView(AuthView::class, ['path' => $body['get']['path']]);
+            $this->renderView(AuthView::class, ['path' => urlencode($body['get']['path'])]);
             return;
         }
         $this->renderView(AuthView::class);
@@ -54,6 +54,7 @@ class AuthController extends Controller
 
             if (!empty($path))
             {
+                $path = urlencode($path);
                 Application::$APP->response->setLocation("/auth?path={$path}");
                 exit;
             }        
@@ -62,14 +63,14 @@ class AuthController extends Controller
             
         }
         $status = Auth::signIn($body['post']['signInEmail'], $body['post']['signInPassword']);
-
-        if (!$status) 
+        if ($status) 
         {         
             Application::$APP->session->regenerateID();
-            
+
             if (!empty($path))
             {
-                Application::$APP->response->setLocation("{$body['get']['path']}");
+                $path = urldecode($path);
+                Application::$APP->response->setLocation("{$path}");
                 exit;
             }
             Application::$APP->response->setLocation('/');
