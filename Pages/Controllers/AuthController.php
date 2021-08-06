@@ -73,7 +73,7 @@ class AuthController extends Controller
                 Application::$APP->response->setLocation("{$path}");
                 exit;
             }
-            Application::$APP->response->setLocation('/');
+            Application::$APP->response->setLocation();
             exit;
 
         }

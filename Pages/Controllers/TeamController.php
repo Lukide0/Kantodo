@@ -8,7 +8,7 @@ use Kantodo\Core\{
     Controller,
     Validation\Data
 };
-use Kantodo\Middlewares\TeamAccessMiddleware;
+use Kantodo\Middlewares\ProjectAccessMiddleware;
 
 use Kantodo\Models\TeamModel;
 use Kantodo\Views\Layouts\ClientLayout;
@@ -61,17 +61,21 @@ class TeamController extends Controller
     }
 
     
-    public function viewTeam($args = [])
+    public function viewTeam($params = [])
     {
-        $teamAccess = new TeamAccessMiddleware();
-        $teamAccess->execute($args);
+        $projectAccess = new ProjectAccessMiddleware();
+        $projectAccess->execute($params);
         
-        $rawTeamID = $args['teamID'];
-        $teamID = base64_decode_url($args['teamID']);
+        $rawTeamID = $params['teamID'];
+        $teamID = base64_decode_url($params['teamID']);
+
+        $teamModel = new TeamModel();
+
         
         $params = [
             'tabs' => self::getTabs($rawTeamID),
-            'teamID' => $teamID
+            'teamID' => $teamID,
+            'teamInfo' => $teamModel->getInfo($teamID)
         ];
         
         $this->renderView(TeamView::class, $params, ClientLayout::class);

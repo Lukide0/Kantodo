@@ -39,6 +39,7 @@ button {
     &.flat,
     &.text {
         box-shadow: none;
+        color: get-font-color("secondary");
     }
 
     &.flat:hover, &.text:hover {

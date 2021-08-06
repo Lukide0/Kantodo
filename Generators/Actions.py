@@ -109,7 +109,7 @@ def add_command(commands):
             name = commands.pop(0)
         elif len(commands) == 3 and commands[0] == '-t':
             table = True
-            table_name =commands.pop(1)
+            table_name = commands.pop(1)
             name = commands.pop(1)
         else:
             add_command_help()
@@ -232,11 +232,11 @@ def migration_command(commands):
         return
 
     version = commands.pop(0)
-    args = " ".join(commands)
+    params = " ".join(commands)
 
     chdir("../")
 
-    system('php -f Src/Core/Database/Migration/ConsoleRunner.php ' + version + " " + args)
+    system('php -f Src/Core/Database/Migration/ConsoleRunner.php ' + version + " " + params)
 
     chdir("./Generators/")
 

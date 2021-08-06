@@ -5,7 +5,7 @@ namespace Kantodo\Core;
 
 abstract class BaseMiddleware
 {
-    public abstract function execute(array $args = []);
+    public abstract function execute(array $params = []);
 }
 
 

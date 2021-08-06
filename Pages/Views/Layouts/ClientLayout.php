@@ -71,7 +71,7 @@ class ClientLayout extends Layout
                     <?php
                     foreach ($teams as $team) {
                     ?>
-                    <a class="team" href="<?= $path ?>/team/<?= base64_encode_url($team['team_id']) ?>/">
+                    <a class="team" href="<?= $path ?>/team/<?= base64_encode_url($team['team_id']) ?>">
                         <div class="icon"></div>
                         <div>
                             <div class="name"><?= $team['name'] ?></div>

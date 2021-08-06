@@ -6,9 +6,9 @@ class Commands:
     def register_command(self, name, callback):
         self.commands[name] = callback
     
-    def handle_command(self, name, args = []):
+    def handle_command(self, name, params = []):
         if name in self.commands:
-            self.commands[name](args)
+            self.commands[name](params)
             return True
         else:
             return False

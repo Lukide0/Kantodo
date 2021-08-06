@@ -111,9 +111,6 @@ class ProjectModel extends Model
 
     public function create(int $teamID, int $userID, string $name)
     {
-        $projPos = Connection::formatTableName('projects');
-        $userTeamProj = Connection::formatTableName('user_team_projects');
-
         $uuid = Generator::uuidV4();
 
         $query = "INSERT INTO {$this->table} (`name`, `team_id`, `is_open`, `uuid`, `is_public`) VALUES (:name, :teamID, '1', :uuid, '1')";
@@ -135,10 +132,44 @@ class ProjectModel extends Model
                 return false;
             }
 
+
+            $status = $this->setUserPosition($userID, $projID, $posID);
+
+            if ($status === false) 
+            {
+                $this->delete($projID);
+                return false;
+            }
+
             return $projID;
 
         }
 
+        return false;
+    }
+
+    public function getColumns(int $projID)
+    {
+        $columns = Connection::formatTableName('columns');
+        $query = <<<SQL
+        SELECT
+            `column_id` as `id`,
+            `name`,
+            `max_task_count`
+        FROM
+            {$columns}
+        WHERE
+            `project_id` = :projID
+        SQL;
+
+        $sth = $this->con->prepare($query);
+
+        $status = $sth->execute([
+            ':projID' => $projID
+        ]);
+    
+        if ($status === true) 
+            return $sth->fetchAll(PDO::FETCH_ASSOC);
         return false;
     }
 
@@ -153,9 +184,29 @@ class ProjectModel extends Model
         ]);
 
         if ($status === true) 
-            return $sth->fetch(PDO::FETCH_ASSOC);
+        {
+            $result = $sth->fetch(PDO::FETCH_ASSOC);
+
+            if (count($result) != 0)
+                return $result['project_position_id'];
+            return false;
+
+        }
 
         return false;
+    }
+
+    public function setUserPosition(int $userID, int $projID, int $posID)
+    {
+        $userProj = Connection::formatTableName('user_team_projects');
+        $sth = $this->con->prepare("INSERT INTO {$userProj} (`user_team_id`, `project_id`, `project_position_id`) VALUES ( :userID, :projID, :posID)");
+        $status = $sth->execute([
+            ':userID' => $userID,
+            ':projID' => $projID,
+            ':posID' => $posID
+        ]);
+
+        return ($status === true) ? $this->con->lastInsertId() : false; 
     }
 
     public function createPosition(string $name)
@@ -172,6 +223,71 @@ class ProjectModel extends Model
         ]);
 
         return ($status === true) ? $this->con->lastInsertId() : false;
+    }
+
+    public function getProjectPosition(int $projID, int $userTeamID)
+    {
+        $projPos = Connection::formatTableName('project_positions');
+        $userProj = Connection::formatTableName('user_team_projects');
+        
+        
+        $query = <<<SQL
+        SELECT 
+            proj_pos.name
+        FROM {$this->table} as proj
+            INNER JOIN {$userProj} as up
+                ON up.project_id = proj.project_id
+            INNER JOIN {$projPos} as proj_pos
+                ON up.project_position_id = proj_pos.project_position_id
+        WHERE proj.project_id = :projID AND up.user_team_id = :userTeamID
+        SQL;
+
+        $sth = $this->con->prepare($query);
+        $status = $sth->execute([
+            ':projID' => $projID,
+            ':userTeamID' => $userTeamID
+        ]);
+        
+        if ($status === true) 
+            return $sth->fetch(PDO::FETCH_ASSOC);
+        
+        return false;
+    }
+
+    public function getMembersInitials(int $projID)
+    {
+        $users = Connection::formatTableName('users');
+        $userTeam = Connection::formatTableName('user_teams');
+        $userProj = Connection::formatTableName('user_team_projects');
+        
+        $query = <<<SQL
+        SELECT
+            CONCAT(
+                LEFT(u.firstname, 1),
+                LEFT(u.lastname, 1)
+            ) AS `initials`
+        FROM
+            {$userProj} AS up
+        INNER JOIN {$userTeam} AS ut
+        ON
+            ut.user_team_id = up.user_team_id
+        INNER JOIN {$users} AS u
+        ON
+            ut.user_id = u.user_id
+        WHERE
+            up.project_id = :projID
+        SQL;
+
+
+        $sth = $this->con->prepare($query);
+        $status = $sth->execute([
+            ':projID' => $projID
+        ]);
+
+        if ($status === true) 
+            return $sth->fetchAll(PDO::FETCH_ASSOC);
+
+        return false;
     }
 
 

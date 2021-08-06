@@ -152,7 +152,7 @@ class Version_1_0 extends AbstractMigration
         {
             $table->addColumn('user_team_id', 'bigint', ['unsigned' => true]);
             $table->addColumn('project_id', 'bigint', ['unsigned' => true]);
-            $table->addColumn('project_position', 'bigint', ['unsigned' => true]);
+            $table->addColumn('project_position_id', 'bigint', ['unsigned' => true]);
                     
             //keys
             $table->addPrimaryKey('user_team_id');

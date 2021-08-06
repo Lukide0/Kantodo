@@ -191,7 +191,7 @@ class TeamModel extends Model
 
     
     
-    public function getUserTeamPosition(int $userID, int $teamID)
+    public function getTeamPosition(int $teamID, int $userID)
     {
         $teamPos = Connection::formatTableName('team_positions');
         $userTeams = Connection::formatTableName('user_teams');
@@ -199,7 +199,8 @@ class TeamModel extends Model
         
         $query = <<<SQL
         SELECT 
-            tp.name
+            tp.name,
+            ut.user_team_id as `id`
         FROM {$this->table} as t
             INNER JOIN {$userTeams} as ut
                 ON ut.team_id = t.team_id
@@ -214,7 +215,7 @@ class TeamModel extends Model
         ]);
         
         if ($status === true) 
-        return $sth->fetch(PDO::FETCH_ASSOC);
+            return $sth->fetch(PDO::FETCH_ASSOC);
         
         return false;
         
@@ -243,9 +244,13 @@ class TeamModel extends Model
             ':name' => $name
         ]);
 
-
         if ($status === true) 
-            return $sth->fetch(PDO::FETCH_ASSOC);
+        {
+            $result = $sth->fetch(PDO::FETCH_ASSOC);
+            if (count($result) != 0)
+                return $result['team_position_id'];
+            return false;
+        }
 
         return false;
     }

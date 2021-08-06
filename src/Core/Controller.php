@@ -21,11 +21,11 @@ abstract class Controller
         $this->middlewares[] = $bm;
     }
 
-    public final function executeAllMiddlewares(array $args = []) 
+    public final function executeAllMiddlewares(array $params = []) 
     {
         foreach ($this->middlewares as $middleware) 
         {
-            $middleware->execute($args);
+            $middleware->execute($params);
         }
     }
 

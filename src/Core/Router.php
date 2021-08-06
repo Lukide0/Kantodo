@@ -131,7 +131,7 @@ class Router
 
     public function runPath(string $path, string $method = Request::METHOD_GET)
     {
-        [$callback, $args] = $this->match($path, $method);
+        [$callback, $params] = $this->match($path, $method);
 
         if ($callback === false) 
         {
@@ -159,12 +159,12 @@ class Router
 
             Application::$APP->controller = $controller;
 
-            $controller->executeAllMiddlewares($args);
+            $controller->executeAllMiddlewares($params);
 
-            call_user_func([$controller, $classMethod], $args);
+            call_user_func([$controller, $classMethod], $params);
             return;
         }
-        call_user_func($callback['callback'], $this->request, $this->response, $args);
+        call_user_func($callback['callback'], $this->request, $this->response, $params);
     }
 }
 

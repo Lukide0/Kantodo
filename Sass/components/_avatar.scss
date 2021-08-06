@@ -11,6 +11,7 @@
     color: get-font-color("primary");
     background: var(--avatar-color);
 
+    height: 0;
     min-width: 34px;
     min-height: 34px;
     padding: get-gap("small");

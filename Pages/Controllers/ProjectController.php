@@ -5,19 +5,20 @@ namespace Kantodo\Controllers;
 
 use Kantodo\Core\Application;
 use Kantodo\Core\Controller;
-use Kantodo\Middlewares\TeamAccessMiddleware;
+use Kantodo\Middlewares\ProjectAccessMiddleware;
 use Kantodo\Models\ProjectModel;
 use Kantodo\Models\TeamModel;
 use Kantodo\Views\Layouts\ClientLayout;
 use Kantodo\Views\ProjectsListView;
 use Kantodo\Core\Validation\Data;
+use Kantodo\Views\ProjectView;
 
 use function Kantodo\Core\base64_decode_url;
 
 class ProjectController extends Controller
 {
     public function __construct() {
-        $this->registerMiddleware(new TeamAccessMiddleware());
+        $this->registerMiddleware(new ProjectAccessMiddleware());
     }
 
     public function createProject(array $params = [])
@@ -41,12 +42,30 @@ class ProjectController extends Controller
 
         $projectModel = new ProjectModel();
 
-        $status = $projectModel->create($teamID, $session->get("user")['id'], $body['post']['projName'], $body['post']['projDesc']);
+        $id = $projectModel->create($teamID, $session->get("user")['id'], $body['post']['projName'], $body['post']['projDesc']);
         
+        if ($id === false) 
+        {
+            $response->addResponseError("Server error");
+            $response->outputResponse();
+            exit;
+        }
+
+        $response->setResponseData(['id' => $id]);
+        $response->outputResponse();
+    }
+
+    public function viewProject(array $params = [])
+    {
+        $projModel = new ProjectModel();
+
+        $projID = base64_decode_url($params['projID']);
+
+        $params['membersInitials'] = $projModel->getMembersInitials($projID);
+        $params['columns'] = $projModel->getColumns($projID);
 
 
-        var_dump($status);
-        //$response->outputResponse();
+        $this->renderView(ProjectView::class, $params, ClientLayout::class);
     }
 
     public function projectsList(array $params = [])
@@ -69,6 +88,7 @@ class ProjectController extends Controller
 
         $this->renderView(ProjectsListView::class, $params, ClientLayout::class);
     }
+    
 }
 
 

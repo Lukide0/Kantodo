@@ -7,6 +7,7 @@ include_once 'Loader/autoload.php';
 $APP = new Application();
 $APP->session->start();
 
+// debug
 $APP->debugMode();
 
 
@@ -16,6 +17,8 @@ $APP->debugMode();
 - komentáře, uvozovky, zavorky
 - namespace upravit = use Kantodo/Core/... use Kantodo/Core/... => use Kantodo/Core/{ ... }
 - generovani cest pomoci docblock ( @route("/cesta/") ) a json
+- odstranit ziskavani dat ve view
+- widget input pouzit
 */
 
 if (!Application::configExits())
@@ -35,8 +38,9 @@ $APP->router->post('/auth/create', [Kantodo\Controllers\AuthController::class, '
 
 // pages
 $APP->router->get('/', [Kantodo\Controllers\CalendarController::class, 'today'], Application::USER);
-$APP->router->get('/team/{teamID}/', [Kantodo\Controllers\TeamController::class, 'viewTeam'], Application::USER);
+$APP->router->get('/team/{teamID}', [Kantodo\Controllers\TeamController::class, 'viewTeam'], Application::USER);
 $APP->router->get('/team/{teamID}/project', [Kantodo\Controllers\ProjectController::class, 'projectsList'], Application::USER);
+$APP->router->get('/team/{teamID}/project/{projID}', [Kantodo\Controllers\ProjectController::class, 'viewProject'], Application::USER);
 
 // actions
 $APP->router->post('/create/team', [Kantodo\Controllers\TeamController::class, 'createTeam'], Application::USER);
@@ -50,7 +54,7 @@ $APP->router->registerErrorCodeHandler(Application::ERROR_NOT_AUTHORIZED, functi
     
     if ($role == Application::ADMIN && $userRole == Application::USER) 
     {
-        Application::$APP->response->setLocation('/');
+        Application::$APP->response->setLocation();
         exit;
     }
     
@@ -61,7 +65,7 @@ $APP->router->registerErrorCodeHandler(Application::ERROR_NOT_AUTHORIZED, functi
         exit;
     }
     
-    Application::$APP->response->setLocation('/');
+    Application::$APP->response->setLocation();
     exit;
 });
 

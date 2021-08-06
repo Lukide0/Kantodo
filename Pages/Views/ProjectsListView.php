@@ -17,10 +17,59 @@ class ProjectsListView implements IView
         $uuid = $params['uuid'];
         $rawTeamID = base64_encode_url($params['teamID']);
 
-        var_dump($projects);
+        $abspath = Application::$URL_PATH;
 
-        ?>
-        <button class="primary" data-team='<?= $uuid ?>'>Add</button>
+?>
+        <div class="row main-end">
+            <button class="primary" data-team='<?= $uuid ?>'>Add</button>
+        </div>
+        <div class="container">
+            <table class="projects col-lg-1 col-md-1">
+                <thead>
+                    <tr>
+                        <td id="status">
+                            <div>
+                                <div class="active">1 Open (TODO)</div>
+                                <div>0 Close (TODO)</div>        
+                            </div>
+                        </td>
+                        <td id="filter">
+                            <div>
+                                <span class="material-icons-round">
+                                filter_alt
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php
+
+                foreach ($projects as $project) 
+                {
+                    $projID = base64_encode_url($project['project_id']);
+                    $completed = $project['task_completed'];
+                    $notCompleted = $project['task_not_completed'] ?? 0;
+                    $countOfTasks = ($completed + $notCompleted) || 1;
+
+                    $percentageCompleted = ($completed / $countOfTasks) * 100;
+                ?>
+                    <tr>
+                        <td colspan="2" data-project="<?= $projID ?>">
+                            <a href="<?= $abspath ?>/team/<?= $rawTeamID ?>/project/<?= $projID ?>">
+                                <h3><?= $project['name'] ?></h3>
+                                <div class="progress" data-completed="<?= $percentageCompleted ?>">
+                                    <div class="completed"></div>
+                                </div>
+                            </a>
+                        </td>
+                    </tr>
+                <?php } ?>
+                </tbody>
+                <tfoot></tfoot>
+            </table>
+        </div>
+
         <script>
         (function() {
             'use-strict';
@@ -139,45 +188,6 @@ class ProjectsListView implements IView
 
 
         </script>
-
-        <!-- <div class="container">
-            <table class="projects col-lg-1 col-md-1">
-                <thead>
-                    <tr>
-                        <td id="status">
-                            <div>
-                                <div class="active">1 Open</div>
-                                <div>0 Close</div>        
-                            </div>
-                        </td>
-                        <td></td>
-                        <td id="filter">
-                            <div>
-                                <span class="material-icons-round">
-                                filter_alt
-                                </span>
-                            </div>
-                        </td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <div>
-                                <h3>Managment</h3>
-                                <div class="progress">
-                                    <div class="failed" style="width: 10px;"></div>
-                                    <div class="completed" style="width: 50px;"></div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="description">No description</td>
-                        <td>Lukas Koliandr</td>
-                    </tr>       
-                </tbody>
-                <tfoot></tfoot>
-            </table>
-        </div> -->
         <?php
     }
 }
