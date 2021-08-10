@@ -1,20 +1,24 @@
-<?php 
-
+<?php
 
 namespace Kantodo\Controllers;
 
-use Kantodo\Core\Controller;
+use Kantodo\Core\Base\AbstractController;
 use Kantodo\Views\HomeView;
 use Kantodo\Views\Layouts\ClientLayout;
 
-class CalendarController extends Controller
+/**
+ * Stránky s kalendářem
+ */
+class CalendarController extends AbstractController
 {
-    public function today()
+
+    /**
+     * Hlavní stránka
+     *
+     * @return  void
+     */
+    public function homePage()
     {
         $this->renderView(HomeView::class, [], ClientLayout::class);
     }
 }
-
-
-
-?>

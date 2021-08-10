@@ -1,51 +1,107 @@
-<?php 
+<?php
 
 namespace Kantodo\Core;
 
+/**
+ * HTML header
+ */
 class HeaderHTML
 {
-    private $styles = array();
-    private $scripts = array();
+    /**
+     * @var array
+     */
+    private $styles = [];
+    /**
+     * @var array
+     */
+    private $scripts = [];
+
+    /**
+     * @var string
+     */
     private $title = 'Kantodo';
 
-    public function registerStyle(string $url, bool $external = false, string $media = 'all') 
+    /**
+     * Registruje styl
+     *
+     * @param   string  $url       url
+     * @param   bool    $external  externí
+     * @param   string  $media     media atribut
+     *
+     * @return  void
+     */
+    public function registerStyle(string $url, bool $external = false, string $media = 'all')
     {
-        if (!$external)
+        if (!$external) {
             $url = Application::$URL_PATH . $url;
+        }
 
         $this->styles[] = ['url' => $url, 'media' => $media];
     }
 
-
-    public function registerScript(string $url, bool $external = false, bool $defer = false, bool $async = false, string $type = '') 
+    /**
+     * Registruje skript
+     *
+     * @param   string  $url       url
+     * @param   bool    $external  externí
+     * @param   bool    $defer     defer
+     * @param   bool    $async     async
+     * @param   string  $type      typ (module,text/javascript)
+     *
+     * @return  void
+     */
+    public function registerScript(string $url, bool $external = false, bool $defer = false, bool $async = false, string $type = '')
     {
-        if (!$external)
+        if (!$external) {
             $url = Application::$URL_PATH . $url;
+        }
 
         $this->scripts[] = [
-            'url' => $url,
+            'url'   => $url,
             'defer' => $defer,
             'async' => $async,
-            'type' => $type
+            'type'  => $type,
         ];
     }
 
+    /**
+     * Nastaví title
+     *
+     * @param   string  $title  title
+     *
+     * @return  void
+     */
     public function setTitle(string $title)
     {
         $this->title = $title;
     }
 
-    public function getStyles() 
+    /**
+     * Získá styly
+     *
+     * @return  array
+     */
+    public function getStyles()
     {
         return $this->styles;
     }
 
-    public function getScripts() 
+    /**
+     * Získá skripty
+     *
+     * @return  array
+     */
+    public function getScripts()
     {
         return $this->scripts;
     }
 
-    public function getContent() 
+    /**
+     * Vrátí vnitřek html head
+     *
+     * @return  string
+     */
+    public function getContent()
     {
         $header = '';
 
@@ -64,14 +120,6 @@ class HeaderHTML
             $header .= "<script {$type}' src='{$script['url']}' {$attr}></script>";
         }
 
-
         return $header;
-
     }
-
-
 }
-
-
-
-?>

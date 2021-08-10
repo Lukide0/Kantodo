@@ -13,8 +13,7 @@ window.addEventListener("load", function() {
 }, {once: true});
 
 
-let windows_count = 0;
-let window_last = null;
+let windowLast = null;
 
 
 function Window(title, content, onLoad = null) {
@@ -24,7 +23,7 @@ function Window(title, content, onLoad = null) {
     __element.style.zIndex = 999;
     let __rect = __element.getBoundingClientRect();   
 
-    window_last = __element;
+    windowLast = __element;
 
     __element.innerHTML = `
         <div class='head'>
@@ -39,10 +38,7 @@ function Window(title, content, onLoad = null) {
 
     windowsContainer.appendChild(__element);
 
-    if (onLoad != null)
-        content.onLoad(); 
-
-    return {
+    const w = {
         __element,
         __move,
         __rect,
@@ -101,20 +97,21 @@ function Window(title, content, onLoad = null) {
                 x: 0,
                 y: 0
             }
-        
+
             if (move) {
                 head.onmousedown = mouseDownListener;
                 head.onmouseup =  mouseUpListener;
             } else {
-                head.onmousedown = null;
-    
+                head.onmousedown = null;    
             }
 
             function mouseDownListener(event) {
-                if (self.__element != window_last) 
+                if (windowLast == null) 
+                    windowLast = self.__element;
+                else if (self.__element != windowLast) 
                 {
-                    window_last.parentNode.insertBefore(self.__element, window_last.nextSibling);
-                    window_last = self.__element;
+                    windowLast.parentNode.insertBefore(self.__element, windowLast.nextSibling);
+                    windowLast = self.__element;
                 }
 
                 self.__rect = self.__element.getBoundingClientRect();
@@ -157,5 +154,35 @@ function Window(title, content, onLoad = null) {
         'onDestroy': null,
         'isOpened': false
     };
+
+    if (onLoad != null)
+        onLoad(w);
+    return w;
+
 }
 
+
+function createFormWindow(title, content, action, onLoad = null) {
+
+    let formWindow = Window(title, content, onLoad);
+    formWindow.setMove();
+    formWindow.setClose(false);
+
+    formWindow.onShow = function() {
+        let inputs = formWindow.$("input");
+        inputs.forEach(el => {
+            el.addEventListener("change", function() {
+                if (el.value == "")
+                    el.parentElement.classList.remove("focus");
+                else
+                    el.parentElement.classList.add("focus");
+            });
+        });
+    };
+
+    formWindow.request = function(data, method = 'post') {
+        return Request(action, method, data);
+    }
+
+    return formWindow;
+}

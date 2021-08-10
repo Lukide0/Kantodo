@@ -3,7 +3,7 @@
 
 namespace Kantodo\Widgets;
 
-use Kantodo\Core\AbstractWidget;
+use Kantodo\Core\Base\AbstractWidget;
 
 class {{NAME}} extends AbstractWidget
 {

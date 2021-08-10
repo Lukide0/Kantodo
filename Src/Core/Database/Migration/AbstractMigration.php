@@ -1,9 +1,12 @@
-<?php 
+<?php
 
 namespace Kantodo\Core\Database\Migration;
 
 use Kantodo\Core\Application;
 
+/**
+ * Základ migrace
+ */
 abstract class AbstractMigration
 {
 
@@ -12,37 +15,66 @@ abstract class AbstractMigration
      */
     private $schema;
 
-    final public function __construct(Schema $schema = NULL) 
+    final public function __construct(Schema $schema = null)
     {
         $this->schema = $schema;
     }
 
-    public function getSQL() 
+    /**
+     * Schéma jako SQL
+     *
+     * @return  string  vrací schéma jako SQL
+     */
+    public function getSQL()
     {
         return $this->schema->getSQL();
     }
 
-    public static function saveSchema(Schema $schema) 
+    /**
+     * Uloží schéma do souboru
+     *
+     * @param   Schema  $schema  schéma k uložení
+     *
+     * @return  bool             status
+     */
+    public static function saveSchema(Schema $schema)
     {
         $schema->clearSQL();
 
         $objSer = serialize($schema);
 
-        return file_put_contents(Application::$MIGRATION_DIR . '/currentSchema.ser', $objSer);
+        return file_put_contents(Application::$MIGRATION_DIR . '/currentSchema.ser', $objSer) !== false;
     }
 
-    public static function loadSchema() 
+    /**
+     * Načte schéma ze souboru
+     *
+     * @return  Schema
+     */
+    public static function loadSchema()
     {
-        if (!file_exists(Application::$MIGRATION_DIR . '/currentSchema.ser'))
+        if (!file_exists(Application::$MIGRATION_DIR . '/currentSchema.ser')) {
             return new Schema(Application::$DB_TABLE_PREFIX);
+        }
 
         return unserialize(file_get_contents(Application::$MIGRATION_DIR . '/currentSchema.ser'));
-
     }
 
-    public abstract function up(Schema $schema);
-    public abstract function down(Schema $schema);
+    /**
+     * Update
+     *
+     * @param   Schema  $schema
+     *
+     * @return  void
+     */
+    abstract public function up(Schema $schema);
+
+    /**
+     * Downgrade
+     *
+     * @param   Schema  $schema
+     *
+     * @return  void
+     */
+    abstract public function down(Schema $schema);
 }
-
-
-?>

@@ -1,4 +1,4 @@
-class Column {
+/*class Column {
     constructor(element) {
         this.__element = element;
         this.__tasksElement = element.getElementsByClassName('tasks')[0];
@@ -51,7 +51,7 @@ class Column {
     options() {
         console.log('OPTIONS');
     }
-    
+
     /*
     task => {
         'name': '',
@@ -83,7 +83,7 @@ class Column {
             },
         ]
     }
-    */
+
 
 
     insert(task, offsetBottom = 0) {
@@ -149,3 +149,4 @@ class Column {
         }    
     }
 }
+*/

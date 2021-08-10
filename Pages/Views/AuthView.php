@@ -1,29 +1,34 @@
-<?php 
+<?php
 
 namespace Kantodo\Views;
 
 use Kantodo\Core\Application;
-use Kantodo\Core\IView;
+use Kantodo\Core\Base\IView;
 use Kantodo\Widgets\Form;
 use Kantodo\Widgets\Input;
 
+/**
+ * Přihlášení a registrace
+ */
 class AuthView implements IView
 {
+
     public function render(array $params = [])
     {
         $authType = (isset($params['type']) && $params['type'] == 'register') ? 'right' : '';
-        $fromURL = (isset($params['path'])) ? '?path=' . $params['path'] : '';
-        $appUrl = Application::$URL_PATH;
+        $fromURL  = (isset($params['path'])) ? '?path=' . $params['path'] : '';
+        $appUrl   = Application::$URL_PATH;
 
         $signInAction = "{$appUrl}/auth/sign-in{$fromURL}";
         $registerForm = new Form();
 
-        $email = Application::$APP->session->getFlashMessage('userEmail', '');
+        $email  = Application::$APP->session->getFlashMessage('userEmail', '');
         $errors = Application::$APP->session->getFlashMessage('signInErrors', []);
 
         ?>
         <!DOCTYPE html>
         <html lang="en">
+
         <head>
             <meta charset="UTF-8">
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -44,13 +49,14 @@ class AuthView implements IView
                     flex-direction: column;
                     height: 100%;
                 }
+
                 header {
                     all: unset;
                     background: rgb(0, 27, 41);
                     display: inline;
                     box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.14), 0px 1px 18px rgba(0, 0, 0, 0.12), 0px 3px 5px -1px rgba(0, 0, 0, 0.2);
                 }
-                
+
                 main {
                     all: unset;
                     width: 100%;
@@ -60,19 +66,19 @@ class AuthView implements IView
                     transition: clip-path 400ms ease-in-out;
                     background: white;
                 }
-                
+
                 main.right {
                     clip-path: polygon(40% 0, 100% 0, 100% 100%, 50% 100%);
                 }
-                
-                main > div.container {
+
+                main>div.container {
                     padding: var(--gap-huge);
                 }
-                
-                form > .row {
+
+                form>.row {
                     margin-bottom: var(--gap-huge);
                 }
-                
+
                 h2 {
                     align-self: center;
                     margin-bottom: 3rem;
@@ -84,50 +90,52 @@ class AuthView implements IView
                 }
             </style>
         </head>
+
         <body class="theme-light">
             <header>
                 <h1>Kantodo</h1>
             </header>
-            <main class="main-space-between <?= $authType; ?>">
+            <main class="main-space-between <?=$authType;?>">
                 <div class="col-5 container main-center">
                     <h2>Welcome back</h2>
-                    <?= Form::start($signInAction); ?>
-                        <?= Form::tokenCSRF(); ?>
-                        <div class="row main-center space-top">
-                            <?= Input::text(
-                                'signInEmail',
-                                'Email', 
-                                [
-                                    'outline' => true,
-                                    'color' => 'info',
-                                    'value' => $email,
-                                    'error' => $errors,
-                                    'autocomplete' => Input::AUTOCOMPLETE_EMAIL
-                                ]) 
-                            ?>
-                        </div>
-                        <div class="row main-center space-top">
-                            <?= Input::password(
-                                'signInPassword',
-                                'Password',
-                                [
-                                    'outline' => true,
-                                    'color' => 'info',
-                                    'value' => $email,
-                                    'error' => $errors,
-                                    'autocomplete' => Input::AUTOCOMPLETE_CURRENT_PASSWORD
-                                ])
-                            ?>
-                        </div>
-                        <div class="row main-center space-top">
-                            <button class="info long">Sign in</button>
-                        </div>
-                        <div class="row main-center space-top">
-                            <button class="text flat"
-                                onclick="(function(event) { event.preventDefault(); let x = document.getElementsByTagName('main')[0]; x.classList.add('right'); switchInputDisable(x.querySelector('div'));  switchInputDisable(document.querySelector('main > div:nth-child(2)'), false)})(event)">Create
-                                account</button>
-                        </div>
-                    <?= Form::end(); ?>
+                    <?=Form::start($signInAction);?>
+                    <?=Form::tokenCSRF();?>
+                    <div class="row main-center space-top">
+                        <?=Input::text(
+            'signInEmail',
+            'Email',
+            [
+                'outline'      => true,
+                'color'        => 'info',
+                'value'        => $email,
+                'error'        => $errors,
+                'autocomplete' => Input::AUTOCOMPLETE_EMAIL,
+            ]
+        )
+        ;?>
+                    </div>
+                    <div class="row main-center space-top">
+                        <?=Input::password(
+            'signInPassword',
+            'Password',
+            [
+                'outline'      => true,
+                'color'        => 'info',
+                'value'        => $email,
+                'error'        => $errors,
+                'autocomplete' => Input::AUTOCOMPLETE_CURRENT_PASSWORD,
+            ]
+        )
+        ;?>
+                    </div>
+                    <div class="row main-center space-top">
+                        <button class="info long">Sign in</button>
+                    </div>
+                    <div class="row main-center space-top">
+                        <button class="text flat" onclick="(function(event) { event.preventDefault(); let x = document.getElementsByTagName('main')[0]; x.classList.add('right'); switchInputDisable(x.querySelector('div'));  switchInputDisable(document.querySelector('main > div:nth-child(2)'), false)})(event)">Create
+                            account</button>
+                    </div>
+                    <?=Form::end();?>
                 </div>
                 <div class="col-5 container main-center">
                     <h2>Welcome to Kantodo</h2>
@@ -175,8 +183,7 @@ class AuthView implements IView
                         <button class="info long">Create account</button>
                     </div>
                     <div class="row main-center">
-                        <button class="text flat"
-                            onclick="(function() { document.getElementsByTagName('main')[0].classList.remove('right') })()">Sign
+                        <button class="text flat" onclick="(function() { document.getElementsByTagName('main')[0].classList.remove('right') })()">Sign
                             in</button>
                     </div>
                 </div>
@@ -187,7 +194,13 @@ class AuthView implements IView
                     let el = event.target;
                     let value = el.value;
 
-                    let errors = validatePassword(value, {'min': 8, 'lowercase': 1, 'uppercase': 1, 'number': 1, 'specialChar': 1});
+                    let errors = validatePassword(value, {
+                        'min': 8,
+                        'lowercase': 1,
+                        'uppercase': 1,
+                        'number': 1,
+                        'specialChar': 1
+                    });
                     for (let i = 0; i < obj.parent.children.length; i++) {
                         const el = obj.parent.children[i];
                         el.classList.remove('error');
@@ -197,25 +210,24 @@ class AuthView implements IView
 
                     if (errors.length == 0)
                         return true;
-                    
+
                     errors.forEach(error => {
-                        if (obj.hasOwnProperty(error)) 
-                        {
+                        if (obj.hasOwnProperty(error)) {
                             let el = obj[error];
 
                             el.classList.add('error');
                         }
                     });
 
-                    
+
                     return false;
                 }
             </script>
         </body>
-        </html>
-    <?php
-    }
-}
 
+        </html>
+<?php
+}
+}
 
 ?>

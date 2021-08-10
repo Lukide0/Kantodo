@@ -3,9 +3,9 @@
 
 namespace Kantodo\Controllers;
 
-use Kantodo\Core\Controller;
+use Kantodo\Core\Base\AbstractController;
 
-class {{NAME}}Controller extends Controller
+class {{NAME}}Controller extends AbstractController
 {
 
 }

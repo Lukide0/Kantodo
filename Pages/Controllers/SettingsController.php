@@ -1,15 +1,9 @@
-<?php 
-
+<?php
 
 namespace Kantodo\Controllers;
 
-use Kantodo\Core\Controller;
+use Kantodo\Core\Base\AbstractController;
 
-class SettingsController extends Controller
+class SettingsController extends AbstractController
 {
-
 }
-
-
-
-?>

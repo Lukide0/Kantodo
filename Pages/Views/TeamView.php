@@ -1,10 +1,12 @@
-<?php 
+<?php
 
 namespace Kantodo\Views;
 
-use Kantodo\Core\IView;
-use Kantodo\Models\TeamModel;
+use Kantodo\Core\Base\IView;
 
+/**
+ * Tým
+ */
 class TeamView implements IView
 {
     public function Render(array $params = [])
@@ -12,9 +14,9 @@ class TeamView implements IView
         $teamInfo = $params['teamInfo'];
 
         ?>
-        <h2><?= $teamInfo['name'] ?></h2>
+        <h2><?=$teamInfo['name'];?></h2>
 
-        <?php
+<?php
 
         var_dump($teamInfo);
     }

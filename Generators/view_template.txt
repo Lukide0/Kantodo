@@ -2,7 +2,7 @@
 
 namespace Kantodo\Views;
 
-use Kantodo\Core\IView;
+use Kantodo\Core\Base\IView;
 
 class {{NAME}}View implements IView
 {

@@ -3,7 +3,7 @@
 namespace Kantodo\Models;
 
 use Kantodo\Core\Database\Connection;
-use Kantodo\Core\Model;
+use Kantodo\Core\Base\Model;
 use PDO;
 
 class {{NAME}}Model extends Model
