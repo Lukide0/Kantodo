@@ -2,6 +2,7 @@
 
 namespace Kantodo\Models;
 
+use Kantodo\Core\Application;
 use Kantodo\Core\Base\Model;
 use Kantodo\Core\Database\Connection;
 use Kantodo\Core\Generator;
@@ -191,8 +192,10 @@ class ProjectModel extends Model
                 return false;
             }
 
+            $userTeamID = Application::$APP->session->get($teamID)['id'];
+
             // vytvoří admina
-            $status = $this->setUserPosition($userID, $projID, $posID);
+            $status = $this->setUserPosition($userTeamID, $projID, $posID);
 
             // nepodařilo se vytvořit admina
             if ($status === false) {
@@ -332,12 +335,10 @@ class ProjectModel extends Model
         $query = <<<SQL
         SELECT
             proj_pos.name
-        FROM {$this->table} as proj
-            INNER JOIN {$userProj} as up
-                ON up.project_id = proj.project_id
+        FROM {$userProj} as up
             INNER JOIN {$projPos} as proj_pos
                 ON up.project_position_id = proj_pos.project_position_id
-        WHERE proj.project_id = :projID AND up.user_team_id = :userTeamID
+        WHERE up.project_id = :projID AND up.user_team_id = :userTeamID
         SQL;
 
         $sth    = $this->con->prepare($query);
@@ -346,8 +347,10 @@ class ProjectModel extends Model
             ':userTeamID' => $userTeamID,
         ]);
 
+        
         if ($status === true) {
             $pos = $sth->fetch(PDO::FETCH_ASSOC);
+
             if (empty($pos)) {
                 return false;
             }
@@ -441,7 +444,7 @@ class ProjectModel extends Model
         ]);
 
         if ($status === true) {
-            return $sth->fetchAll(PDO::FETCH_NUM);
+            return $sth->fetchAll(PDO::FETCH_COLUMN);
         }
 
         return false;

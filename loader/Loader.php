@@ -40,11 +40,13 @@ class Loader
         }
         
         IncludeFile($file);
+
     }
     
     public function findFile(string $className) 
     {
 
+        
         $namespaces = explode('\\', $className);
         $class = array_pop($namespaces);
         
@@ -95,7 +97,7 @@ class Loader
 
     public function register() 
     {
-        spl_autoload_register([$this, 'LoadClass']);
+        spl_autoload_register([$this, 'loadClass']);
     }
 
 }

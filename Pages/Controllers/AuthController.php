@@ -8,6 +8,7 @@ use Kantodo\Core\Application;
 use Kantodo\Core\Auth;
 use Kantodo\Core\Base\AbstractController;
 use Kantodo\Core\Validation\Data;
+use Kantodo\Views\AuthView;
 
 /**
  * Třída na autorizace
@@ -21,9 +22,8 @@ class AuthController extends AbstractController
      */
     public function authenticate()
     {
-
         $body = Application::$APP->request->getBody();
-
+        
         // cesta z které byl uživatel přesměrován
         if (!empty($body['get']['path']) && !Data::isURLExternal($body['get']['path'])) {
             $this->renderView(AuthView::class, ['path' => urlencode($body['get']['path'])]);

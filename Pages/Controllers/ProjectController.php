@@ -2,7 +2,7 @@
 
 namespace Kantodo\Controllers;
 
-use function Kantodo\Core\Functions\base64_decode_url;
+use function Kantodo\Core\Functions\base64DecodeUrl;
 use Kantodo\Core\Application;
 use Kantodo\Core\Base\AbstractController;
 
@@ -11,6 +11,9 @@ use Kantodo\Middlewares\ProjectAccessMiddleware;
 use Kantodo\Models\ProjectModel;
 
 use Kantodo\Models\TeamModel;
+use Kantodo\Views\Layouts\ClientLayout;
+use Kantodo\Views\ProjectsListView;
+use Kantodo\Views\ProjectView;
 
 /**
  * Třída na práci s projektem
@@ -31,7 +34,7 @@ class ProjectController extends AbstractController
      */
     public function createProject(array $params = [])
     {
-        $teamID   = base64_decode_url($params['teamID']);
+        $teamID   = base64DecodeUrl($params['teamID']);
         $response = Application::$APP->response;
         $session  = Application::$APP->session;
 
@@ -69,7 +72,7 @@ class ProjectController extends AbstractController
     {
         $projModel = new ProjectModel();
 
-        $projID = base64_decode_url($params['projID']);
+        $projID = base64DecodeUrl($params['projID']);
 
         // iniciály členů projektu
         $params['membersInitials'] = $projModel->getMembersInitials($projID);
@@ -92,7 +95,7 @@ class ProjectController extends AbstractController
         // tabs
         $params['tabs'] = TeamController::getTabs($params['teamID']);
 
-        $params['teamID'] = base64_decode_url($params['teamID']);
+        $params['teamID'] = base64DecodeUrl($params['teamID']);
 
         $projectModel = new ProjectModel();
         $teamModel    = new TeamModel();

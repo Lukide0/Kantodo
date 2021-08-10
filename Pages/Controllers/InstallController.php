@@ -12,6 +12,7 @@ use Kantodo\Core\Validation\Data;
 use Kantodo\Models\ProjectModel;
 use Kantodo\Models\TeamModel;
 use Kantodo\Models\UserModel;
+use Kantodo\Views\InstallView;
 
 /**
  * Třída na instalaci

@@ -26,7 +26,7 @@ class ProjectView implements IView
             <?php
 
         for ($i = 0; $i < 5 && $i < $membersCount; $i++) {
-            $initials = $membersInitials[$i]['initials'];
+            $initials = $membersInitials[$i];
             ?>
                 <div class="avatar">
                     <p><?=$initials;?></p>

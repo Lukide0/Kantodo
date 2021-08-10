@@ -66,7 +66,8 @@ abstract class AbstractController
      */
     final public function renderView(string $class, array $params = [], string $layout = null)
     {
-
+        
+        // exit;
         if ($layout == null) {
             call_user_func([new $class, 'Render'], $params);
             return;

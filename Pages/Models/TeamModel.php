@@ -278,18 +278,18 @@ class TeamModel extends Model
     /**
      * Nastaví pozici uživateli
      *
-     * @param   int  $userID  id uživatele
+     * @param   int  $userTeamID  id user_teams
      * @param   int  $teamID  id týmu
      * @param   int  $posID   id pozice
      *
      * @return  int|false     vrací id záznamu nebo false pokud se nepovedlo vložit do databáze
      */
-    public function setUserPosition(int $userID, int $teamID, int $posID)
+    public function setUserPosition(int $userTeamID, int $teamID, int $posID)
     {
         $userTeams = Connection::formatTableName('user_teams');
-        $sth       = $this->con->prepare("INSERT INTO {$userTeams} (`user_id`, `team_id`, `team_position_id`) VALUES ( :userID, :teamID, :posID)");
+        $sth       = $this->con->prepare("INSERT INTO {$userTeams} (`user_id`, `team_id`, `team_position_id`) VALUES ( :userTeamID, :teamID, :posID)");
         $status    = $sth->execute([
-            ':userID' => $userID,
+            ':userTeamID' => $userTeamID,
             ':teamID' => $teamID,
             ':posID'  => $posID,
         ]);

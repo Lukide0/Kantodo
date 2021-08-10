@@ -2,7 +2,7 @@
 
 namespace Kantodo\Controllers;
 
-use function Kantodo\Core\Functions\base64_decode_url;
+use function Kantodo\Core\Functions\base64DecodeUrl;
 use Kantodo\Core\Application;
 use Kantodo\Core\Base\AbstractController;
 use Kantodo\Core\Response;
@@ -44,7 +44,7 @@ class ColumnController extends AbstractController
         }
 
         // IDs
-        $projID = base64_decode_url($projID);
+        $projID = base64DecodeUrl($projID);
         $userID = Application::$APP->session->get('user')['id'];
 
         $projModel = new ProjectModel();

@@ -2,7 +2,8 @@
 
 namespace Kantodo\Middlewares;
 
-use function Kantodo\Core\Functions\base64_decode_url;
+use function Kantodo\Core\Functions\base64DecodeUrl;
+
 use Kantodo\Core\Application;
 
 use Kantodo\Core\Base\AbstractMiddleware;
@@ -38,7 +39,7 @@ class ProjectAccessMiddleware extends AbstractMiddleware
 
         $rawTeamID = $params['teamID'];
 
-        $teamID = base64_decode_url($rawTeamID);
+        $teamID = base64DecodeUrl($rawTeamID);
         $userID = Application::$APP->session->get('user')['id'];
 
         if (!filter_var($teamID, FILTER_VALIDATE_INT)) {
@@ -60,23 +61,24 @@ class ProjectAccessMiddleware extends AbstractMiddleware
             $session->set($teamID, $pos, time() + self::TEAM_ID_EXPIRATION);
         }
 
+
         if (empty($params['projID'])) {
             return;
         }
-
+        
         $rawProjID = $params['projID'];
-        $projID    = base64_decode_url($rawProjID);
-
+        $projID    = base64DecodeUrl($rawProjID);
+        
         if (!filter_var($projID, FILTER_VALIDATE_INT)) {
             Application::$APP->response->setLocation("/team/{$rawTeamID}");
             exit;
         }
-
+        
         // prázdná session s id projektu
         if ($session->get($projID, false) === false) {
             $projModel  = new ProjectModel();
             $userTeamID = $session->get($teamID)['id'];
-
+            
             $pos = $projModel->getProjectPosition($projID, $userTeamID);
 
             if ($pos === false) {

@@ -2,13 +2,15 @@
 
 namespace Kantodo\Controllers;
 
-use function Kantodo\Core\Functions\base64_decode_url;
+use function Kantodo\Core\Functions\base64DecodeUrl;
 use Kantodo\Core\Application;
 use Kantodo\Core\Base\AbstractController;
 
 use Kantodo\Core\Validation\Data;
 use Kantodo\Middlewares\ProjectAccessMiddleware;
 use Kantodo\Models\TeamModel;
+use Kantodo\Views\Layouts\ClientLayout;
+use Kantodo\Views\TeamView;
 
 /**
  * Třída na práci s týmem
@@ -64,7 +66,7 @@ class TeamController extends AbstractController
         $projectAccess->execute($params);
 
         $rawTeamID = $params['teamID'];
-        $teamID    = base64_decode_url($params['teamID']);
+        $teamID    = base64DecodeUrl($params['teamID']);
 
         $teamModel = new TeamModel();
 
