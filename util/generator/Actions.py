@@ -234,11 +234,11 @@ def migration_command(commands):
     version = commands.pop(0)
     params = " ".join(commands)
 
-    chdir("../")
+    chdir("../../")
 
     system('php -f Src/Core/Database/Migration/ConsoleRunner.php ' + version + " " + params)
 
-    chdir("./Generators/")
+    chdir("./util/generator/")
 
 
 def migration_command_help():

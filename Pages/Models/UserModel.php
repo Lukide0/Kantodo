@@ -17,6 +17,16 @@ class UserModel extends Model
     {
         parent::__construct();
         $this->table = Connection::formatTableName('users');
+
+        $this->setColumns([
+            'user_id',
+            'firstname',
+            'lastname',
+            'email',
+            'password',
+            'secret',
+            'nickname'
+        ]);
     }
 
     /**
@@ -120,26 +130,6 @@ class UserModel extends Model
         }
 
         return false;
-    }
-
-    /**
-     * Získá data z tabulky
-     *
-     * @param   array  $columns  sloupce z tabulky, které chceme získat ve tvaru ['sloupec1', 'sloupec2'] nebo ['sloupec1' => 'alias', 'sloupec2']
-     * @param   array  $search   např. ['id' => 5]
-     * @param   int    $limit    limit
-     *
-     * @return  array|false      vrací false pokud nepodařilo získat záznamy
-     */
-    public function get(array $columns = ['*'], array $search = [], int $limit = 0)
-    {
-        if (count($columns) == 0) {
-            return [];
-        }
-
-        $tableColumns = ['user_id', 'firstname', 'lastname', 'email', 'password', 'secret', 'nickname'];
-
-        return $this->query($this->table, $tableColumns, $columns, $search, $limit);
     }
 
     /**

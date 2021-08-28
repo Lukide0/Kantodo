@@ -8,11 +8,10 @@ class Websocket
     private $host;
     private $address;
     private $timeout = 10;
-    private $ctx;
     private $streamSocket = NULL;
 
-    public function __construct(string $host, int $port = 80, bool $ssl = false, float $timeout = 10) {
-        $this->address = ($ssl ? 'ssl://' : '') . $host . ':' . $port;
+    public function __construct(string $host, int $port = 80, bool $tsl = false, float $timeout = 10) {
+        $this->address = ($tsl ? 'tsl://' : '') . $host . ':' . $port;
         $this->host = $host;
         $this->timeout = $timeout;
     }
@@ -20,8 +19,16 @@ class Websocket
     public function connect(string $path = '/') : bool
     {
         $errorCode = NULL;
-        $this->ctx = stream_context_create();
-        $this->streamSocket = stream_socket_client($this->address, $errorCode, $errorMsg, $this->timeout, STREAM_CLIENT_CONNECT);
+
+        $context = stream_context_create([
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true
+            ]
+        ]);
+
+        $this->streamSocket = stream_socket_client($this->address, $errorCode, $errorMsg, $this->timeout, STREAM_CLIENT_CONNECT, $context);
 
         if ($errorCode != NULL) return false;
 

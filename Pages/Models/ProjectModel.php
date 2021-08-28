@@ -128,6 +128,15 @@ class ProjectModel extends Model
     {
         parent::__construct();
         $this->table = Connection::formatTableName('projects');
+
+        $this->setColumns([
+            'project_id',
+            'name',
+            'team_id',
+            'is_open',
+            'uuid',
+            'is_public'
+        ]);
     }
 
     /**

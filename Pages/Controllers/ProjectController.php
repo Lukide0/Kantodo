@@ -9,7 +9,7 @@ use Kantodo\Core\Base\AbstractController;
 use Kantodo\Core\Validation\Data;
 use Kantodo\Middlewares\ProjectAccessMiddleware;
 use Kantodo\Models\ProjectModel;
-
+use Kantodo\Models\TaskModel;
 use Kantodo\Models\TeamModel;
 use Kantodo\Views\Layouts\ClientLayout;
 use Kantodo\Views\ProjectsListView;
@@ -74,11 +74,32 @@ class ProjectController extends AbstractController
 
         $projID = base64DecodeUrl($params['projID']);
 
+        // jméno týmu
+        $params['teamName'] =  $projModel->get(['name'], ['project_id' => $projID], 1)[0]['name'];
+
         // iniciály členů projektu
         $params['membersInitials'] = $projModel->getMembersInitials($projID);
 
         // sloupce
         $params['columns'] = $projModel->getColumns($projID);
+
+
+        $taskModel = new TaskModel();
+
+        for ($i=0; $i < count($params['columns']); $i++) {
+            $params['columns'][$i]['tasks'] = $taskModel->get(
+                [
+                    'name',
+                    'description' => 'desc',
+                    'priority', 'completed',
+                    'end_date',
+                    'index'
+                ], 
+                [
+                    'column_id' => $params['columns'][$i]['id']
+                ]
+            );
+        }
 
         $this->renderView(ProjectView::class, $params, ClientLayout::class);
     }

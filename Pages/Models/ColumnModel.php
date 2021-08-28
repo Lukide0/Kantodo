@@ -14,6 +14,13 @@ class ColumnModel extends Model
     {
         parent::__construct();
         $this->table = Connection::formatTableName('columns');
+
+        $this->setColumns([
+            'column_id',
+            'name',
+            'max_task_count',
+            'project_id' 
+        ]);
     }
 
     /**

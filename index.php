@@ -4,7 +4,7 @@ use Kantodo\Core\Application;
 use Kantodo\Core\Request;
 use Kantodo\Core\Response;
 
-include_once 'Loader/autoload.php';
+include_once 'loader/autoload.php';
 
 $APP = new Application();
 $APP->session->start();
@@ -14,20 +14,19 @@ $APP->debugMode();
 
 /*
 - v akcich response predelat na setStatusCode
-- v modelech vrace false pokut prazdne napr. pozice
 - remove debug
 - vytvoření účtu
-- komentáře, uvozovky, zavorky
-- namespace upravit = use Kantodo/Core/... use Kantodo/Core/... => use Kantodo/Core/{ ... }
 - generovani uml database
-- odstranit ziskavani dat ve view
 - widget input pouzit
+- predelat socket na stream
  */
 
 if (!Application::configExits()) {
     $APP->router->run([Kantodo\Controllers\InstallController::class, 'install'], [$APP->request->getMethod()]);
     exit;
 }
+
+
 
 // auth
 $APP->router->get('/auth', [Kantodo\Controllers\AuthController::class, 'authenticate'], Application::GUEST, true);

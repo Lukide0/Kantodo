@@ -21,7 +21,7 @@ class ProjectView implements IView
         $rawProjID    = $params['projID'];
 
         ?>
-        <h2>UX Design Team</h2>
+        <h2><?=$params['teamName'];?></h2>
         <div class="avatars">
             <?php
 
@@ -50,30 +50,55 @@ class ProjectView implements IView
             <button class="icon-text flat"><span class="material-icons-round">filter_alt</span>Filter</button>
         </div>
         <div id="columns">
-            <?php
+        <?php
 
-        foreach ($params['columns'] ?? [] as $column) {
-            ?>
-                <div class="column" data-column="<?=base64_encode($column['id']);?>">
-                    <div class="row">
-                        <div class="title"><?=$column['name'];?></div>
-                        <div class="actions">
-                            <button class="icon-small round flat">
-                                <span class="material-icons-round">add</span>
-                            </button>
-                            <button class="icons-small flat">
-                                <span class="material-icons-round">more_horiz</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="tasks">
-                        <!-- TASKS -->
+        foreach ($params['columns'] ?? [] as $column):
+        ?>
+            <div class="column" data-column="<?=base64_encode($column['id']);?>">
+                <div class="row">
+                    <div class="title"><?=$column['name'];?></div>
+                    <div class="actions">
+                        <button class="icon-small round flat">
+                            <span class="material-icons-round">add</span>
+                        </button>
+                        <button class="icons-small flat">
+                            <span class="material-icons-round">more_horiz</span>
+                        </button>
                     </div>
                 </div>
-            <?php
-}
+                <div class="tasks" data-drop-area="task">
+                <?php
 
-        ?>
+                foreach ($column['tasks'] as $task):
+                ?>
+                    <div class="task">
+                        <div class="head">
+                            <div class="name"><?= $task['name'] ?></div>
+                            <button class="icon-small flat round"><span class="material-icons-round">more_horiz</span></button>
+                        </div>
+                        <div class="content">
+                            <div class="identifier">1</div>
+                            <div class="priority"></div>
+                            <div class="tags">
+                                <div class="tag">TAG NAME</div>
+                            </div>
+                        </div>
+                        <div class="footer">
+                            <button class="icon-small flat round">
+                                <span class="material-icons-round">attach_file</span>0
+                            </button>
+                            <button class='icon-small flat round'>
+                                <span class='material-icons-outlined'>chat</span>1
+                            </button>
+                            <div class="avatars">
+                                <div class="avatar">LK</div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+                </div>
+            </div>
+        <?php endforeach ?>
             <!-- <div class="column">
                 <div class="row">
                     <div class="title">To Do</div>
@@ -320,9 +345,16 @@ class ProjectView implements IView
                 });
 
             })();
+
+
+            let ws = new WebSocket('ws://localhost:8443/Kantodo/websockets');
+
+            function send(text){
+                ws.send(text);
+            }
         </script>
 <?php
-}
+    }
 }
 
 ?>

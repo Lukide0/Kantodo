@@ -156,6 +156,7 @@ foreach ($teams as $team) {
 
                         const request = self.request(params);
                         request.then(result => {
+                            console.log(result);
                             let res = JSON.parse(result);
                             if (res.data == true) {
                                 // TODO ADD TEAM TO LIST

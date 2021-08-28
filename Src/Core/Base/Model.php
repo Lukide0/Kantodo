@@ -19,6 +19,8 @@ class Model
      */
     protected $table;
 
+    private $tableColumns = [];
+
     public function __construct()
     {
         $this->con = Connection::getInstance();
@@ -27,17 +29,14 @@ class Model
     /**
      * Získá data z tabulky
      *
-     * @param   string  $formatedTableName  název tabulky
-     * @param   array   $tableColumns       sloupce tabulky
      * @param   array   $select             sloupce, které chceceme vybrat ve formátu ['sloupec', 'sloupec'] nebo ['sloupec' => 'alias']
      * @param   array   $search             např. ['id' => 5]
      * @param   int     $limit              limit
      *
      * @return  array|false                 vrací false pokud se nepodařilo získat data z tabulky
      */
-    protected function query(string $formatedTableName, array $tableColumns, array $select = ['*'], array $search = [], int $limit = 0)
+    public function get(array $select = ['*'], array $search = [], int $limit = 0)
     {
-
         if (count($select) == 0) {
             return [];
         }
@@ -47,10 +46,10 @@ class Model
         } else {
             $columns = [];
             foreach ($select as $key => $name) {
-                if (in_array($key, $tableColumns, true)) {
-                    $columns[] = "$key as $name";
-                } else if (in_array($name, $tableColumns)) {
-                    $columns[] = $name;
+                if (in_array($key, $this->tableColumns, true)) {
+                    $columns[] = "`$key` as '$name'";
+                } else if (in_array($name, $this->tableColumns)) {
+                    $columns[] = "`$name`";
                 }
             }
         }
@@ -62,14 +61,14 @@ class Model
         $searchData = [];
         $queryData  = [];
 
-        foreach ($tableColumns as $column) {
+        foreach ($this->tableColumns as $column) {
             if (isset($search[$column])) {
                 $searchData[]          = "{$column} = :{$column}";
                 $queryData[":$column"] = $search[$column];
             }
         }
 
-        $query = 'SELECT ' . implode(', ', $columns) . " FROM {$formatedTableName}";
+        $query = 'SELECT ' . implode(', ', $columns) . " FROM {$this->table}";
         if (count($search) != 0) {
             $query .= ' WHERE ' . implode(' AND ', $searchData);
         }
@@ -82,5 +81,16 @@ class Model
         $sth->execute($queryData);
         $data = $sth->fetchAll(\PDO::FETCH_ASSOC);
         return $data;
+    }
+
+
+    protected function setColumns(array $columns)
+    {
+        $this->tableColumns = $columns;
+    }
+    
+    public function getTableColumns() 
+    {
+        return $this->tableColumns;
     }
 }

@@ -65,6 +65,15 @@ class TeamModel extends Model
     {
         parent::__construct();
         $this->table = Connection::formatTableName('teams');
+
+        $this->setColumns([
+            'team_id',
+            'name',
+            'uuid',
+            'description',
+            'password',
+            'is_public'
+        ]);
     }
 
     /**
@@ -88,7 +97,7 @@ class TeamModel extends Model
             LEFT JOIN {$userTeams} as ut_count
                 ON ut_count.team_id = ut.team_id
         WHERE ut.user_id = :userID
-        GROUP BY t.name;
+        GROUP BY t.team_id;
         SQL;
 
         $sth    = $this->con->prepare($query);
@@ -101,26 +110,6 @@ class TeamModel extends Model
         }
 
         return false;
-    }
-
-    /**
-     * Získá data z tabulky
-     *
-     * @param   array  $columns  sloupce z tabulky, které chceme získat ve tvaru ['sloupec1', 'sloupec2'] nebo ['sloupec1' => 'alias', 'sloupec2']
-     * @param   array  $search   např. ['id' => 5]
-     * @param   int    $limit    limit
-     *
-     * @return  array|false      vrací false pokud nepodařilo získat záznamy
-     */
-    public function get(array $columns = ['*'], array $search = [], int $limit = 0)
-    {
-        if (count($columns) == 0) {
-            return [];
-        }
-
-        $tableColumns = ['team_id', 'name', 'uuid', 'description', 'password', 'is_public'];
-
-        return $this->query($this->table, $tableColumns, $columns, $search, $limit);
     }
 
     /**
@@ -179,7 +168,7 @@ class TeamModel extends Model
         $status = $sth->execute([
             ':name'      => $name,
             ':desc'      => $desc,
-            ':is_public' => $public,
+            ':is_public' => (int)$public,
             ':uuid'      => $uuid,
         ]);
 
@@ -191,8 +180,6 @@ class TeamModel extends Model
                 $this->delete($teamID);
                 return false;
             }
-            $posID = (int) $posID['team_position_id'];
-
             $status = $this->setUserPosition($userID, $teamID, $posID);
 
             if ($status === false) {

@@ -14,6 +14,19 @@ class TaskModel extends Model
     {
         parent::__construct();
         $this->table = Connection::formatTableName('tasks');
+
+        $this->setColumns([
+            'task_id',
+            'name',
+            'description',
+            'priority',
+            'completed',
+            'end_date',
+            'index',
+            'creator_id',
+            'milestone_id',
+            'column_id'
+        ]);
     }
 
     /**
