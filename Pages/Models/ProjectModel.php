@@ -135,7 +135,7 @@ class ProjectModel extends Model
             'team_id',
             'is_open',
             'uuid',
-            'is_public'
+            'is_public',
         ]);
     }
 
@@ -356,7 +356,6 @@ class ProjectModel extends Model
             ':userTeamID' => $userTeamID,
         ]);
 
-        
         if ($status === true) {
             $pos = $sth->fetch(PDO::FETCH_ASSOC);
 

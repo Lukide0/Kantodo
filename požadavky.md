@@ -1,19 +1,15 @@
-- přetahování úkolů mezi sloupci
+- přetahování úkolů mezi sloupci ✔
 - realtime aktualizace
-- filtrování úkolů
+- filtrování úkolů ❌
 - vlastní tagy (bug, grafika atd.)
-- přidávání sloupců
+- přidávání sloupců ✔
 - přidávání členů do týmu
-- uživatel může být ve více týmech
-- pluginy
+- uživatel může být ve více týmech ✔
+- pluginy ❌
 - kalendář, kde se zobrazí úkoly s termínem dokončení
 - vícejazyčné
-- instalační stánka
+- instalační stánka ✔
 - každý úkol může mít přílohu, komentář
 - k úkolu může být přidělen 1 a více uživatelů
-- role v týmu
+- role v týmu ✔
 - websocket
-- možná:
-    - více motivová
-    - administrační stránka
-    - vlastní role s omezením

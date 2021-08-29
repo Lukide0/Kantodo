@@ -2,15 +2,11 @@
 @import "../abstracts/functions";
 @import "../abstracts/mixins";
 
-
-
-
 main {
     overflow: hidden;
     display: flex;
     flex-direction: column;
 }
-
 
 #columns {
     margin: 25px 15px 15px 0;
@@ -32,11 +28,9 @@ main {
         flex-direction: column;
         border-radius: get-border-radius("medium");
 
-
         &:not(:first-child) {
             margin-left: get-gap("big");
         }
-
     }
 
     & > #addColumn {
@@ -124,7 +118,6 @@ main {
                     padding-bottom: get-gap("medium");
                     border-bottom: 2px solid get-color("primary", 0.25);
 
-
                     & > .tag {
                         @include font("small", "bold");
 
@@ -161,7 +154,7 @@ main {
                         content: "#";
                     }
                 }
-                
+
                 & > .priority {
                     --tag-priority: #{get-color("info")};
                     user-select: none;
@@ -171,7 +164,6 @@ main {
                     margin-bottom: get-gap("small");
                     background-color: var(--tag-priority);
                     border-radius: get-border-radius("medium");
-            
                 }
             }
 
@@ -179,13 +171,10 @@ main {
                 display: flex;
                 padding: get-gap("small") get-gap("medium");
 
-
                 & > .avatars {
                     margin-left: auto;
                 }
             }
-
-
         }
     }
 }

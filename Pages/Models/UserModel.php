@@ -25,7 +25,7 @@ class UserModel extends Model
             'email',
             'password',
             'secret',
-            'nickname'
+            'nickname',
         ]);
     }
 

@@ -3,7 +3,6 @@
 namespace Kantodo\Core\Database\Migration;
 
 use InvalidArgumentException;
-
 use Kantodo\Core\Database\Migration\Exception\ColumnException;
 use Kantodo\Core\Database\Migration\Exception\ForeignKeyException;
 use Kantodo\Core\Database\Migration\Exception\TableException;

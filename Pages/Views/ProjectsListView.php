@@ -163,7 +163,7 @@ class ProjectsListView implements IView
             })();
         </script>
 <?php
-    }
+}
 }
 
 ?>

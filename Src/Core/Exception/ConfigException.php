@@ -2,7 +2,5 @@
 
 namespace Kantodo\Core\Exception;
 
-
-class ConfigException extends KantodoException {}
-
-?>
+class ConfigException extends KantodoException
+{}

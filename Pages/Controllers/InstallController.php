@@ -5,10 +5,9 @@ namespace Kantodo\Controllers;
 use Kantodo\Core\Application;
 use Kantodo\Core\Base\AbstractController;
 use Kantodo\Core\Database\Connection;
-
 use Kantodo\Core\Database\Migration\Runner;
+use Kantodo\Core\Request;
 use Kantodo\Core\Validation\Data;
-
 use Kantodo\Models\ProjectModel;
 use Kantodo\Models\TeamModel;
 use Kantodo\Models\UserModel;
@@ -59,9 +58,9 @@ class InstallController extends AbstractController
          *
          * @var string[]
          */
-        $emptyKeys = Data::empty($body['post'], $keys);
+        $emptyKeys = Data::empty($body[Request::METHOD_POST], $keys);
 
-        Data::setIfNotSet($body['post'], ['dbPass', 'dbPrefix'], '');
+        Data::setIfNotSet($body[Request::METHOD_POST], ['dbPass', 'dbPrefix'], '');
 
         if (count($emptyKeys) != 0) {
             Application::$APP->response->addResponseError('Empty field|s');
@@ -74,7 +73,7 @@ class InstallController extends AbstractController
          *
          * @var bool
          */
-        $connectionStatus = Connection::tryConnect("mysql:host={$body['post']['dbHost']};dbname={$body['post']['dbName']}", $body['post']['dbUser'], $body['post']['dbPass'] ?? '');
+        $connectionStatus = Connection::tryConnect("mysql:host={$body[Request::METHOD_POST]['dbHost']};dbname={$body[Request::METHOD_POST]['dbName']}", $body[Request::METHOD_POST]['dbUser'], $body[Request::METHOD_POST]['dbPass'] ?? '');
 
         if (!$connectionStatus) {
             Application::$APP->response->addResponseError('Could not connect to database');
@@ -84,18 +83,18 @@ class InstallController extends AbstractController
 
         // konstanty v config.php
         $dbConstants = [
-            'DB_HOST'         => "'{$body['post']['dbHost']}'",
-            'DB_NAME'         => "'{$body['post']['dbName']}'",
-            'DB_USER'         => "'{$body['post']['dbUser']}'",
-            'DB_PASS'         => "'{$body['post']['dbPass']}'",
-            'DB_TABLE_PREFIX' => "'{$body['post']['dbPrefix']}'",
+            'DB_HOST'         => "'{$body[Request::METHOD_POST]['dbHost']}'",
+            'DB_NAME'         => "'{$body[Request::METHOD_POST]['dbName']}'",
+            'DB_USER'         => "'{$body[Request::METHOD_POST]['dbUser']}'",
+            'DB_PASS'         => "'{$body[Request::METHOD_POST]['dbPass']}'",
+            'DB_TABLE_PREFIX' => "'{$body[Request::METHOD_POST]['dbPrefix']}'",
         ];
 
         // validace
-        $adminFirstname = Data::formatName($body['post']['adminName']);
-        $adminLastname  = Data::formatName($body['post']['adminSurname']);
-        $adminEmail     = filter_var($body['post']['adminEmail'], FILTER_SANITIZE_EMAIL);
-        $adminPass      = $body['post']['adminPass'];
+        $adminFirstname = Data::formatName($body[Request::METHOD_POST]['adminName']);
+        $adminLastname  = Data::formatName($body[Request::METHOD_POST]['adminSurname']);
+        $adminEmail     = filter_var($body[Request::METHOD_POST]['adminEmail'], FILTER_SANITIZE_EMAIL);
+        $adminPass      = $body[Request::METHOD_POST]['adminPass'];
 
         if ($adminFirstname === false) {
             Application::$APP->response->addResponseError('Invalid firstname');
@@ -124,13 +123,13 @@ class InstallController extends AbstractController
         $adminPassHash = Data::hashPassword($adminPass, $adminEmail);
 
         // manuální nastavení prefix
-        Application::$DB_TABLE_PREFIX = $body['post']['dbPrefix'];
+        Application::$DB_TABLE_PREFIX = $body[Request::METHOD_POST]['dbPrefix'];
 
         // tmp konstanty
-        define('DB_HOST', $body['post']['dbHost']);
-        define('DB_NAME', $body['post']['dbName']);
-        define('DB_USER', $body['post']['dbUser']);
-        define('DB_PASS', $body['post']['dbPass']);
+        define('DB_HOST', $body[Request::METHOD_POST]['dbHost']);
+        define('DB_NAME', $body[Request::METHOD_POST]['dbName']);
+        define('DB_USER', $body[Request::METHOD_POST]['dbUser']);
+        define('DB_PASS', $body[Request::METHOD_POST]['dbPass']);
 
         $migRunner = new Runner();
 

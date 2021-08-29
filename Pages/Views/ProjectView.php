@@ -69,11 +69,11 @@ class ProjectView implements IView
                 <div class="tasks" data-drop-area="task">
                 <?php
 
-                foreach ($column['tasks'] as $task):
-                ?>
+        foreach ($column['tasks'] as $task):
+        ?>
                     <div class="task">
                         <div class="head">
-                            <div class="name"><?= $task['name'] ?></div>
+                            <div class="name"><?=$task['name'];?></div>
                             <button class="icon-small flat round"><span class="material-icons-round">more_horiz</span></button>
                         </div>
                         <div class="content">
@@ -95,10 +95,10 @@ class ProjectView implements IView
                             </div>
                         </div>
                     </div>
-                <?php endforeach; ?>
+                <?php endforeach;?>
                 </div>
             </div>
-        <?php endforeach ?>
+        <?php endforeach;?>
             <!-- <div class="column">
                 <div class="row">
                     <div class="title">To Do</div>
@@ -236,6 +236,7 @@ class ProjectView implements IView
                 let columns = document.querySelectorAll('[data-column]');
                 let contentTask = `
             <div class="container">
+                <input type="hidden" name='column'>
                 <div class="container space-top">
                     <label>
                         <div class="text-field outline">
@@ -285,6 +286,11 @@ class ProjectView implements IView
                     let btn = self.$('button')[0];
                     btn.onclick = function() {
                         let inputs = self.$('input');
+
+                        // hidden input
+                        inputs[0].value = self.column;
+
+
                         let params = {};
                         let error = false;
                         for (let i = 0; i < inputs.length; i++) {
@@ -293,12 +299,12 @@ class ProjectView implements IView
                             let parent = element.parentNode;
 
                             if (element.value == '') {
-                                //    parent.classList.add('error');
-                                //    parent.parentNode.children[1].innerText = 'Empty';
-                                //    error = true;
+                                //parent.classList.add('error');
+                                //parent.parentNode.children[1].innerText = 'Empty';
+                                error = true;
                             } else {
-                                //    parent.classList.remove('error');
-                                //    parent.parentNode.children[1].innerText = '';
+                                //parent.classList.remove('error');
+                                //parent.parentNode.children[1].innerText = '';
                             }
                             params[element.name] = element.value;
                         }
@@ -354,7 +360,7 @@ class ProjectView implements IView
             }
         </script>
 <?php
-    }
+}
 }
 
 ?>

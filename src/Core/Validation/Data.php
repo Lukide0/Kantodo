@@ -7,7 +7,7 @@ namespace Kantodo\Core\Validation;
  */
 class Data
 {
-    private final function __construct()
+    final private function __construct()
     {
     }
 
@@ -19,8 +19,7 @@ class Data
      *
      * @return  array         klíče
      */
-    public static function empty(array $data, array $keys)
-    {
+    function empty(array $data, array $keys) {
 
         $emptyKeys = [];
         foreach ($keys as $key) {
@@ -43,8 +42,10 @@ class Data
     public static function isEmpty(array $data, array $keys)
     {
         foreach ($keys as $key) {
-            if (empty($data[$key]))
+            if (empty($data[$key])) {
                 return true;
+            }
+
         }
 
         return false;
@@ -104,7 +105,7 @@ class Data
     }
 
     /**
-     * Kontrola hesla jestli je validní 
+     * Kontrola hesla jestli je validní
      *
      * @param   string  $password                  heslo
      * @param   bool    $mustContainNumber         musí obsahova číslo
@@ -115,17 +116,22 @@ class Data
      */
     public static function isValidPassword(string $password, bool $mustContainNumber = false, bool $mustContainSpecialChar = false, bool $mustContainUppercaseChar = false)
     {
-        if (strlen($password) == 0)
+        if (strlen($password) == 0) {
             return false;
+        }
 
-        if ($mustContainNumber && !preg_match('/[0-9]/', $password))
+        if ($mustContainNumber && !preg_match('/[0-9]/', $password)) {
             return false;
+        }
 
-        if ($mustContainSpecialChar && !preg_match('/[`!@#$%^&*()_+\-=\[\]{};\':\"\\|,.<>\/?~]/', $password))
+        if ($mustContainSpecialChar && !preg_match('/[`!@#$%^&*()_+\-=\[\]{};\':\"\\|,.<>\/?~]/', $password)) {
             return false;
+        }
 
-        if ($mustContainUppercaseChar && !preg_match('/[A-Z]/', $password))
+        if ($mustContainUppercaseChar && !preg_match('/[A-Z]/', $password)) {
             return false;
+        }
+
         return true;
     }
 
@@ -171,12 +177,14 @@ class Data
         $name = trim($name);
 
         // pokud obsahuje jen space a tab
-        if (strlen($name) == 0)
+        if (strlen($name) == 0) {
             return false;
+        }
 
         // jméno obsahuje mezeru
-        if (strpos($name, ' '))
+        if (strpos($name, ' ')) {
             return false;
+        }
 
         // velké 1. písmeno
         $name = ucfirst(strtolower($name));
@@ -187,11 +195,13 @@ class Data
     {
         $link = parse_url($url);
         $home = parse_url($_SERVER['HTTP_HOST']);
-        if (empty($link['host']))
+        if (empty($link['host'])) {
             return false;
+        }
 
-        if ($link['host'] == $home['host'])
+        if ($link['host'] == $home['host']) {
             return false;
+        }
 
         return true;
     }

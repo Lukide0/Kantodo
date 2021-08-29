@@ -14,11 +14,11 @@ $disabled-background: get-background("input-darker");
     align-items: center;
     padding: 2rem $padding-text-left;
     padding-bottom: 0.2rem;
-    background: get-background("input");    
+    background: get-background("input");
 
     border-bottom: 2px solid var(--default-border-color);
     border-radius: get-border-radius("medium") get-border-radius("medium") 0 0;
-    
+
     position: relative;
     letter-spacing: 1px;
 
@@ -26,7 +26,7 @@ $disabled-background: get-background("input-darker");
 
     &.focus {
         --border-color: var(--default-border-color);
-        
+
         & > .label {
             color: get-font-color("input") !important;
         }
@@ -56,7 +56,7 @@ $disabled-background: get-background("input-darker");
             & > .label {
                 background: transparent;
             }
-            
+
             &::before {
                 border-color: var(--border-color);
                 z-index: 1;
@@ -82,13 +82,12 @@ $disabled-background: get-background("input-darker");
             padding: 0.25rem 0.5rem 0 0.5rem;
             background: get-background("secondary");
             top: 50%;
-            transform: translate(0,-50%);
+            transform: translate(0, -50%);
         }
 
         &:focus-within,
         &.error,
         &.focus {
-
             &::before {
                 transition: border-color 200ms ease-out;
                 border-color: var(--border-color);
@@ -98,7 +97,6 @@ $disabled-background: get-background("input-darker");
                 top: 0;
             }
         }
-
     }
 
     &.right > input {
@@ -123,7 +121,6 @@ $disabled-background: get-background("input-darker");
         height: 2px;
         background-color: var(--border-color);
 
-
         // start at center
         transform-origin: center bottom;
         transform: scaleX(0);
@@ -133,7 +130,6 @@ $disabled-background: get-background("input-darker");
     &.disabled:not(.outline),
     &.error,
     &.focus {
-
         &::before {
             transition: transform 250ms ease;
             transform: scaleX(1);
@@ -179,5 +175,4 @@ $disabled-background: get-background("input-darker");
         z-index: 1;
         transition: all 250ms ease;
     }
-
 }

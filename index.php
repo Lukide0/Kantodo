@@ -26,8 +26,6 @@ if (!Application::configExits()) {
     exit;
 }
 
-
-
 // auth
 $APP->router->get('/auth', [Kantodo\Controllers\AuthController::class, 'authenticate'], Application::GUEST, true);
 $APP->router->get('/auth/sign-out', [Kantodo\Controllers\AuthController::class, 'signOut'], Application::USER);

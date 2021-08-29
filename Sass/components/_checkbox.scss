@@ -1,7 +1,6 @@
-
 .checkbox {
     --color: var(--primary);
-    --color-on-surf: 0,0,0;
+    --color-on-surf: 0, 0, 0;
     position: relative;
     display: inline-block;
     color: rgba(var(--color-on-surf), 0.87);
@@ -29,7 +28,7 @@
             & + span {
                 &::before {
                     border-color: rgba(var(--color), 1);
-                    background-color: rgba(var(--color),1);
+                    background-color: rgba(var(--color), 1);
                 }
 
                 &::after {
@@ -46,7 +45,6 @@
                 border-color: transparent;
                 background-color: currentColor;
             }
-
         }
 
         &:focus {
@@ -61,10 +59,8 @@
             & + span::before {
                 border-color: rgba(var(--color), 1);
             }
-
         }
-        
-        
+
         &:disabled {
             opacity: 0;
 
@@ -77,9 +73,7 @@
                 }
             }
         }
-        
     }
-    
 
     & > span {
         display: inline-block;
@@ -91,7 +85,7 @@
             display: inline-block;
             box-sizing: border-box;
             margin: 3px 11px 3px 1px;
-            border: solid 2px; 
+            border: solid 2px;
             border-color: rgba(var(--color-on-surf), 0.6);
             border-radius: 2px;
             width: 18px;
@@ -99,7 +93,6 @@
             vertical-align: top;
             transition: border-color 0.2s, background-color 0.2s;
         }
-        
 
         &::after {
             content: "";
@@ -115,7 +108,6 @@
             transform: translate(3px, 4px) rotate(-45deg);
         }
     }
-    
 
     &:hover > input {
         opacity: 0.04;

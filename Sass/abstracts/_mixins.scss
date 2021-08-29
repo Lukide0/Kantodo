@@ -1,5 +1,4 @@
 @mixin material-shadow($level, $color: #000000, $umbra: 0.2, $penumbra: 0.14, $ambient: 0.12) {
-    
     $umbra-value: map-get($umbra-map, $level);
     $penumbra-value: map-get($penumbra-map, $level);
     $ambient-value: map-get($ambient-map, $level);
@@ -8,9 +7,9 @@
     $penumbra-color: rgba($color, $penumbra);
     $ambient-color: rgba($color, $ambient);
 
-    box-shadow: #{$umbra-value} #{$umbra-color}, #{$penumbra-value} #{$penumbra-color}, #{$ambient-value} #{$ambient-color};
+    box-shadow: #{$umbra-value} #{$umbra-color}, #{$penumbra-value} #{$penumbra-color},
+        #{$ambient-value} #{$ambient-color};
 }
-
 
 @mixin font($size, $weight) {
     font-size: get-font-size($size);

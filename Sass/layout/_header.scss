@@ -3,9 +3,8 @@ header {
     grid-row: 1;
     justify-content: space-between;
 
-
-    .tabs, .tab {
-
+    .tabs,
+    .tab {
         @include font("medium", "bold");
 
         position: relative;

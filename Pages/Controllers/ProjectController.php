@@ -5,7 +5,7 @@ namespace Kantodo\Controllers;
 use function Kantodo\Core\Functions\base64DecodeUrl;
 use Kantodo\Core\Application;
 use Kantodo\Core\Base\AbstractController;
-
+use Kantodo\Core\Request;
 use Kantodo\Core\Validation\Data;
 use Kantodo\Middlewares\ProjectAccessMiddleware;
 use Kantodo\Models\ProjectModel;
@@ -40,7 +40,7 @@ class ProjectController extends AbstractController
 
         $body = Application::$APP->request->getBody();
 
-        if (Data::isEmpty($body['post'], ['projName', 'projDesc'])) {
+        if (Data::isEmpty($body[Request::METHOD_POST], ['projName', 'projDesc'])) {
             $response->addResponseError("Empty field|s");
             $response->outputResponse();
             exit;
@@ -49,7 +49,7 @@ class ProjectController extends AbstractController
         $projectModel = new ProjectModel();
 
         // vytvoření projektu
-        $id = $projectModel->create($teamID, $session->get("user")['id'], $body['post']['projName'], $body['post']['projDesc']);
+        $id = $projectModel->create($teamID, $session->get("user")['id'], $body[Request::METHOD_POST]['projName'], $body[Request::METHOD_POST]['projDesc']);
 
         if ($id === false) {
             $response->addResponseError("Server error");
@@ -75,7 +75,7 @@ class ProjectController extends AbstractController
         $projID = base64DecodeUrl($params['projID']);
 
         // jméno týmu
-        $params['teamName'] =  $projModel->get(['name'], ['project_id' => $projID], 1)[0]['name'];
+        $params['teamName'] = $projModel->getSingle(['name'], ['project_id' => $projID])['name'];
 
         // iniciály členů projektu
         $params['membersInitials'] = $projModel->getMembersInitials($projID);
@@ -83,20 +83,19 @@ class ProjectController extends AbstractController
         // sloupce
         $params['columns'] = $projModel->getColumns($projID);
 
-
         $taskModel = new TaskModel();
 
-        for ($i=0; $i < count($params['columns']); $i++) {
+        for ($i = 0; $i < count($params['columns']); $i++) {
             $params['columns'][$i]['tasks'] = $taskModel->get(
                 [
                     'name',
                     'description' => 'desc',
                     'priority', 'completed',
                     'end_date',
-                    'index'
-                ], 
+                    'index',
+                ],
                 [
-                    'column_id' => $params['columns'][$i]['id']
+                    'column_id' => $params['columns'][$i]['id'],
                 ]
             );
         }
@@ -125,7 +124,7 @@ class ProjectController extends AbstractController
         $params['projects'] = $projectModel->getTeamProjectList($params['teamID']);
 
         // uuid
-        $params['uuid'] = $teamModel->get(['uuid'], ['team_id' => $params['teamID']], 1)[0]['uuid'];
+        $params['uuid'] = $teamModel->getSingle(['uuid'], ['team_id' => $params['teamID']])['uuid'];
 
         $this->renderView(ProjectsListView::class, $params, ClientLayout::class);
     }

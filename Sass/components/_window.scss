@@ -1,5 +1,4 @@
 .window {
-
     @include material-shadow(8);
 
     pointer-events: all;
@@ -42,7 +41,6 @@
 .window .head span {
     font-size: get-font-size("medium");
 }
-
 
 .window .content {
     min-height: 50px;

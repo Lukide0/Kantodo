@@ -5,7 +5,7 @@ namespace Kantodo\Controllers;
 use function Kantodo\Core\Functions\base64DecodeUrl;
 use Kantodo\Core\Application;
 use Kantodo\Core\Base\AbstractController;
-
+use Kantodo\Core\Request;
 use Kantodo\Core\Validation\Data;
 use Kantodo\Middlewares\ProjectAccessMiddleware;
 use Kantodo\Models\TeamModel;
@@ -27,20 +27,20 @@ class TeamController extends AbstractController
         $body     = Application::$APP->request->getBody();
         $response = Application::$APP->response;
 
-        if (Data::isEmpty($body['post'], ['teamName'])) {
+        if (Data::isEmpty($body[Request::METHOD_POST], ['teamName'])) {
             $response->addResponseError('Empty field');
             $response->outputResponse();
             exit;
         }
 
-        $desc = $body['post']['teamDesc'] ?? '';
+        $desc = $body[Request::METHOD_POST]['teamDesc'] ?? '';
 
         $user   = Application::$APP->session->get('user', false);
         $userID = $user['id'];
 
         $teamModel = new TeamModel();
 
-        $id = $teamModel->create($body['post']['teamName'], $userID, $desc, false);
+        $id = $teamModel->create($body[Request::METHOD_POST]['teamName'], $userID, $desc, false);
 
         if ($id === false) {
             $response->addResponseError('Server error');

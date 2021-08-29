@@ -1,12 +1,13 @@
-<?php 
+<?php
 
 class Plugin
 {
-    private function __construct() {}
-    
+    private function __construct()
+    {}
+
     public static function ScanFolder()
     {
-        
+
     }
 
     public static function EnablePlugin()
@@ -16,22 +17,17 @@ class Plugin
 
     public static function DisablePlugin()
     {
-        
+
     }
-    
-    public static function DeletePlugin() 
+
+    public static function DeletePlugin()
     {
 
-
     }
-    
-    public static function GetInfo() 
+
+    public static function GetInfo()
     {
 
     }
 
 }
-
-
-
-?>

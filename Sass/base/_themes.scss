@@ -4,7 +4,7 @@ $colors: ();
 @each $theme, $map in $themes {
     .theme-#{$theme} {
         @each $key, $value in $map {
-            @if $key == 'colors' {
+            @if $key == "colors" {
                 @each $color-name, $color in $value {
                     @if not index($colors, $color-name) {
                         $colors: append($colors, $color-name);
@@ -15,8 +15,7 @@ $colors: ();
                     --#{$color-name}-lighter: #{lighten($color-hex, 10%)};
                     --#{$color-name}-darker: #{darken($color-hex, 10%)};
                 }
-            }
-            @else {
+            } @else {
                 --#{$key}: #{$value};
             }
         }

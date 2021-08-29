@@ -72,7 +72,7 @@ class TeamModel extends Model
             'uuid',
             'description',
             'password',
-            'is_public'
+            'is_public',
         ]);
     }
 
@@ -168,7 +168,7 @@ class TeamModel extends Model
         $status = $sth->execute([
             ':name'      => $name,
             ':desc'      => $desc,
-            ':is_public' => (int)$public,
+            ':is_public' => (int) $public,
             ':uuid'      => $uuid,
         ]);
 
@@ -205,13 +205,13 @@ class TeamModel extends Model
      */
     public function delete(int $teamID)
     {
-        $dir = $this->get(['uuid'], ['team_id' => $teamID], 1);
+        $dir = $this->getSingle(['uuid'], ['team_id' => $teamID]);
 
-        if ($dir === false || count($dir) == 0) {
+        if ($dir === false) {
             return false;
         }
 
-        $dir = $dir[0]['uuid'];
+        $dir = $dir['uuid'];
 
         if (!rmdir(Application::$DATA_PATH . $dir)) {
             return false;
@@ -277,8 +277,8 @@ class TeamModel extends Model
         $sth       = $this->con->prepare("INSERT INTO {$userTeams} (`user_id`, `team_id`, `team_position_id`) VALUES ( :userTeamID, :teamID, :posID)");
         $status    = $sth->execute([
             ':userTeamID' => $userTeamID,
-            ':teamID' => $teamID,
-            ':posID'  => $posID,
+            ':teamID'     => $teamID,
+            ':posID'      => $posID,
         ]);
 
         return ($status === true) ? $this->con->lastInsertId() : false;

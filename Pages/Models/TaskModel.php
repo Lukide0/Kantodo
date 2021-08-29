@@ -25,7 +25,7 @@ class TaskModel extends Model
             'index',
             'creator_id',
             'milestone_id',
-            'column_id'
+            'column_id',
         ]);
     }
 

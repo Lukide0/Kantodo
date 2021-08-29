@@ -12,10 +12,10 @@ define('WS_MSG_PONG', 0x8A);
 
 class WebSocket
 {
-    public $onMessage    = NULL;
-    public $onConnect    = NULL;
-    public $onDisconnect = NULL;
-    public $onHandshake  = NULL;
+    public $onMessage    = null;
+    public $onConnect    = null;
+    public $onDisconnect = null;
+    public $onHandshake  = null;
 
     /**
      * Websocket secret key
@@ -95,7 +95,7 @@ class WebSocket
         while (true) {
             $changed = $this->sockets;
 
-            if (@stream_select($changed, $write, $except, NULL) === false) {
+            if (@stream_select($changed, $write, $except, null) === false) {
                 continue;
             }
 
@@ -116,7 +116,7 @@ class WebSocket
 
                 //message
                 $buffer = stream_get_contents($socket);
-    
+
                 // message is empty
                 if ($buffer === false || empty($buffer)) {
                     $this->disconnect($socket, 'MESSAGE');
@@ -128,19 +128,18 @@ class WebSocket
                 if ($client->handshake == false) {
                     $client->handshake = true;
                     $this->handshake($socket, $buffer);
-                    
+
                     unset($buffer);
                     unset($client);
                     continue;
                 }
-                
-                $data = $this->decodeData($socket, $buffer);
 
+                $data = $this->decodeData($socket, $buffer);
 
                 if (!empty($data)) {
                     switch ($data['type']) {
                         case WS_MSG_TEXT:
-                            if ($this->onMessage !== NULL) {
+                            if ($this->onMessage !== null) {
                                 call_user_func($this->onMessage, $data, $socket);
                             }
 
@@ -176,7 +175,7 @@ class WebSocket
 
         $this->sockets[(int) $socket] = $socket;
 
-        if ($this->onConnect !== NULL) {
+        if ($this->onConnect !== null) {
             call_user_func($this->onConnect, $socket);
         }
 
@@ -187,7 +186,7 @@ class WebSocket
     private function disconnect(&$socket, $code = 0)
     {
 
-        if ($this->onDisconnect !== NULL) {
+        if ($this->onDisconnect !== null) {
             call_user_func($this->onDisconnect, $this->clients[(int) $socket], $code);
         }
 
@@ -215,7 +214,7 @@ class WebSocket
             "Sec-WebSocket-Location: ws://{$this->address}:{$this->port}{$this->path}\r\n" .
             "Sec-WebSocket-Accept: {$key} \r\n\r\n";
 
-        if ($this->onHandshake !== NULL) {
+        if ($this->onHandshake !== null) {
             call_user_func($this->onHandshake, $socket, $header);
         }
 
@@ -289,10 +288,10 @@ class WebSocket
         $opcode = hexdec(substr($firstByteBinary, 4, 4));
 
         $isMasked = $secondByteBinary[0] === '1';
-        $mask     = NULL;
+        $mask     = null;
 
         $payloadLength = ord($data[1]) & 127;
-        $dataLength    = NULL;
+        $dataLength    = null;
 
         switch ($opcode) {
             case 1:

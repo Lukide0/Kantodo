@@ -17,8 +17,6 @@ if (isset($config['secure']) && $config['secure'] === true) {
     $uri = 'tcp://localhost';
 }
 
-
-
 // $g = stream_context_create (array("ssl" => array("capture_peer_cert" => true, "verify_peer_name" => false, "verify_peer" => false)));
 // $r = stream_socket_client("ssl://localhost:443", $errno, $errstr, 30,
 //     STREAM_CLIENT_CONNECT, $g);
@@ -29,7 +27,6 @@ if (isset($config['secure']) && $config['secure'] === true) {
 // exit;
 
 $server = new WebSocket($uri, $config['port'], Application::$URL_PATH . '/websockets');
-
 
 $server->onMessage = "message";
 

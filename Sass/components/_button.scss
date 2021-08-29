@@ -11,7 +11,7 @@ button {
 
     border-radius: get-border-radius("medium");
     user-select: none;
-    
+
     font-size: get-font-size("regular");
     letter-spacing: 1px;
 
@@ -28,7 +28,7 @@ button {
         background: var(--disabled) !important;
     }
 
-    & > span[class^=material-icons] {
+    & > span[class^="material-icons"] {
         font-size: 2.25rem;
     }
 
@@ -42,7 +42,8 @@ button {
         color: get-font-color("secondary");
     }
 
-    &.flat:hover, &.text:hover {
+    &.flat:hover,
+    &.text:hover {
         @include material-shadow(2);
         background-color: var(--color-lighter);
     }
@@ -74,5 +75,4 @@ button {
     &.long {
         padding: get-gap("small") get-gap("huge");
     }
-
 }

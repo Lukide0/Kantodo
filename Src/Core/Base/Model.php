@@ -10,7 +10,7 @@ use Kantodo\Core\Database\Connection;
 class Model
 {
     /**
-     * @var PDO
+     * @var \PDO
      */
     protected $con;
 
@@ -83,13 +83,42 @@ class Model
         return $data;
     }
 
+    /**
+     * Získá data z tabulky
+     *
+     * @param   array   $select             sloupce, které chceceme vybrat ve formátu ['sloupec', 'sloupec'] nebo ['sloupec' => 'alias']
+     * @param   array   $search             ['sloupec' => hodnota]
+     *
+     * @return  array|false                 vrací false pokud se nepodařilo získat data z tabulky
+     */
+    public function getSingle(array $select = ['*'], array $search = [])
+    {
+        $data = $this->get($select, $search, 1);
 
+        if (count($data) != 1) {
+            return false;
+        }
+
+        return $data[0];
+    }
+
+    /**
+     * Nastavý sloupce tabulky
+     *
+     * @param   string[]  $columns  sloupce
+     *
+     */
     protected function setColumns(array $columns)
     {
         $this->tableColumns = $columns;
     }
-    
-    public function getTableColumns() 
+
+    /**
+     * Sloupce tabulky
+     *
+     * @return  string[]  sloupce
+     */
+    public function getTableColumns()
     {
         return $this->tableColumns;
     }

@@ -1,11 +1,10 @@
-
 $grid-max-columns: 12;
 
 $sizes: (
     "xs": 0px,
     "sm": 768px,
     "md": 992px,
-    "lg": 1200px
+    "lg": 1200px,
 );
 
 $sizes-names: map-keys($sizes);
@@ -19,7 +18,6 @@ $sizes-names: map-keys($sizes);
         }
     }
 }
-
 
 .space-around {
     margin: get-gap("medium");
@@ -41,8 +39,6 @@ $sizes-names: map-keys($sizes);
     margin-bottom: get-gap("medium");
 }
 
-
-
 .container {
     display: flex;
     flex-flow: column wrap;
@@ -50,11 +46,10 @@ $sizes-names: map-keys($sizes);
 }
 
 .row {
-    display: flex; 
+    display: flex;
     position: relative;
     flex-wrap: wrap;
 }
-
 
 .main-stretch {
     justify-content: stretch;

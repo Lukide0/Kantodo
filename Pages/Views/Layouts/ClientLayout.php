@@ -2,9 +2,7 @@
 
 namespace Kantodo\Views\Layouts;
 
-use function Kantodo\Core\Functions\base64_encode_url;
 use Kantodo\Core\Application;
-
 use Kantodo\Core\Base\Layout;
 use Kantodo\Models\TeamModel;
 

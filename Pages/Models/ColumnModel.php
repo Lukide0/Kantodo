@@ -19,7 +19,7 @@ class ColumnModel extends Model
             'column_id',
             'name',
             'max_task_count',
-            'project_id' 
+            'project_id',
         ]);
     }
 
@@ -55,5 +55,36 @@ class ColumnModel extends Model
         }
 
         return false;
+    }
+
+    public function getCountOfTasks(int $columnID)
+    {
+        $tasks = Connection::formatTableName('tasks');
+
+        $query = <<<SQL
+        SELECT
+            COUNT(`task_id`) as `tasks_count`
+        FROM {$tasks}
+        WHERE column_id = :columnID
+        LIMIT 1
+        SQL;
+
+        $sth    = $this->con->prepare($query);
+        $status = $sth->execute([
+            'columnID' => $columnID,
+        ]);
+
+        if ($status) {
+            $row = $sth->fetch(\PDO::FETCH_ASSOC);
+
+            if (count($row) === 0) {
+                return false;
+            }
+
+            return $row['tasks_count'];
+        }
+
+        return false;
+
     }
 }

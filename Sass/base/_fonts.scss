@@ -4,7 +4,6 @@
     }
 }
 
-
 @each $name, $weight in map-get($font, "weight") {
     .font-weight-#{$name} {
         font-weight: #{$weight};
