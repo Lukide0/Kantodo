@@ -1,0 +1,17 @@
+@use "../abstracts" as *;
+
+h2,h3,h4 {
+    display: inline-block;
+}
+
+h2 {
+    @include font(900, big, 900);
+}
+
+h3 {
+    @include font(900, medium, 900);
+}
+
+h4 {
+    @include font(800, medium, 700);
+}

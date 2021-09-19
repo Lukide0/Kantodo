@@ -1,0 +1,110 @@
+@use "../abstracts" as *;
+
+body > header {
+    @include material-shadow(4);
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+    z-index: 999;
+
+    & > h1 {
+        @include font(900, huge, 900);
+
+        margin: space(medium) 0 space(extreme) space(medium);
+    }
+
+    & > nav {
+        @include font(900, medium, 700);
+
+        margin-left: space(big);
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        justify-content: flex-start;
+
+        & > .item {
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin-bottom: space(medium);
+
+            &.dropdown {
+                display: block;
+
+                & > div {
+                    display: flex;
+                    align-items: center;
+                }
+
+                &::before {
+                    @include pseudo-icon("chevron_right", "round");
+                    position: absolute;
+                    right: 9px;
+                    font-weight: lighter;
+                    font-size: 25px;
+                    transition: transform 200ms ease-out;
+                }
+
+                &.expanded::before {
+                    transform: rotate(90deg);
+                }
+
+                & > .text {
+                    flex-grow: 1;
+                }
+
+                & > ul {
+                    margin-left: $icon-medium + space(regular);
+                    color: fontColor(700);
+
+                    & > li {
+                        --project-color: #{color(primary)};
+                        display: flex;
+                        align-items: center;
+                        margin-top: space(regular);
+                        font-size: fontSize(regular);
+
+                        &::before {
+                            display: block;
+                            content: "";
+                            width: 10px;
+                            height: 10px;
+                            border-radius: 25%;
+                            background: var(--project-color);
+                            margin-right: space(small);
+                        }
+
+                        &.add {
+                            &::before {
+                                opacity: 0;
+                            }
+
+                            color: fontColor(500);
+                        }
+                    }
+                }
+            }
+
+            &.active {
+                color: color("primary");
+
+                &::after {
+                    content: "";
+                    display: block;
+                    position: absolute;
+                    right: 0;
+                    width: 4px;
+                    height: 100%;
+                    background: color("primary");
+                }
+            }
+
+            &.last {
+                margin-top: auto;
+            }
+            & .text {
+                margin-left: space(regular);
+            }
+        }
+    }
+}

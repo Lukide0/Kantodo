@@ -1,0 +1,40 @@
+@use "variables" as *;
+@use "functions" as *;
+
+@mixin font($color: 900, $size: "medium", $weight: 500) {
+    font-size: fontSize($size);
+    color: fontColor($color);
+    font-weight: $weight;
+}
+
+@mixin material-shadow($level, $color: #000000, $umbra: 0.2, $penumbra: 0.14, $ambient: 0.12) {
+    $umbra-value: map-get($umbra-map, $level);
+    $penumbra-value: map-get($penumbra-map, $level);
+    $ambient-value: map-get($ambient-map, $level);
+
+    $umbra-color: rgba($color, $umbra);
+    $penumbra-color: rgba($color, $penumbra);
+    $ambient-color: rgba($color, $ambient);
+
+    box-shadow: #{$umbra-value} #{$umbra-color}, #{$penumbra-value} #{$penumbra-color},
+        #{$ambient-value} #{$ambient-color};
+}
+
+@mixin pseudo-icon($name, $style: "outline") {
+    @if ($style != "outline" and $style != "round") {
+        @error "Invalid style `#{$style}`.";
+    }
+    display: inline-block;
+    content: $name;
+    font-family: "Material Icons #{$style}";
+}
+
+@mixin respond($type) {
+    @if (map-has-key($breakpoints, $type)) {
+        @media #{unquote(map-get($breakpoints, $type))} {
+            @content;
+        }
+    }
+
+    @error "Respond type `#{$type}` doen't exist.";
+}

@@ -1,0 +1,83 @@
+@use "../abstracts" as *;
+
+button {
+    --color: #{color(primary)};
+    --text: #{color(primary, text)};
+    --hover: #{color(primary, light)};
+
+    border: 0;
+    border-radius: borderRadius(small);
+    padding: space(small) space(regular);
+    background: var(--color);
+    color: var(--text);
+    font-weight: 500;
+    position: relative;
+    display: flex;
+    align-items: center;
+    font-size: fontSize(regular);
+    transition: color 200ms ease-out, background 200ms ease-out, box-shadow 200ms ease-out;
+
+    &:hover {
+        cursor: pointer;
+        background: var(--hover);
+    }
+
+    &.flat {
+        border: 1px solid color(border);
+        background: background(primary);
+        --text: #{fontColor(800)};
+        font-weight: 700;
+
+        &:hover, &.no-border:hover {
+            background: background(third);
+        }
+
+        &.no-border {
+            border: 0;
+            background: transparent;
+        }
+
+    }
+
+    &.action {
+        border: 1px solid var(--color);
+        color: var(--color);
+        background: background(primary) !important;
+
+        &:hover {
+            @include material-shadow(4);
+        }
+    }
+    
+    &.hover-shadow:hover {
+        @include material-shadow(4);
+    }
+
+    &.no-padding {
+        padding: 0;
+    }
+
+    &.icon, & > .icon {
+        font-weight: 500;
+        font-size: $icon-small;
+        padding: space(small);
+        color: fontColor(900);
+    }
+}
+
+.button-dropdown {
+    display: flex;
+    align-items: stretch;
+
+    button:not(.dropdown) {
+        padding-right: space(small);
+        border-right: 1px solid color(primary, text);
+        border-radius: borderRadius(small) 0 0 borderRadius(small);
+    }
+
+    button.dropdown {
+        border-radius: 0 borderRadius(small) borderRadius(small) 0;
+        font-size: $icon-small;
+        padding: 0 space(small);
+    }
+}

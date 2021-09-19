@@ -1,0 +1,38 @@
+@use "../abstracts" as *;
+
+.task-list {
+    margin-top: space(big);
+    flex-grow: 1;
+
+    & > .dropdown-header {
+        @include font(900, big, 900);
+        display: flex;
+        align-items: center;
+
+        & > h3 {
+            display: flex;
+            align-items: center;
+
+            &::before {
+                @include pseudo-icon("chevron_right", "round");
+
+                font-size: $icon-small;
+                margin-right: space(small);
+                transition: transform 200ms ease-out;
+
+                @at-root {
+                    .expanded#{&} {
+                        transform: rotate(90deg);
+                    }
+                }
+            }
+        }
+
+        & > .line {
+            flex-grow: 1;
+            height: 2px;
+            background: color(border);
+            margin: 0 space(medium);
+        }
+    }
+}

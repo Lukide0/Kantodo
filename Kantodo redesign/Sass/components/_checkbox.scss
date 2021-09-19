@@ -1,0 +1,79 @@
+@use "../abstracts" as *;
+
+
+.checkbox {
+    --color: #{color(info)};
+    cursor: pointer; 
+    & > .background {
+        position: relative;
+        display: block;
+        width: $checkbox-size-medium;
+        height: $checkbox-size-medium;
+        border-radius: borderRadius(regular);
+        border: 2px solid color(border, dark);
+        transition: border steps(2);
+
+        &::before {
+            position: absolute;
+            display: block;
+            content: "";
+
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: borderRadius(regular);
+            background: var(--color);
+
+            opacity: 0;
+        }
+    }
+
+    &.small > .background {
+        width: $checkbox-size-small;
+        height: $checkbox-size-small;
+    }
+
+    &.big > .background {
+        width: $checkbox-size-big;
+        height: $checkbox-size-big;
+    }
+
+    &.round {
+        border-radius: 999px;
+
+        &::before {
+            border-radius: 999px;
+        }
+    }
+    
+    & > input {
+        display: none;
+    }
+    
+    & > input:checked + .background {
+        border: none;
+        
+        &::before {
+            transition: opacity 250ms ease-in-out;
+            opacity: 1;
+        }
+
+        &::after {
+            position: absolute;
+            display: block;
+            content: "";
+            
+            width: 20%;
+            height: 45%;
+            
+            border-right: 2px solid white;
+            border-bottom: 2px solid white;
+            
+            left: 50%;
+            top: 45%;
+
+            transform: translate(-50%,-50%) rotate(45deg);            
+        }
+    }
+}

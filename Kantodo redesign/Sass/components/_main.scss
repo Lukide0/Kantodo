@@ -1,0 +1,7 @@
+@use "../abstracts" as *;
+
+body > main {
+    position: relative;
+    background: background(secondary);
+    padding: space(huge) space(huge) 0 space(huge);
+}

@@ -1,0 +1,178 @@
+@use "../abstracts" as *;
+
+.modal {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+
+    background: rgba(#000, 0.3);
+    padding: space(huge);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.editor-modal {
+    background: background(primary);
+    border-radius: borderRadius(regular);
+
+
+    display: flex;
+    flex-grow: 1;
+
+    & > .content {
+
+        display: flex;
+        flex-grow: 1;
+        flex-direction: column;
+
+        padding: space(big);
+        background: background(secondary);
+        border-radius: borderRadius(regular);
+
+
+        & > .title {
+            @include font(900, big, 800);
+        }
+
+        & > .editor {
+            margin-top: space(big);
+        }
+
+        & > .sub-tasks {
+            display: flex;
+            flex-direction: column;
+            margin-top: space(big);
+
+            padding-left: space(regular);
+            border-left: 2px solid color(border);
+
+            & > .title {
+                @include font(800, medium, 700);
+                display: flex;
+                align-items: baseline;
+
+                & > p {
+                    margin-right: space(regular);
+                }
+            }
+
+            & > .tasks {
+                font-size: fontSize(regular);
+                color: fontColor(800);
+                margin-top: space(medium);
+                font-weight: 600;
+
+                & > .sub-task {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: space(medium);
+
+                    & > *:not(:last-child) {
+                        margin-right: space(regular);
+                    }
+                }
+
+                & > .actions {
+                    display: flex;
+                    align-items: center;
+
+                    & > span {
+                        margin: 0 space(regular);
+                    }
+                }
+            }
+        }
+
+        & > .actions {
+            margin-top: space(huge);
+            display: flex;
+
+        }
+    }
+
+    & > .settings {
+        background: background(primary);
+        padding: space(medium);
+        display: flex;
+        flex-direction: column;
+
+        & > .attributes {
+            margin-top: space(medium);
+
+            & > .title {
+                @include font(800, medium, 600);
+                padding-bottom: space(regular);
+                border-bottom: 2px solid color(border);
+            }
+
+            & > .attribute-list {
+                display: grid;
+                grid-template-rows: auto;
+                gap: space(medium);
+                margin-top: space(medium);
+
+                & > .attribute {
+                    @include font(700, regular, 600);
+
+                    display: grid;
+                    grid-template-columns: 3fr 3fr 1fr;
+                    gap: space(regular);
+
+                    & > .name {
+                        display: flex;
+                        align-items: center;
+                    }
+
+
+                    & > .value {
+                        --color-raw: #{colorRaw(primary)};
+                        --text: #{color(primary, text)};
+
+                        display: flex;
+                        align-items: center;
+                        padding: space(small) space(regular);
+                        background: rgba(var(--color-raw), 0.25);
+                        border-radius: borderRadius(small);
+
+                        &.no-color {
+                            background: background(primary);
+                            border: 1px solid color(border);
+                        }
+
+                        & > .dot {
+                            height: 10px;
+                            width: 10px;
+                            display: block;
+                            float: left;
+                            margin-right: space(regular);
+                            border-radius: 50%;
+                            background: rgb(var(--color-raw));
+                        }
+
+                        & > .icon {
+                            color: rgb(var(--color-raw));
+                            margin-right: space(small);
+                        }
+                    }
+
+
+                }
+            }
+        }
+
+        & > .actions {
+            margin-top: auto;
+            display: flex;
+            justify-content: flex-end;
+            
+            & > :first-child {
+                margin-right: space(medium);
+            }
+        }
+    }
+}

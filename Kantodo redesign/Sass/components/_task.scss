@@ -1,0 +1,55 @@
+@use "../abstracts" as *;
+
+.task {
+    padding: space(medium);
+    border-radius: borderRadius(medium);
+    background: background(primary);
+    margin-top: space(medium);
+
+    & > header {
+        display: flex;
+        justify-content: space-between;
+
+        & > div {
+            display: flex;
+            align-items: center;
+
+            & > .checkbox {
+                margin-right: space(regular);
+            }
+            
+            & > .important {
+                font-size: fontSize(small);
+                font-weight: 800;
+                color: color(warning, text);
+                margin-right: space(regular);
+
+                border-radius: 999px;
+                padding: space(small) space(regular);
+                background: color(warning);
+            }
+        }
+    }
+
+    & > main {
+        @include font(800, regular);
+    }
+
+    & > footer {
+        display: flex;
+        margin-top: space(big);
+        align-items: center;
+        justify-content: space-between;
+        font-size: fontSize(regular);
+        color: fontColor(800);
+
+        .tags {
+            margin-right: space(medium);
+
+            & > .tag {
+                margin-right: space(small);
+            }
+        }
+    }
+
+}

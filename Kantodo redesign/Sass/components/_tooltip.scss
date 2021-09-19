@@ -1,0 +1,35 @@
+@use "../abstracts" as *;
+
+[data-tooltip] {
+    position: relative;
+    --content: attr(data-tooltip);
+
+    &::before {
+        display: block;
+        visibility: hidden;
+        position: absolute;
+
+        bottom: -#{space(small)};
+        left: 50%;
+        transform-origin: top;
+        transform: translate(-50%,100%);
+        font-size: fontSize(small);
+        padding: space(small);
+        background: fontColor(600);
+        color: fontColor(100);
+        border-radius: borderRadius(small);
+        font-weight: 500;
+        font-family: $fontFamily;
+        content: var(--content);
+        opacity: 0;
+        z-index: 100;
+    }
+
+    &:hover {
+        &::before {
+            visibility: visible;
+            transition: opacity 150ms ease-in 0.3s;
+            opacity: 0.85;
+        }
+    }
+}

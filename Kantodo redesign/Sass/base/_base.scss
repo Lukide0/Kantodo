@@ -1,0 +1,92 @@
+@use "../abstracts" as *;
+
+
+@use "flex";
+
+:root {
+    // FONT COLORS
+    @each $name, $color in $fontColors {
+        --font-#{$name}: rgb(#{$color});
+    }
+
+    // COLORS
+    @each $name, $color in $colors {
+        $colorRGB: rgb(nth($color, 1), nth($color, 2), nth($color, 3), nth($color, 1));
+
+        $darken: mix($colorRGB, #000000, 85%);
+        $lighten: mix($colorRGB, #ffffff, 80%);
+
+        --#{$name}-dark: #{red($darken), green($darken), blue($darken)};
+        --#{$name}: #{$color};
+        --#{$name}-light: #{red($lighten), green($lighten), blue($lighten)};
+
+        @if (lightness($colorRGB) > 50) {
+            --#{$name}-text: #{map-get($fontColors, 900)};
+        } @else {
+            --#{$name}-text: #{map-get($fontColors, 100)};
+        }
+    }
+
+    @each $name, $value in $borderRadius {
+        --border-#{$name}: #{$value};
+    }
+}
+
+@each $name, $color in $colors {
+    .#{$name} {
+        --color: #{color($name)} !important;
+        --text: #{color($name, text)} !important;
+        --color-light: #{color($name, light)} !important;
+        --color-dark: #{color($name, dark)} !important;
+        --color-raw: #{colorRaw($name)} !important;
+    }
+}
+
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+html {
+    font-size: 62.5%;
+    font-family: $fontFamily;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+}
+
+ul,
+li {
+    list-style: none;
+}
+
+@each $name, $value in $space {
+    .space-#{$name} {
+        margin: $value;
+    }
+
+    .space-#{$name}-top {
+        margin-top: $value;
+    }
+
+    .space-#{$name}-right {
+        margin-right: $value;
+    }
+
+    .space-#{$name}-bottom {
+        margin-bottom: $value;
+    }
+
+    .space-#{$name}-left {
+        margin-left: $value;
+    }
+}

@@ -4,6 +4,9 @@
 ## Název práce
     - Kantodo
 ## Klíčové body
+    - MVC
+    - Websockets
+    - Todo app
 ## Kategorie
     - websocket
     - webová aplikace

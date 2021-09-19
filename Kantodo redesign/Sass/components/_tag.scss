@@ -1,0 +1,12 @@
+@use "../abstracts" as *;
+
+
+.tag {
+    --color: var(--primary);
+    padding: space(small) space(regular);
+    background: rgba(var(--color), 0.2);
+    border-radius: borderRadius(regular);
+    font-size: fontSize(small);
+    font-weight: 600;
+    color: rgb(var(--color));
+}

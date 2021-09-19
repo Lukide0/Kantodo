@@ -1,0 +1,35 @@
+@use "../abstracts" as *;
+
+
+.editor {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    border: 2px solid color(border);
+    background: background(primary);
+    border-radius: borderRadius(regular);
+    min-width: 500px;
+    min-height: 300px;
+
+    & > .menu {
+        border-top: 2px solid color(border);
+        margin-top: auto;
+        width: 100%;
+        max-width: 100%;
+        padding: space(small);
+        display: flex;
+        flex-wrap: wrap;
+
+        & > .group {
+            display: flex;
+
+            &:not(:first-child) {
+                margin-left: space(regular);
+            }
+        }
+
+        & > button {
+            margin-left: auto;
+        }
+    }
+}

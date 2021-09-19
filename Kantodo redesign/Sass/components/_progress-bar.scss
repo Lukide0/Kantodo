@@ -1,0 +1,23 @@
+@use "../abstracts" as *;
+
+.progress-bar {
+    display: flex;
+    align-items: center;
+    & > .bar {
+        position: relative;
+        width: 100px;
+        height: 10px;
+        background: color(border);
+        border-radius: borderRadius(regular);
+        margin-right: space(small);
+
+        & > .completed {
+            position: absolute;
+            left: 0;
+            background: color(success);
+            height: 10px;
+            border-radius: borderRadius(regular);
+        }
+
+    }
+}

@@ -1,0 +1,88 @@
+@use "../abstracts" as *;
+
+.text-field {
+    --color: #{color(primary)};
+
+    & > .field {
+        position: relative;
+
+        & > span {
+            color: fontColor(600);
+            position: absolute;
+            left: space(medium);
+            top: space(medium);
+            font-size: fontSize(medium);
+            font-weight: 400;
+            transition: all 200ms ease-out;
+        }
+
+        &:focus-within > span, &.focus > span {
+            top: space(regular);
+            color: var(--color);
+            font-size: fontSize(small);
+        }
+
+        
+        
+        & > input {
+            outline: none;
+            border: 0;
+            border-radius: borderRadius(small) borderRadius(small) 0 0;
+            background: color(border, light);
+            font-size: fontSize(medium);
+            padding: space(medium) space(medium) space(small) space(medium);
+    
+            border-bottom: 1px solid color(border, dark);
+        }
+
+        &::after {
+            display: block;
+            content: "";
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 1px;
+
+            transform-origin: center;
+            transform: scaleX(0);
+            background: var(--color);
+            transition: transform 200ms ease-out;
+        }
+        &:focus-within::after, &.focus::after {
+            transform: scaleX(1);
+        }
+    }
+
+    &.outline {
+        position: relative;
+
+        & > .field {
+            & > span {
+                top: space(medium);
+                background: background(primary);
+                padding: 0 space(small);
+            } 
+
+            &:focus-within > span, &.focus > span {
+                top: 0;
+                transform: translate(0, -50%);
+            }
+
+            & > input {
+                border-radius: borderRadius(small);
+                background: background(primary);
+                padding: space(medium) space(regular) space(medium) space(regular);
+                border: 1px solid color(border);
+                transition: border-color 200ms ease-out;
+
+                &:focus {
+                    border-color: var(--color);
+                }
+            }
+
+            &::after {
+                all: unset;
+            }
+        }
+    }
+}

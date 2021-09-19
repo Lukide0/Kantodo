@@ -1,0 +1,23 @@
+@use "../abstracts" as *;
+
+
+.milestone-list {
+    margin-left: space(big);
+    margin-top: space(medium);
+
+    background: background(primary);
+    border-radius: borderRadius(small);
+
+    padding: space(medium);
+    border-radius: borderRadius(medium);
+    background: background(primary);
+
+    font-size: fontSize(regular);
+
+    & > .milestone:not(:first-child) {
+        border-top: 2px solid color(border);
+    }
+    & > .progress-bar {
+        margin-top: space(regular);
+    }
+}
