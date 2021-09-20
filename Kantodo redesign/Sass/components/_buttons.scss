@@ -63,6 +63,10 @@ button {
         padding: space(small);
         color: fontColor(900);
     }
+
+    &.big {
+        padding: space(regular) space(medium);
+    }
 }
 
 .button-dropdown {

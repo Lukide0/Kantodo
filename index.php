@@ -12,14 +12,7 @@ $APP->session->start();
 // debug
 $APP->debugMode();
 
-/*
-- v akcich response predelat na setStatusCode
-- remove debug
-- vytvoření účtu
-- generovani uml database
-- widget input pouzit
-- predelat socket na stream
- */
+// TODO: Mobilni verze
 
 if (!Application::configExits()) {
     $APP->router->run([Kantodo\Controllers\InstallController::class, 'install'], [$APP->request->getMethod()]);

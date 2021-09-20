@@ -1,0 +1,24 @@
+@use "./../abstracts" as *;
+
+body {
+    display: block;
+    background: background(secondary);
+}
+
+.install {
+    @include material-shadow(4);
+    border-radius: borderRadius(small);
+    padding: space(big) space(huge);
+    background: background(primary);
+    width: 50%;
+    max-width: 500px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .text-field {
+        width: 100%;
+        margin-top: space(big);
+    }
+}

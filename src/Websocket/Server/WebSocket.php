@@ -372,7 +372,7 @@ class WebSocket
      *
      * @return  string  message
      */
-    private function encodeData($data, $type = 0x81)
+    private function encodeData($data, $type = WS_MSG_TEXT)
     {
         $frame   = array();
         $encoded = '';

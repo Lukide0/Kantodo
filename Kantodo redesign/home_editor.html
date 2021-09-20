@@ -8,7 +8,7 @@
     <title>Home</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="./styles/main.min.css">
 </head>
 
 <body>
@@ -132,19 +132,16 @@
                         <button class="flat">Edit</button>
                         <button class="flat space-medium-left no-border">Preview</button>
                     </div>
-                    <div class="editor">
-                        <div class="editable">
-                            @TODO
-                        </div>
+                    <div class="editor" id="editor">
                         <div class="menu">
                             <ul class="group">
-                                <li><button class="flat no-border no-padding" data-tooltip="undo"><span class="icon round">undo</span></button></li>
-                                <li><button class="flat no-border no-padding" data-tooltip="redo"><span class="icon round">redo</span></button></li>
+                                <li><button class="flat no-border no-padding" data-tooltip="undo" data-action="undo"><span class="icon round">undo</span></button></li>
+                                <li><button class="flat no-border no-padding" data-tooltip="redo" data-action="redo"><span class="icon round">redo</span></button></li>
                             </ul>
                             <ul class="group">
-                                <li><button class="flat no-border no-padding" data-tooltip="bold"><span class="icon round">format_bold</span></button></li>
-                                <li><button class="flat no-border no-padding" data-tooltip="italic"><span class="icon round">format_italic</span></button></li>
-                                <li><button class="flat no-border no-padding" data-tooltip="underline"><span class="icon round">format_underlined</span></button></li>
+                                <li><button class="flat no-border no-padding" data-tooltip="bold" data-action="bold"><span class="icon round">format_bold</span></button></li>
+                                <li><button class="flat no-border no-padding" data-tooltip="italic" data-action="italic"><span class="icon round">format_italic</span></button></li>
+                                <li><button class="flat no-border no-padding" data-tooltip="underline" data-action="underline"><span class="icon round">format_underlined</span></button></li>
                             </ul>
                             <ul class="group">
                                 <li><button class="flat no-border no-padding" data-tooltip="heading"><span class="icon round">format_size</span></button></li>
@@ -163,6 +160,9 @@
                                 <li><button class="flat no-border no-padding" data-tooltip="image"><span class="icon round">insert_photo</span></button></li>
                             </ul>
                             <button class="space-huge-left mode flat no-border">normal mode</button>
+                        </div>
+                        <div class="editable">
+                            @TODO
                         </div>
                     </div>
                     <div class="sub-tasks">
@@ -230,5 +230,18 @@
             </div>
         </div>
     </main>
+    <script>
+        const editor = document.getElementById("editor");
+        const editable = editor.getElementsByClassName("editable")[0];
+        const menu = editor.getElementsByClassName("menu")[0];
+        const actionButtons = menu.querySelectorAll("button[data-action]");
+    
+
+        // TODO: editor
+        editable.setAttribute("contenteditable", true);
+
+        
+
+    </script>
 </body>
 </html>

@@ -214,6 +214,10 @@ li {
   margin-left: 5px;
 }
 
+.padding-small {
+  padding: 5px;
+}
+
 .space-regular {
   margin: 10px;
 }
@@ -232,6 +236,10 @@ li {
 
 .space-regular-left {
   margin-left: 10px;
+}
+
+.padding-regular {
+  padding: 10px;
 }
 
 .space-medium {
@@ -254,6 +262,10 @@ li {
   margin-left: 15px;
 }
 
+.padding-medium {
+  padding: 15px;
+}
+
 .space-big {
   margin: 20px;
 }
@@ -272,6 +284,10 @@ li {
 
 .space-big-left {
   margin-left: 20px;
+}
+
+.padding-big {
+  padding: 20px;
 }
 
 .space-huge {
@@ -294,6 +310,10 @@ li {
   margin-left: 25px;
 }
 
+.padding-huge {
+  padding: 25px;
+}
+
 .space-extreme {
   margin: 40px;
 }
@@ -312,6 +332,10 @@ li {
 
 .space-extreme-left {
   margin-left: 40px;
+}
+
+.padding-extreme {
+  padding: 40px;
 }
 
 .icon {
@@ -595,6 +619,9 @@ button.icon, button > .icon {
   padding: 5px;
   color: var(--font-900);
 }
+button.big {
+  padding: 10px 15px;
+}
 
 .button-dropdown {
   display: flex;
@@ -613,11 +640,17 @@ button.icon, button > .icon {
 
 .text-field {
   --color: rgb(var(--primary));
+  z-index: 2;
 }
 .text-field > .field {
   position: relative;
 }
 .text-field > .field > span {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  z-index: 1;
   color: var(--font-600);
   position: absolute;
   left: 15px;
@@ -627,17 +660,18 @@ button.icon, button > .icon {
   transition: all 200ms ease-out;
 }
 .text-field > .field:focus-within > span, .text-field > .field.focus > span {
-  top: 10px;
+  top: 5px;
   color: var(--color);
   font-size: 1.2rem;
 }
 .text-field > .field > input {
   outline: none;
   border: 0;
+  width: 100%;
   border-radius: 4px 4px 0 0;
   background: rgb(var(--border-light));
   font-size: 1.6rem;
-  padding: 15px 15px 5px 15px;
+  padding: 25px 15px 5px 15px;
   border-bottom: 1px solid rgb(var(--border-dark));
 }
 .text-field > .field::after {
@@ -654,6 +688,16 @@ button.icon, button > .icon {
 }
 .text-field > .field:focus-within::after, .text-field > .field.focus::after {
   transform: scaleX(1);
+}
+.text-field > .text {
+  font-size: 1.2rem;
+  color: var(--font-700);
+  font-weight: 500;
+  margin-top: 5px;
+  padding-left: 15px;
+}
+.text-field > .text.error {
+  color: rgb(var(--error));
 }
 .text-field.outline {
   position: relative;
@@ -679,6 +723,25 @@ button.icon, button > .icon {
 }
 .text-field.outline > .field::after {
   all: unset;
+}
+
+.file-field {
+  position: relative;
+}
+.file-field > .field {
+  outline: none;
+  border-bottom: 1px solid rgb(var(--border-dark));
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  background: rgb(var(--border-light));
+  font-size: 1.6rem;
+  padding: 15px 15px 5px 15px;
+}
+.file-field > .field > input {
+  display: none;
+}
+.file-field > .text {
+  margin-top: 5px;
 }
 
 .progress-bar {
@@ -1007,9 +1070,16 @@ button.icon, button > .icon {
   min-width: 500px;
   min-height: 300px;
 }
+.editor > .editable {
+  padding: 15px;
+  font-size: 1.6rem;
+  outline: none;
+  flex: 1;
+  overflow-y: scroll;
+}
 .editor > .menu {
-  border-top: 2px solid rgb(var(--border));
-  margin-top: auto;
+  border-bottom: 2px solid rgb(var(--border));
+  margin-bottom: auto;
   width: 100%;
   max-width: 100%;
   padding: 5px;
@@ -1053,4 +1123,4 @@ button.icon, button > .icon {
   visibility: visible;
   transition: opacity 150ms ease-in 0.3s;
   opacity: 0.85;
-}
+}/*# sourceMappingURL=main.css.map */

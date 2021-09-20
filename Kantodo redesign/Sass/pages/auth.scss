@@ -11,15 +11,20 @@ body {
     background: background(primary);
     border-radius: borderRadius(medium);
 
+    min-width: 33%;
+    max-width: 500px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
 
     & > h2 {
         margin-bottom: space(huge);
+        font-size: fontSize(huge);
     }
 
     & > .text-field {
+        width: 100%;
         margin-bottom: space(big);
     }
 
@@ -35,6 +40,4 @@ body {
     a {
         color: color(info);
     }
-
-
 }

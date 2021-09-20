@@ -11,9 +11,16 @@
     min-width: 500px;
     min-height: 300px;
 
+    & > .editable {
+        padding: space(medium);
+        font-size: fontSize(medium);
+        outline: none;
+        flex: 1;
+        overflow-y: scroll;
+    }
     & > .menu {
-        border-top: 2px solid color(border);
-        margin-top: auto;
+        border-bottom: 2px solid color(border);
+        margin-bottom: auto;
         width: 100%;
         max-width: 100%;
         padding: space(small);

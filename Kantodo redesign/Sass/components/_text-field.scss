@@ -2,11 +2,14 @@
 
 .text-field {
     --color: #{color(primary)};
+    z-index: 2;
 
     & > .field {
         position: relative;
 
         & > span {
+            user-select: none;
+            z-index: 1;
             color: fontColor(600);
             position: absolute;
             left: space(medium);
@@ -17,7 +20,7 @@
         }
 
         &:focus-within > span, &.focus > span {
-            top: space(regular);
+            top: space(small);
             color: var(--color);
             font-size: fontSize(small);
         }
@@ -27,10 +30,11 @@
         & > input {
             outline: none;
             border: 0;
+            width: 100%;
             border-radius: borderRadius(small) borderRadius(small) 0 0;
             background: color(border, light);
             font-size: fontSize(medium);
-            padding: space(medium) space(medium) space(small) space(medium);
+            padding: space(huge) space(medium) space(small) space(medium);
     
             border-bottom: 1px solid color(border, dark);
         }
@@ -50,6 +54,17 @@
         }
         &:focus-within::after, &.focus::after {
             transform: scaleX(1);
+        }
+    }
+    
+    & > .text 
+    {
+        @include font(700, small);
+        margin-top: space(small);
+        padding-left: space(medium);
+
+        &.error {
+            color: color(error);
         }
     }
 

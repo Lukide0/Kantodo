@@ -89,4 +89,8 @@ li {
     .space-#{$name}-left {
         margin-left: $value;
     }
+
+    .padding-#{$name} {
+        padding: $value;
+    }
 }

@@ -43,83 +43,18 @@ class Version_1_0 extends AbstractMigration
             $table->addForeignKey('user_id', $schema->getTable('users'), 'user_id', $table::ACTION_AFFECT);
         });
 
-        //////////////////
-        // TABLE TOKENS //
-        //////////////////
-        $schema->create('tokens', function (Blueprint $table, Schema $schema) {
-            //columns
-            $table->addColumn('token_id', 'bigint', ['unsigned' => true, 'autoincrement' => true]);
-            $table->addColumn('value', 'varchar', ['length' => 150, 'unique' => true]);
-            $table->addColumn('exp_date', 'datetime');
-            $table->addColumn('user_id', 'bigint', ['unsigned' => true]);
-
-            //keys
-            $table->addPrimaryKey('token_id');
-
-            $table->addForeignKey('user_id', $schema->getTable('users'), 'user_id', $table::ACTION_AFFECT);
-        });
-
-        /////////////////
-        // TABLE TEAMS //
-        /////////////////
-        $schema->create('teams', function (Blueprint $table) {
-            //columns
-            $table->addColumn('team_id', 'bigint', ['unsigned' => true, 'autoincrement' => true]);
-            $table->addColumn('name', 'varchar');
-            $table->addColumn('uuid', 'varchar', ['length' => 36, 'unique' => true]);
-            $table->addColumn('description', 'text', ['length' => 500, 'notNull' => false]);
-            $table->addColumn('is_public', 'bool');
-
-            //keys
-            $table->addPrimaryKey('team_id');
-        });
-
-        /////////////////////
-        // TABLE POSITIONS //
-        /////////////////////
-        $schema->create('team_positions', function (Blueprint $table) {
-            //columns
-            $table->addColumn('team_position_id', 'bigint', ['unsigned' => true, 'autoincrement' => true]);
-            $table->addColumn('name', 'varchar', ['unique' => true]);
-            //keys
-            $table->addPrimaryKey('team_position_id');
-        });
-
-        //////////////////////
-        // TABLE USER_TEAMS //
-        //////////////////////
-        $schema->create('user_teams', function (Blueprint $table, Schema $schema) {
-            $table->addColumn('user_team_id', 'bigint', ['unsigned' => true, 'autoincrement' => true]);
-            $table->addColumn('user_id', 'bigint', ['unsigned' => true]);
-            $table->addColumn('team_id', 'bigint', ['unsigned' => true]);
-            $table->addColumn('team_position_id', 'bigint', ['unsigned' => true]);
-
-            //keys
-            $table->addPrimaryKey('user_team_id');
-
-            $table->addForeignKey('user_id', $schema->getTable('users'), 'user_id', Blueprint::ACTION_AFFECT);
-            $table->addForeignKey('team_id', $schema->getTable('teams'), 'team_id', Blueprint::ACTION_AFFECT);
-            $table->addForeignKey('team_position_id', $schema->getTable('team_positions'), 'team_position_id', Blueprint::ACTION_AFFECT);
-
-            $table->addUnique(['user_id', 'team_id']);
-        });
-
         ////////////////////
         // TABLE PROJECTS //
         ////////////////////
         $schema->create('projects', function (Blueprint $table, Schema $schema) {
             $table->addColumn('project_id', 'bigint', ['unsigned' => true, 'autoincrement' => true]);
             $table->addColumn('name', 'varchar');
-            $table->addColumn('team_id', 'bigint', ['unsigned' => true]);
             $table->addColumn('is_open', 'bool');
-            $table->addColumn("uuid", 'varchar', ['length' => 36]);
+            $table->addColumn("uuid", 'varchar', ['length' => 36, 'unique' => true]);
             $table->addColumn('is_public', 'bool');
 
             //keys
             $table->addPrimaryKey('project_id');
-            $table->addUnique(['uuid', 'team_id']);
-
-            $table->addForeignKey('team_id', $schema->getTable('teams'), 'team_id', Blueprint::ACTION_AFFECT);
         });
 
         /////////////////////////////
@@ -137,50 +72,20 @@ class Version_1_0 extends AbstractMigration
         ///////////////////////////////
         // TABLE USER_TEAM_PROJECTS //
         //////////////////////////////
-        $schema->create('user_team_projects', function (Blueprint $table, Schema $schema) {
-            $table->addColumn('user_team_id', 'bigint', ['unsigned' => true]);
+        $schema->create('user_projects', function (Blueprint $table, Schema $schema) {
+            $table->addColumn('user_id', 'bigint', ['unsigned' => true]);
             $table->addColumn('project_id', 'bigint', ['unsigned' => true]);
             $table->addColumn('project_position_id', 'bigint', ['unsigned' => true]);
 
             //keys
-            $table->addPrimaryKey('user_team_id');
+            $table->addPrimaryKey('user_id');
             $table->addPrimaryKey('project_id');
 
-            $table->addForeignKey('user_team_id', $schema->getTable('user_teams'), 'user_team_id', Blueprint::ACTION_AFFECT);
+            $table->addForeignKey('user_id', $schema->getTable('users'), 'user_id', Blueprint::ACTION_AFFECT);
             $table->addForeignKey('project_id', $schema->getTable('projects'), 'project_id', Blueprint::ACTION_AFFECT);
             $table->addForeignKey('project_position_id', $schema->getTable('project_positions'), 'project_position_id', Blueprint::ACTION_AFFECT);
 
-            $table->addUnique(['user_team_id', 'project_id']);
-        });
-
-        //////////////////////
-        // TABLE COLUMNS //
-        //////////////////////
-        $schema->create('columns', function (Blueprint $table, Schema $schema) {
-            $table->addColumn('column_id', 'bigint', ['unsigned' => true, 'autoincrement' => true]);
-            $table->addColumn('name', 'varchar');
-            $table->addColumn('max_task_count', 'int', ['unsigned' => true, 'notNull' => false]);
-            $table->addColumn('project_id', 'bigint', ['unsigned' => true]);
-
-            //keys
-            $table->addPrimaryKey('column_id');
-
-            $table->addForeignKey('project_id', $schema->getTable('projects'), 'project_id', Blueprint::ACTION_AFFECT);
-        });
-
-        ///////////////////////////
-        // TABLE COLUMNS_OPTIONS //
-        ///////////////////////////
-        $schema->create('column_options', function (Blueprint $table, Schema $schema) {
-            $table->addColumn('column_option_id', 'bigint', ['unsigned' => true, 'autoincrement' => true]);
-            $table->addColumn('column_id', 'bigint', ['unsigned' => true]);
-            $table->addColumn('key', 'varchar', ['length' => 50]);
-            $table->addColumn('value', 'varchar');
-
-            //keys
-            $table->addPrimaryKey('column_option_id');
-
-            $table->addForeignKey('column_id', $schema->getTable('columns'), 'column_id', Blueprint::ACTION_AFFECT);
+            $table->addUnique(['user_id', 'project_id']);
         });
 
         ///////////////////////
@@ -191,12 +96,12 @@ class Version_1_0 extends AbstractMigration
             $table->addColumn('name', 'varchar', ['length' => 150]);
             $table->addColumn('description', 'text', ['length' => 500, 'notNull' => false]);
             $table->addColumn('end_date', 'datetime', ['notNull' => false]);
-            $table->addColumn('team_id', 'bigint', ['unsigned' => true]);
+            $table->addColumn('project_id', 'bigint', ['unsigned' => true]);
 
             //keys
             $table->addPrimaryKey('milestone_id');
 
-            $table->addForeignKey('team_id', $schema->getTable('teams'), 'team_id', Blueprint::ACTION_AFFECT);
+            $table->addForeignKey('project_id', $schema->getTable('projects'), 'project_id', Blueprint::ACTION_AFFECT);
         });
 
         /////////////////
@@ -209,20 +114,13 @@ class Version_1_0 extends AbstractMigration
             $table->addColumn('priority', 'tinyint', ['unsigned' => true]);
             $table->addColumn('completed', 'bool');
             $table->addColumn('end_date', 'datetime', ['notNull' => false]);
-            $table->addColumn('index', 'varchar', ['length' => 50]);
             $table->addColumn('creator_id', 'bigint', ['unsigned' => true]);
             $table->addColumn('milestone_id', 'bigint', ['unsigned' => true, 'notNull' => false]);
-            $table->addColumn('column_id', 'bigint', ['unsigned' => true]);
-
             //keys
             $table->addPrimaryKey('task_id');
 
             $table->addForeignKey('creator_id', $schema->getTable('users'), 'user_id', Blueprint::ACTION_AFFECT);
             $table->addForeignKey('milestone_id', $schema->getTable('milestones'), 'milestone_id', Blueprint::ACTION_AFFECT);
-            $table->addForeignKey('column_id', $schema->getTable('columns'), 'column_id', Blueprint::ACTION_AFFECT);
-
-            // make index unique in column
-            $table->addUnique(['index', 'column_id']);
         });
 
         //////////////////////
