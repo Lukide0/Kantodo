@@ -22,6 +22,21 @@ button {
         background: var(--hover);
     }
 
+    &.round {
+        border-radius: 999px;
+
+        &.big {
+            padding: space(regular);
+        }
+    }
+
+    &.floating {
+        @include material-shadow(6);
+        &:hover {
+            @include material-shadow(8);
+        }
+    }
+
     &.flat {
         border: 1px solid color(border);
         background: background(primary);

@@ -18,19 +18,40 @@ body {
     align-items: center;
     justify-content: center;
 
+    @include respond(mobile) {
+        min-width: 100%;
+        min-height: 100%;
+
+        & > .container {
+            flex-grow: 1 !important;
+            padding-top: space(huge);
+        }
+        .full-width {
+            flex-grow: unset;
+        }
+
+        a {
+            margin-bottom: space(big);
+        }
+
+        .row > * {
+            width: 45%;
+            margin: 0;
+        }
+
+        button {
+            margin-top: space(huge);
+        }
+        
+    }
+
     & > h2 {
         margin-bottom: space(huge);
         font-size: fontSize(huge);
     }
 
-    & > .text-field {
-        width: 100%;
-        margin-bottom: space(big);
-    }
-
     & > a {
         margin: space(regular) 0 space(medium) 0;
-        
     }
 
     a, p {

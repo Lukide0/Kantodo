@@ -273,7 +273,6 @@ class ProjectView implements IView
                         <div class="error-msg"></div>
                     </label>
                 </div>
-                <p>TODO: creator_id, index, milestone_id, endDate, priority</p>
                 <div class='row main-center space-top'>
                     <button class='long primary'>Create</button>
                 <div>

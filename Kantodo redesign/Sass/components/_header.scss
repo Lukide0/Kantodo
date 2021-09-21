@@ -1,6 +1,6 @@
 @use "../abstracts" as *;
 
-body > header {
+body > header:not(.mobile) {
     @include material-shadow(4);
     display: flex;
     flex-direction: column;
@@ -106,5 +106,90 @@ body > header {
                 margin-left: space(regular);
             }
         }
+    }
+}
+
+body > header.mobile {
+    box-sizing: border-box;
+    height: 75px;
+    
+    & > nav {
+        display: flex;
+        flex-direction: row;
+        padding: space(small);
+
+        & > .item {
+            @include font(700, small, 700);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: borderRadius(small);
+
+            &.active {
+                color: color(primary);
+            }
+            &:hover {
+                background: background(third);
+            }
+        }
+
+        & > .menu {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            & > button {
+                transform: translate(0, -33%);
+                z-index: 999;
+                color: color(primary, text);
+                margin: 0 space(medium);
+
+                &:not(:focus-within) + ul {
+                    top: 0;
+                    gap: 0;
+                    opacity: 0;
+                    z-index: -100;
+                    transition: top 200ms ease-out;
+                    
+                    & > li:last-child {
+                        transform: translate(-100%,0);
+                        transition: transform 200ms ease;
+                    }
+
+                    & > li:first-child {
+                        transform: translate(100%,0);
+                        transition: transform 200ms ease;
+                    }
+                }
+            }
+
+            & > ul {
+                position: absolute;
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: space(huge)+space(medium);
+                top: -200%;
+                z-index: 999;
+                opacity: 1;
+                z-index: 100;
+
+                transition: top 200ms ease-out;
+
+                & > li:first-child, & > li:last-child {
+                    transition: transform 200ms ease;
+                    transform: translate(0, 75%);
+                }
+                & > li > button {
+                    font-size: fontSize(huge);
+                    padding: space(regular);
+                    color: color(primary, text);
+                }
+            }
+        }
+
+
     }
 }

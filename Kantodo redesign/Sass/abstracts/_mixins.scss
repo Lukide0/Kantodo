@@ -35,6 +35,8 @@
             @content;
         }
     }
+    @else {
+        @error "Respond type `#{$type}` doesn't exist.";
+    }
 
-    @error "Respond type `#{$type}` doen't exist.";
 }
