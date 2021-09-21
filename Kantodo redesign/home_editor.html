@@ -141,12 +141,11 @@
                             <ul class="group">
                                 <li><button class="flat no-border no-padding" data-tooltip="bold" data-action="bold"><span class="icon round">format_bold</span></button></li>
                                 <li><button class="flat no-border no-padding" data-tooltip="italic" data-action="italic"><span class="icon round">format_italic</span></button></li>
-                                <li><button class="flat no-border no-padding" data-tooltip="underline" data-action="underline"><span class="icon round">format_underlined</span></button></li>
                             </ul>
                             <ul class="group">
-                                <li><button class="flat no-border no-padding" data-tooltip="heading"><span class="icon round">format_size</span></button></li>
-                                <li><button class="flat no-border no-padding" data-tooltip="strikethrough"><span class="icon round">strikethrough_s</span></button></li>
-                                <li><button class="flat no-border no-padding" data-tooltip="quote"><span class="icon round">format_quote</span></button></li>
+                                <li><button class="flat no-border no-padding" data-tooltip="heading" data-action="heading" data-select="none"><span class="icon round">format_size</span></button></li>
+                                <li><button class="flat no-border no-padding" data-tooltip="strikethrough" data-action="strikethrough"><span class="icon round">strikethrough_s</span></button></li>
+                                <li><button class="flat no-border no-padding" data-tooltip="quote" data-action="quote"><span class="icon round">format_quote</span></button></li>
                             </ul>
                             <ul class="group">
                                 <li><button class="flat no-border no-padding" data-tooltip="list"><span class="icon round">format_list_bulleted</span></button></li>
@@ -241,14 +240,79 @@
 
         const actions = {
             bold: function(text) {
-                return `*${text}*`;
-            },
-            italic: function(text) {
+                if (this._isWrapper(text, '*', 0)) {
+                    if (this._isWrapper(text, '*', 1)) 
+                    {
+                        return text.substring(2, text.length - 2);
+                    }
+                    return `*${text}*`;
+                } 
                 return `**${text}**`;
             },
-            underline: function(text) {
-                return `<span>${text}<span>`;
+            italic: function(text) {
+                if (this._isWrapper(text, '*', 0)) {
+                    if (this._isWrapper(text, '*', 1)) 
+                    {
+                        if (this._isWrapper(text, '*', 2)) 
+                        {
+                            return text.substring(1, text.length - 1);
+                        }
+                        return `*${text}*`;
+                    }
+                    return text.substring(1, text.length - 1);
+                } 
+                return `*${text}*`;
             },
+            heading: function() {
+                return '###';
+            },
+            strikethrough: function(text) {
+                if (this._isWrapper(text, '~', 0) && this._isWrapper(text, '~', 1)) 
+                {
+                    return text.substring(2, text.length - 2);
+                }
+                
+                return `~~${text}~~`;
+            },
+            // TODO: citace
+            quote: function() {
+                return '>';
+            },
+            // TODO: list
+            list: function(text) {
+                return text;
+            },
+            // TODO: číslovaný list
+            listNum: function(text) {
+                return text;
+            },
+            // TODO: kontrolní seznam
+            listCheck: function(text) {
+                return text;
+            },
+            // TODO: kód
+            code: function(text) {
+                return text;
+            },
+            // TODO: tabulka
+            table: function(text) {
+
+            },
+            // TODO: link
+            // NOTE: link může být na další úkol
+            link: function(text) {
+                return text;
+            },
+            // TODO: img
+            img: function(text) {
+                return text;
+            },
+            _isWrapper(text, char, offset) {
+                if (offset >= text.length) {
+                    return false;
+                }
+                return (text[offset] == char && text[text.length-offset - 1] == char);
+            }
             
         };
 
@@ -259,13 +323,13 @@
 
                 let range = window.getSelection().getRangeAt(0);
 
-                if (range.toString().length == 0)
+                if (range.toString().length == 0 && btn.dataset.select != 'none')
                     return;
 
                 const oldContent = document.createTextNode(range.toString());
-                const newContent = document.createElement("span");
-                newContent.classList.add(btn.dataset.action)
-                newContent.append(oldContent);
+                const newContent = document.createTextNode("span");
+                oldContent.textContent = actions[btn.dataset.action](oldContent.textContent);
+                newContent.textContent = oldContent.textContent;
                 range.deleteContents();
                 range.insertNode(newContent);
             });

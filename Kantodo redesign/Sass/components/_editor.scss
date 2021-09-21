@@ -19,18 +19,6 @@
         height: 100%;
         overflow-y: scroll;
         resize: none;
-
-        & > .bold {
-            font-weight: bold;
-        }
-
-        & > .underline {
-
-        }
-
-        & > .italic {
-            
-        }
     }
     & > .menu {
         border-bottom: 2px solid color(border);
