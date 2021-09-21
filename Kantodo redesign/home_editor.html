@@ -161,9 +161,7 @@
                             </ul>
                             <button class="space-huge-left mode flat no-border">normal mode</button>
                         </div>
-                        <div class="editable">
-                            @TODO
-                        </div>
+                        <div class="editable" contenteditable="true">@TODO</div>
                     </div>
                     <div class="sub-tasks">
                         <div class="title">
@@ -234,11 +232,46 @@
         const editor = document.getElementById("editor");
         const editable = editor.getElementsByClassName("editable")[0];
         const menu = editor.getElementsByClassName("menu")[0];
-        const actionButtons = menu.querySelectorAll("button[data-action]");
-    
+        const editControls = menu.querySelectorAll("button[data-action]");
 
-        // TODO: editor
-        editable.setAttribute("contenteditable", true);
+        
+        
+        // TODO: undo, redo
+
+
+        const actions = {
+            bold: function(text) {
+                return `*${text}*`;
+            },
+            italic: function(text) {
+                return `**${text}**`;
+            },
+            underline: function(text) {
+                return `<span>${text}<span>`;
+            },
+            
+        };
+
+        for (let index = 0; index < editControls.length; index++) {
+            const btn = editControls[index];
+
+            btn.addEventListener("click", function() {
+
+                let range = window.getSelection().getRangeAt(0);
+
+                if (range.toString().length == 0)
+                    return;
+
+                const oldContent = document.createTextNode(range.toString());
+                const newContent = document.createElement("span");
+                newContent.classList.add(btn.dataset.action)
+                newContent.append(oldContent);
+                range.deleteContents();
+                range.insertNode(newContent);
+            });
+        }
+
+
 
         
 

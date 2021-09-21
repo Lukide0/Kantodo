@@ -18,9 +18,10 @@
 
 .editor-modal {
     background: background(primary);
+    height: 100%;
+    max-height: 100%;
     border-radius: borderRadius(regular);
-
-
+    
     display: flex;
     flex-grow: 1;
 
@@ -41,6 +42,7 @@
 
         & > .editor {
             margin-top: space(big);
+            flex: 1;
         }
 
         & > .sub-tasks {

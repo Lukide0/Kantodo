@@ -61,7 +61,7 @@ body {
 
 body {
     display: grid;
-    grid-template-columns: 200px 1fr;
+    grid-template-columns: $header-width 1fr;
 
     & > header.mobile {
         display: none;
