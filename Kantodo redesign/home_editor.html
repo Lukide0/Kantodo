@@ -9,6 +9,32 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./styles/main.min.css">
+    <style>
+        .bold {
+            font-weight: 900;
+        }
+
+        .italic {
+            font-style: italic;
+        }
+
+        .heading {
+            font-weight: 800;
+            font-size: 2.0rem;
+        }
+
+        .strikethrough {
+            text-decoration: line-through;
+        }
+
+        .quote {
+            margin: 20px 0;
+            padding: 5px 10px;
+            border-left: 2px solid rgb(var(--border));
+            color: var(--font-500);
+        }
+
+    </style>
 </head>
 
 <body>
@@ -135,7 +161,7 @@
                     <div class="editor" id="editor">
                         <div class="menu">
                             <ul class="group">
-                                <li><button class="flat no-border no-padding" data-tooltip="undo" data-action="undo"><span class="icon round">undo</span></button></li>
+                                <li><button class="flat no-border no-padding" data-tooltip="undo" data-action="undo" data-select="none"><span class="icon round">undo</span></button></li>
                                 <li><button class="flat no-border no-padding" data-tooltip="redo" data-action="redo"><span class="icon round">redo</span></button></li>
                             </ul>
                             <ul class="group">
@@ -145,22 +171,35 @@
                             <ul class="group">
                                 <li><button class="flat no-border no-padding" data-tooltip="heading" data-action="heading" data-select="none"><span class="icon round">format_size</span></button></li>
                                 <li><button class="flat no-border no-padding" data-tooltip="strikethrough" data-action="strikethrough"><span class="icon round">strikethrough_s</span></button></li>
-                                <li><button class="flat no-border no-padding" data-tooltip="quote" data-action="quote"><span class="icon round">format_quote</span></button></li>
+                                <li><button class="flat no-border no-padding" data-tooltip="quote" data-action="quote" data-select="none"><span class="icon round">format_quote</span></button></li>
                             </ul>
                             <ul class="group">
-                                <li><button class="flat no-border no-padding" data-tooltip="list"><span class="icon round">format_list_bulleted</span></button></li>
-                                <li><button class="flat no-border no-padding" data-tooltip="numbered list"><span class="icon round">format_list_numbered</span></button></li>
-                                <li><button class="flat no-border no-padding" data-tooltip="checklist"><span class="icon round">checklist</span></button></li>
+                                <li><button class="flat no-border no-padding" data-tooltip="list" data-action="list" data-select="none"><span class="icon round">format_list_bulleted</span></button></li>
+                                <li><button class="flat no-border no-padding" data-tooltip="checklist" data-action="list" data-select="none"><span class="icon round">checklist</span></button></li>
                             </ul>
                             <ul class="group">
-                                <li><button class="flat no-border no-padding" data-tooltip="code"><span class="icon round">code</span></button></li>
-                                <li><button class="flat no-border no-padding" data-tooltip="table"><span class="icon round">table_chart</span></button></li>
-                                <li><button class="flat no-border no-padding" data-tooltip="link"><span class="icon round">insert_link</span></button></li>
-                                <li><button class="flat no-border no-padding" data-tooltip="image"><span class="icon round">insert_photo</span></button></li>
+                                <li><button class="flat no-border no-padding" data-tooltip="code" data-action="code"><span class="icon round">code</span></button></li>
                             </ul>
                             <button class="space-huge-left mode flat no-border">normal mode</button>
                         </div>
-                        <div class="editable" contenteditable="true">@TODO</div>
+                        <div class="editable" contenteditable="true">
+                            normal *italic* **bold** ***bold-italic***
+### heading ~~ strikethrough ~~ 
+> Quote
+- a1
+- a1
+ - b2
+ - b2
+  - c3
+  - c3
+- a1
+- a1
+
+aaaaaaa
+
+    - invalid
+- valid
+                        </div>
                     </div>
                     <div class="sub-tasks">
                         <div class="title">
@@ -233,21 +272,115 @@
         const menu = editor.getElementsByClassName("menu")[0];
         const editControls = menu.querySelectorAll("button[data-action]");
 
+        let historyStack = [];
+        let historyIndex = -1;
+        let markdownMode = true;
+        editable.setAttribute("style", "white-space: pre");
         
-        
-        // TODO: undo, redo
 
+        function addToEditorHistory(after, start, length, before = '') {
+            historyIndex++;
+
+            if (historyIndex == 0 && historyStack.length > 0) 
+            {
+                historyStack = [];
+            }
+
+            if (historyStack.length - 1 > historyIndex) 
+            {
+                historyStack = historyStack.splice(0,historyIndex);
+            }
+            historyStack.push({before, start, length, after});
+        }
+
+        editable.addEventListener("keydown", function(e) {
+            let range = window.getSelection().getRangeAt(0);
+            let start = range.startOffset;
+            let end = range.endOffset;
+
+            if (e.key == 'Backspace' && (end - start > 0 || start > 0)) {
+                addToEditorHistory('', start - 1, 0, editable.textContent.substring(start - 1, end));
+            } else if (e.key == 'Delete' && (end - start > 0 || start < editable.textContent.length - 1)) {
+                addToEditorHistory('', start, 0, editable.textContent.substring(start, end + 1));
+            }
+            
+        });
+        
+        editable.addEventListener("keypress", function(e) {
+            let start = window.getSelection().getRangeAt(0).startOffset;
+            let key = e.key;
+
+            if (e.key == 'Enter') 
+                key = "\n";
+
+            addToEditorHistory(key, start, 1);
+        });
+
+        // TODO: filtry na render
+        const filters = [
+            function bold(text) {
+                const regex = /\*\*([^\*]+)?(\*\*)/gm;
+                return text.replaceAll(regex, '<span class="bold">$1</span>');
+            },
+            function italic(text) {
+                const regex = /\*([^\*]{2,})\*/gm;
+                return text.replaceAll(regex, '<span class="italic">$1</span>'); 
+            },
+            function heading(text) {
+                const regex = /^\#\#\#\s(.*)$/gm;
+                return text.replaceAll(regex, '<span class="heading">$1</span>');
+            },
+            function strikethrough(text) {
+                const regex = /\~\~([^\~]+)?(\~\~)/gm;;
+                return text.replaceAll(regex, '<span class="strikethrough">$1</span>');
+            },
+            function quote(text) {
+                const regex = /^\>\s(.*)$/gm;
+                return text.replaceAll(regex, '<span class="quote">$1</span>');
+            },
+            // TODO: dodelat
+            function list(text) {
+                const regex = /^\-\s.+(\s*\-\s.+)*$/gm;
+                let match;
+                while((match = regex.exec(text)) !== null) {
+                    console.log(match);
+                }
+
+                return text;
+            },
+
+        ];
+        let renderText = editable.textContent;
+        filters.forEach(fn => { renderText = fn(renderText);  });
+
+        editable.contentEditable = false;
+        editable.innerHTML = renderText;
 
         const actions = {
+            undo: function() {
+                if (historyIndex < 0) {
+                    return;
+                }
+                let lastAction = historyStack[historyIndex];
+                let text = editable.textContent;
+                editable.textContent = text.substring(0, lastAction.start) + lastAction.before + text.substring(lastAction.start + lastAction.length); 
+                historyIndex--;
+            },
+            redo: function() {
+                if (historyStack.length - 1 == historyIndex) 
+                    return;
+
+                let lastAction = historyStack[historyIndex+1];
+                let text = editable.textContent;
+                editable.textContent = text.substring(0, lastAction.start) + lastAction.after + text.substring(lastAction.start + lastAction.before.length); 
+
+                historyIndex++;
+            },
             bold: function(text) {
-                if (this._isWrapper(text, '*', 0)) {
-                    if (this._isWrapper(text, '*', 1)) 
-                    {
-                        return text.substring(2, text.length - 2);
-                    }
-                    return `*${text}*`;
+                if (this._isWrapper(text, '*', 0) && this._isWrapper(text, '*', 1)) {
+                    return this._return(text.substring(2, text.length - 2));
                 } 
-                return `**${text}**`;
+                return this._return(`**${text}**`, 2, text.length + 2);
             },
             italic: function(text) {
                 if (this._isWrapper(text, '*', 0)) {
@@ -255,89 +388,103 @@
                     {
                         if (this._isWrapper(text, '*', 2)) 
                         {
-                            return text.substring(1, text.length - 1);
+                            return this._return(text.substring(2, text.length - 2), 2, text.length + 2);
                         }
-                        return `*${text}*`;
+                        return this._return(`*${text}*`, 3, text.length + 3);
                     }
-                    return text.substring(1, text.length - 1);
-                } 
-                return `*${text}*`;
+                    return this._return(text.substring(1, text.length - 1));
+                }
+
+                return this._return(`*${text}*`, 1, text.length + 1);
             },
             heading: function() {
-                return '###';
+                return this._return(`###`, 3, 3);
             },
             strikethrough: function(text) {
                 if (this._isWrapper(text, '~', 0) && this._isWrapper(text, '~', 1)) 
                 {
-                    return text.substring(2, text.length - 2);
+                    return this._return(text.substring(2, text.length - 2));
                 }
-                
-                return `~~${text}~~`;
-            },
-            // TODO: citace
-            quote: function() {
-                return '>';
-            },
-            // TODO: list
-            list: function(text) {
-                return text;
-            },
-            // TODO: číslovaný list
-            listNum: function(text) {
-                return text;
-            },
-            // TODO: kontrolní seznam
-            listCheck: function(text) {
-                return text;
-            },
-            // TODO: kód
-            code: function(text) {
-                return text;
-            },
-            // TODO: tabulka
-            table: function(text) {
 
+                return this._return(`~~${text}~~`, 2, text.length + 2);
             },
-            // TODO: link
-            // NOTE: link může být na další úkol
-            link: function(text) {
-                return text;
+            quote: function() {
+                return this._return(">\t", 2, 2);
             },
-            // TODO: img
-            img: function(text) {
-                return text;
+            list: function(text) {
+                return this._return("- ", 2, 2);
             },
-            _isWrapper(text, char, offset) {
+            listCheck: function(text) {
+                return this._return("- []", 5, 5);
+            },
+            code: function(text) {
+                if (this._isWrapper(text, '`', 0) && this._isWrapper(text, '`', 1) && this._isWrapper(text, '`', 2)) {
+                    return this._return(text.substring(3, text.length - 3));
+                } 
+                return this._return(`\`\`\`\n${text}\n\`\`\``, 3, text.length + 3);
+            },
+            _isWrapper: function(text, char, offset) {
                 if (offset >= text.length) {
                     return false;
                 }
                 return (text[offset] == char && text[text.length-offset - 1] == char);
+            },
+            _return: function(text, startOffset = 0, endOffset = 0) {
+                return {text, startOffset, endOffset};
             }
-            
         };
+
+        
+
 
         for (let index = 0; index < editControls.length; index++) {
             const btn = editControls[index];
 
             btn.addEventListener("click", function() {
+                
+                let btnAction = btn.dataset.action;
 
-                let range = window.getSelection().getRangeAt(0);
+                if (btnAction == "undo" || btnAction == "redo") {
+                    actions[btnAction]();
+                    return;
+                }
+                let selection = window.getSelection();
+
+                if (selection.focusNode == null)
+                    return;
+                    
+                let range = selection.getRangeAt(0);
+
 
                 if (range.toString().length == 0 && btn.dataset.select != 'none')
                     return;
 
-                const oldContent = document.createTextNode(range.toString());
-                const newContent = document.createTextNode("span");
-                oldContent.textContent = actions[btn.dataset.action](oldContent.textContent);
-                newContent.textContent = oldContent.textContent;
+
+                const text = range.toString();
+                const obj = actions[btn.dataset.action](text)
+
+                const newText = obj.text;
+                const newNode = document.createTextNode(newText);
+
                 range.deleteContents();
-                range.insertNode(newContent);
+                range.insertNode(newNode);
+
+                let startOffset = 0;
+
+                let index = 0;
+
+                while (editable.childNodes[index] != newNode) {
+                    startOffset += editable.childNodes[index].textContent.length;
+                    index++;
+                }
+
+                addToEditorHistory(obj.text, startOffset, obj.text.length, text);
+                
+                editable.focus();
+                range.setStart(newNode, obj.startOffset);
+                range.setEnd(newNode, obj.endOffset);
             });
         }
-
-
-
-        
 
     </script>
 </body>
