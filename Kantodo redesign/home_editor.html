@@ -34,6 +34,10 @@
             color: var(--font-500);
         }
 
+        .editable ul, .editable li {
+            all: unset !important;
+        }
+
     </style>
 </head>
 
@@ -189,12 +193,16 @@
 - a1
 - a1
  - b2
- - b2
   - c3
-  - c3
+   - d4
+    - e5
+     - f6
+      - f7
 - a1
 - a1
-
+```
+aaaaaa
+```
 aaaaaaa
 
     - invalid
@@ -338,21 +346,68 @@ aaaaaaa
                 const regex = /^\>\s(.*)$/gm;
                 return text.replaceAll(regex, '<span class="quote">$1</span>');
             },
-            // TODO: dodelat
             function list(text) {
                 const regex = /^\-\s.+(\s*\-\s.+)*$/gm;
                 let match;
+                let plusOffset = 0;
+                let textCopy = text;
                 while((match = regex.exec(text)) !== null) {
-                    console.log(match);
-                }
+                    let tmp = "<ul>";
+                    let lines = match[0].split('\n');
+                    let currentIndent = 0;
+                    
+                    for (let i = 0; i < lines.length; i++) {
+                        let line = lines[i];
+                        let indent = 0;
 
-                return text;
+
+                        if (line[0] == ' ' || line[0] == '\t') 
+                        {
+                            let index = 0;
+                            while (index < line.length && (line[index] == ' ' || line[index] == '\t')) {
+                                if (currentIndent >= indent) {
+                                    indent++;
+                                }
+                                index++;
+                            }
+
+                            line = line.substr(index);
+                        }
+                        if (indent > currentIndent) {
+
+                            tmp = tmp.substr(0, tmp.length - 5) + '<ul>';
+                            currentIndent++;
+                        }
+                        else if (indent < currentIndent) {
+                     
+                            while (currentIndent > indent) {
+                                tmp += '</ul></li>';
+                                currentIndent--;
+                            }
+                        }
+
+                        // TODO: checkbox
+                        
+                        tmp += `<li>${line.substr(2)}</li>`;                   
+                    }
+
+                    tmp += '</ul>';
+
+                    textCopy = textCopy.substring(0, match.index + plusOffset) + tmp + textCopy.substring(match.index + plusOffset + match[0].length);
+                    console.log(match.index);
+                    plusOffset += tmp.length - match[0].length;
+                }
+                return textCopy;
             },
+            function code(text) {
+                const regex = /\`\`\`([^\`]+)?(\`\`\`)/gm;
+                return text.replaceAll(regex, '<span class="code">$1</span>');
+            }
 
         ];
         let renderText = editable.textContent;
         filters.forEach(fn => { renderText = fn(renderText);  });
-
+        console.log(renderText);
         editable.contentEditable = false;
         editable.innerHTML = renderText;
 
