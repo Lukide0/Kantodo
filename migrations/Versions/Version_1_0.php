@@ -116,11 +116,14 @@ class Version_1_0 extends AbstractMigration
             $table->addColumn('end_date', 'datetime', ['notNull' => false]);
             $table->addColumn('creator_id', 'bigint', ['unsigned' => true]);
             $table->addColumn('milestone_id', 'bigint', ['unsigned' => true, 'notNull' => false]);
+            $table->addColumn('project_id', 'bigint', ['unsigned' => true]);
+
             //keys
             $table->addPrimaryKey('task_id');
 
             $table->addForeignKey('creator_id', $schema->getTable('users'), 'user_id', Blueprint::ACTION_AFFECT);
             $table->addForeignKey('milestone_id', $schema->getTable('milestones'), 'milestone_id', Blueprint::ACTION_AFFECT);
+            $table->addForeignKey('project_id', $schema->getTable('projects'), 'project_id', Blueprint::ACTION_AFFECT);
         });
 
         //////////////////////

@@ -105,6 +105,53 @@ class Data
     }
 
     /**
+     * Vrátí klíče v array, které mají stejnou hodnotu
+     *
+     * @param   array  $data  předmět
+     * @param   array  $keys  klíče, pokud je hodnota null, tak jsou všechny klíče kontrolovány
+     * @param   bool   $strict pokud je 'true', tak jsou kontrolovány pouze zadané klíče mezi sebou
+     * 
+     * @return  string[][]    duplicitní klíče ve formátu ```[klicA => [klicB, klicC, ...], ...]```
+     */
+    public static function duplicate(array $data, array $keys = null, bool $strict = false)
+    {
+        if ($keys == null)
+            $keys = array_keys($data);
+
+        $duplicit = [];
+        if ($strict) {
+
+            foreach ($keys as $a) {
+                foreach ($keys as $b) {
+                    if ($a == $b)
+                        continue;
+                    
+                    if ($data[$a] == $data[$b] && empty($duplicit[$b])) {
+                        $duplicit[$a][] = $b;
+                    }
+                }
+            }
+
+            return $duplicit;
+        }
+
+        foreach ($keys as $a) {
+            foreach ($data as $b => $value) {
+                if ($a == $b) {
+                    continue;
+                }
+
+                if ($data[$a] == $value && empty($duplicit[$b])) {
+                    $duplicit[$a][] = $b;
+                }
+            }
+        }
+
+        return $duplicit;
+
+    }
+
+    /**
      * Kontrola hesla jestli je validní
      *
      * @param   string  $password                  heslo
@@ -145,23 +192,6 @@ class Data
     public static function isValidEmail(string $email)
     {
         return filter_var($email, FILTER_VALIDATE_EMAIL);
-    }
-
-    /**
-     * Hash hesla
-     *
-     * @param   string  $password  heslo
-     * @param   string  $salt      "sůl"
-     *
-     * @return  string
-     */
-    public static function hashPassword(string $password, string $salt = '')
-    {
-        $middle = floor(strlen($salt) / 2);
-
-        $password = substr($salt, 0, $middle) . $password . substr($salt, $middle);
-
-        return hash('sha256', $password);
     }
 
     /**

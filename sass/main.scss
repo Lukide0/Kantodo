@@ -1,33 +1,3 @@
-// FUNCTIONS
-@import "abstracts/variables";
-@import "abstracts/functions";
-@import "abstracts/mixins";
+@use "base/base";
 
-
-// THEME
-@import "base/themes";
-@import "base/fonts";
-
-// RESET
-@import "base/reset";
-
-// LAYOUT
-@import "layout/default";
-
-@import "layout/header";
-@import "layout/sidebar";
-@import "layout/main";
-
-// COMPONENTS
-@import "components/scrollbar";
-@import "components/button";
-@import "components/avatar";
-
-@import "components/label";
-
-@import "components/text_field";
-@import "components/checkbox";
-@import "components/window";
-
-// FLEXBOX
-@import "layout/flexbox";
+@use "components";

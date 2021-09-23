@@ -1,119 +1,79 @@
+@use "../abstracts" as *;
+
+
 .checkbox {
-    --color: var(--primary);
-    --color-on-surf: 0, 0, 0;
-    position: relative;
-    display: inline-block;
-    color: rgba(var(--color-on-surf), 0.87);
-    font-size: 16px;
-    line-height: 1.5;
-
-    & > input {
-        appearance: none;
-        position: absolute;
-        left: -10px;
-        top: -8px;
+    --color: #{color(info)};
+    cursor: pointer; 
+    & > .background {
+        position: relative;
         display: block;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        background-color: rgba(var(--color-on-surf), 0.6);
-        outline: none;
-        opacity: 0;
-        transform: scale(1);
-        transition: opacity 0.3s, transform 0.2s;
+        width: $checkbox-size-medium;
+        height: $checkbox-size-medium;
+        border-radius: borderRadius(regular);
+        border: 2px solid color(border, dark);
+        transition: border steps(2);
 
-        &:checked {
-            background-color: rgba(var(--color), 1);
+        &::before {
+            position: absolute;
+            display: block;
+            content: "";
 
-            & + span {
-                &::before {
-                    border-color: rgba(var(--color), 1);
-                    background-color: rgba(var(--color), 1);
-                }
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: borderRadius(regular);
+            background: var(--color);
 
-                &::after {
-                    border-color: get-font-color("primary");
-                }
-            }
-
-            &:active + span::before {
-                border-color: transparent;
-                background-color: rgba(var(--color-on-surf), 0.6);
-            }
-
-            &:disabled + span::before {
-                border-color: transparent;
-                background-color: currentColor;
-            }
-        }
-
-        &:focus {
-            opacity: 0.12;
-        }
-
-        &:active {
-            opacity: 1;
-            transform: scale(0);
-            transition: transform 0s, opacity 0s;
-
-            & + span::before {
-                border-color: rgba(var(--color), 1);
-            }
-        }
-
-        &:disabled {
             opacity: 0;
-
-            & + span {
-                color: rgba(var(--color-on-surf), 0.38);
-                cursor: initial;
-
-                &::before {
-                    border-color: currentColor;
-                }
-            }
         }
     }
 
-    & > span {
-        display: inline-block;
-        width: 100%;
-        cursor: pointer;
+    &.small > .background {
+        width: $checkbox-size-small;
+        height: $checkbox-size-small;
+    }
+
+    &.big > .background {
+        width: $checkbox-size-big;
+        height: $checkbox-size-big;
+    }
+
+    &.round {
+        border-radius: 999px;
 
         &::before {
-            content: "";
-            display: inline-block;
-            box-sizing: border-box;
-            margin: 3px 11px 3px 1px;
-            border: solid 2px;
-            border-color: rgba(var(--color-on-surf), 0.6);
-            border-radius: 2px;
-            width: 18px;
-            height: 18px;
-            vertical-align: top;
-            transition: border-color 0.2s, background-color 0.2s;
+            border-radius: 999px;
+        }
+    }
+    
+    & > input {
+        display: none;
+    }
+    
+    & > input:checked + .background {
+        border: none;
+        
+        &::before {
+            transition: opacity 250ms ease-in-out;
+            opacity: 1;
         }
 
         &::after {
-            content: "";
-            display: block;
             position: absolute;
-            top: 3px;
-            left: 1px;
-            width: 10px;
-            height: 5px;
-            border: solid 2px transparent;
-            border-right: none;
-            border-top: none;
-            transform: translate(3px, 4px) rotate(-45deg);
-        }
-    }
+            display: block;
+            content: "";
+            
+            width: 20%;
+            height: 45%;
+            
+            border-right: 2px solid white;
+            border-bottom: 2px solid white;
+            
+            left: 50%;
+            top: 45%;
 
-    &:hover > input {
-        opacity: 0.04;
-
-        &:focus {
-            opacity: 0.16;
+            transform: translate(-50%,-50%) rotate(45deg);            
         }
     }
 }

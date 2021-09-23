@@ -215,6 +215,16 @@ class Application
         file_put_contents(self::$ROOT_DIR . '/config.php', $content);
     }
 
+    public static function addToConfig(array $constants)
+    {
+        $content = file_get_contents(self::$ROOT_DIR . '/config.php') . "\n\n";
+
+        foreach ($constants as $key => $value) {
+            $content .= "define('{$key}', {$value});\n";
+        }
+
+        file_put_contents(self::$ROOT_DIR . '/config.php', $content);
+    }
     /**
      * Začne aplikaci
      *

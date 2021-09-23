@@ -1,0 +1,50 @@
+.avatar {
+    @include flex-center();
+    @include font("small", "bold");
+
+    --avatar-color: #{get-color("primary")};
+
+    position: relative;
+
+    line-height: get-font-size("small");
+    color: get-font-color("primary");
+    background: var(--avatar-color);
+
+    height: 0;
+    min-width: 34px;
+    min-height: 34px;
+    padding: get-gap("small");
+    border-radius: 50%;
+
+    &.big {
+        min-width: 100px;
+        min-height: 100px;
+    }
+
+    &.arrow {
+        margin-right: 27px;
+        cursor: pointer;
+
+        &::before {
+            display: block;
+
+            content: "expand_more";
+            color: get-font-color("secondary");
+            font-weight: get-font-weight("bold");
+            font-family: "Material Icons Outlined";
+            font-size: 22px;
+
+            position: absolute;
+            right: -75%;
+        }
+    }
+}
+
+.avatars {
+    display: flex;
+
+    .avatar:not(:first-child) {
+        margin-left: -5px;
+        box-shadow: 0 0 0 4px get-background("secondary");
+    }
+}

@@ -1,0 +1,119 @@
+.checkbox {
+    --color: var(--primary);
+    --color-on-surf: 0, 0, 0;
+    position: relative;
+    display: inline-block;
+    color: rgba(var(--color-on-surf), 0.87);
+    font-size: 16px;
+    line-height: 1.5;
+
+    & > input {
+        appearance: none;
+        position: absolute;
+        left: -10px;
+        top: -8px;
+        display: block;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        background-color: rgba(var(--color-on-surf), 0.6);
+        outline: none;
+        opacity: 0;
+        transform: scale(1);
+        transition: opacity 0.3s, transform 0.2s;
+
+        &:checked {
+            background-color: rgba(var(--color), 1);
+
+            & + span {
+                &::before {
+                    border-color: rgba(var(--color), 1);
+                    background-color: rgba(var(--color), 1);
+                }
+
+                &::after {
+                    border-color: get-font-color("primary");
+                }
+            }
+
+            &:active + span::before {
+                border-color: transparent;
+                background-color: rgba(var(--color-on-surf), 0.6);
+            }
+
+            &:disabled + span::before {
+                border-color: transparent;
+                background-color: currentColor;
+            }
+        }
+
+        &:focus {
+            opacity: 0.12;
+        }
+
+        &:active {
+            opacity: 1;
+            transform: scale(0);
+            transition: transform 0s, opacity 0s;
+
+            & + span::before {
+                border-color: rgba(var(--color), 1);
+            }
+        }
+
+        &:disabled {
+            opacity: 0;
+
+            & + span {
+                color: rgba(var(--color-on-surf), 0.38);
+                cursor: initial;
+
+                &::before {
+                    border-color: currentColor;
+                }
+            }
+        }
+    }
+
+    & > span {
+        display: inline-block;
+        width: 100%;
+        cursor: pointer;
+
+        &::before {
+            content: "";
+            display: inline-block;
+            box-sizing: border-box;
+            margin: 3px 11px 3px 1px;
+            border: solid 2px;
+            border-color: rgba(var(--color-on-surf), 0.6);
+            border-radius: 2px;
+            width: 18px;
+            height: 18px;
+            vertical-align: top;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+
+        &::after {
+            content: "";
+            display: block;
+            position: absolute;
+            top: 3px;
+            left: 1px;
+            width: 10px;
+            height: 5px;
+            border: solid 2px transparent;
+            border-right: none;
+            border-top: none;
+            transform: translate(3px, 4px) rotate(-45deg);
+        }
+    }
+
+    &:hover > input {
+        opacity: 0.04;
+
+        &:focus {
+            opacity: 0.16;
+        }
+    }
+}

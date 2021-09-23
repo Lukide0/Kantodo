@@ -1,9 +1,0 @@
-@use "../abstracts" as *;
-
-.avatar {
-    --bg: #{color(primary)};
-    width: $avatar-size;
-    height: $avatar-size;
-    background: var(--bg);
-    border-radius: 50%;
-}

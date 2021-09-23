@@ -15,7 +15,7 @@ $APP->debugMode();
 // TODO: Mobilni verze
 
 if (!Application::configExits()) {
-    $APP->router->run([Kantodo\Controllers\InstallController::class, 'install'], [$APP->request->getMethod()]);
+    $APP->router->run([Kantodo\Controllers\InstallController::class, 'installView'], [$APP->request->getPath()]);
     exit;
 }
 

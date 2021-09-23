@@ -28,8 +28,10 @@ class Request
         if ($this->path !== null) {
             return $this->path;
         }
+        $path = Application::$APP->request->getBody()[Request::METHOD_GET]['PATH_URL'] ?? "";
 
-        $path = str_replace(Application::$URL_PATH, '', $_SERVER['REQUEST_URI']);
+        if ($path == "")
+            $path = str_replace(Application::$URL_PATH, '', $_SERVER['REQUEST_URI']);
 
         $questionMarkPos = strpos($path, '?');
 

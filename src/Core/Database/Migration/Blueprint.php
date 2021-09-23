@@ -622,7 +622,7 @@ class Blueprint
             $sqlKeys[] = "CONSTRAINT `{$foreign['key']}` FOREIGN KEY (`{$column}`) REFERENCES {$foreign['table']}(`{$foreign['column']}`) ON DELETE {$foreign['onDelete']} ON UPDATE {$foreign['onUpdate']}";
         }
 
-        $sql = "CREATE TABLE {$this->getFullName()} (\n" . implode(",\n", $sqlColumns) . ",\n\t" . implode(",\n\t", $sqlKeys) . ') ENGINE = INNODB DEFAULT CHARSET=utf8;';
+        $sql = "CREATE TABLE {$this->getFullName()} (\n" . implode(",\n", $sqlColumns) . ",\n\t" . implode(",\n\t", $sqlKeys) . "\n) ENGINE = INNODB DEFAULT CHARSET=utf8;";
         return $sql;
     }
 

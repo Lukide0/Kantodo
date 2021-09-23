@@ -38,6 +38,38 @@
             all: unset !important;
         }
 
+        span.checkbox {
+            position: relative;
+            display: block;
+            width: 20px;
+            height: 20px;
+            border-radius: var(--border-small);
+            border: 2px solid rgb(var(--border));
+            float: left;
+        }
+
+        span.checkbox.checked {
+            background: rgb(var(--primary));
+            border-color: transparent;
+        }
+
+        span.checkbox + span {
+            float: left;
+        }
+
+        span.checkbox.checked::before {
+            display: inline-block;
+            content: "";
+            position: absolute;
+            width: 10px;
+            height: 4px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -75%) rotate(-45deg);
+            border-bottom: 2px solid rgb(var(--primary-text));
+            border-left: 2px solid rgb(var(--primary-text));
+        }
+
     </style>
 </head>
 
@@ -198,6 +230,7 @@
     - e5
      - f6
       - f7
+- [ ] checkbox
 - a1
 - a1
 ```
@@ -324,7 +357,6 @@ aaaaaaa
             addToEditorHistory(key, start, 1);
         });
 
-        // TODO: filtry na render
         const filters = [
             function bold(text) {
                 const regex = /\*\*([^\*]+)?(\*\*)/gm;
@@ -386,15 +418,26 @@ aaaaaaa
                             }
                         }
 
-                        // TODO: checkbox
+                        line = line.substr(2);
                         
-                        tmp += `<li>${line.substr(2)}</li>`;                   
+                        const regexCheckbox = /^\[( |[Xx])\]\s/;
+
+                        if (regexCheckbox.test(line)) {
+                            console.log(line[1]);
+                            let classList = "checkbox";
+                            if (line[1].toLowerCase() == 'x') {
+                                classList += " checked";
+                            }
+                            line = `<span class='${classList}'></span><span>${line.substr(3)}</span>`;
+
+                        }
+                        
+                        tmp += `<li>${line}</li>`;                   
                     }
 
                     tmp += '</ul>';
 
                     textCopy = textCopy.substring(0, match.index + plusOffset) + tmp + textCopy.substring(match.index + plusOffset + match[0].length);
-                    console.log(match.index);
                     plusOffset += tmp.length - match[0].length;
                 }
                 return textCopy;
@@ -407,7 +450,6 @@ aaaaaaa
         ];
         let renderText = editable.textContent;
         filters.forEach(fn => { renderText = fn(renderText);  });
-        console.log(renderText);
         editable.contentEditable = false;
         editable.innerHTML = renderText;
 

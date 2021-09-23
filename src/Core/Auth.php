@@ -17,6 +17,23 @@ class Auth
     }
 
     /**
+     * Hash hesla
+     *
+     * @param   string  $password  heslo
+     * @param   string  $salt      "sůl"
+     *
+     * @return  string
+     */
+    public static function hashPassword(string $password, string $salt = '')
+    {
+        $middle = floor(strlen($salt) / 2);
+
+        $password = substr($salt, 0, $middle) . $password . substr($salt, $middle);
+
+        return hash('sha256', $password);
+    }
+
+    /**
      * Zkontroluje jesli je uživatel přihlášen
      *
      * @return  bool
@@ -60,7 +77,7 @@ class Auth
 
         $user = $userModel->getSingle(['user_id' => 'id', 'secret', 'firstname', 'lastname'], [
             'email'    => $email,
-            'password' => Data::hashPassword($password, $email),
+            'password' => Auth::hashPassword($password, $email),
         ]);
 
         $session = Application::$APP->session;

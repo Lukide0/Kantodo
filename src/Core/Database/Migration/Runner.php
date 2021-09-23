@@ -56,7 +56,7 @@ class Runner
         $version = str_replace('.', '_', $version);
 
         $mode = $this->compareVersions($this->version, $version);
-
+        
         if ($mode == self::MIG_STAY) {
             return;
         }
@@ -99,7 +99,6 @@ class Runner
         }
 
         if ($mode == self::MIG_DOWN) {
-
             for ($index = count($between) - 1; $index >= 0; $index--) {
                 $mig = '\Migrations\\Version_' . $between[$index];
 
@@ -123,18 +122,17 @@ class Runner
             }
         }
 
+        
+        if ($outputFile) {
+            $sql = $this->schema->getSQL();
+            $output = Application::$ROOT_DIR . "/Migrations/Versions/{$version}.sql";
+            
+            file_put_contents($output, $sql);
+        }
         if ($execute) {
             Connection::runInTransaction($this->schema->getQueries());
             AbstractMigration::saveSchema($this->schema);
             $this->updateConfigVersion($version);
-        }
-
-        if ($outputFile) {
-            $sql = $this->schema->getSQL();
-
-            $output = Application::$ROOT_DIR . "/Migrations/Versions/{$version}.sql";
-
-            file_put_contents($output, $sql);
         }
     }
 
@@ -205,6 +203,9 @@ class Runner
      */
     public function updateConfigVersion(string $version)
     {
+        if (!file_exists(Application::$MIGRATION_DIR . '/config.json')) {
+            file_put_contents(Application::$MIGRATION_DIR . '/config.json', "");
+        }
         $json            = json_decode(file_get_contents(Application::$MIGRATION_DIR . '/config.json'), true);
         $json['version'] = str_replace('_', '.', $version);
 
