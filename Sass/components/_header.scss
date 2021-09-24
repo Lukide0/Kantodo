@@ -26,7 +26,16 @@ body > header:not(.mobile) {
             position: relative;
             display: flex;
             align-items: center;
-            margin-bottom: space(medium);
+            margin-bottom: space(small);
+            text-decoration: none;
+            color: fontColor(900);
+            padding: space(regular) space(small);
+            border-radius: borderRadius(small) 0 0 borderRadius(small);
+
+            &:hover, &:focus {
+                outline: none;
+                background: color(border, light, 0.9);
+            }
 
             &.dropdown {
                 display: block;
@@ -34,6 +43,10 @@ body > header:not(.mobile) {
                 & > div {
                     display: flex;
                     align-items: center;
+                }
+
+                &:hover {
+                    background: background(primary);
                 }
 
                 &::before {

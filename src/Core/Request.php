@@ -79,6 +79,11 @@ class Request
         return '';
     }
 
+    public function isValidTokenCSRF()
+    {
+        return $this->getPostTokenCSRF() === Application::$APP->session->getTokenCSRF();
+    }
+
     /**
      * Získá tělo dotazu
      *

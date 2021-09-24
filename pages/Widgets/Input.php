@@ -34,7 +34,10 @@ class Input extends AbstractWidget
         $this->setName($name);
         $this->setType($type);
 
-        if (isset($options['outline'])) {
+
+        if (!isset($options['outline'])) {
+            $this->setOutline(true);
+        } else {
             $this->setOutline($options['outline']);
         }
 
@@ -55,7 +58,11 @@ class Input extends AbstractWidget
         }
 
         if (isset($options['color'])) {
-            $this->setOption("color", $options['color']);
+            $this->setOption('color', $options['color']);
+        }
+
+        if (isset($options['classes'])) {
+            $this->setOption('classes', $options['classes']);
         }
 
     }
@@ -233,11 +240,6 @@ class Input extends AbstractWidget
             $disabled = 'disabled';
         }
 
-        $error = '';
-        if ($this->getOption('error', '') !== '') {
-            $error = 'error';
-        }
-
         $dataAttributes = implode(' ',
             array_map(
                 function ($value, $key) {
@@ -249,36 +251,17 @@ class Input extends AbstractWidget
         );
         $outline = $this->getOption('outline') ? "outline" : "";
         $color   = $this->getOption("color", "");
+        $classes = $this->getOption("classes", "");
+        $type = $this->getOption('type', "text");
 
-        switch ($this->getOption('type')) {
-            case 'password':
-                return <<<HTML
-                    <div class='container'>
-                        <label>
-                            <div class="text-field {$outline} {$color} {$error}">
-                                <input type="{$this->getOption('type')}" name="{$this->getOption('name')}" value="{$this->getOption('value','')}" autocomplete="{$this->getOption('autocomplete','off')}" required {$disabled} {$dataAttributes}>
-                                <div class="label">{$this->getOption('label','')}</div>
-                            </div>
-                            <div class="error-msg">{$this->getOption('error','')}</div>
-                        </label>
-                    </div>
-                HTML;
-                break;
-
-            default:
-                return <<<HTML
-                    <div class='container'>
-                        <label>
-                            <div class="text-field {$outline} {$color} {$error}">
-                                <input type="{$this->getOption('type')}" name="{$this->getOption('name')}" value="{$this->getOption('value','')}" autocomplete="{$this->getOption('autocomplete','off')}" required {$disabled} {$dataAttributes}>
-                                <div class="label">{$this->getOption('label','')}</div>
-                            </div>
-                            <div class="error-msg">{$this->getOption('error','')}</div>
-                        </label>
-                    </div>
-                HTML;
-                break;
-        }
-
+        return <<<HTML
+            <label class="text-field {$outline} {$color} space-big-bottom {$classes}">
+                <div class="field">
+                    <span>{$this->getOption('label','')}</span>
+                    <input type="{$type}"  name="{$this->getOption('name')}" value="{$this->getOption('value','')}" autocomplete="{$this->getOption('autocomplete','off')}" {$disabled} {$dataAttributes}>
+                </div>
+                <div class="text">{$this->getOption('error','')}</div>
+            </label>
+        HTML;
     }
 }

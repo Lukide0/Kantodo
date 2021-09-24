@@ -19,9 +19,9 @@ class Form
      *
      * @return  string
      */
-    public static function start(string $action = '', string $method = Request::METHOD_POST)
+    public static function start(string $action = '', string $method = Request::METHOD_POST, string $classes = '')
     {
-        return "<form action='{$action}' method='{$method}'>";
+        return "<form class='{$classes}' action='{$action}' method='{$method}'>";
     }
 
     /**

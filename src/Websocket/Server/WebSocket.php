@@ -397,7 +397,7 @@ class WebSocket
             $frame[3] = $dataLength & 0xFF;
         }
 
-        for ($i = 0; $i < count($frame); $i++) {
+        for ($i = 0, $size = count($frame); $i < $size; $i++) {
             $encoded .= chr($frame[$i]);
         }
 

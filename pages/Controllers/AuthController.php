@@ -1,13 +1,14 @@
 <?php
 
-declare (strict_types = 1);
+declare(strict_types=1);
 
 namespace Kantodo\Controllers;
 
+use Kantodo\Auth\Auth;
 use Kantodo\Core\Application;
-use Kantodo\Core\Auth;
 use Kantodo\Core\Base\AbstractController;
 use Kantodo\Core\Request;
+use Kantodo\Core\Session;
 use Kantodo\Core\Validation\Data;
 use Kantodo\Views\AuthView;
 
@@ -24,7 +25,6 @@ class AuthController extends AbstractController
     public function authenticate()
     {
         $body = Application::$APP->request->getBody();
-
         // cesta z které byl uživatel přesměrován
         if (!empty($body[Request::METHOD_GET]['path']) && !Data::isURLExternal($body[Request::METHOD_GET]['path'])) {
             $this->renderView(AuthView::class, ['path' => urlencode($body[Request::METHOD_GET]['path'])]);
@@ -55,6 +55,11 @@ class AuthController extends AbstractController
 
         $path = (isset($body[Request::METHOD_GET]['path']) && Data::isURLExternal($body[Request::METHOD_GET]['path']) === false) ? $body[Request::METHOD_GET]['path'] : '';
 
+        if (!Application::$APP->request->isValidTokenCSRF()) {
+            $path = urlencode($path); 
+            Application::$APP->response->setLocation("/auth?path={$path}");
+            exit;
+        }
         // prázdné email nebo heslo
         if (Data::isEmpty($body[Request::METHOD_POST], ['signInEmail', 'signInPassword'])) {
             $empty = [];

@@ -1,20 +1,17 @@
 <?php
 
-namespace Kantodo\Core;
+namespace Kantodo\Auth;
 
-use Kantodo\Core\Validation\Data;
+use Kantodo\Core\Application;
+use Kantodo\Core\IAuth;
 use Kantodo\Models\UserModel;
 
 /**
  * Auth
  */
-class Auth
+class Auth implements IAuth
 {
     const EXP = 60 * 30;
-
-    private function __construct()
-    {
-    }
 
     /**
      * Hash hesla
@@ -38,7 +35,7 @@ class Auth
      *
      * @return  bool
      */
-    public static function isLogged()
+    public static function isLogged(): bool
     {
 
         $session = Application::$APP->session;

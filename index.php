@@ -1,12 +1,15 @@
 <?php
 
+use Kantodo\Auth\Auth;
 use Kantodo\Core\Application;
 use Kantodo\Core\Request;
 use Kantodo\Core\Response;
 
 include_once 'loader/autoload.php';
 
+
 $APP = new Application();
+$APP->registerAuth(new Auth());
 $APP->session->start();
 
 // debug
@@ -19,24 +22,21 @@ if (!Application::configExits()) {
     exit;
 }
 
-// auth
-$APP->router->get('/auth', [Kantodo\Controllers\AuthController::class, 'authenticate'], Application::GUEST, true);
-$APP->router->get('/auth/sign-out', [Kantodo\Controllers\AuthController::class, 'signOut'], Application::USER);
-
-$APP->router->post('/auth/sign-in', [Kantodo\Controllers\AuthController::class, 'signIn'], Application::GUEST, true);
-$APP->router->post('/auth/create', [Kantodo\Controllers\AuthController::class, 'createAccount'], Application::GUEST, true);
+if (file_exists($APP::$PAGES_DIR . '/routes.php')) {
+    include $APP::$PAGES_DIR . '/routes.php';
+}
 
 // pages
-$APP->router->get('/', [Kantodo\Controllers\CalendarController::class, 'homePage'], Application::USER);
-$APP->router->get('/team/{teamID}', [Kantodo\Controllers\TeamController::class, 'viewTeam'], Application::USER);
-$APP->router->get('/team/{teamID}/project', [Kantodo\Controllers\ProjectController::class, 'projectsList'], Application::USER);
-$APP->router->get('/team/{teamID}/project/{projID}', [Kantodo\Controllers\ProjectController::class, 'viewProject'], Application::USER);
+//$APP->router->get('/', [Kantodo\Controllers\DashboardController::class, 'dashboard'], Application::USER);
+//$APP->router->get('/team/{teamID}', [Kantodo\Controllers\TeamController::class, 'viewTeam'], Application::USER);
+//$APP->router->get('/team/{teamID}/project', [Kantodo\Controllers\ProjectController::class, 'projectsList'], Application::USER);
+//$APP->router->get('/team/{teamID}/project/{projID}', [Kantodo\Controllers\ProjectController::class, 'viewProject'], Application::USER);
 
 // actions
-$APP->router->post('/create/team', [Kantodo\Controllers\TeamController::class, 'createTeam'], Application::USER);
-$APP->router->post('/team/{teamID}/create/project', [Kantodo\Controllers\ProjectController::class, 'createProject'], Application::USER);
-$APP->router->post('/project/{projID}/create/column', [Kantodo\Controllers\ColumnController::class, 'createColumn'], Application::USER);
-$APP->router->post('/project/{projID}/create/task', [Kantodo\Controllers\TaskController::class, 'createTask'], Application::USER);
+//$APP->router->post('/create/team', [Kantodo\Controllers\TeamController::class, 'createTeam'], Application::USER);
+//$APP->router->post('/team/{teamID}/create/project', [Kantodo\Controllers\ProjectController::class, 'createProject'], Application::USER);
+//$APP->router->post('/project/{projID}/create/column', [Kantodo\Controllers\ColumnController::class, 'createColumn'], Application::USER);
+//$APP->router->post('/project/{projID}/create/task', [Kantodo\Controllers\TaskController::class, 'createTask'], Application::USER);
 
 // errors
 $APP->router->registerErrorCodeHandler(Application::ERROR_NOT_AUTHORIZED, function (int $role, int $userRole) {

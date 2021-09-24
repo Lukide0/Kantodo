@@ -21,7 +21,7 @@ $outputFile    = false;
 $loadSchema    = true;
 $setCurrentVer = "";
 
-for ($i = 0; $i < count($actions); $i++) {
+for ($i = 0, $size = count($actions); $i < $size; $i++) {
     $action = $actions[$i];
 
     if ($action == '-o') {

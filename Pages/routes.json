@@ -1,0 +1,63 @@
+[
+    {
+        "method": "GET",
+        "path": "/auth",
+        "controller": {
+            "class": "AuthController",
+            "method": "authenticate"
+        },
+        "access": {
+            "role": "GUEST",
+            "strict": true
+        }
+    },
+    {
+        "method": "GET",
+        "path": "/auth/signout",
+        "controller": {
+            "class": "AuthController",
+            "method": "signOut"
+        },
+        "access": {
+            "role": "USER",
+            "strict": false
+        }
+    },
+    {
+        "method": "POST",
+        "path": "/auth/signin",
+        "controller": {
+            "class": "AuthController",
+            "method": "signIn"
+        },
+        "access": {
+            "role": "GUEST",
+            "strict": true
+        }
+    },
+    {
+        "method": "POST",
+        "path": "/auth/create",
+        "controller": {
+            "class": "AuthController",
+            "method": "createAccount"
+        },
+        "access": {
+            "role": "GUEST",
+            "strict": true
+        }
+    },
+    {
+        "method": "GET",
+        "path": "/",
+        "controller": {
+            "class": "DashboardController",
+            "method": "dashboard"
+        },
+        "access": {
+            "role": "USER",
+            "strict": false
+        }
+    }
+    
+]

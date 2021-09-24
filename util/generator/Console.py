@@ -50,6 +50,7 @@ class Console:
         self.commands.register_command("rename", rename_command)
         self.commands.register_command("clear", clear_command)
         self.commands.register_command("mig", migration_command)
+        self.commands.register_command("generate", routes_command)
 
 
     @classmethod

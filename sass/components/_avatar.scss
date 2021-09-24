@@ -1,9 +1,14 @@
 @use "../abstracts" as *;
 
 .avatar {
-    --bg: #{color(primary)};
+    --color: #{color(primary)};
+    --text: #{color(primary, text)};
     width: $avatar-size;
     height: $avatar-size;
-    background: var(--bg);
+    background: var(--color);
+    color: var(--text);
     border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

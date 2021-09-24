@@ -58,6 +58,11 @@
     align-content: space-evenly;
 }
 
+
+.nowrap {
+    flex-wrap: nowrap;
+}
+
 .full {
     flex: 1;
     width: 100%;

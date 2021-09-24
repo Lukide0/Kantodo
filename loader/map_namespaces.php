@@ -13,5 +13,5 @@ return [
     'Kantodo\\Widgets\\'     => $dir . '/pages/Widgets/',
 
     // Migrations
-    'Migrations\\'           => $dir . '/migrations/Versions',
+    'Migrations\\'           => $dir . '/Migrations/Versions',
 ];

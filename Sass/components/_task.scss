@@ -33,6 +33,7 @@
 
     & > main {
         @include font(800, regular);
+        overflow-wrap: anywhere;
     }
 
     & > footer {

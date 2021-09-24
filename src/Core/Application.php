@@ -110,6 +110,10 @@ class Application
      */
     public $session;
 
+    /**
+     * @var IAuth
+     */
+    private static $AUTH;
     private $eventListeners = [];
     private $userRole       = null;
 
@@ -145,7 +149,11 @@ class Application
         if ($this->configExits()) {
             $this->loadConfig();
         }
+    }
 
+    public function registerAuth(IAuth $auth)
+    {
+        self::$AUTH = $auth;
     }
 
     /**
@@ -176,7 +184,6 @@ class Application
         if (self::$CONFIG_LOADED) {
             Connection::debugMode();
         }
-
     }
 
     /**
@@ -275,12 +282,12 @@ class Application
             return self::$APP->userRole;
         }
 
-        if (!Auth::isLogged()) {
+        if (isset(self::$AUTH) && !self::$AUTH::isLogged()) {
             self::$APP->userRole = self::GUEST;
             return self::GUEST;
         }
 
-        return self::$APP->userRole = self::$APP->session->get('user')['role'];
+        return self::$APP->userRole = self::$APP->session->get('user')['role'] ?? self::GUEST;
     }
 
     /**

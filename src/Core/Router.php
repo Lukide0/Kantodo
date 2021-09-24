@@ -72,6 +72,22 @@ class Router
     }
 
     /**
+     * Přidá cestu
+     *
+     * @param   string      $method    metoda (Request::METHOD_POST, ...)
+     * @param   string       $path      cesta
+     * @param   mixed       $callback  callback
+     * @param   int          $access    role
+     * @param   bool         $strict    pouze uřčená role
+     *
+     * @return  void
+     */
+    public function addRoute(string $method, string $path, $callback, int $access = Application::GUEST, bool $strict = false)
+    {
+        $this->routes[$method][$path] = ['callback' => $callback, 'access' => $access, 'strict' => $strict];
+    }
+
+    /**
      * Vratí registrovanou cestu, která se schoduje s dotazovanou cestou
      *
      * @param   string  $path    cesta

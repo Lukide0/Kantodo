@@ -111,7 +111,7 @@ class Runner
         }
 
         if ($mode == self::MIG_UP) {
-            for ($index = 0; $index < count($between); $index++) {
+            for ($index = 0, $size = count($between); $index < $size; $index++) {
                 $mig = '\Migrations\\Version_' . $between[$index];
 
                 /**

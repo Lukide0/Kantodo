@@ -53,7 +53,7 @@ class Loader
         $tmp   = '';
         $match = null;
         $skip  = 0;
-        for ($i = 0; $i < count($namespaces); $i++) {
+        for ($i = 0, $size = count($namespaces); $i < $size; $i++) {
             $tmp .= $namespaces[$i] . '\\';
 
             if (isset($this->namespaceMap[$tmp])) {

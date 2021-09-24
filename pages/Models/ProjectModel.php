@@ -33,9 +33,6 @@ class ProjectModel extends Model
             'editMilestone'        => true,
             'removeMilestone'      => true,
 
-            'addColumn'            => true,
-            'editColumn'           => true,
-            'removeColumn'         => true,
 
             'addPeople'            => true,
             'removePeople'         => true,
@@ -48,10 +45,6 @@ class ProjectModel extends Model
             'editTask'             => true,
             'removeTask'           => true,
             'canCloseTask'         => true,
-
-            'addColumn'            => true,
-            'editColumn'           => true,
-            'removeColumn'         => true,
 
             'addMilestone'         => true,
             'editMilestone'        => true,
@@ -69,10 +62,6 @@ class ProjectModel extends Model
             'removeTask'           => true,
             'canCloseTask'         => true,
 
-            'addColumn'            => false,
-            'editColumn'           => false,
-            'removeColumn'         => false,
-
             'addMilestone'         => true,
             'editMilestone'        => true,
             'removeMilestone'      => true,
@@ -89,10 +78,6 @@ class ProjectModel extends Model
             'removeTask'           => false,
             'canCloseTask'         => true,
 
-            'addColumn'            => false,
-            'editColumn'           => false,
-            'removeColumn'         => false,
-
             'addMilestone'         => false,
             'editMilestone'        => false,
             'removeMilestone'      => false,
@@ -108,10 +93,6 @@ class ProjectModel extends Model
             'editTask'             => false,
             'removeTask'           => false,
             'canCloseTask'         => false,
-
-            'addColumn'            => false,
-            'editColumn'           => false,
-            'removeColumn'         => false,
 
             'addMilestone'         => false,
             'editMilestone'        => false,
@@ -132,7 +113,6 @@ class ProjectModel extends Model
         $this->setColumns([
             'project_id',
             'name',
-            'team_id',
             'is_open',
             'uuid',
             'is_public',
@@ -181,7 +161,7 @@ class ProjectModel extends Model
     {
         $uuid = Generator::uuidV4();
 
-        $query  = "INSERT INTO {$this->table} (`name`, `team_id`, `is_open`, `uuid`, `is_public`) VALUES (:name, :teamID, '1', :uuid, '1')";
+        $query  = "INSERT INTO {$this->table} (`name`, `team_id`, `is_open`, `uuid`, `is_public`) VALUES (:name, :teamID, '1', :uuid, '0')";
         $sth    = $this->con->prepare($query);
         $status = $sth->execute([
             ':name'   => $name,
@@ -201,10 +181,8 @@ class ProjectModel extends Model
                 return false;
             }
 
-            $userTeamID = Application::$APP->session->get($teamID)['id'];
-
             // vytvoří admina
-            $status = $this->setUserPosition($userTeamID, $projID, $posID);
+            $status = $this->setUserPosition($userID, $projID, $posID);
 
             // nepodařilo se vytvořit admina
             if ($status === false) {
@@ -214,40 +192,6 @@ class ProjectModel extends Model
             }
 
             return $projID;
-        }
-
-        return false;
-    }
-
-    /**
-     * Vrací všechny sloupce v projektu
-     *
-     * @param   int  $projID    id projektu
-     *
-     * @return  array|false     vrací false pokud se nepodařilo získat sloupce
-     */
-    public function getColumns(int $projID)
-    {
-        $columns = Connection::formatTableName('columns');
-        $query   = <<<SQL
-        SELECT
-            `column_id` as `id`,
-            `name`,
-            `max_task_count`
-        FROM
-            {$columns}
-        WHERE
-            `project_id` = :projID
-        SQL;
-
-        $sth = $this->con->prepare($query);
-
-        $status = $sth->execute([
-            ':projID' => $projID,
-        ]);
-
-        if ($status === true) {
-            return $sth->fetchAll(PDO::FETCH_ASSOC);
         }
 
         return false;
@@ -294,8 +238,8 @@ class ProjectModel extends Model
      */
     public function setUserPosition(int $userID, int $projID, int $posID)
     {
-        $userProj = Connection::formatTableName('user_team_projects');
-        $sth      = $this->con->prepare("INSERT INTO {$userProj} (`user_team_id`, `project_id`, `project_position_id`) VALUES ( :userID, :projID, :posID)");
+        $userProj = Connection::formatTableName('user_projects');
+        $sth      = $this->con->prepare("INSERT INTO {$userProj} (`user_id`, `project_id`, `project_position_id`) VALUES ( :userID, :projID, :posID)");
         $status   = $sth->execute([
             ':userID' => $userID,
             ':projID' => $projID,
@@ -332,79 +276,33 @@ class ProjectModel extends Model
      * Vrací jméno pozice
      *
      * @param   int  $projID      id projektu
-     * @param   int  $userTeamID  id z tabulky `user_team_projects`
+     * @param   int  $userID      id uživatele
      *
-     * @return  string|false      vrací false pokud se nepodařilo ji získat nebo uživatel není v projektu
+     * @return  string|false      vrací false pokud se nepodařilo získat pozici nebo uživatel není v projektu
      */
-    public function getProjectPosition(int $projID, int $userTeamID)
+    public function getProjectPosition(int $projID, int $userID)
     {
         $projPos  = Connection::formatTableName('project_positions');
-        $userProj = Connection::formatTableName('user_team_projects');
+        $userProj = Connection::formatTableName('user_projects');
 
         $query = <<<SQL
         SELECT
             proj_pos.name
-        FROM {$userProj} as up
+        FROM {$userProj} as user_proj
             INNER JOIN {$projPos} as proj_pos
-                ON up.project_position_id = proj_pos.project_position_id
-        WHERE up.project_id = :projID AND up.user_team_id = :userTeamID
+                ON user_proj.project_position_id = proj_pos.project_position_id
+        WHERE user_proj.project_id = :projID AND user_proj.user_id = :userID
         SQL;
 
         $sth    = $this->con->prepare($query);
         $status = $sth->execute([
             ':projID'     => $projID,
-            ':userTeamID' => $userTeamID,
-        ]);
-
-        if ($status === true) {
-            $pos = $sth->fetch(PDO::FETCH_ASSOC);
-
-            if (empty($pos)) {
-                return false;
-            }
-
-            return $pos['name'];
-        }
-
-        return false;
-    }
-
-    /**
-     * Vrací jméno pozice
-     *
-     * @param   int  $projID  id projektu
-     * @param   int  $userID  id uživatele
-     *
-     * @return  string|false  vrací false pokud se nepodařilo získat pozici nebo uživatel není v projektu
-     */
-    public function getUserProjectPosition(int $projID, int $userID)
-    {
-        $projPos  = Connection::formatTableName('project_positions');
-        $userTeam = Connection::formatTableName('user_teams');
-        $userProj = Connection::formatTableName('user_team_projects');
-
-        $query = <<<SQL
-        SELECT
-            pp.name
-        FROM
-            {$userTeam} AS ut
-        INNER JOIN {$userProj} AS utp
-        ON
-            utp.user_team_id = ut.user_team_id
-        INNER JOIN {$projPos} AS pp
-        ON
-            pp.project_position_id = utp.project_position_id
-        WHERE utp.project_id = :projID AND ut.user_id = :userID
-        SQL;
-
-        $sth    = $this->con->prepare($query);
-        $status = $sth->execute([
-            ':projID' => $projID,
             ':userID' => $userID,
         ]);
 
         if ($status === true) {
             $pos = $sth->fetch(PDO::FETCH_ASSOC);
+
             if (empty($pos)) {
                 return false;
             }
@@ -425,8 +323,7 @@ class ProjectModel extends Model
     public function getMembersInitials(int $projID)
     {
         $users    = Connection::formatTableName('users');
-        $userTeam = Connection::formatTableName('user_teams');
-        $userProj = Connection::formatTableName('user_team_projects');
+        $userProj = Connection::formatTableName('user_projects');
 
         $query = <<<SQL
         SELECT
@@ -435,15 +332,12 @@ class ProjectModel extends Model
                 LEFT(u.lastname, 1)
             ) AS `initials`
         FROM
-            {$userProj} AS up
-        INNER JOIN {$userTeam} AS ut
-        ON
-            ut.user_team_id = up.user_team_id
+            {$userProj} AS user_proj
         INNER JOIN {$users} AS u
         ON
-            ut.user_id = u.user_id
+            user_proj.user_id = u.user_id
         WHERE
-            up.project_id = :projID
+            user_proj.project_id = :projID
         SQL;
 
         $sth    = $this->con->prepare($query);
@@ -453,48 +347,6 @@ class ProjectModel extends Model
 
         if ($status === true) {
             return $sth->fetchAll(PDO::FETCH_COLUMN);
-        }
-
-        return false;
-    }
-
-    /**
-     * Vrací všechny projekty v týmu i se statístikami úkolů
-     *
-     * @param   int  $teamID  id týmu
-     *
-     * @return  array         týmy
-     */
-    public function getTeamProjectList(int $teamID)
-    {
-        $columnsTable = Connection::formatTableName('columns');
-        $tasksTable   = Connection::formatTableName('tasks');
-
-        $query = <<<SQL
-            SELECT proj.project_id,
-                proj.name,
-                proj.is_open,
-                Sum(task.completed) AS task_completed,
-                Sum(CASE
-                        WHEN task.completed = 0 THEN 1
-                        ELSE 0
-                    END) AS task_not_completed
-            FROM {$this->table} AS proj
-                LEFT JOIN {$columnsTable} AS col
-                        ON col.project_id = proj.project_id
-                LEFT JOIN {$tasksTable} AS task
-                        ON task.column_id = col.column_id
-            WHERE proj.team_id = :teamID
-            GROUP BY proj.project_id;
-        SQL;
-
-        $sth    = $this->con->prepare($query);
-        $status = $sth->execute([
-            ':teamID' => $teamID,
-        ]);
-
-        if ($status === true) {
-            return $sth->fetchAll(PDO::FETCH_ASSOC);
         }
 
         return false;

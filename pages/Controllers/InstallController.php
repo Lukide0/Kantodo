@@ -2,8 +2,8 @@
 
 namespace Kantodo\Controllers;
 
+use Kantodo\Auth\Auth;
 use Kantodo\Core\Application;
-use Kantodo\Core\Auth;
 use Kantodo\Core\Base\AbstractController;
 use Kantodo\Core\Database\Connection;
 use Kantodo\Core\Database\Migration\Runner;
@@ -269,6 +269,8 @@ class InstallController extends AbstractController
         $constants = array_merge($constantsDB, $constantsFolder);
 
         Application::overrideConfig($constants);
+
+        Application::$APP->session->destroy();
 
         Application::$APP->response->setLocation();
         
