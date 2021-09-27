@@ -23,7 +23,7 @@ class Auth implements IAuth
      */
     public static function hashPassword(string $password, string $salt = '')
     {
-        $middle = floor(strlen($salt) / 2);
+        $middle = (int)floor(strlen($salt) / 2);
 
         $password = substr($salt, 0, $middle) . $password . substr($salt, $middle);
 

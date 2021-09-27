@@ -9,10 +9,27 @@ class Task extends AbstractWidget
 {
     const DESCRIPTION_LENGTH = 100;
 
+    /**
+     * @var string
+     */
     private $title;
+    /**
+     * @var string
+     */
     private $description;
+    /**
+     * @var bool
+     */
     private $checked;
 
+    /**
+     *
+     * @param   string  $title        
+     * @param   string  $description  
+     * @param   bool    $completed             
+     * @param   array<string,mixed>   $options     
+     *
+     */
     private function __construct(string $title, string $description, bool $completed = false, array $options = []) {
         $this->title = $title;
 
@@ -35,6 +52,17 @@ class Task extends AbstractWidget
             $this->setOption('tags', $options['tags']); 
     }
 
+    /**
+     * Vytvoří úkol
+     *
+     * @param   string  $title        nadpis
+     * @param   string  $description  popis
+     * @param   bool    $completed    dokončeno
+     * @param   array<string,mixed>   $options      možnosti
+     * 
+     * @return string
+     *
+     */
     public static function Create(string $title, string $description, bool $completed = false, array $options = [])
     {
        $task = new Task($title, $description, $completed, $options);
@@ -42,7 +70,11 @@ class Task extends AbstractWidget
        return $task->GetHTML();
     }
 
-
+    /**
+     * Vrací html elementu
+     *
+     * @return  string
+     */
     public function GetHTML()
     {
         $important = ($this->getOption('important', false)) ? '<div class="important">Important</div>' : "";

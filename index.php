@@ -8,6 +8,7 @@ use Kantodo\Core\Response;
 include_once 'loader/autoload.php';
 
 
+
 $APP = new Application();
 $APP->registerAuth(new Auth());
 $APP->session->start();
@@ -16,7 +17,6 @@ $APP->session->start();
 $APP->debugMode();
 
 // TODO: Mobilni verze
-
 if (!Application::configExits()) {
     $APP->router->run([Kantodo\Controllers\InstallController::class, 'installView'], [$APP->request->getPath()]);
     exit;

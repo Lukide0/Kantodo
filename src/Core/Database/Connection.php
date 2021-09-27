@@ -50,8 +50,7 @@ class Connection
 
         $con = new PDO($dns, DB_USER, DB_PASS, array(
             // PDO::ATTR_PERSISTENT => true,
-            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
-            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET CHARACTER SET utf8',
+            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8, CHARACTER SET utf8',
         ));
 
         $errorMode = (Application::$DEBUG_MODE) ? PDO::ERRMODE_EXCEPTION : PDO::ERRMODE_SILENT;

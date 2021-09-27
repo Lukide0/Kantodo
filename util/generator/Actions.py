@@ -238,7 +238,7 @@ def migration_command(commands):
 
     chdir("../../")
 
-    system('php -f Src/Core/Database/Migration/ConsoleRunner.php ' + version + " " + params)
+    system('php -f CLI/DatabaseMigration.php ' + version + " " + params)
 
     chdir("./util/generator/")
 
@@ -255,6 +255,16 @@ mig VERSION [Options]
         -n          don't load schema
         -c VERSION  set temp. current version in format X_X
 """)
+
+#-----------------------------------------------------------
+# GENERATE ROUTES
+
+def backup_command(commands):
+    chdir("./../../")
+
+    system('php -f CLI/AppBackup.php')
+
+    chdir("./util/generator/")
 
 
 #-----------------------------------------------------------

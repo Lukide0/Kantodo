@@ -10,7 +10,7 @@ interface IView
     /**
      * Vyrendruje view
      *
-     * @param   array  $params  parametry z url
+     * @param   array<mixed>  $params  parametry z url
      *
      * @return  void
      */

@@ -42,7 +42,7 @@ abstract class AbstractController
     /**
      * Vykonná všechny middleware
      *
-     * @param   array  $params  parametry
+     * @param   array<mixed>  $params  parametry
      *
      * @return  void
      */
@@ -57,7 +57,7 @@ abstract class AbstractController
      * Vyrendruje view
      *
      * @param   string  $class   view třída
-     * @param   array   $params  parametry
+     * @param   array<mixed>   $params  parametry
      * @param   string  $layout  layout třída
      *
      * @return  void
@@ -91,7 +91,7 @@ abstract class AbstractController
      * Vyrendruje layout
      *
      * @param   string  $layout  layout třída
-     * @param   array   $params  parametry
+     * @param   array<mixed>   $params  parametry
      *
      * @return  void
      *

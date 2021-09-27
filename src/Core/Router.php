@@ -2,6 +2,8 @@
 
 namespace Kantodo\Core;
 
+use Kantodo\Core\Base\AbstractController;
+
 /**
  * Router
  */
@@ -23,7 +25,7 @@ class Router
     /**
      * Cesty
      *
-     * @var array
+     * @var array<string,mixed>
      */
     protected $routes = [
         Request::METHOD_GET  => [],
@@ -31,7 +33,14 @@ class Router
     ];
 
     /**
-     * @var array
+     * Middleware error handler
+     *
+     * @var callable
+     */
+    protected $errorHandler = null;
+
+    /**
+     * @var array<callable>
      */
     protected $errorHandlers = [];
 
@@ -93,7 +102,7 @@ class Router
      * @param   string  $path    cesta
      * @param   string  $method  metoda
      *
-     * @return  array
+     * @return  array<mixed>
      */
     public function match(string $path, string $method)
     {
@@ -150,7 +159,7 @@ class Router
      * Spustí manipulátor chybného kódu
      *
      * @param   int    $code    code
-     * @param   array  $params  parametry
+     * @param   array<mixed>  $params  parametry
      *
      * @return  void
      */
@@ -192,7 +201,7 @@ class Router
      * Spustí controller nebo callback
      *
      * @param   mixed $callback  callback
-     * @param   array  $params    parametry
+     * @param   array<mixed>  $params    parametry
      *
      * @return  void
      */
@@ -208,13 +217,18 @@ class Router
             try {
                 $controller->executeAllMiddlewares();
             } catch (\Throwable $th) {
-                if ($this->errorHandler) {
+                if ($this->errorHandler != null) {
                     call_user_func($this->errorHandler, $th);
                 }
                 $this->response->setStatusCode($th->getCode());
                 exit;
             }
-            call_user_func_array([$controller, $classMethod], $params);
+            /**
+             * @var callable
+             */
+            $callable = [$controller, $classMethod];
+
+            call_user_func_array($callable, $params);
             return;
         }
 
@@ -242,7 +256,7 @@ class Router
             $classMethod = $callback['callback'][1];
 
             /**
-             * @var Controller
+             * @var AbstractController
              */
             $controller = new $callback['callback'][0];
 
@@ -258,7 +272,11 @@ class Router
 
             $controller->executeAllMiddlewares($params);
 
-            call_user_func([$controller, $classMethod], $params);
+            /**
+             * @var callable
+             */
+            $callable = [$controller, $classMethod];
+            call_user_func($callable, $params);
             return;
         }
         call_user_func($callback['callback'], $this->request, $this->response, $params);

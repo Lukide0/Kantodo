@@ -22,10 +22,9 @@ class TaskModel extends Model
             'priority',
             'completed',
             'end_date',
-            'index',
             'creator_id',
             'milestone_id',
-            'column_id',
+            'project_id',
         ]);
     }
 
@@ -33,9 +32,8 @@ class TaskModel extends Model
      * Vytvoří úkol
      *
      * @param   string  $name         jméno úkolu
-     * @param   string  $index        index (lexorank)
      * @param   int     $creatorID    id tvůrce
-     * @param   int     $columnID     id sloupce
+     * @param   int     $projectID    id projektu
      * @param   string  $desc         popis
      * @param   int     $priority     priorita (0-255)
      * @param   string  $endDate      datum dokončení
@@ -43,10 +41,10 @@ class TaskModel extends Model
      *
      * @return  int|false             vrací id záznamu nebo false pokud se nepovedlo vložit do databáze
      */
-    public function create(string $name, string $index, int $creatorID, int $columnID, string $desc = null, int $priority = 1, string $endDate = null, int $milestoneID = null)
+    public function create(string $name, int $creatorID, int $projectID, string $desc = null, int $priority = 1, string $endDate = null, int $milestoneID = null)
     {
         if ($endDate !== null) {
-            $endDate = date(Connection::DATABASE_DATE_FORMAT, strtotime($endDate));
+            $endDate = date(Connection::DATABASE_DATE_FORMAT, (int)strtotime($endDate));
         }
 
         $query = <<<SQL
@@ -55,20 +53,18 @@ class TaskModel extends Model
             `description`,
             `priority`,
             `end_date`,
-            `index`,
             `creator_id`,
             `milestone_id`,
-            `column_id`
+            `project_id`
         )
         VALUES(
             :name,
             :desc,
             :priority,
             :endDate,
-            :index,
             :creatorID,
             :milestoneID,
-            :columnID
+            :projID
         )
         SQL;
 
@@ -78,14 +74,13 @@ class TaskModel extends Model
             ':desc'        => $desc,
             ':priority'    => $priority,
             ':endDate'     => $endDate,
-            ':index'       => $index,
             ':creatorID'   => $creatorID,
             ':milestoneID' => $milestoneID,
-            ':columnID'    => $columnID,
+            ':projID'      => $projectID,
         ]);
 
         if ($status === true) {
-            return $this->con->lastInsertId();
+            return (int)$this->con->lastInsertId();
         }
 
         return false;

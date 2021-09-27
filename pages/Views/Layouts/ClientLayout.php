@@ -15,7 +15,7 @@ class ClientLayout extends Layout
      * Render
      *
      * @param   string  $content  kontent
-     * @param   array   $params   parametry
+     * @param   array<mixed>   $params   parametry
      *
      * @return  void
      */
@@ -25,8 +25,6 @@ class ClientLayout extends Layout
 
         // TODO: generovat menu z array
         //$userID = Application::$APP->session->get('user')['id'];
-
-        $path = Application::$URL_PATH;
         ?>
         <!DOCTYPE html>
         <html lang="en">
@@ -37,7 +35,8 @@ class ClientLayout extends Layout
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet">
             <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-            <link rel="stylesheet" href="<?= $path ?>/styles/main.css">
+            <link rel="stylesheet" href="<?= Application::$STYLE_URL ?>/main.css">
+            <link rel="stylesheet" href="<?= Application::$SCRIPT_URL ?>/main.js">
             <?=$headerContent;?>
         </head>
         <body>
@@ -58,7 +57,11 @@ class ClientLayout extends Layout
                         <span class="text">Projekty</span>
                     </div>
                     <ul>
-                        <li>KantodoApp</li>
+                        <?php 
+                        foreach ($params['projects'] ?? [] as $project):
+                        ?>
+                        <li data-id='<?= $project['uuid'] ?>'><?= $project['name'] ?></li>
+                        <?php endforeach; ?>
                         <li class="add">Přidat</li>
                     </ul>
                 </div>

@@ -18,7 +18,7 @@ class TaskController extends AbstractController
     /**
      * Akce na vytvoření úkolu
      *
-     * @param   array  $params  parametry z url
+     * @param   array<mixed>  $params  parametry z url
      *
      * @return  void
      */
@@ -33,7 +33,7 @@ class TaskController extends AbstractController
         $projID = base64DecodeUrl($params['projID']);
 
         $keys = [
-            'column',
+            'projectUUID',
             'taskName',
             'taskDescription',
             'taskPriority',
@@ -45,35 +45,9 @@ class TaskController extends AbstractController
             exit;
         }
 
-        $columnID = base64DecodeUrl($post['column']);
+        // TODO: dodelat vytvareni
 
-        // TODO index, milestone
-
-        $columnModel = new ColumnModel();
-
-        $column = $columnModel->getSingle(['max_task_count' => 'max'], ['column_id' => $columnID, 'project_id' => $projID]);
-
-        if ($column === false) {
-            $response->setStatusCode(Response::STATUS_CODE_BAD_REQUEST);
-            exit;
-        }
-
-        if ($column['max'] !== null) {
-            $countTasks = $columnModel->getCountOfTasks($columnID);
-
-            if ($countTasks === false) {
-                $response->setStatusCode(Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
-                exit;
-            }
-
-            if ($column['max'] <= $countTasks) {
-                $response->addResponseError('exceeded max task count of column');
-                $response->outputResponse();
-                exit;
-            }
-        }
-
-        // TODO
+        // TODO: dodelat
         /*$wsClient = new Websocket('localhost', 8090);
     $wsClient->connect(Application::$URL_PATH . '/websockets');
 

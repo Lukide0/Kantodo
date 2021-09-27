@@ -15,7 +15,7 @@ class InstallLayout extends Layout
      * Render
      *
      * @param   string  $content  kontent
-     * @param   array   $params   parametry
+     * @param   array<mixed>   $params   parametry
      *
      * @return  void
      */

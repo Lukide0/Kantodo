@@ -54,7 +54,7 @@ class UserModel extends Model
             ':nickname'  => $nickname,
         ]);
 
-        return ($status === true) ? $this->con->lastInsertId() : false;
+        return ($status === true) ? (int)$this->con->lastInsertId() : false;
     }
 
     /**
@@ -91,7 +91,7 @@ class UserModel extends Model
             ':user_id' => $userID,
         ]);
 
-        return ($status === true) ? $this->con->lastInsertId() : false;
+        return ($status === true) ? (int)$this->con->lastInsertId() : false;
     }
 
     /**
@@ -116,16 +116,16 @@ class UserModel extends Model
     /**
      * Získá záznam z tabulky
      *
-     * @param   array  $columns  sloupce z tabulky, které chceme získat ve tvaru ['sloupec1', 'sloupec2'] nebo ['sloupec1' => 'alias', 'sloupec2']
-     * @param   array  $search   např. ['id' => 5]
+     * @param   array<string>|array<string,string>  $columns  sloupce z tabulky, které chceme získat ve tvaru ['sloupec1', 'sloupec2'] nebo ['sloupec1' => 'alias', 'sloupec2']
+     * @param   array<string,mixed>  $search   např. ['id' => 5]
      *
-     * @return  array|false      vrací false pokud nepodařilo získat záznamy
+     * @return  array<mixed>|false      vrací false pokud nepodařilo získat záznamy
      */
     public function getSingle(array $columns = ['*'], array $search = [])
     {
         $user = $this->get($columns, $search, 1);
 
-        if (count($user) == 1) {
+        if ($user != false && count($user) == 1) {
             return $user[0];
         }
 
@@ -139,7 +139,7 @@ class UserModel extends Model
      * @param   string  $key       klíč
      * @param   bool    $multiple  pokud existuje více záznamů s tím to klíčem
      *
-     * @return  array|false        vrací false pokud se nepodařilo získat
+     * @return  array<mixed>|false        vrací false pokud se nepodařilo získat
      */
     public function getMeta(int $userID, string $key, bool $multiple = false)
     {
@@ -171,7 +171,7 @@ class UserModel extends Model
     /**
      * Existuje
      *
-     * @param   array  $data  data ve formátu ['sloupec' => hodnota]
+     * @param   array<string,string>  $data  data ve formátu ['sloupec' => hodnota]
      *
      * @return  bool
      */

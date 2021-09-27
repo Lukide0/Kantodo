@@ -13,3 +13,6 @@ config.php
 **/config.json
 /Tests
 /Data
+/App
+/vendor
+composer.lock

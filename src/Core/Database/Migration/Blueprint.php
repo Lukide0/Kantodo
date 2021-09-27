@@ -196,6 +196,8 @@ class Blueprint
             'unique'        => $options['unique'] ?? false,
             'unsigned'      => $options['unsigned'] ?? false,
         ];
+
+        return $this;
     }
 
     /**

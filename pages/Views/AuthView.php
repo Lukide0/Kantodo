@@ -18,9 +18,7 @@ class AuthView implements IView
     {
         $authType = (isset($params['type']) && $params['type'] == 'register') ? 'right' : '';
         $fromURL  = (isset($params['path'])) ? '?path=' . $params['path'] : '';
-        $appUrl   = Application::$URL_PATH;
         // TODO: frontend error
-        $signInAction = "{$appUrl}/auth/sign-in{$fromURL}";
         $registerForm = new Form();
 
         $email  = Application::$APP->session->getFlashMessage('userEmail', '');
@@ -35,10 +33,10 @@ class AuthView implements IView
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Document</title>
-            <link rel="stylesheet" href="<?= $appUrl ?>/styles/main.min.css">
-            <link rel="stylesheet" href="<?= $appUrl ?>/styles/auth.min.css">
+            <link rel="stylesheet" href="<?= Application::$STYLE_URL ?>/main.min.css">
+            <link rel="stylesheet" href="<?= Application::$STYLE_URL ?>/auth.min.css">
+            <script src="<?= Application::$SCRIPT_URL ?>/main.js" ></script>
         </head>
-
         <body>
             <div class="container center middle full">
                 <div class="auth">

@@ -22,7 +22,7 @@ class InstallController extends AbstractController
     /**
      * Instalace
      *
-     * @param   string $method
+     * @param   string $path
      *
      * @return  void
      */
@@ -70,6 +70,11 @@ class InstallController extends AbstractController
 
     }
 
+    /**
+     * Akce instalace db
+     *
+     * @return  void
+     */
     public function installDatabase() 
     {
         Application::$INSTALLING = true;
@@ -127,6 +132,8 @@ class InstallController extends AbstractController
 
         $installVersion = $runner->getInstallVersion();
 
+        $dbConstants['VERSION'] = $installVersion;
+
         // vytvoří v db tabulky a celé sql, které provede dá do souboru "migrations/Versions/{verze}.sql"
         $runner->run($installVersion, true, true);
 
@@ -135,11 +142,16 @@ class InstallController extends AbstractController
 
     }
 
+    /**
+     * Akce instalace nastavení konstant
+     *
+     * @return  void
+     */
     public function installStorage()
     {
         $body = Application::$APP->request->getBody();
     
-        $keys = ['folderData', 'folderCache', 'folderTmp', 'folderBackup'];
+        $keys = ['folderData', 'folderCache', 'folderTmp', 'folderBackup', 'folderPlugin'];
 
         // TODO: frontend error
         if (Data::isEmpty($body[Request::METHOD_POST], $keys)) {
@@ -186,13 +198,19 @@ class InstallController extends AbstractController
             'STORAGE_DATA' => "'{$body[Request::METHOD_POST]['folderData']}'",
             'STORAGE_TMP' => "'{$body[Request::METHOD_POST]['folderTmp']}'",
             'STORAGE_CACHE' => "'{$body[Request::METHOD_POST]['folderCache']}'",
-            'STORAGE_BACKUP' => "'{$body[Request::METHOD_POST]['folderBackup']}'"
+            'STORAGE_BACKUP' => "'{$body[Request::METHOD_POST]['folderBackup']}'",
+            'STORAGE_PLUGIN' => "'{$body[Request::METHOD_POST]['folderPlugin']}'"
         ];
 
         Application::$APP->session->set('constantsStorage', $folderConstants);
         Application::$APP->response->setLocation('/install-admin');
     }
     
+    /**
+     *  Akce vytvoření admin účtu
+     *
+     * @return  void
+     */
     public function installAdmin()
     {
         Application::$INSTALLING = true;
@@ -224,7 +242,13 @@ class InstallController extends AbstractController
             Application::$APP->response->setLocation('/install-admin');
             exit;
         }
-
+        
+        // TODO: frontend error
+        if ($firstname == false || $lastname == false) {
+            Application::$APP->response->setLocation('/install-admin');
+            exit;
+        }
+        
         // TODO: frontend error
         if (!Data::isValidPassword($pass, true, true, true)) {
             Application::$APP->response->setLocation('/install-admin');

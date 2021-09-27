@@ -20,15 +20,11 @@ use Kantodo\Views\ProjectView;
  */
 class ProjectController extends AbstractController
 {
-    public function __construct()
-    {
-        $this->registerMiddleware(new ProjectAccessMiddleware());
-    }
 
     /**
      * Akce na vytvoření projektu
      *
-     * @param   array  $params  parametry z url
+     * @param   array<mixed>  $params  parametry z url
      *
      * @return  void
      */
@@ -40,7 +36,7 @@ class ProjectController extends AbstractController
 
         $body = Application::$APP->request->getBody();
 
-        if (Data::isEmpty($body[Request::METHOD_POST], ['projName', 'projDesc'])) {
+        if (Data::isEmpty($body[Request::METHOD_POST], ['projName'])) {
             $response->addResponseError("Empty field|s");
             $response->outputResponse();
             exit;
@@ -49,7 +45,7 @@ class ProjectController extends AbstractController
         $projectModel = new ProjectModel();
 
         // vytvoření projektu
-        $id = $projectModel->create($teamID, $session->get("user")['id'], $body[Request::METHOD_POST]['projName'], $body[Request::METHOD_POST]['projDesc']);
+        $id = $projectModel->create($session->get("user")['id'], $body[Request::METHOD_POST]['projName']);
 
         if ($id === false) {
             $response->addResponseError("Server error");
@@ -64,7 +60,7 @@ class ProjectController extends AbstractController
     /**
      * Zobrazení projetu
      *
-     * @param   array  $params  parametry
+     * @param   array<mixed>  $params  parametry
      *
      * @return  void
      */
@@ -74,58 +70,20 @@ class ProjectController extends AbstractController
 
         $projID = base64DecodeUrl($params['projID']);
 
+        
+
+        $teamName = $projModel->getSingle(['name'], ['project_id' => $projID]);
+
         // jméno týmu
-        $params['teamName'] = $projModel->getSingle(['name'], ['project_id' => $projID])['name'];
+        if ($teamName != false) {
+            $params['teamName'] = $teamName['name'];
+        } else {
+            $params['teamName'] = "";
+        }
 
         // iniciály členů projektu
         $params['membersInitials'] = $projModel->getMembersInitials($projID);
 
-        // sloupce
-        $params['columns'] = $projModel->getColumns($projID);
-
-        $taskModel = new TaskModel();
-
-        for ($i = 0; $i < count($params['columns']); $i++) {
-            $params['columns'][$i]['tasks'] = $taskModel->get(
-                [
-                    'name',
-                    'description' => 'desc',
-                    'priority', 'completed',
-                    'end_date',
-                    'index',
-                ],
-                [
-                    'column_id' => $params['columns'][$i]['id'],
-                ]
-            );
-        }
-
         $this->renderView(ProjectView::class, $params, ClientLayout::class);
-    }
-
-    /**
-     * Zobrazení listu s projekty
-     *
-     * @param   array  $params  parametry z url
-     *
-     * @return  void
-     */
-    public function projectsList(array $params = [])
-    {
-        // tabs
-        $params['tabs'] = TeamController::getTabs($params['teamID']);
-
-        $params['teamID'] = base64DecodeUrl($params['teamID']);
-
-        $projectModel = new ProjectModel();
-        $teamModel    = new TeamModel();
-
-        // array projektů
-        $params['projects'] = $projectModel->getTeamProjectList($params['teamID']);
-
-        // uuid
-        $params['uuid'] = $teamModel->getSingle(['uuid'], ['team_id' => $params['teamID']])['uuid'];
-
-        $this->renderView(ProjectsListView::class, $params, ClientLayout::class);
     }
 }

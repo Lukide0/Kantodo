@@ -1,6 +1,6 @@
 window.addEventListener("load", function() {
 
-    let inputs = document.querySelectorAll(".text-field > input");
+    let inputs = document.querySelectorAll(".text-field > .field > input");
    
     inputs.forEach(el => {
         el.addEventListener("change", function() {

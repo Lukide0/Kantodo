@@ -17,7 +17,7 @@ class ProjectModel extends Model
     /**
      * Pozice
      *
-     * @var array
+     * @var array<string, array<string, bool>>
      */
     const POSITIONS = [
 
@@ -141,7 +141,7 @@ class ProjectModel extends Model
      *
      * @param   string  $name       klíč pozice
      *
-     * @return  array|false         vrací false pokud pozice neexistuje
+     * @return  array<string,bool>|false         vrací false pokud pozice neexistuje
      */
     public function getPositionPriv(string $name)
     {
@@ -151,27 +151,25 @@ class ProjectModel extends Model
     /**
      * Vytvoří projekt
      *
-     * @param   int     $teamID  id týmu
      * @param   int     $userID  id tvůrce
      * @param   string  $name    název projektu
      *
      * @return  int|false        vrací id záznamu nebo false pokud se nepovedlo vložit do databáze
      */
-    public function create(int $teamID, int $userID, string $name)
+    public function create(int $userID, string $name)
     {
         $uuid = Generator::uuidV4();
 
-        $query  = "INSERT INTO {$this->table} (`name`, `team_id`, `is_open`, `uuid`, `is_public`) VALUES (:name, :teamID, '1', :uuid, '0')";
+        $query  = "INSERT INTO {$this->table} (`name`, `is_open`, `uuid`, `is_public`) VALUES (:name, '1', :uuid, '0')";
         $sth    = $this->con->prepare($query);
         $status = $sth->execute([
             ':name'   => $name,
-            ':teamID' => $teamID,
             ':uuid'   => $uuid,
         ]);
 
         // podařilo se vytvořit projekt
         if ($status === true) {
-            $projID = $this->con->lastInsertId();
+            $projID = (int)$this->con->lastInsertId();
             $posID  = $this->getPosition('admin');
 
             // neexistuje pozice admin v databázi
@@ -206,9 +204,9 @@ class ProjectModel extends Model
      */
     public function getPosition(string $name)
     {
-        $teamPos = Connection::formatTableName('project_positions');
+        $projPos = Connection::formatTableName('project_positions');
 
-        $sth = $this->con->prepare("SELECT `project_position_id` FROM {$teamPos} WHERE `name` = :name LIMIT 1");
+        $sth = $this->con->prepare("SELECT `project_position_id` FROM {$projPos} WHERE `name` = :name LIMIT 1");
 
         $status = $sth->execute([
             ':name' => $name,
@@ -246,7 +244,7 @@ class ProjectModel extends Model
             ':posID'  => $posID,
         ]);
 
-        return ($status === true) ? $this->con->lastInsertId() : false;
+        return ($status === true) ? (int)$this->con->lastInsertId() : false;
     }
 
     /**
@@ -258,10 +256,10 @@ class ProjectModel extends Model
      */
     public function createPosition(string $name)
     {
-        $teamPos = Connection::formatTableName('project_positions');
+        $projPos = Connection::formatTableName('project_positions');
 
         $query = <<<SQL
-        INSERT INTO {$teamPos} ( `name` ) VALUES ( :name )
+        INSERT INTO {$projPos} ( `name` ) VALUES ( :name )
         SQL;
 
         $sth    = $this->con->prepare($query);
@@ -269,7 +267,7 @@ class ProjectModel extends Model
             ':name' => $name,
         ]);
 
-        return ($status === true) ? $this->con->lastInsertId() : false;
+        return ($status === true) ? (int)$this->con->lastInsertId() : false;
     }
 
     /**
@@ -318,7 +316,7 @@ class ProjectModel extends Model
      *
      * @param   int  $projID  id projektu
      *
-     * @return  string[]      iniciály
+     * @return  array<mixed>|false      iniciály
      */
     public function getMembersInitials(int $projID)
     {
@@ -350,5 +348,43 @@ class ProjectModel extends Model
         }
 
         return false;
+    }
+
+    /**
+     * Vrací projekty ve kterých je uživatel
+     *
+     * @param   int  $userID  id uživatele
+     *
+     * @return  array<mixed>|false  projekty
+     */
+    public function getUserProjects(int $userID)
+    {
+        $userProj = Connection::formatTableName('user_projects');
+
+
+        $query = <<<SQL
+        SELECT 
+            p.name,
+            p.uuid
+        FROM 
+            {$this->table} as p
+        INNER JOIN 
+            {$userProj} as up
+        ON 
+            up.project_id = p.project_id
+        WHERE 
+            up.user_id = :userID
+        SQL;
+
+        $sth    = $this->con->prepare($query);
+        $status = $sth->execute([
+            ':userID' => $userID,
+        ]);
+
+        if ($status === true) {
+            return $sth->fetchAll(PDO::FETCH_ASSOC);
+        }
+        return false;
+
     }
 }

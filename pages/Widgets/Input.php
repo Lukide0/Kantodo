@@ -76,7 +76,7 @@ class Input extends AbstractWidget
      *
      * @param   string  $name     název
      * @param   string  $label    popisek
-     * @param   array   $options  ['outline' => false, 'value' => '', 'error' => '', 'dataAttributes' => [], 'autocomplete' => 'off', 'color' => 'primary']
+     * @param   array<string,mixed>   $options  ['outline' => false, 'value' => '', 'error' => '', 'dataAttributes' => [], 'autocomplete' => 'off', 'color' => 'primary']
      *
      * @return  string            input html
      */
@@ -91,7 +91,7 @@ class Input extends AbstractWidget
      *
      * @param   string  $name     název
      * @param   string  $label    popisek
-     * @param   array   $options  ['outline' => false, 'value' => '', 'error' => '', 'dataAttributes' => [], 'autocomplete' => 'off', 'color' => 'primary']
+     * @param   array<string,mixed>   $options  ['outline' => false, 'value' => '', 'error' => '', 'dataAttributes' => [], 'autocomplete' => 'off', 'color' => 'primary']
      *
      * @return  string            input html
      */
@@ -156,7 +156,7 @@ class Input extends AbstractWidget
     /**
      * Nastaví error
      *
-     * @param   array|string  $error  string nebo array s klíčem, který je stejný jako jméno
+     * @param   array<string,string>|string  $error  string nebo array s klíčem, který je stejný jako jméno
      *
      * @return  self
      */
@@ -176,7 +176,7 @@ class Input extends AbstractWidget
     /**
      * Nastaví data atributy
      *
-     * @param   array  $attributes  atributy
+     * @param   array<string,mixed>  $attributes  atributy
      *
      * @return  self
      */

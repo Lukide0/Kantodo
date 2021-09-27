@@ -105,6 +105,15 @@ class InstallView implements IView
             Lorem ipsum dolor sit amet.
         </div>
     </label>
+    <label class="text-field">
+        <div class="field">
+            <span>Složka s pluginy</span>
+            <input type="text" name="folderPlugin" value="<?= Application::$ROOT_DIR . '/App/Plugin'?>">
+        </div>
+        <div class="text">
+            Lorem ipsum dolor sit amet.
+        </div>
+    </label>
 <?php
     }
     else {

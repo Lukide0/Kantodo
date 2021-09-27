@@ -9,7 +9,6 @@ use Kantodo\Core\Base\IView;
  */
 class CalendarView implements IView
 {
-
     public function render(array $params = [])
     {
     }

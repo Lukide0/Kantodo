@@ -1,0 +1,7 @@
+parameters:
+    level: 8
+    paths:
+        - Src
+        - Pages
+    bootstrapFiles:
+        - Loader/autoload.php
