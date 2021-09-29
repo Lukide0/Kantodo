@@ -25,48 +25,34 @@ $colors: (
         53,
     ),
     //67,160,71,
-    success: (
-        0, 230, 118
-    ),
+    success:
+        (
+            0,
+            230,
+            118,
+        ),
     info: (
-        83, 109, 254
-    )
+        83,
+        109,
+        254,
+    ),
 );
 
 $background: (
-    light: (
-        primary: (
-            255,
-            255,
-            255,
-        ),
-        secondary: (
-            244,
-            244,
-            244,
-        ),
-        third: (
-            208,
-            208,
-            208,
-        ),
+    primary: (
+        255,
+        255,
+        255,
     ),
-    dark: (
-        primary: (
-            46,
-            46,
-            46,
-        ),
-        secondary: (
-            98,
-            98,
-            98,
-        ),
-        third: (
-            135,
-            135,
-            135,
-        ),
+    secondary: (
+        244,
+        244,
+        244,
+    ),
+    third: (
+        208,
+        208,
+        208,
     ),
 );
 
@@ -240,9 +226,7 @@ $fontFamily: "Lato", sans-serif;
 //////////////////////////
 
 // HEADER
-
 $header-width: 200px;
-
 
 // ICONS
 $icon-extra-small: 15px;
@@ -254,11 +238,13 @@ $icon-font-family-outline: "Material Icons Outlined";
 $icon-font-family-round: "Material Icons Round";
 
 // AVATAR
-
 $avatar-size: 30px;
-
 
 // CHECKBOX
 $checkbox-size-small: 20px;
 $checkbox-size-medium: 25px;
 $checkbox-size-big: 30px;
+
+// SNACKBAR
+$snackbar-background: #323232;
+$snackbar-color-text: #e0e0e0;

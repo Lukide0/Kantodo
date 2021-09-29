@@ -1,0 +1,36 @@
+@use "../abstracts" as *;
+
+.dialog {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    & > .container {
+        @include font(700, medium);
+        @include material-shadow(24);
+
+        border-radius: borderRadius(small);
+        background: background(primary);
+        padding: space(big);
+
+        & > .title {
+            @include font(800, big, 800);
+
+            margin-bottom: space(medium);
+        }
+
+        & > .actions {
+            margin-top: space(huge);
+            margin-left: auto;
+            display: flex;
+            flex-direction: row;
+        }
+    }
+}

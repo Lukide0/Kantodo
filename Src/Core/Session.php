@@ -15,7 +15,7 @@ class Session
     /**
      * @var bool
      */
-    private $started     = false;
+    private $started = false;
 
     /**
      * Začne session
@@ -226,6 +226,18 @@ class Session
         }
 
         return $_SESSION['__KAN']['DATA'][$key]['value'];
+    }
+
+    /**
+     * Zjistí jestli klíč existuje
+     *
+     * @param   string  $key  klíč
+     *
+     * @return  bool
+     */
+    public function contains(string $key)
+    {
+        return isset($_SESSION['__KAN']['DATA'][$key]);
     }
 
     /**

@@ -19,14 +19,17 @@
             transition: all 200ms ease-out;
         }
 
-        &:focus-within > span, &.focus > span {
+        &.focus:not(:focus-within) > span {
+            --color: #{fontColor(600)};
+        }
+
+        &:focus-within > span,
+        &.focus > span {
             top: space(small);
             color: var(--color);
             font-size: fontSize(small);
         }
 
-        
-        
         & > input {
             outline: none;
             border: 0;
@@ -35,7 +38,7 @@
             background: color(border, light);
             font-size: fontSize(medium);
             padding: space(huge) space(medium) space(small) space(medium);
-    
+
             border-bottom: 1px solid color(border, dark);
         }
 
@@ -52,13 +55,13 @@
             background: var(--color);
             transition: transform 200ms ease-out;
         }
-        &:focus-within::after, &.focus::after {
+        &:focus-within::after,
+        &.focus::after {
             transform: scaleX(1);
         }
     }
-    
-    & > .text 
-    {
+
+    & > .text {
         @include font(700, small);
         margin-top: space(small);
         padding-left: space(medium);
@@ -76,9 +79,10 @@
                 top: space(medium);
                 background: background(primary);
                 padding: 0 space(small);
-            } 
+            }
 
-            &:focus-within > span, &.focus > span {
+            &:focus-within > span,
+            &.focus > span {
                 top: 0;
                 transform: translate(0, -50%);
             }

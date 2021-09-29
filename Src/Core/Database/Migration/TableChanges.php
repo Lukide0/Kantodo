@@ -38,7 +38,7 @@ class TableChanges
     /**
      * @var array<string,array<mixed>>
      */
-    private $add    = ['columns' => [], 'unique' => [], 'foreign' => []];
+    private $add = ['columns' => [], 'unique' => [], 'foreign' => []];
 
     /**
      * @var string

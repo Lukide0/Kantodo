@@ -112,22 +112,24 @@ class Data
      * @param   array<mixed>  $data  předmět
      * @param   array<mixed>  $keys  klíče, pokud je hodnota null, tak jsou všechny klíče kontrolovány
      * @param   bool   $strict pokud je 'true', tak jsou kontrolovány pouze zadané klíče mezi sebou
-     * 
+     *
      * @return  array<string|int,array<string>>    duplicitní klíče ve formátu ```[klicA => [klicB, klicC, ...], ...]```
      */
     public static function duplicate(array $data, array $keys = null, bool $strict = false)
     {
-        if ($keys == null)
+        if ($keys == null) {
             $keys = array_keys($data);
+        }
 
         $duplicit = [];
         if ($strict) {
 
             foreach ($keys as $a) {
                 foreach ($keys as $b) {
-                    if ($a == $b)
+                    if ($a == $b) {
                         continue;
-                    
+                    }
+
                     if ($data[$a] == $data[$b] && empty($duplicit[$b])) {
                         $duplicit[$a][] = $b;
                     }

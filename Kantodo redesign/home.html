@@ -8,7 +8,7 @@
     <title>Home</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./styles/main.css">
+    <link rel="stylesheet" href="./../styles/main.css">
 </head>
 
 <body>
@@ -40,6 +40,17 @@
         </nav>
     </header>
     <main>
+        <div class="banner">
+            <span class="icon round medium">wifi</span>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa quia sequi autem fuga. Veniam laboriosam, tenetur doloremque ullam animi consequuntur.</p>
+            <div class="actions">
+                <button class="flat primary text">Action</button>
+            </div>
+        </div>
+        <div class="snackbar" style="bottom: 25px;">
+            <p>Text label</p>
+            <button class="flat no-border">Retry</button>
+        </div>
         <div class="row h-space-between">
             <h2>My work</h2>
             <div class="row">
@@ -52,6 +63,7 @@
         </div>
         <div class="row">
             <div class="task-list">
+                
                 <div class="dropdown-header">
                     <h3>KantodoApp</h3>
                     <div class="line"></div>
@@ -121,6 +133,16 @@
                             <span>15% Completed</span>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="dialog">
+            <div class="container">
+                <div class="title">Reset settings?</div>
+                <div class="supporting-text">This will reset your device to its default factory settings</div>
+                <div class="actions">
+                    <button class="text">Cancel</button>
+                    <button class="text">Accept</button>
                 </div>
             </div>
         </div>

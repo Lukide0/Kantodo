@@ -15,7 +15,7 @@ class Runner
     /**
      * @var string
      */
-    private $version        = null;
+    private $version = null;
 
     /**
      * @var string
@@ -63,7 +63,7 @@ class Runner
         $version = str_replace('.', '_', $version);
 
         $mode = $this->compareVersions($this->version, $version);
-        
+
         if ($mode == self::MIG_STAY) {
             return;
         }
@@ -129,11 +129,10 @@ class Runner
             }
         }
 
-        
         if ($outputFile) {
-            $sql = $this->schema->getSQL();
+            $sql    = $this->schema->getSQL();
             $output = Application::$ROOT_DIR . "/Migrations/Versions/{$version}.sql";
-            
+
             file_put_contents($output, $sql);
         }
         if ($execute) {

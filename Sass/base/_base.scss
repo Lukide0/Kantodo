@@ -1,6 +1,5 @@
 @use "../abstracts" as *;
 
-
 @use "flex";
 
 :root {
@@ -27,6 +26,20 @@
         }
     }
 
+    // BACKGROUND
+    @each $name, $color in $background {
+        $colorRGB: rgb(nth($color, 1), nth($color, 2), nth($color, 3), nth($color, 1));
+
+        --bg-#{$name}: #{$color};
+
+        @if (lightness($colorRGB) > 50) {
+            --bg-#{$name}-text: #{map-get($fontColors, 900)};
+        } @else {
+            --bg-#{$name}-text: #{map-get($fontColors, 100)};
+        }
+    }
+
+    // BORDER RADIUS
     @each $name, $value in $borderRadius {
         --border-#{$name}: #{$value};
     }
@@ -66,7 +79,7 @@ body {
     & > header.mobile {
         display: none;
     }
-    
+
     @include respond(mobile) {
         display: flex;
         flex-direction: column-reverse;

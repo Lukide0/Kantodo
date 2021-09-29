@@ -1,0 +1,45 @@
+@use "../abstracts" as *;
+
+ul.dropdown-menu {
+    @include font(800, regular, 600);
+    @include material-shadow(8);
+
+    max-width: 280px;
+
+    padding: space(regular) 0;
+    background: background(primary);
+    position: absolute;
+    border-radius: borderRadius(small);
+
+    & > li {
+        padding: space(regular) space(huge) space(regular) space(medium);
+        display: flex;
+        align-items: center;
+        justify-content: end;
+
+        &.divider {
+            height: 1px;
+            padding: 0;
+            background: color(border) !important;
+            margin: space(small) 0;
+        }
+
+        &.dropdown {
+            position: relative;
+        }
+
+        &.dropdown::after {
+            @include pseudo-icon("keyboard_arrow_right", round);
+        }
+
+
+        &:hover {
+            background: background(third);
+        }
+
+        & > .icon {
+            margin-right: space(medium);
+        }
+
+    }
+}

@@ -23,6 +23,6 @@ class Client
      */
     public function __construct($socket)
     {
-        $this->socket  = $socket;
+        $this->socket = $socket;
     }
 }

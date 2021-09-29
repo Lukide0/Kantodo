@@ -15,11 +15,11 @@ class WebSocket
     /**
      * @var callable
      */
-    public $onMessage    = null;
+    public $onMessage = null;
     /**
      * @var callable
      */
-    public $onConnect    = null;
+    public $onConnect = null;
     /**
      * @var callable
      */
@@ -27,7 +27,7 @@ class WebSocket
     /**
      * @var callable
      */
-    public $onHandshake  = null;
+    public $onHandshake = null;
 
     /**
      * Websocket secret key
@@ -55,7 +55,7 @@ class WebSocket
 
     /**
      * Server socket
-     * 
+     *
      *  @var resource
      */
     private $master;
@@ -206,7 +206,7 @@ class WebSocket
      * @param   string       $message
      * @param   int       $type
      *
-     * @return  void                 
+     * @return  void
      */
     public function sendToSocket(&$socket, string $message, int $type = WS_MSG_TEXT)
     {
@@ -281,7 +281,6 @@ class WebSocket
             "Sec-WebSocket-Location: ws://{$this->address}:{$this->port}{$this->path}\r\n" .
             "Sec-WebSocket-Accept: {$key} \r\n\r\n";
 
-            
         if ($this->onHandshake !== null) {
             call_user_func($this->onHandshake, $socket, $header);
         }

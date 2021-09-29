@@ -1,0 +1,22 @@
+@use "../abstracts" as *;
+
+.snackbar {
+    --color: #{color(primary)};
+    @include material-shadow(8);
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    padding: space(medium);
+    background: $snackbar-background;
+    color: $snackbar-color-text;
+    font-size: fontSize(regular);
+    border-radius: borderRadius(small);
+
+    & > button {
+        all: unset;
+        margin-left: space(big);
+        background: transparent !important;
+        font-weight: 700;
+        color: var(--color);
+    }
+}

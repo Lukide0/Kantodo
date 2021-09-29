@@ -42,18 +42,22 @@
     @return $rgb;
 }
 
-@function background($color: "primary", $theme: "light") {
-    @if (map-has-key($background, $theme) == false) {
-        @error "Theme `#{$theme}` doesn't exist.";
+@function background($name: "primary", $style: "") {
+    @if (map-has-key($background, $name) == false) {
+        @error "Background `#{$name}` doesn't exist.";
     }
 
-    @if (map-has-key(map-get($background, $theme), $color) == false) {
-        @error "Invalid background color `#{$color}`.";
+    $fullname: null;
+
+    @if ($style == "") {
+        $fullname: var(--bg-#{$name});
+    } @else if ($style == text) {
+        $fullname: var(--bg-#{$name}-text);
+    } @else {
+        @error "Unknown color style `#{$style}`.";
     }
 
-    $rgb: map-get(map-get($background, $theme), $color);
-
-    @return rgb(nth($rgb, 1), nth($rgb, 2), nth($rgb, 3));
+    @return rgb($fullname);
 }
 
 @function fontColor($style: 900) {

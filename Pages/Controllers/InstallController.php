@@ -29,17 +29,46 @@ class InstallController extends AbstractController
     public function installView(string $path)
     {
         // TODO: znemoznit preskoceny kroku instalace
+
+        $session = Application::$APP->session;
         $page = 0;
         $action = 'install-database';
         switch ($path) {
             case 'install-database':
                 $page = 0;
+
+                if ($session->contains('constantsDB') && !$session->contains('constantsStorage')) {
+                    Application::$APP->response->setLocation('/install-storage');
+                    exit;
+                }
+
                 break;
             case 'install-storage':
+                if (!$session->contains('constantsDB')) {
+                    Application::$APP->response->setLocation('/install-database');
+                    exit;
+                }
+
+                if ($session->contains('constantsStorage')) {
+                    Application::$APP->response->setLocation('/install-admin');
+                    exit;
+                }
+
                 $page = 1;
                 $action = 'install-storage';
                 break;
             case 'install-admin':
+                if (!$session->contains('constantsDB')) {
+                    Application::$APP->response->setLocation('/install-database');
+                    exit;
+                }
+
+                if (!$session->contains('constantsStorage')) {
+                    Application::$APP->response->setLocation('/install-storage');
+                    exit;
+                }
+
+
                 $page = 2;
                 $action = 'install-admin';
                 break;

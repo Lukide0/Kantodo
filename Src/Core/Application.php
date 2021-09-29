@@ -81,7 +81,7 @@ class Application
     /**
      * @var bool
      */
-    public static $DEBUG_MODE    = false;
+    public static $DEBUG_MODE = false;
 
     /**
      * @var bool
@@ -91,7 +91,7 @@ class Application
     /**
      * @var bool
      */
-    public static $INSTALLING    = false;
+    public static $INSTALLING = false;
 
     /**
      * @var Router
@@ -133,7 +133,7 @@ class Application
     /**
      * @var int
      */
-    private $userRole       = null;
+    private $userRole = null;
 
     public function __construct()
     {
@@ -224,7 +224,7 @@ class Application
         }
 
         include self::$ROOT_DIR . '/config.php';
-        self::$CONFIG_LOADED   = true;
+        self::$CONFIG_LOADED = true;
 
         /** @phpstan-ignore-next-line */
         self::$DB_TABLE_PREFIX = DB_TABLE_PREFIX;
@@ -253,9 +253,9 @@ class Application
     /**
      * Přidá do configu konstanty
      *
-     * @param   array<string,string>  $constants  
+     * @param   array<string,string>  $constants
      *
-     * @return  void 
+     * @return  void
      */
     public static function addToConfig(array $constants)
     {

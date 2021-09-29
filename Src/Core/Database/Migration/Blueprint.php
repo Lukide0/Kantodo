@@ -374,7 +374,7 @@ class Blueprint
      * @param   string      $onUpdate         ON UPDATE akce
      *
      * @return bool
-     * 
+     *
      * @throws ColumnException                pokud sloupec nebo sloupec v dceřině tabulce neexistuje
      * @throws ForeignKeyException            pokud klíč už existuje
      */

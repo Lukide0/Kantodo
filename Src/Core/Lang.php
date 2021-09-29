@@ -11,7 +11,7 @@ class Lang
     /**
      * @var array<string,array<string,string>>
      */
-    private $data    = [];
+    private $data = [];
 
     /**
      * @var string

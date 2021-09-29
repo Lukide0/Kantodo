@@ -224,7 +224,6 @@ class Router
                 exit;
             }
 
-
             /** @phpstan-ignore-next-line */
             call_user_func_array([$controller, $classMethod], $params);
             return;

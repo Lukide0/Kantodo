@@ -4,6 +4,7 @@ button {
     --color: #{color(primary)};
     --text: #{color(primary, text)};
     --hover: #{color(primary, light)};
+    --color-raw: #{colorRaw(primary)};
 
     border: 0;
     border-radius: borderRadius(small);
@@ -43,7 +44,9 @@ button {
         --text: #{fontColor(800)};
         font-weight: 700;
 
-        &:hover, &.no-border:hover {
+        &:hover,
+        &.no-border:hover,
+        &:focus {
             background: background(third);
         }
 
@@ -51,7 +54,18 @@ button {
             border: 0;
             background: transparent;
         }
+    }
 
+    &.text {
+        border: 0;
+        background: transparent;
+        font-weight: 700;
+        color: var(--color);
+
+        &:hover,
+        &:focus {
+            background: rgba(var(--color-raw), 0.25);
+        }
     }
 
     &.action {
@@ -63,7 +77,7 @@ button {
             @include material-shadow(4);
         }
     }
-    
+
     &.hover-shadow:hover {
         @include material-shadow(4);
     }
@@ -72,7 +86,8 @@ button {
         padding: 0;
     }
 
-    &.icon, & > .icon {
+    &.icon,
+    & > .icon {
         font-weight: 500;
         font-size: $icon-small;
         padding: space(small);

@@ -121,7 +121,7 @@ class Schema
      *
      * @param   string  $from
      * @param   string  $to
-     * 
+     *
      * @return  void
      *
      * @throws SchemaException      pokud už tabulka neexistuje

@@ -1,0 +1,29 @@
+@use "../abstracts" as *;
+
+.banner {
+    @include font(800, medium);
+
+    background: background(primary);
+    padding: space(medium) space(small) space(regular) space(regular);
+    display: flex;
+    width: 100%;
+    margin: space(small) 0;
+
+    align-items: center;
+
+    &.border {
+        border-bottom: 1px solid color(border);
+    }
+
+    & > .icon {
+        margin-right: space(regular);
+    }
+
+    & > p {
+        margin-right: space(big);
+    }
+
+    & > .actions {
+        margin-left: auto;
+    }
+}

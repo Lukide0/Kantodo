@@ -34,9 +34,7 @@
         @media #{unquote(map-get($breakpoints, $type))} {
             @content;
         }
-    }
-    @else {
+    } @else {
         @error "Respond type `#{$type}` doesn't exist.";
     }
-
 }

@@ -32,7 +32,8 @@ body > header:not(.mobile) {
             padding: space(regular) space(small);
             border-radius: borderRadius(small) 0 0 borderRadius(small);
 
-            &:hover, &:focus {
+            &:hover,
+            &:focus {
                 outline: none;
                 background: color(border, light, 0.9);
             }
@@ -125,7 +126,7 @@ body > header:not(.mobile) {
 body > header.mobile {
     box-sizing: border-box;
     height: 75px;
-    
+
     & > nav {
         display: flex;
         flex-direction: row;
@@ -166,14 +167,14 @@ body > header.mobile {
                     opacity: 0;
                     z-index: -100;
                     transition: top 200ms ease-out;
-                    
+
                     & > li:last-child {
-                        transform: translate(-100%,0);
+                        transform: translate(-100%, 0);
                         transition: transform 200ms ease;
                     }
 
                     & > li:first-child {
-                        transform: translate(100%,0);
+                        transform: translate(100%, 0);
                         transition: transform 200ms ease;
                     }
                 }
@@ -183,7 +184,7 @@ body > header.mobile {
                 position: absolute;
                 display: grid;
                 grid-template-columns: repeat(3, 1fr);
-                gap: space(huge)+space(medium);
+                gap: space(huge) + space(medium);
                 top: -200%;
                 z-index: 999;
                 opacity: 1;
@@ -191,7 +192,8 @@ body > header.mobile {
 
                 transition: top 200ms ease-out;
 
-                & > li:first-child, & > li:last-child {
+                & > li:first-child,
+                & > li:last-child {
                     transition: transform 200ms ease;
                     transform: translate(0, 75%);
                 }
@@ -202,7 +204,5 @@ body > header.mobile {
                 }
             }
         }
-
-
     }
 }

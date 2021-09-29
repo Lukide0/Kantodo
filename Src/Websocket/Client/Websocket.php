@@ -15,7 +15,7 @@ class Websocket
     /**
      * @var float
      */
-    private $timeout      = 10;
+    private $timeout = 10;
 
     /**
      * @var resource

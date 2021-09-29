@@ -63,7 +63,7 @@ abstract class AbstractController
      * @return  void
      *
      * @throws InvalidArgumentException pokud layout neexistuje nebo není **'Layout'**
-     * 
+     *
      */
     final public function renderView(string $class, array $params = [], string $layout = null)
     {

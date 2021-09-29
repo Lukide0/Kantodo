@@ -17,12 +17,11 @@ class Backup
     public function createZip()
     {
         $path = Application::$ROOT_DIR;
-        
+
         /** @phpstan-ignore-next-line */
         $version = VERSION;
         /** @phpstan-ignore-next-line */
         $zipPath = STORAGE_BACKUP . "/kantodo_ver_{$version}.zip";
-
 
         $zipObj = new ZipArchive();
 
@@ -31,7 +30,7 @@ class Backup
         foreach (self::FOLDERS as $folder) {
             $zipObj->addEmptyDir($folder);
 
-            $this->addFolderToZip($path . '/' . $folder, $folder ,$zipObj);
+            $this->addFolderToZip($path . '/' . $folder, $folder, $zipObj);
         }
 
         $zipObj->close();
@@ -46,20 +45,22 @@ class Backup
      *
      * @return  void
      */
-    private function addFolderToZip(string $pathToFolder, string $localPathToFolder ,ZipArchive &$zipObj) 
+    private function addFolderToZip(string $pathToFolder, string $localPathToFolder, ZipArchive &$zipObj)
     {
         $dirHandle = opendir($pathToFolder);
 
-        if ($dirHandle == false)
+        if ($dirHandle == false) {
             return;
+        }
 
         while (($readHandle = readdir($dirHandle)) !== false) {
-            if ($readHandle == '.' || $readHandle == '..')
+            if ($readHandle == '.' || $readHandle == '..') {
                 continue;
-            
-            $filePath = $pathToFolder . '/' . $readHandle;
+            }
+
+            $filePath  = $pathToFolder . '/' . $readHandle;
             $localPath = $localPathToFolder . '/' . $readHandle;
-            
+
             if (is_file($filePath)) {
                 $zipObj->addFile($filePath, $localPath);
 
@@ -71,4 +72,3 @@ class Backup
         }
     }
 }
-?>

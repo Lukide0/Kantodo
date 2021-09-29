@@ -42,7 +42,6 @@ body {
         button {
             margin-top: space(huge);
         }
-        
     }
 
     & > h2 {
@@ -54,7 +53,8 @@ body {
         margin: space(regular) 0 space(medium) 0;
     }
 
-    a, p {
+    a,
+    p {
         @include font(700, small);
     }
 

@@ -1,9 +1,8 @@
 @use "../abstracts" as *;
 
-
 .checkbox {
     --color: #{color(info)};
-    cursor: pointer; 
+    cursor: pointer;
     & > .background {
         position: relative;
         display: block;
@@ -46,14 +45,14 @@
             border-radius: 999px;
         }
     }
-    
+
     & > input {
         display: none;
     }
-    
+
     & > input:checked + .background {
         border: none;
-        
+
         &::before {
             transition: opacity 250ms ease-in-out;
             opacity: 1;
@@ -63,17 +62,17 @@
             position: absolute;
             display: block;
             content: "";
-            
+
             width: 20%;
             height: 45%;
-            
+
             border-right: 2px solid white;
             border-bottom: 2px solid white;
-            
+
             left: 50%;
             top: 45%;
 
-            transform: translate(-50%,-50%) rotate(45deg);            
+            transform: translate(-50%, -50%) rotate(45deg);
         }
     }
 }

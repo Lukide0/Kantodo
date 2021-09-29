@@ -2,6 +2,7 @@
 
 .task-list {
     margin-top: space(big);
+    flex: 1;
 
     & > .dropdown-header {
         @include font(900, big, 900);
