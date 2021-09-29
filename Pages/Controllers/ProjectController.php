@@ -68,7 +68,7 @@ class ProjectController extends AbstractController
     {
         $projModel = new ProjectModel();
 
-        $projID = base64DecodeUrl($params['projID']);
+        $projID = (int)base64DecodeUrl($params['projID']);
 
         
 

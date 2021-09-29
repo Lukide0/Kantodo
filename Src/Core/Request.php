@@ -28,6 +28,7 @@ class Request
         if ($this->path !== null) {
             return $this->path;
         }
+
         $path = Application::$APP->request->getBody()[Request::METHOD_GET]['PATH_URL'] ?? "";
 
         if ($path == "")
@@ -79,6 +80,11 @@ class Request
         return '';
     }
 
+    /**
+     * Zjistí jestli je CSRF token validní
+     *
+     * @return  bool
+     */
     public function isValidTokenCSRF()
     {
         return $this->getPostTokenCSRF() === Application::$APP->session->getTokenCSRF();
@@ -88,20 +94,24 @@ class Request
      * Získá tělo dotazu
      *
      *
-     * @return  array ['post', 'get']
+     * @return  array<string,array<mixed>> ['post', 'get']
      */
     public function getBody()
     {
+        /**
+         * @var array<string,array<mixed>>
+         */
         $body = [
             self::METHOD_POST => [],
             self::METHOD_GET  => [],
         ];
-
         $body[self::METHOD_GET] = filter_input_array(INPUT_GET, FILTER_SANITIZE_SPECIAL_CHARS) ?? [];
 
         if ($this->getMethod() == self::METHOD_POST) {
             $body[self::METHOD_POST] = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS) ?? [];
         }
+
+        /** @phpstan-ignore-next-line */
         return $body;
     }
 }

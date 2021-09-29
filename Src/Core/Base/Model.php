@@ -19,6 +19,11 @@ class Model
      */
     protected $table;
 
+    /**
+     * sloupce tabulky
+     *
+     * @var array<string>
+     */
     private $tableColumns = [];
 
     public function __construct()
@@ -29,11 +34,11 @@ class Model
     /**
      * Získá data z tabulky
      *
-     * @param   array   $select             sloupce, které chceceme vybrat ve formátu ['sloupec', 'sloupec'] nebo ['sloupec' => 'alias']
-     * @param   array   $search             např. ['id' => 5]
+     * @param   array<string>|array<string,string>   $select             sloupce, které chceceme vybrat ve formátu ['sloupec', 'sloupec'] nebo ['sloupec' => 'alias']
+     * @param   array<string,mixed>   $search             např. ['id' => 5]
      * @param   int     $limit              limit
      *
-     * @return  array|false                 vrací false pokud se nepodařilo získat data z tabulky
+     * @return  array<mixed>|false                 vrací false pokud se nepodařilo získat data z tabulky
      */
     public function get(array $select = ['*'], array $search = [], int $limit = 0)
     {
@@ -42,7 +47,7 @@ class Model
         }
 
         if (in_array('*', $select)) {
-            $select = ['*'];
+            $columns = ['*'];
         } else {
             $columns = [];
             foreach ($select as $key => $name) {
@@ -86,16 +91,16 @@ class Model
     /**
      * Získá data z tabulky
      *
-     * @param   array   $select             sloupce, které chceceme vybrat ve formátu ['sloupec', 'sloupec'] nebo ['sloupec' => 'alias']
-     * @param   array   $search             ['sloupec' => hodnota]
+     * @param   array<string>|array<string,string>   $select             sloupce, které chceceme vybrat ve formátu ['sloupec', 'sloupec'] nebo ['sloupec' => 'alias']
+     * @param   array<string,mixed>   $search             ['sloupec' => hodnota]
      *
-     * @return  array|false                 vrací false pokud se nepodařilo získat data z tabulky
+     * @return  array<mixed>|false                 vrací false pokud se nepodařilo získat data z tabulky
      */
     public function getSingle(array $select = ['*'], array $search = [])
     {
         $data = $this->get($select, $search, 1);
 
-        if (count($data) != 1) {
+        if ($data == false || count($data) != 1) {
             return false;
         }
 
@@ -105,8 +110,9 @@ class Model
     /**
      * Nastavý sloupce tabulky
      *
-     * @param   string[]  $columns  sloupce
+     * @param   array<string>  $columns  sloupce
      *
+     * @return void
      */
     protected function setColumns(array $columns)
     {
@@ -116,7 +122,7 @@ class Model
     /**
      * Sloupce tabulky
      *
-     * @return  string[]  sloupce
+     * @return  array<string> sloupce
      */
     public function getTableColumns()
     {

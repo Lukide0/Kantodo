@@ -9,10 +9,18 @@ class Backup
 {
     const FOLDERS = ['Lang', 'Loader', 'Migrations', 'Pages', 'Sass', 'scripts', 'styles', 'Src', 'util'];
 
+    /**
+     * Vytvoří archiv se zdroj. soubory
+     *
+     * @return  void
+     */
     public function createZip()
     {
         $path = Application::$ROOT_DIR;
+        
+        /** @phpstan-ignore-next-line */
         $version = VERSION;
+        /** @phpstan-ignore-next-line */
         $zipPath = STORAGE_BACKUP . "/kantodo_ver_{$version}.zip";
 
 
@@ -29,9 +37,21 @@ class Backup
         $zipObj->close();
     }
 
+    /**
+     * Přidá složku do archivu
+     *
+     * @param   string      $pathToFolder       cesta k složce
+     * @param   string      $localPathToFolder  cesta k složce v archivu
+     * @param   ZipArchive  $zipObj
+     *
+     * @return  void
+     */
     private function addFolderToZip(string $pathToFolder, string $localPathToFolder ,ZipArchive &$zipObj) 
     {
         $dirHandle = opendir($pathToFolder);
+
+        if ($dirHandle == false)
+            return;
 
         while (($readHandle = readdir($dirHandle)) !== false) {
             if ($readHandle == '.' || $readHandle == '..')

@@ -25,12 +25,14 @@ class AuthController extends AbstractController
     public function authenticate()
     {
         $body = Application::$APP->request->getBody();
+
         // cesta z které byl uživatel přesměrován
-        if (!empty($body[Request::METHOD_GET]['path']) && !Data::isURLExternal($body[Request::METHOD_GET]['path'])) {
-            $this->renderView(AuthView::class, ['path' => urlencode($body[Request::METHOD_GET]['path'])]);
+        if (empty($body[Request::METHOD_GET]['path']) || Data::isURLExternal($body[Request::METHOD_GET]['path'])) {
+            $this->renderView(AuthView::class);
             return;
         }
-        $this->renderView(AuthView::class);
+        $this->renderView(AuthView::class, ['path' => urlencode($body[Request::METHOD_GET]['path'])]);
+
     }
 
     /**

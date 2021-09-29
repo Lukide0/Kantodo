@@ -2,6 +2,7 @@
 
 namespace Kantodo\Core;
 
+use Kantodo\Core\Base\AbstractController;
 use Kantodo\Core\Database\Connection;
 
 /**
@@ -77,8 +78,19 @@ class Application
      */
     public static $LANG = 'en';
 
+    /**
+     * @var bool
+     */
     public static $DEBUG_MODE    = false;
+
+    /**
+     * @var bool
+     */
     public static $CONFIG_LOADED = false;
+
+    /**
+     * @var bool
+     */
     public static $INSTALLING    = false;
 
     /**
@@ -98,7 +110,7 @@ class Application
      */
     public $header;
     /**
-     * @var Controller
+     * @var AbstractController
      */
     public $controller;
     /**
@@ -114,7 +126,13 @@ class Application
      * @var IAuth
      */
     private static $AUTH;
+    /**
+     * @var array<string,array<callable>>
+     */
     private $eventListeners = [];
+    /**
+     * @var int
+     */
     private $userRole       = null;
 
     public function __construct()
@@ -151,6 +169,13 @@ class Application
         }
     }
 
+    /**
+     * Registruje modul Auth
+     *
+     * @param   IAuth  $auth
+     *
+     * @return  void
+     */
     public function registerAuth(IAuth $auth)
     {
         self::$AUTH = $auth;
@@ -165,6 +190,7 @@ class Application
      */
     public static function systemPathToUrl(string $path)
     {
+        /** @phpstan-ignore-next-line */
         return str_replace(self::$ROOT_DIR, self::$URL_PATH, $path, 1);
     }
 
@@ -199,13 +225,15 @@ class Application
 
         include self::$ROOT_DIR . '/config.php';
         self::$CONFIG_LOADED   = true;
+
+        /** @phpstan-ignore-next-line */
         self::$DB_TABLE_PREFIX = DB_TABLE_PREFIX;
     }
 
     /**
      * Přepíše config.php
      *
-     * @param   array  $constants  konstanty
+     * @param   array<string,string>  $constants  konstanty
      *
      * @return  void
      */
@@ -222,6 +250,13 @@ class Application
         file_put_contents(self::$ROOT_DIR . '/config.php', $content);
     }
 
+    /**
+     * Přidá do configu konstanty
+     *
+     * @param   array<string,string>  $constants  
+     *
+     * @return  void 
+     */
     public static function addToConfig(array $constants)
     {
         $content = file_get_contents(self::$ROOT_DIR . '/config.php') . "\n\n";
@@ -261,6 +296,7 @@ class Application
      *
      * @param   string  $eventName  jméno eventu
      *
+     * @return void
      */
     public function trigger(string $eventName)
     {

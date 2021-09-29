@@ -8,11 +8,11 @@ namespace Kantodo\Core;
 class HeaderHTML
 {
     /**
-     * @var array
+     * @var array<int,array<string,mixed>>
      */
     private $styles = [];
     /**
-     * @var array
+     * @var array<int,array<string,mixed>>
      */
     private $scripts = [];
 
@@ -79,7 +79,7 @@ class HeaderHTML
     /**
      * Získá styly
      *
-     * @return  array
+     * @return  array<int,array<string,mixed>>
      */
     public function getStyles()
     {
@@ -89,7 +89,7 @@ class HeaderHTML
     /**
      * Získá skripty
      *
-     * @return  array
+     * @return  array<int,array<string,mixed>>
      */
     public function getScripts()
     {

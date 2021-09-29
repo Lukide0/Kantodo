@@ -10,7 +10,7 @@ abstract class AbstractMiddleware
     /**
      * Provede middleware
      *
-     * @param   array  $params  parametry
+     * @param   array<mixed>  $params  parametry
      *
      * @return  void
      */

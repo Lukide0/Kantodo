@@ -10,7 +10,7 @@ abstract class AbstractWidget
     /**
      * nastavení
      *
-     * @var array
+     * @var array<string,mixed>
      */
     private $options = [];
 

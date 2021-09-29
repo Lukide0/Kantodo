@@ -8,7 +8,14 @@ namespace Kantodo\Core;
 class Lang
 {
 
+    /**
+     * @var array<string,array<string,string>>
+     */
     private $data    = [];
+
+    /**
+     * @var string
+     */
     private $default = 'en';
 
     /**

@@ -36,7 +36,7 @@ class DataType
      * @param   int  $min    min
      * @param   int  $max    max
      *
-     * @return  [type]       [return description]
+     * @return  bool
      */
     public static function wholeNumber($value, int $min = null, int $max = null)
     {
@@ -54,13 +54,13 @@ class DataType
     /**
      * Kontrola jestli je číslo v rozmezí
      *
-     * @param   int $number   číslo
+     * @param   float|int|string $number   číslo
      * @param   int  $min     min
      * @param   int  $max     max
      *
      * @return  bool
      */
-    public static function inRange(int $number, int $min = null, int $max = null)
+    public static function inRange($number, int $min = null, int $max = null)
     {
         if ($min !== null && $number < $min) {
             return false;

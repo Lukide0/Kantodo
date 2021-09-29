@@ -24,10 +24,25 @@ class TableChanges
     private $orig;
 
     // změny
+
+    /**
+     * @var array<string,array<mixed>>
+     */
     private $remove = ['columns' => [], 'unique' => [], 'foreign' => []];
+
+    /**
+     * @var array<string,mixed>
+     */
     private $update = ['columns' => [], 'primary' => [], 'tableName' => ""];
+
+    /**
+     * @var array<string,array<mixed>>
+     */
     private $add    = ['columns' => [], 'unique' => [], 'foreign' => []];
 
+    /**
+     * @var string
+     */
     private $sql = null;
 
     public function __construct(Blueprint $original, Blueprint $modified)
@@ -41,7 +56,7 @@ class TableChanges
     /**
      * Získá změny
      *
-     * @return  array  ['remove', 'update', 'add']
+     * @return  array<string,mixed>  ['remove', 'update', 'add']
      */
     public function getChanges()
     {
@@ -150,7 +165,7 @@ class TableChanges
             $tmpSQL .= "ALTER TABLE {$table}";
 
             foreach ($this->add['foreign'] as $column => $foreign) {
-                " ADD CONSTRAINT `{$foreign['key']}` FOREIGN KEY (`{$column}`) REFERENCES {$foreign['table']}(`{$foreign['column']}`) ON DELETE {$foreign['onDelete']} ON UPDATE {$foreign['onUpdate']},";
+                $tmpSQL .= " ADD CONSTRAINT `{$foreign['key']}` FOREIGN KEY (`{$column}`) REFERENCES {$foreign['table']}(`{$foreign['column']}`) ON DELETE {$foreign['onDelete']} ON UPDATE {$foreign['onUpdate']},";
             }
 
             $tmpSQL[strlen($tmpSQL) - 1] = ';';
@@ -164,7 +179,7 @@ class TableChanges
      *
      * @return  void
      *
-     * @throws TableChanges pokud jedna z tabulek není validní
+     * @throws TableException pokud jedna z tabulek není validní
      */
     private function findChanges()
     {

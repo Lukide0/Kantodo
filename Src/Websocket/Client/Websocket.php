@@ -4,9 +4,22 @@ namespace Kantodo\Websocket\Client;
 
 class Websocket
 {
+    /**
+     * @var string
+     */
     private $host;
+    /**
+     * @var string
+     */
     private $address;
+    /**
+     * @var float
+     */
     private $timeout      = 10;
+
+    /**
+     * @var resource
+     */
     private $streamSocket = null;
 
     public function __construct(string $host, int $port = 80, bool $tsl = false, float $timeout = 10)
@@ -28,12 +41,14 @@ class Websocket
             ],
         ]);
 
+        /** @phpstan-ignore-next-line */
         $this->streamSocket = stream_socket_client($this->address, $errorCode, $errorMsg, $this->timeout, STREAM_CLIENT_CONNECT, $context);
 
         if ($errorCode != null) {
             return false;
         }
 
+        /** @phpstan-ignore-next-line */
         $key = base64_encode(openssl_random_pseudo_bytes(16));
 
         $header = "GET {$path} HTTP/1.1\r\n"
@@ -45,18 +60,24 @@ class Websocket
             . "Sec-WebSocket-Version: 13\r\n";
 
         // request upgrade
+        /** @phpstan-ignore-next-line */
         $ru = fwrite($this->streamSocket, $header);
 
         if (!$ru) {
             return false;
         }
 
+        /** @phpstan-ignore-next-line */
         $response = fread($this->streamSocket, 1024);
 
         // success ?
+        /** @phpstan-ignore-next-line */
         return stripos($response, ' 101 ') && stripos($response, 'Sec-WebSocket-Accept: ');
     }
 
+    /**
+     * @return  void
+     */
     public function disconnect()
     {
         if ($this->streamSocket != null) {
@@ -65,6 +86,13 @@ class Websocket
 
     }
 
+    /**
+     * Pošle zprávu
+     *
+     * @param   string  $message
+     *
+     * @return  int|false počet odeslaných bytů
+     */
     public function send(string $message)
     {
         $header = '';
@@ -88,6 +116,11 @@ class Websocket
         return fwrite($this->streamSocket, $header . $message);
     }
 
+    /**
+     * Přečte zprávu
+     *
+     * @return  null|false|string  Vrací zprávu, pokud je zpráva Close, tak vrátí null, pokud se nepodaří zprávu přečíst, tak vrací false
+     */
     public function read()
     {
         $data = '';
@@ -133,6 +166,8 @@ class Websocket
                     return false;
                 }
 
+            } else {
+                $mask = 0;
             }
 
             $frameData = '';
@@ -158,7 +193,7 @@ class Websocket
             //close
             if ($opcode == 8) {
                 $this->disconnect();
-                return;
+                return null;
             }
 
             // Unmask data

@@ -26,7 +26,7 @@ class Response
     /**
      * Odpověď
      *
-     * @var array
+     * @var array<string,array<mixed>>
      */
     protected $responseJSON = [
         'errors' => [],
@@ -146,7 +146,7 @@ class Response
     /**
      * Nastaví chyby
      *
-     * @param   array  $errors   chyby
+     * @param   array<string>  $errors   chyby
      *
      * @return  void
      */

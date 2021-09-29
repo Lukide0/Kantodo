@@ -13,12 +13,12 @@ use Kantodo\Core\Database\Migration\Exception\TableException;
 class Schema
 {
     /**
-     * @var array
+     * @var array<Blueprint>
      */
     private $tables = [];
 
     /**
-     * @var array
+     * @var array<string>
      */
     private $queries = [];
 
@@ -65,13 +65,13 @@ class Schema
      * Modifikuje tabulku
      *
      * @param   string   $table    název tabulky
-     * @param   Closure  $closure  funkce ve které se tabulka Modifikuje
+     * @param   callable  $callback  funkce ve které se tabulka Modifikuje
      *
      * @return  void
      *
      * @throws SchemaException      pokud už tabulka existuje
      */
-    public function modify(string $table, Closure $callback)
+    public function modify(string $table, $callback)
     {
         if (!$this->hasTable($table)) {
             throw new SchemaException("Table `{$table}` doesn't exists");
@@ -119,8 +119,9 @@ class Schema
 
     /** Přejmenuje tabulku
      *
-     * @param   string  $table  tabulka
-     *
+     * @param   string  $from
+     * @param   string  $to
+     * 
      * @return  void
      *
      * @throws SchemaException      pokud už tabulka neexistuje
@@ -155,7 +156,7 @@ class Schema
     /**
      * Získá SQL queries
      *
-     * @return  array
+     * @return  array<string>
      */
     public function getQueries()
     {
@@ -165,7 +166,7 @@ class Schema
     /**
      * Získá SQL
      *
-     * @return  array
+     * @return  string
      */
     public function getSQL()
     {
@@ -212,7 +213,7 @@ class Schema
     /**
      * Získá názvy tabulek
      *
-     * @return  array
+     * @return  array<string>
      */
     public function getTablesNames()
     {

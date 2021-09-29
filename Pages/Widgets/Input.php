@@ -25,8 +25,22 @@ class Input extends AbstractWidget
     const AUTOCOMPLETE_CURRENT_PASSWORD = 'current-password';
     const AUTOCOMPLETE_ONE_TIME_CODE    = 'one-time-code';
 
+    /**
+     * Data atributy
+     *
+     * @var array<string,mixed>
+     */
     private $dataAttr = [];
 
+    /**
+     * Konstruktor
+     *
+     * @param   string  $name     
+     * @param   string  $label    
+     * @param   string  $type    
+     * @param   array<string,mixed>   $options
+     *
+     */
     public function __construct(string $name, string $label, string $type, array $options = [])
     {
         // mandatory

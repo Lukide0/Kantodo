@@ -46,8 +46,10 @@ class Connection
             throw new ConfigException('Config is not loaded');
         }
 
+        /** @phpstan-ignore-next-line */
         $dns = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME;
 
+        /** @phpstan-ignore-next-line */
         $con = new PDO($dns, DB_USER, DB_PASS, array(
             // PDO::ATTR_PERSISTENT => true,
             PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8, CHARACTER SET utf8',
@@ -99,8 +101,8 @@ class Connection
     /**
      * Provede příkazy v transakci
      *
-     * @param   string[] $queries  příkazy
-     * @param   array  $data
+     * @param   array<string>|string $queries  příkazy
+     * @param   array<string,mixed>  $data
      *
      * @return  void
      */
@@ -150,12 +152,12 @@ class Connection
      * Získá data z tabulky
      *
      * @param   string  $formatedTableName  název tabulky
-     * @param   array   $tableColumns       sloupce tabulky
-     * @param   array   $select             sloupce, které chceceme vybrat ve formátu ['sloupec', 'sloupec'] nebo ['sloupec' => 'alias']
-     * @param   array   $search             např. ['id' => 5]
+     * @param   array<string>   $tableColumns       sloupce tabulky
+     * @param   array<string>|array<string,string>   $select             sloupce, které chceceme vybrat ve formátu ['sloupec', 'sloupec'] nebo ['sloupec' => 'alias']
+     * @param   array<string,mixed>   $search             např. ['id' => 5]
      * @param   int     $limit              limit
      *
-     * @return  array|false                 vrací false pokud se nepodařilo získat data z tabulky
+     * @return  array<mixed>|false                 vrací false pokud se nepodařilo získat data z tabulky
      */
     public static function query(string $formatedTableName, array $tableColumns, array $select = ['*'], array $search = [], int $limit = 0)
     {
@@ -165,7 +167,7 @@ class Connection
         }
 
         if (in_array('*', $select)) {
-            $select = ['*'];
+            $columns = ['*'];
         } else {
             $columns = [];
             foreach ($select as $key => $name) {

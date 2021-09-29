@@ -12,7 +12,14 @@ use Kantodo\Core\Database\Migration\Exception\MigrationException;
 class Runner
 {
 
+    /**
+     * @var string
+     */
     private $version        = null;
+
+    /**
+     * @var string
+     */
     private $installVersion = null;
 
     /**
@@ -103,7 +110,7 @@ class Runner
                 $mig = '\Migrations\\Version_' . $between[$index];
 
                 /**
-                 * @var Migration
+                 * @var AbstractMigration
                  */
                 $instance = new $mig($this->schema);
                 $instance->down($this->schema);
@@ -115,7 +122,7 @@ class Runner
                 $mig = '\Migrations\\Version_' . $between[$index];
 
                 /**
-                 * @var Migration
+                 * @var AbstractMigration
                  */
                 $instance = new $mig($this->schema);
                 $instance->up($this->schema);
@@ -151,7 +158,7 @@ class Runner
         if ($this->version !== null) {
             return $this->version;
         }
-
+        /** @phpstan-ignore-next-line */
         $json                 = json_decode(file_get_contents(Application::$MIGRATION_DIR . '/config.json'), true);
         return $this->version = str_replace('.', '_', $json['version']);
     }
@@ -170,7 +177,7 @@ class Runner
         if ($this->installVersion !== null) {
             return $this->installVersion;
         }
-
+        /** @phpstan-ignore-next-line */
         $json = json_decode(file_get_contents(Application::$MIGRATION_DIR . '/info.json'), true);
 
         return $this->installVersion = str_replace('.', '_', $json['install_version']);
@@ -179,13 +186,18 @@ class Runner
     /**
      * Získá všechny migrace
      *
-     * @return  array  array se souborami, kde klíč je verze
+     * @return  array<string,string>|array<int,string>  array se souborami, kde klíč je verze
      */
     public function getAllVersions()
     {
         $pattern = Application::$MIGRATION_DIR . '/Versions/Version_*.php';
         $valid   = [];
+
+        /** @phpstan-ignore-next-line */
         foreach (glob($pattern) as $file) {
+            /**
+             * @var string
+             */
             $file = str_replace(Application::$MIGRATION_DIR . '/Versions/', '', $file);
             if (preg_match("/^Version_(?<version>[0-9]+(_[0-9]+)*)\.php$/", $file, $matches)) {
                 $valid[$matches['version']] = $file;
@@ -206,6 +218,8 @@ class Runner
         if (!file_exists(Application::$MIGRATION_DIR . '/config.json')) {
             file_put_contents(Application::$MIGRATION_DIR . '/config.json', "");
         }
+
+        /** @phpstan-ignore-next-line */
         $json            = json_decode(file_get_contents(Application::$MIGRATION_DIR . '/config.json'), true);
         $json['version'] = str_replace('_', '.', $version);
 

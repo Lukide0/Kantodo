@@ -63,25 +63,23 @@ abstract class AbstractController
      * @return  void
      *
      * @throws InvalidArgumentException pokud layout neexistuje nebo není **'Layout'**
+     * 
      */
     final public function renderView(string $class, array $params = [], string $layout = null)
     {
-
-        // exit;
         if ($layout == null) {
+            /* @phpstan-ignore-next-line */
             call_user_func([new $class, 'Render'], $params);
             return;
         }
 
         if (!class_exists($layout)) {
             throw new InvalidArgumentException("'$layout' is not class");
-            exit;
         }
 
         $layoutInstance = new $layout;
         if (!($layoutInstance instanceof Layout)) {
             throw new InvalidArgumentException("'$layout' class doesn't extends 'Layout'");
-            exit;
         }
 
         $layoutInstance->renderView($class, $params);
@@ -101,13 +99,11 @@ abstract class AbstractController
     {
         if (!class_exists($layout)) {
             throw new InvalidArgumentException("'$layout' is not class");
-            exit;
         }
 
         $layoutInstance = new $layout;
         if (!($layoutInstance instanceof Layout)) {
             throw new InvalidArgumentException("'$layout' class doesn't extends 'Layout'");
-            exit;
         }
 
         $layoutInstance->render('', $params);

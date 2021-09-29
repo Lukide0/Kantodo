@@ -12,9 +12,21 @@ define('WS_MSG_PONG', 0x8A);
 
 class WebSocket
 {
+    /**
+     * @var callable
+     */
     public $onMessage    = null;
+    /**
+     * @var callable
+     */
     public $onConnect    = null;
+    /**
+     * @var callable
+     */
     public $onDisconnect = null;
+    /**
+     * @var callable
+     */
     public $onHandshake  = null;
 
     /**
@@ -24,27 +36,41 @@ class WebSocket
      */
     private $secret = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11';
 
+    /**
+     * @var string
+     */
     private $uri;
+    /**
+     * @var string
+     */
     private $path;
+    /**
+     * @var string
+     */
     private $address;
+    /**
+     * @var int
+     */
     private $port;
 
     /**
      * Server socket
+     * 
+     *  @var resource
      */
     private $master;
 
     /**
      * Sockets
      *
-     * @var array
+     * @var array<resource>
      */
     private $sockets = [];
 
     /**
      * Clients
      *
-     * @var Client[]
+     * @var array<Client>
      */
     private $clients = array();
 
@@ -62,15 +88,19 @@ class WebSocket
 
         if (!$parts || !isset($parts['scheme'], $parts['host'], $parts['port'])) {
             throw new \InvalidArgumentException('Invalid URI');
-            exit;
         }
 
     }
 
+    /**
+     * Spustí ws
+     *
+     * @return  void
+     */
     public function run()
     {
         $context = stream_context_create();
-
+        /** @phpstan-ignore-next-line */
         $this->master = stream_socket_server(
             $this->uri,
             $errno,
@@ -78,13 +108,15 @@ class WebSocket
             STREAM_SERVER_BIND | STREAM_SERVER_LISTEN,
             $context
         );
-
+        /** @phpstan-ignore-next-line */
         if ($this->uri === false) {
             throw new \RuntimeException('Failed to listen on "' . $this->uri . '": ' . $errstr, $errno);
         }
 
+        /** @phpstan-ignore-next-line */
         stream_set_blocking($this->master, false);
 
+        /** @phpstan-ignore-next-line */
         $this->sockets[(int) $this->master] = $this->master;
 
         $write  = [];
@@ -93,6 +125,9 @@ class WebSocket
         Console::log("Listening on uri: {$this->uri}");
 
         while (true) {
+            /**
+             * @var array<resource>
+             */
             $changed = $this->sockets;
 
             if (@stream_select($changed, $write, $except, null) === false) {
@@ -164,12 +199,28 @@ class WebSocket
         }
     }
 
-    public function sendToSocket(&$socket, string $message, $type = WS_MSG_TEXT)
+    /**
+     * Pošle zprávu socket
+     *
+     * @param   resource       $socket
+     * @param   string       $message
+     * @param   int       $type
+     *
+     * @return  void                 
+     */
+    public function sendToSocket(&$socket, string $message, int $type = WS_MSG_TEXT)
     {
         $message = $this->encodeData($message, $type);
         stream_socket_sendto($socket, $message);
     }
 
+    /**
+     * Připojí socket
+     *
+     * @param   resource  $socket
+     *
+     * @return  void
+     */
     private function connect($socket)
     {
 
@@ -183,6 +234,14 @@ class WebSocket
 
     }
 
+    /**
+     * Odpojí socket
+     *
+     * @param   resource  $socket
+     * @param   int|string  $code    kód
+     *
+     * @return  void
+     */
     private function disconnect(&$socket, $code = 0)
     {
 
@@ -196,6 +255,14 @@ class WebSocket
         unset($this->clients[(int) $socket]);
     }
 
+    /**
+     * Handshake
+     *
+     * @param   resource  $socket
+     * @param   string  $buffer
+     *
+     * @return  void
+     */
     private function handshake($socket, $buffer)
     {
         $headers = $this->parseHeaders($buffer);
@@ -214,6 +281,7 @@ class WebSocket
             "Sec-WebSocket-Location: ws://{$this->address}:{$this->port}{$this->path}\r\n" .
             "Sec-WebSocket-Accept: {$key} \r\n\r\n";
 
+            
         if ($this->onHandshake !== null) {
             call_user_func($this->onHandshake, $socket, $header);
         }
@@ -221,6 +289,13 @@ class WebSocket
         stream_socket_sendto($socket, $header);
     }
 
+    /**
+     * Parse headers
+     *
+     * @param   string  $header
+     *
+     * @return  array<int|string,mixed>
+     */
     private function parseHeaders($header)
     {
         $headers = array();
@@ -252,6 +327,14 @@ class WebSocket
         return $headers;
     }
 
+    /**
+     * Dekóduje zprávu
+     *
+     * @param   resource  $socket
+     * @param   string  $data
+     *
+     * @return  array<mixed>
+     */
     private function decodeData($socket, $data)
     {
         //https://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-10#section-4.2
@@ -311,7 +394,7 @@ class WebSocket
                 break;
             default:
                 $this->disconnect($socket, 'decodedData');
-                return array();
+                return [];
         }
 
         if ($payloadLength == 126) {

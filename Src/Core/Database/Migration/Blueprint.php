@@ -15,7 +15,7 @@ class Blueprint
     /**
      * Validní datové typy sloupce
      *
-     * @var string[]
+     * @var array<string>
      */
     const VALID_DATA_TYPES = [
         'CHAR',
@@ -56,28 +56,28 @@ class Blueprint
     /**
      * Sloupce
      *
-     * @var array
+     * @var array<string,array<string,mixed>>
      */
     protected $columns = [];
 
     /**
      * Primární klíče
      *
-     * @var array
+     * @var array<string>
      */
     protected $primary = [];
 
     /**
      * Unikátní klíče
      *
-     * @var array
+     * @var array<string>
      */
     protected $unique = [];
 
     /**
      * Foreign klíče
      *
-     * @var array
+     * @var array<string,array<string,mixed>>
      */
     protected $foreign = [];
 
@@ -106,7 +106,7 @@ class Blueprint
      *
      * @param   string  $column   název sloupce
      * @param   string  $type     validní datový typ
-     * @param   array   $options  **vlastnosti:**
+     * @param   array<string,mixed>  $options  **vlastnosti:**
      *
      * - notNull         = bool      - výchozí true
      * - length          = int
@@ -170,7 +170,7 @@ class Blueprint
      *
      * @param   string  $column   název sloupce
      * @param   string  $type     validní datový typ
-     * @param   array   $options
+     * @param   array<string,mixed>   $options
      *
      * @return  self
      *
@@ -292,7 +292,7 @@ class Blueprint
     /**
      * Přidá unikátní klíč
      *
-     * @param   array  $columns  sloupce, které budou tvořit klíč
+     * @param   array<string>  $columns  sloupce, které budou tvořit klíč
      *
      * @return  void
      *
@@ -321,11 +321,11 @@ class Blueprint
     /**
      * Odstraní unikátní klíč
      *
-     * @param   string[]|string  $columns  sloupec nebo sloupce
+     * @param   array<string>|string  $columns  sloupec nebo sloupce
      *
      * @return  bool                       podařilo se odstranit
      *
-     * @throws  InvalidArgumentException  pokud $columns není string ani string[]
+     * @throws  InvalidArgumentException  pokud $columns není string ani array<string>
      */
     public function removeUnique($columns)
     {
@@ -357,8 +357,10 @@ class Blueprint
             }
             return $match;
         }
+
+        /** @phpstan-ignore-next-line */
         $type = gettype($columns);
-        throw new InvalidArgumentException("Expected string or string[] `{$type}`");
+        throw new InvalidArgumentException("Expected string or array<string> `{$type}`");
     }
 
     /**
@@ -371,6 +373,8 @@ class Blueprint
      * @param   string      $onDelete         ON DELETE akce
      * @param   string      $onUpdate         ON UPDATE akce
      *
+     * @return bool
+     * 
      * @throws ColumnException                pokud sloupec nebo sloupec v dceřině tabulce neexistuje
      * @throws ForeignKeyException            pokud klíč už existuje
      */
@@ -394,7 +398,7 @@ class Blueprint
         if ($columnDataType['type'] != $referenceDataType['type'] ||
             $columnDataType['length'] != $referenceDataType['length'] ||
             $columnDataType['unsigned'] != $referenceDataType['unsigned']) {
-            throw new ColumnException("Column {$column} must have same data type as reference column {$reference} in table {$reference->getName()}.");
+            throw new ColumnException("Column {$column} must have same data type as reference column {$referenceColumn} in table {$reference->getName()}.");
         }
 
         $this->foreign[$column] = [
@@ -437,7 +441,7 @@ class Blueprint
      *
      * @param   string  $name  sloupec
      *
-     * @return  array          vlastnosti
+     * @return  array<string,mixed>          vlastnosti
      *
      * @see     addColumn
      */
@@ -492,7 +496,7 @@ class Blueprint
     /**
      * Získá sloupce z tabulky
      *
-     * @return  array  sloupce
+     * @return  array<string,mixed>  sloupce
      */
     public function getColumns()
     {
@@ -502,7 +506,7 @@ class Blueprint
     /**
      * Získá primární klíče
      *
-     * @return  array
+     * @return  array<string>
      */
     public function getPrimaryKeys()
     {
@@ -514,7 +518,7 @@ class Blueprint
      *
      * @param   bool   $formated  reálný název klíče
      *
-     * @return  array
+     * @return  array<string>
      */
     public function getUniqueKeys(bool $formated = false)
     {
@@ -531,7 +535,7 @@ class Blueprint
     /**
      * Získá foreign klíče
      *
-     * @return  array
+     * @return  array<string,mixed>
      */
     public function getForeignKeys()
     {
@@ -548,7 +552,7 @@ class Blueprint
      * -unique          = array       - unikátní klíče
      * -foreign         = array       - foreign klíče
      *
-     * @return  array
+     * @return  array<string,mixed>
      */
     public function get()
     {
@@ -565,10 +569,10 @@ class Blueprint
     /**
      * Porovná sloupce
      *
-     * @param   array  $original  originální sloupec
-     * @param   array  $modified  modifikovaný sloupec
+     * @param   array<string,mixed>  $original  originální sloupec
+     * @param   array<string,mixed>  $modified  modifikovaný sloupec
      *
-     * @return  array             změny
+     * @return  array<string,mixed>             změny
      */
     public static function compareColumn(array $original, array $modified)
     {
@@ -644,7 +648,7 @@ class Blueprint
      * Sloupce do SQL
      *
      * @param   string  $column  sloupec
-     * @param   array   $opt     vlastnosti sloupce
+     * @param   array<string,mixed>   $opt     vlastnosti sloupce
      *
      * @return  string           SQL
      */

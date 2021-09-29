@@ -13,7 +13,7 @@ abstract class Layout
      * Vyrendruje layout s kontentem
      *
      * @param   string  $content  text
-     * @param   array   $params   parametry
+     * @param   array<mixed>   $params   parametry
      *
      * @return  void
      */
@@ -23,7 +23,7 @@ abstract class Layout
      * Vyrendruje layout s view
      *
      * @param   string  $view    view třída
-     * @param   array   $params  parametry
+     * @param   array<mixed>   $params  parametry
      *
      * @return  void
      *
@@ -33,17 +33,19 @@ abstract class Layout
     {
         if (!class_exists($view)) {
             throw new InvalidArgumentException("'$view' is not class");
-            exit;
         }
 
         $viewInstance = new $view;
         if (!($viewInstance instanceof IView)) {
             throw new InvalidArgumentException("'$view' class doesn't implements 'IView'");
-            exit;
         }
 
         ob_start();
         $viewInstance->render($params);
+
+        /**
+         * @var string
+         */
         $viewHTML = ob_get_clean();
 
         $this->render($viewHTML, $params);

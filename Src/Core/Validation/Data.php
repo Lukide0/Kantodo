@@ -14,10 +14,10 @@ class Data
     /**
      * Vrací prázdné klíče
      *
-     * @param   array  $data  předmět
-     * @param   array  $keys  klíče
+     * @param   array<mixed>  $data  předmět
+     * @param   array<mixed>  $keys  klíče
      *
-     * @return  array         klíče
+     * @return  array<mixed>         klíče
      */
     function empty(array $data, array $keys) {
 
@@ -34,8 +34,8 @@ class Data
     /**
      * Kontrola jestli je klíč prázdný
      *
-     * @param   array  $data  předmět
-     * @param   array  $keys  klíče
+     * @param   array<mixed>  $data  předmět
+     * @param   array<mixed>  $keys  klíče
      *
      * @return  bool          vrací true pokud je alespoň 1 klíč prázdný
      */
@@ -54,10 +54,10 @@ class Data
     /**
      * Vrací klíče, které nejsou nastaveny
      *
-     * @param   array  $data  předmět
-     * @param   array  $keys  klíče
+     * @param   array<mixed>  $data  předmět
+     * @param   array<mixed>  $keys  klíče
      *
-     * @return  array         klíče
+     * @return  array<mixed>         klíče
      */
     public static function notSet(array $data, array $keys)
     {
@@ -73,10 +73,11 @@ class Data
     /**
      * Nastaví klíč pokud není nastaven
      *
-     * @param   array  $data  předmět
-     * @param   array  $keys  klíče
+     * @param   array<mixed>  $data  předmět
+     * @param   array<mixed>  $keys  klíče
      * @param   mixed  $value hodnota
      *
+     * @return void
      */
     public static function setIfNotSet(array &$data, array $keys, $value)
     {
@@ -90,10 +91,11 @@ class Data
     /**
      * Nastavý klíče pokud jsou prázdné
      *
-     * @param   array  $data  předmět
-     * @param   array  $keys  klíče
+     * @param   array<mixed>  $data  předmět
+     * @param   array<mixed>  $keys  klíče
      * @param   mixed  $value hodnota
      *
+     * @return void
      */
     public static function fillEmpty(array &$data, array $keys, $value)
     {
@@ -107,11 +109,11 @@ class Data
     /**
      * Vrátí klíče v array, které mají stejnou hodnotu
      *
-     * @param   array  $data  předmět
-     * @param   array  $keys  klíče, pokud je hodnota null, tak jsou všechny klíče kontrolovány
+     * @param   array<mixed>  $data  předmět
+     * @param   array<mixed>  $keys  klíče, pokud je hodnota null, tak jsou všechny klíče kontrolovány
      * @param   bool   $strict pokud je 'true', tak jsou kontrolovány pouze zadané klíče mezi sebou
      * 
-     * @return  string[][]    duplicitní klíče ve formátu ```[klicA => [klicB, klicC, ...], ...]```
+     * @return  array<string|int,array<string>>    duplicitní klíče ve formátu ```[klicA => [klicB, klicC, ...], ...]```
      */
     public static function duplicate(array $data, array $keys = null, bool $strict = false)
     {
@@ -191,7 +193,7 @@ class Data
      */
     public static function isValidEmail(string $email)
     {
-        return filter_var($email, FILTER_VALIDATE_EMAIL);
+        return filter_var($email, FILTER_VALIDATE_EMAIL) != false;
     }
 
     /**
@@ -221,14 +223,24 @@ class Data
         return $name;
     }
 
+    /**
+     * Zkontroluje jestli je url externí
+     *
+     * @param   string  $url
+     *
+     * @return  bool
+     */
     public static function isURLExternal(string $url)
     {
         $link = parse_url($url);
         $home = parse_url($_SERVER['HTTP_HOST']);
+
+        /** @phpstan-ignore-next-line */
         if (empty($link['host'])) {
             return false;
         }
 
+        /** @phpstan-ignore-next-line */
         if ($link['host'] == $home['host']) {
             return false;
         }

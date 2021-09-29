@@ -4,14 +4,25 @@ namespace Kantodo\Websocket\Server;
 
 class Client
 {
+    /**
+     * @var bool
+     */
     public $handshake = false;
+
+    /**
+     * @var resource
+     */
     public $socket;
     //public $sockets = array();
-    public $projectsId = array();
 
-    public function __construct($socket, $projectsId = array())
+    /**
+     * Konstruktor
+     *
+     * @param   resource  $socket
+     *
+     */
+    public function __construct($socket)
     {
         $this->socket  = $socket;
-        $this->projectsId = $projectsId;
     }
 }

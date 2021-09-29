@@ -15,7 +15,7 @@ abstract class AbstractMigration
      */
     private $schema;
 
-    final public function __construct(Schema $schema = null)
+    final public function __construct(Schema $schema)
     {
         $this->schema = $schema;
     }
@@ -56,7 +56,8 @@ abstract class AbstractMigration
         if (!file_exists(Application::$MIGRATION_DIR . '/currentSchema.ser')) {
             return new Schema(Application::$DB_TABLE_PREFIX);
         }
-
+        
+        /** @phpstan-ignore-next-line */
         return unserialize(file_get_contents(Application::$MIGRATION_DIR . '/currentSchema.ser'));
     }
 

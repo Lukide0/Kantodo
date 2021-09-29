@@ -11,6 +11,13 @@ use Kantodo\Widgets\Task;
  */
 class DashboardView implements IView
 {
+    /**
+     * Homepage
+     *
+     * @param   array<mixed>  $params
+     *
+     * @return  void
+     */
     public function Render(array $params = [])
     {
         ?>

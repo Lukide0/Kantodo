@@ -7,7 +7,14 @@ namespace Kantodo\Core;
  */
 class Session
 {
+    /**
+     * @var bool
+     */
     private $regenerated = false;
+
+    /**
+     * @var bool
+     */
     private $started     = false;
 
     /**
@@ -267,9 +274,9 @@ class Session
     }
 
     /**
-     * Zničí sessios
+     * Zničí session
      *
-     * @return  [type]  [return description]
+     * @return  void
      */
     public function destroy()
     {

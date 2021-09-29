@@ -223,12 +223,10 @@ class Router
                 $this->response->setStatusCode($th->getCode());
                 exit;
             }
-            /**
-             * @var callable
-             */
-            $callable = [$controller, $classMethod];
 
-            call_user_func_array($callable, $params);
+
+            /** @phpstan-ignore-next-line */
+            call_user_func_array([$controller, $classMethod], $params);
             return;
         }
 
@@ -272,11 +270,8 @@ class Router
 
             $controller->executeAllMiddlewares($params);
 
-            /**
-             * @var callable
-             */
-            $callable = [$controller, $classMethod];
-            call_user_func($callable, $params);
+            /** @phpstan-ignore-next-line */
+            call_user_func([$controller, $classMethod], $params);
             return;
         }
         call_user_func($callback['callback'], $this->request, $this->response, $params);
