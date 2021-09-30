@@ -20,8 +20,8 @@
         #{$ambient-value} #{$ambient-color};
 }
 
-@mixin pseudo-icon($name, $style: "outline") {
-    @if ($style != "outline" and $style != "round") {
+@mixin pseudo-icon($name, $style: "outlined") {
+    @if ($style != "outlined" and $style != "round") {
         @error "Invalid style `#{$style}`.";
     }
     display: inline-block;

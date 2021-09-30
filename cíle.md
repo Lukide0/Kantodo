@@ -16,7 +16,7 @@
 |              Název              | Datum dokončení | Dokončeno ✔ |
 | ------------------------------- | --------------- | --- |
 | Přidávání úkolů (bez tagů)      |   1.10. 2021    |  ✔  |
-| redesign + remake               |   1.10. 2021    |     |
+| redesign + remake               |   1.10. 2021    |  ✔  |
 | Přidávání milestone             |   2.10. 2021    |     |
 | Přidávání tagů                  |   3.10. 2021    |     |
 | Přidávání tagů do úkolů         |   4.10. 2021    |     |

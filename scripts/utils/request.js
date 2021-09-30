@@ -53,3 +53,5 @@ function XHR(url, method = 'GET', params = {}, sentEmpty = false, contentType = 
 
     return {xhr, params};
 }
+
+export {Request, XHR, CONTENT_TYPE};

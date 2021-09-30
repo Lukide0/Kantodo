@@ -4,6 +4,7 @@ ul.dropdown-menu {
     @include font(800, regular, 600);
     @include material-shadow(8);
 
+    z-index: 99;
     max-width: 280px;
 
     padding: space(regular) 0;
@@ -13,9 +14,21 @@ ul.dropdown-menu {
 
     & > li {
         padding: space(regular) space(huge) space(regular) space(medium);
-        display: flex;
+        display: grid;
+        grid-template-columns: $icon-small 1fr $icon-small;
+        gap: space(medium);
+        white-space: nowrap;
         align-items: center;
-        justify-content: end;
+        cursor: pointer;
+
+        & > .icon {
+            margin-right: space(medium);
+            grid-column: 1;
+        }
+
+        & > .text {
+            grid-column: 2;
+        }
 
         &.divider {
             height: 1px;
@@ -26,20 +39,35 @@ ul.dropdown-menu {
 
         &.dropdown {
             position: relative;
+            
+            & > ul {
+                position: absolute;
+                left: 100%;
+                top: 0;
+                z-index: 100;
+                display: none;
+            }
+
+            &:hover:not(.disabled) > ul {
+                display: block;
+            }
         }
 
         &.dropdown::after {
-            @include pseudo-icon("keyboard_arrow_right", round);
+            @include pseudo-icon("arrow_right", outlined);
+
+            font-size: $icon-small;
         }
 
+        &.disabled {
+            color: fontColor(400);
+            cursor: unset;
+        }
 
-        &:hover {
+        &:hover:not(.disabled) {
             background: background(third);
         }
 
-        & > .icon {
-            margin-right: space(medium);
-        }
 
     }
 }
