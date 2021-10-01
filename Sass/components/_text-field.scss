@@ -65,8 +65,19 @@
         @include font(700, small);
         margin-top: space(small);
         padding-left: space(medium);
+        height: fontSize(small);
+    }
 
-        &.error {
+    &.error {
+        & > .field > span {
+            color: color(error) !important;
+        }
+
+        & > .field > input {
+            border-color: color(error) !important;
+        }
+
+        & > .text {
             color: color(error);
         }
     }

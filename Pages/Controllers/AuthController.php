@@ -70,15 +70,15 @@ class AuthController extends AbstractController
             if (!empty($body[Request::METHOD_POST]['signInEmail'])) {
                 Application::$APP->session->addFlashMessage('userEmail', $body[Request::METHOD_POST]['signInEmail']);
             } else {
-                $empty['signInEmail'] = 'Empty field';
+                $empty[] = 'signInEmail';
             }
 
             // heslo
             if (empty($body[Request::METHOD_POST]['signInPassword'])) {
-                $empty['signInPassword'] = 'Empty field';
+                $empty[] = 'signInPassword';
             }
 
-            Application::$APP->session->addFlashMessage('signInErrors', $empty);
+            Application::$APP->session->addFlashMessage('signInErrors', ['empty' => $empty, 'success' => true]);
 
             // přesměrování zpět
             if (!empty($path)) {
@@ -110,6 +110,8 @@ class AuthController extends AbstractController
         }
 
         Application::$APP->session->addFlashMessage('userEmail', $body[Request::METHOD_POST]['signInEmail']);
+
+        Application::$APP->session->addFlashMessage('signInErrors', ['empty' => [], 'success' => false]);
 
         Application::$APP->response->setLocation("/auth?path={$path}");
         exit;

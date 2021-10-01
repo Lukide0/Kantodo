@@ -4,7 +4,7 @@ ul.dropdown-menu {
     @include font(800, regular, 600);
     @include material-shadow(8);
 
-    z-index: 99;
+    z-index: 99999;
     max-width: 280px;
 
     padding: space(regular) 0;
@@ -23,7 +23,7 @@ ul.dropdown-menu {
 
         & > .icon {
             margin-right: space(medium);
-            grid-column: 1;
+            grid-column: 1 ;
         }
 
         & > .text {

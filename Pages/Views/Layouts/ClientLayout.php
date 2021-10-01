@@ -4,7 +4,7 @@ namespace Kantodo\Views\Layouts;
 
 use Kantodo\Core\Application;
 use Kantodo\Core\Base\Layout;
-use Kantodo\Models\TeamModel;
+use function Kantodo\Core\Functions\t_;
 
 /**
  * Layout pro uživatele
@@ -45,16 +45,16 @@ class ClientLayout extends Layout
             <nav>
                 <a class="item active" href="/">
                     <span class="icon outline medium">dashboard</span>
-                    <span class="text">Dashboard</span>
+                    <span class="text"><?= t_('dashboard') ?></span>
                 </a>
                 <a class="item" href="/calendar">
                     <span class="icon outline medium">event</span>
-                    <span class="text">Kalendář</span>
+                    <span class="text"><?= t_('calendar') ?></span>
                 </a>
                 <div class="item dropdown expanded">
                     <div>
                         <span class="icon outline medium">folder</span>
-                        <span class="text">Projekty</span>
+                        <span class="text"><?= t_('projects') ?></span>
                     </div>
                     <ul>
                         <?php 
@@ -62,12 +62,12 @@ class ClientLayout extends Layout
                         ?>
                         <li data-id='<?= $project['uuid'] ?>'><?= $project['name'] ?></li>
                         <?php endforeach; ?>
-                        <li class="add">Přidat</li>
+                        <li class="add"><?= t_('add') ?></li>
                     </ul>
                 </div>
                 <a class="item last" href="/account">
                     <span class="icon outline medium">account_circle</span>
-                    <span class="text">Účet</span>
+                    <span class="text"><?= t_('account') ?></span>
                 </a>
             </nav>
         </header>
