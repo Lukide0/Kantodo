@@ -46,9 +46,13 @@
 }
 
 @each $name, $color in $colors {
+    $colorRGB: rgb(nth($color, 1), nth($color, 2), nth($color, 3), nth($color, 1));
+    $lighten: mix($colorRGB, #ffffff, 80%);
+
     .#{$name} {
         --color: #{color($name)} !important;
         --text: #{color($name, text)} !important;
+        --hover: rgb(#{red($lighten), green($lighten), blue($lighten)}) !important;
         --color-light: #{color($name, light)} !important;
         --color-dark: #{color($name, dark)} !important;
         --color-raw: #{colorRaw($name)} !important;

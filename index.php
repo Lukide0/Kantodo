@@ -7,7 +7,7 @@ use Kantodo\Core\Response;
 
 include_once 'loader/autoload.php';
 
-
+// TODO: remake lang to json and cache it 
 
 $APP = new Application();
 $APP->registerAuth(new Auth());

@@ -22,9 +22,9 @@ class ClientLayout extends Layout
     public function Render(string $content = '', array $params = [])
     {
         $headerContent = Application::$APP->header->GetContent();
+        $userName = Application::$APP->session->get('user')['firstname'] . ' ' . Application::$APP->session->get('user')['lastname'];
 
         // TODO: generovat menu z array
-        //$userID = Application::$APP->session->get('user')['id'];
         ?>
         <!DOCTYPE html>
         <html lang="en">
@@ -35,8 +35,8 @@ class ClientLayout extends Layout
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet">
             <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-            <link rel="stylesheet" href="<?= Application::$STYLE_URL ?>/main.css">
-            <link rel="stylesheet" href="<?= Application::$SCRIPT_URL ?>/main.js">
+            <link rel="stylesheet" href="<?= Application::$STYLE_URL ?>main.css">
+            <script src="<?= Application::$SCRIPT_URL ?>main.js"></script>
             <?=$headerContent;?>
         </head>
         <body>
@@ -51,7 +51,7 @@ class ClientLayout extends Layout
                     <span class="icon outline medium">event</span>
                     <span class="text">Kalendář</span>
                 </a>
-                <div class="item dropdown expanded">
+                <div class="item dropdown">
                     <div>
                         <span class="icon outline medium">folder</span>
                         <span class="text">Projekty</span>
@@ -62,14 +62,21 @@ class ClientLayout extends Layout
                         ?>
                         <li data-id='<?= $project['uuid'] ?>'><?= $project['name'] ?></li>
                         <?php endforeach; ?>
-                        <li class="add">Přidat</li>
+                        <li class="add"><button class="flat no-border" data-click='project'>Přidat</button></li>
                     </ul>
                 </div>
                 <a class="item last" href="/account">
                     <span class="icon outline medium">account_circle</span>
-                    <span class="text">Účet</span>
+                    <span class="text"><?= $userName ?></span>
                 </a>
             </nav>
+            <script>
+                let btn = document.querySelector('button[data-click=project]');
+                btn.addEventListener('click', function(e) {
+                    // TODO: projekt přidat
+                });
+
+            </script>
         </header>
         <main>
             <?= $content ?>

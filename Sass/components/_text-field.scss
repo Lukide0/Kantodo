@@ -19,12 +19,14 @@
             transition: all 200ms ease-out;
         }
 
-        &.focus:not(:focus-within) > span {
+        &.focus:not(:focus-within) > span,
+        &.active:not(:focus-within) > span {
             --color: #{fontColor(600)};
         }
 
         &:focus-within > span,
-        &.focus > span {
+        &.focus > span,
+        &.active > span {
             top: space(small);
             color: var(--color);
             font-size: fontSize(small);
@@ -82,7 +84,8 @@
             }
 
             &:focus-within > span,
-            &.focus > span {
+            &.focus > span,
+            &.active > span {
                 top: 0;
                 transform: translate(0, -50%);
             }

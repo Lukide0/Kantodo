@@ -21,7 +21,7 @@ class Version_1_0 extends AbstractMigration
             $table->addColumn('email', 'varchar', ['length' => 200, 'unique' => true]);
             $table->addColumn('password', 'varchar', ['length' => 200]);
             $table->addColumn('secret', 'varchar', ['length' => 50, 'unique' => true]);
-            $table->addColumn('nickname', 'varchar', ['length' => 100, 'unique' => true, 'notNull' => false]);
+            $table->addColumn('nickname', 'varchar', ['length' => 100, 'notNull' => false]);
 
             //keys
             $table->addPrimaryKey('user_id');

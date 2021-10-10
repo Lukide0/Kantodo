@@ -166,6 +166,8 @@ class InstallController extends AbstractController
         // vytvoří v db tabulky a celé sql, které provede dá do souboru "migrations/Versions/{verze}.sql"
         $runner->run($installVersion, true, true);
 
+
+
         Application::$APP->session->set('constantsDB', $dbConstants);
         Application::$APP->response->setLocation("/install-storage");
 
@@ -294,10 +296,11 @@ class InstallController extends AbstractController
         define('DB_PASS', $dbConstants['DB_PASS']);
         define('DB_TABLE_PREFIX', $dbConstants['DB_TABLE_PREFIX']);
 
-        
-        $con = Connection::getInstance();
+        Application::$DB_TABLE_PREFIX = DB_TABLE_PREFIX;
 
         $pass = Auth::hashPassword($pass, $email);
+
+        var_dump($firstname);
 
         $userModel = new UserModel();
         $id = $userModel->create($firstname, $lastname, $email, $pass);

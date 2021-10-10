@@ -43,8 +43,8 @@ class AuthView implements IView
                     <h2>Vítejte v Kantodo!</h2>
                     <?= Form::start('/auth/signin', Request::METHOD_POST, 'container full-width middle') ?>
                         <?= Form::tokenCSRF() ?>
-                        <?= Input::text('signInEmail', 'Email', ['classes' => 'full-width']); ?>
-                        <?= Input::password('signInPassword', 'Heslo', ['classes' => 'full-width']); ?>
+                        <?= Input::text('signInEmail', 'Email', ['classes' => 'full-width', 'autocomplete' => Input::AUTOCOMPLETE_EMAIL]); ?>
+                        <?= Input::password('signInPassword', 'Heslo', ['classes' => 'full-width', 'autocomplete' => Input::AUTOCOMPLETE_CURRENT_PASSWORD]); ?>
                         <button class="primary full-width center big space-huge-top space-huge-bottom">Přihlásit</button>
                         <a href="?AAA" target="_blank" rel="noopener noreferrer" class="space-small-bottom">Zapomenuté heslo?</a>
                         <p>Nemáte účet? <a href="#" onclick="let x=document.querySelectorAll('.auth > .container'); x[0].style.display='none'; x[1].style.display='flex';">Registrujte se!</a></p>

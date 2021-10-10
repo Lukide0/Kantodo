@@ -106,10 +106,10 @@ class Request
             self::METHOD_POST => [],
             self::METHOD_GET  => [],
         ];
-        $body[self::METHOD_GET] = filter_input_array(INPUT_GET, FILTER_SANITIZE_SPECIAL_CHARS) ?? [];
+        $body[self::METHOD_GET] = filter_input_array(INPUT_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? [];
 
         if ($this->getMethod() == self::METHOD_POST) {
-            $body[self::METHOD_POST] = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS) ?? [];
+            $body[self::METHOD_POST] = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? [];
         }
 
         /** @phpstan-ignore-next-line */
