@@ -160,12 +160,11 @@ class Application
         $this->header   = new HeaderHTML();
         $this->session  = new Session();
         $this->router   = new Router($this->request, $this->response);
-        $this->lang     = new Lang();
-
-        $this->lang->load();
+        $this->lang = new Lang();
 
         if ($this->configExits()) {
             $this->loadConfig();
+            $this->lang->load();
         }
     }
 

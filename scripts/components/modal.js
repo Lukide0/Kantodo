@@ -29,8 +29,8 @@ const Snackbar = {
                 parent.appendChild(this.element);
             },
 
-            show(x, y, visible = 4000) {
-                moveAbs(x, y, this.element);
+            show(move, visible = 4000) {
+                moveAbs(move, this.element);
                 simpleAnimation(
                     this.element,
                     {

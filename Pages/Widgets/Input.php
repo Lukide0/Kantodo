@@ -267,9 +267,10 @@ class Input extends AbstractWidget
         $color   = $this->getOption("color", "");
         $classes = $this->getOption("classes", "");
         $type = $this->getOption('type', "text");
+        $errorClass = $this->getOption('error', false) ? 'error' : '';
 
         return <<<HTML
-            <label class="text-field {$outline} {$color} space-big-bottom {$classes}">
+            <label class="text-field {$outline} {$color} space-big-bottom {$classes} {$errorClass}">
                 <div class="field">
                     <span>{$this->getOption('label','')}</span>
                     <input type="{$type}"  name="{$this->getOption('name')}" value="{$this->getOption('value','')}" autocomplete="{$this->getOption('autocomplete','off')}" {$disabled} {$dataAttributes}>

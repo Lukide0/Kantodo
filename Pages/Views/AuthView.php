@@ -8,6 +8,8 @@ use Kantodo\Core\Request;
 use Kantodo\Widgets\Form;
 use Kantodo\Widgets\Input;
 
+use function Kantodo\Core\Functions\t_;
+
 /**
  * Přihlášení a registrace
  */
@@ -22,8 +24,17 @@ class AuthView implements IView
         $registerForm = new Form();
 
         $email  = Application::$APP->session->getFlashMessage('userEmail', '');
-        $errors = Application::$APP->session->getFlashMessage('signInErrors', []);
+        $signInErrors = Application::$APP->session->getFlashMessage('signInErrors', []);
 
+        $errors = [];
+        foreach ($signInErrors['empty'] ?? [] as $name) {
+            $errors[$name] = t_('empty_field', 'auth');
+        }
+
+        if (isset($signInErrors['success']) && !$signInErrors['success']) {
+            $errors['signInEmail'] = " ";
+            $errors['signInPassword'] = " ";
+        }
 ?>
         <!DOCTYPE html>
         <html lang="en">
@@ -32,22 +43,23 @@ class AuthView implements IView
             <meta charset="UTF-8">
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Document</title>
-            <link rel="stylesheet" href="<?= Application::$STYLE_URL ?>/main.min.css">
+            <title>Kantodo - Auth</title>
+            <link rel="stylesheet" href="<?= Application::$STYLE_URL ?>/main.css">
             <link rel="stylesheet" href="<?= Application::$STYLE_URL ?>/auth.min.css">
             <script src="<?= Application::$SCRIPT_URL ?>/main.js" ></script>
+            <script src="<?= Application::$SCRIPT_URL ?>/global.js" type="module"></script>
         </head>
         <body>
             <div class="container center middle full">
                 <div class="auth">
-                    <h2>Vítejte v Kantodo!</h2>
+                    <h2><?= t_('welcome_message', 'auth') ?></h2>
                     <?= Form::start('/auth/signin', Request::METHOD_POST, 'container full-width middle') ?>
                         <?= Form::tokenCSRF() ?>
-                        <?= Input::text('signInEmail', 'Email', ['classes' => 'full-width', 'autocomplete' => Input::AUTOCOMPLETE_EMAIL]); ?>
-                        <?= Input::password('signInPassword', 'Heslo', ['classes' => 'full-width', 'autocomplete' => Input::AUTOCOMPLETE_CURRENT_PASSWORD]); ?>
-                        <button class="primary full-width center big space-huge-top space-huge-bottom">Přihlásit</button>
-                        <a href="?AAA" target="_blank" rel="noopener noreferrer" class="space-small-bottom">Zapomenuté heslo?</a>
-                        <p>Nemáte účet? <a href="#" onclick="let x=document.querySelectorAll('.auth > .container'); x[0].style.display='none'; x[1].style.display='flex';">Registrujte se!</a></p>
+                        <?= Input::text('signInEmail', t_('email', 'auth'), ['classes' => 'full-width', 'error' => $errors, 'value' => $email]); ?>
+                        <?= Input::password('signInPassword', t_('password', 'auth'), ['classes' => 'full-width', 'error' => $errors]); ?>
+                        <button class="primary full-width center big space-huge-top space-huge-bottom"><?= t_('log_in', 'auth'); ?></button>
+                        <a href="?AAA" target="_blank" rel="noopener noreferrer" class="space-small-bottom"><?= t_('forgotten_password', 'auth'); ?></a>
+                        <p><?= t_('dont_have_account', 'auth') ?> <a href="#" onclick="let x=document.querySelectorAll('.auth > .container'); x[0].style.display='none'; x[1].style.display='flex';"><?= t_('register_here', 'auth') ?></a></p>
                     <?= Form::end() ?>
                     <div class="container full-width middle" style="display: none;">
                         <div class="row full-width h-space-between">
@@ -86,6 +98,20 @@ class AuthView implements IView
                         </div>
                         <button class="primary full-width center big space-huge-top space-huge-bottom">Registrovat se</button>
                         <p>Máte účet? <a href="#" onclick="let x=document.querySelectorAll('.auth > .container'); x[1].style.display='none'; x[0].style.display='flex';">Přihlaste se!</a></p>
+                    <?php
+                        if (isset($signInErrors['success']) && $signInErrors['success'] == false):
+                    ?>
+                        <script>
+                            let snackbar;
+                            window.addEventListener('load', function(){
+                                 snackbar = Modal.Snackbar.create("<?= t_('wrong_log_in_details', 'auth') ?>", []);
+    
+                                snackbar.setParent(document.body);
+    
+                                snackbar.show({center: true, top: 25});
+                            },{once: true});
+                        </script>
+                    <?php endif; ?>
                     </div>
                 </div>
             </div>

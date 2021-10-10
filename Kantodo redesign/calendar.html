@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./../styles/calendar.min.css">
     <link rel="stylesheet" href="./../styles/main.min.css">
+    <script src="./../scripts/global.js" type="module"></script>
 </head>
 
 <body>
@@ -331,6 +332,36 @@
             </ul>
         </li>
     </ul>
+    <script>
+        let menu;
+        window.onload = () => {
+
+            menu = Dropdown.Menu.create();
+    
+            for (let x = 0; x < 5; x++) {
+                let item = Dropdown.Item.create('item-' + x, { text: 'wifi'});
+
+                for (let y = 0; y < 5; y++) {
+                    let subitem = Dropdown.Item.create('sub-item-' + y);
+
+                    // TODO: click
+                    subitem.addAction(function(){
+                        console.log(x,y);
+                    })
+                    for (let z = 0; z < 5; z++) {
+                        subitem.items.push(Dropdown.Item.create('sub-sub-item-' + z));
+                    }
+                    item.items.push(subitem);
+                }
+                menu.items.push(item);
+            }
+            console.log(menu);
+            menu.render();
+        }
+
+
+
+    </script>
 </body>
 
 </html>
