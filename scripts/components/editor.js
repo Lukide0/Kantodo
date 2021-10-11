@@ -46,6 +46,7 @@ const Editor = {
             } else if (e.key == 'Delete' && (end - start > 0 || start < editable.textContent.length - 1)) {
                 addToEditorHistory('', start, 0, editable.textContent.substring(start, end + 1));
             }
+
             
         });
         
@@ -53,8 +54,10 @@ const Editor = {
             let start = window.getSelection().getRangeAt(0).startOffset;
             let key = e.key;
         
-            if (e.key == 'Enter') 
+            // TODO: newline
+            if (e.key == 'Enter') {
                 key = "\n";
+            }
         
             addToEditorHistory(key, start, 1);
         });
@@ -81,8 +84,6 @@ const Editor = {
                 return text.replaceAll(regex, '<span class="quote">$1</span>');
             },
             function list(text) {
-                // FIX: newline
-
                 const regex = /^\-\s.+(\s*\-\s.+)*$/gm;
                 let match;
                 let plusOffset = 0;
@@ -145,6 +146,7 @@ const Editor = {
                 }
                 return textCopy;
             },
+            // TODO: fix element in code
             function code(text) {
                 const regex = /\`\`\`([^\`]+)?(\`\`\`)/gm;
                 return text.replaceAll(regex, '<span class="code">$1</span>');

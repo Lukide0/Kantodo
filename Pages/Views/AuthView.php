@@ -55,8 +55,8 @@ class AuthView implements IView
                     <h2><?= t_('welcome_message', 'auth') ?></h2>
                     <?= Form::start('/auth/signin', Request::METHOD_POST, 'container full-width middle') ?>
                         <?= Form::tokenCSRF() ?>
-                        <?= Input::text('signInEmail', t_('email', 'auth'), ['classes' => 'full-width', 'error' => $errors, 'value' => $email]); ?>
-                        <?= Input::password('signInPassword', t_('password', 'auth'), ['classes' => 'full-width', 'error' => $errors]); ?>
+                        <?= Input::text('signInEmail', t_('email', 'auth'), ['classes' => 'full-width', 'error' => $errors, 'value' => $email, 'autocomplete' => Input::AUTOCOMPLETE_EMAIL]); ?>
+                        <?= Input::password('signInPassword', t_('password', 'auth'), ['classes' => 'full-width', 'error' => $errors, 'autocomplete' => Input::AUTOCOMPLETE_CURRENT_PASSWORD]); ?>
                         <button class="primary full-width center big space-huge-top space-huge-bottom"><?= t_('log_in', 'auth'); ?></button>
                         <a href="?AAA" target="_blank" rel="noopener noreferrer" class="space-small-bottom"><?= t_('forgotten_password', 'auth'); ?></a>
                         <p><?= t_('dont_have_account', 'auth') ?> <a href="#" onclick="let x=document.querySelectorAll('.auth > .container'); x[0].style.display='none'; x[1].style.display='flex';"><?= t_('register_here', 'auth') ?></a></p>

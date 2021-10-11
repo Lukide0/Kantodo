@@ -33,19 +33,16 @@ class DashboardView implements IView
         </div>
         <div class="row nowrap">
             <div class="task-list">
-                <div class="dropdown-header">
+                <!--<div class="dropdown-header">
                     <h3>KantodoApp</h3>
                     <div class="line"></div>
                     <button class="flat icon round">filter_alt</button>
                 </div>
                 <div class="container">
-                    <?php 
-                        echo Task::Create('TITLE', 'VERY LOOO0OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOONG DESCRIPTION', false);
-                    ?>
-                </div>
+                </div>-->
             </div>
             <div class="milestone-list">
-                <div class="milestone">
+                <!--<div class="milestone">
                     <div class="date">
                         <span class="month">Sep</span>
                         <span class="day">18</span>
@@ -76,7 +73,7 @@ class DashboardView implements IView
                             <span>15% Completed</span>
                         </div>
                     </div>
-                </div>
+                </div>-->
             </div>
         </div>
 <?php

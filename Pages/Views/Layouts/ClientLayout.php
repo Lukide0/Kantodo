@@ -35,8 +35,8 @@ class ClientLayout extends Layout
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet">
             <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-            <link rel="stylesheet" href="<?= Application::$STYLE_URL ?>/main.css">
-            <link rel="stylesheet" href="<?= Application::$SCRIPT_URL ?>/main.js">
+            <link rel="stylesheet" href="<?= Application::$STYLE_URL ?>/main.min.css">
+            <script src="<?= Application::$SCRIPT_URL ?>/main.js"></script>
             <?=$headerContent;?>
         </head>
         <body>
@@ -62,7 +62,7 @@ class ClientLayout extends Layout
                         ?>
                         <li data-id='<?= $project['uuid'] ?>'><?= $project['name'] ?></li>
                         <?php endforeach; ?>
-                        <li class="add"><?= t_('add') ?></li>
+                        <li class="add"><button class="flat no-border" data-action="project"><?= t_('add') ?></button></li>
                     </ul>
                 </div>
                 <a class="item last" href="/account">
