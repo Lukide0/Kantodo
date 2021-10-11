@@ -8,8 +8,8 @@ const Snackbar = {
         let tmp = document.createElement('div');
         tmp.innerHTML = `
         <div class="snackbar">
-            <p>Text label</p>
-            <button class="flat no-border">Retry</button>
+            <p></p>
+            <button class="flat no-border"></button>
         </div>
         `;
         this._template = tmp.children[0];
