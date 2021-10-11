@@ -36,7 +36,8 @@ class ClientLayout extends Layout
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet">
             <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;500;700;900&display=swap" rel="stylesheet">
             <link rel="stylesheet" href="<?= Application::$STYLE_URL ?>/main.min.css">
-            <script src="<?= Application::$SCRIPT_URL ?>/main.js"></script>
+            <script src="<?= Application::$SCRIPT_URL ?>main.js"></script>
+            <script src="<?= Application::$SCRIPT_URL ?>global.js" type="module"></script>
             <?=$headerContent;?>
         </head>
         <body>
@@ -69,6 +70,15 @@ class ClientLayout extends Layout
                     <span class="icon outline medium">account_circle</span>
                     <span class="text"><?= t_('account') ?></span>
                 </a>
+                <script>
+                    (function() {
+                        let btn = document.querySelector("button[data-action=project]");
+                        btn.addEventListener('click', function(e) {
+                            
+                            
+                        });
+                    })();
+                </script>
             </nav>
         </header>
         <main>

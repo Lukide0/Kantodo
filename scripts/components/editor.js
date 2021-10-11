@@ -12,7 +12,7 @@ const Editor = {
         let menu = editor.getElementsByClassName('menu');
         if (menu.length == 0) 
             throw "Editor does not contain element with class 'menu'";
-
+        // TODO: disable on preview mode
         menu = menu[0];
 
         const editControls = menu.querySelectorAll('button[data-action]');
