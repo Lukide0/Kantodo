@@ -2,7 +2,7 @@ import { Snackbar, Dialog, Banner } from "./components/modal.js";
 import { Menu, Item } from "./components/dropdown.js";
 import { XHR, Request, CONTENT_TYPE } from "./utils/request.js";
 import EditorHTML from "./components/editorHTML.js";
-import ModalWindow from "./components/modalWindow.js";
+import {ModalWindow, ModalProject} from "./components/modalWindow.js";
 import Kantodo from "./kantodo.js";
 
 window.Kantodo = Kantodo;
@@ -12,7 +12,8 @@ window.Modal = {
     Snackbar,
     Dialog,
     Banner,
-    ModalWindow
+    ModalWindow,
+    ModalProject
 };
 
 //---- Dropdown ----//

@@ -41,6 +41,11 @@ class ClientLayout extends Layout
             <?=$headerContent;?>
         </head>
         <body>
+            <script>
+                function afterLoad(callback) {
+                    document.addEventListener('load', callback, {once: true});
+                }
+            </script>
             <header>
             <h1>Kantodo</h1>
             <nav>
@@ -71,13 +76,18 @@ class ClientLayout extends Layout
                     <span class="text"><?= t_('account') ?></span>
                 </a>
                 <script>
-                    (function() {
-                        let btn = document.querySelector("button[data-action=project]");
-                        btn.addEventListener('click', function(e) {
-                            
-                            
-                        });
-                    })();
+                    afterLoad(
+                        function() {
+                            console.log("a");
+                            let btn = document.querySelector("button[data-action=project]");
+                            let win = Modal.ModalProject.create();
+                            win.setParent(document.body.querySelector('main'));
+                            btn.addEventListener('click', function(e) {
+                                win.show();
+                            });
+                        }
+                    );
+                    
                 </script>
             </nav>
         </header>

@@ -40,4 +40,10 @@ function getHeight(el) {
     return Math.ceil(el.offsetHeight + parseFloat(compStyle['marginTop']) + parseFloat(compStyle['marginBottom']));
 }
 
-export {moveAbs, getHeight}
+function createElementFromTemplate(html) {
+    let tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.children[0];
+}
+
+export {moveAbs, getHeight, createElementFromTemplate}

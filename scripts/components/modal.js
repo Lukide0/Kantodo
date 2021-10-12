@@ -1,5 +1,23 @@
-import { moveAbs } from "../utils/util.js";
+import { moveAbs, createElementFromTemplate as template } from "../utils/util.js";
 import { simpleAnimation } from "../utils/animation.js";
+
+const snackbarTemplate = template(
+    `
+    <div class="snackbar">
+        <p></p>
+        <button class="flat no-border"></button>
+    </div>
+    `
+);
+
+class Snackbar extends HTMLElement {
+    constructor() {
+        super();
+
+        const shadowRoot = this.attachShadow({mode: 'open'}).appendChild(snackbarTemplate.cloneNode(true));
+        
+    }
+}
 
 
 const Snackbar = {
@@ -251,7 +269,6 @@ const Dialog = {
             destroy() {
                 if (this.element.style.visibility == 'visible')
                     this.hide();
-
                 this.element.remove();
             }
         };
