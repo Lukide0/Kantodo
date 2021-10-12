@@ -1,36 +1,16 @@
 import { moveAbs, createElementFromTemplate as template } from "../utils/util.js";
 import { simpleAnimation } from "../utils/animation.js";
 
-const snackbarTemplate = template(
-    `
-    <div class="snackbar">
-        <p></p>
-        <button class="flat no-border"></button>
-    </div>
-    `
-);
-
-class Snackbar extends HTMLElement {
-    constructor() {
-        super();
-
-        const shadowRoot = this.attachShadow({mode: 'open'}).appendChild(snackbarTemplate.cloneNode(true));
-        
-    }
-}
-
 
 const Snackbar = {
     _template: null,
     init() {
-        let tmp = document.createElement('div');
-        tmp.innerHTML = `
+        this._template = template(`
         <div class="snackbar">
             <p></p>
             <button class="flat no-border"></button>
         </div>
-        `;
-        this._template = tmp.children[0];
+        `);
     },
     create(label, button, color = 'primary') {
         if (this._template == null)
@@ -107,17 +87,16 @@ const Banner = {
     _template: null,
 
     init() {
-        let tmp = document.createElement('div');
+        this._template = template(
+            `
+            <div class="banner">
+                <span class="icon round medium"></span>
+                <p></p>
+                <div class="actions">
+                </div>
+            </div>`
 
-        tmp.innerHTML = `
-        <div class="banner">
-            <span class="icon round medium"></span>
-            <p></p>
-            <div class="actions">
-            </div>
-        </div>`;
-
-        this._template = tmp.children[0];
+        );
     },
 
     create(text, buttons, icon = null, color = 'primary') {
@@ -208,18 +187,17 @@ const Banner = {
 const Dialog = {
     _template: null,
     init() {
-        let tmp = document.createElement('div');
-
-        tmp.innerHTML = `
-        <div class="dialog">
-            <div class="container">
-                <div class="title"></div>
-                <div class="supporting-text"></div>
-                <div class="actions"></div>
-            </div>
-            </div>`;
-
-        this._template = tmp.children[0];
+        this._template = template(
+            `
+            <div class="dialog">
+                <div class="container">
+                    <div class="title"></div>
+                    <div class="supporting-text"></div>
+                    <div class="actions"></div>
+                </div>
+                </div>
+            `
+        );
     },
 
     create(title, text, buttons, color = 'primary', events = null) {
