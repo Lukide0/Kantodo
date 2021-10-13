@@ -41,7 +41,7 @@ class DashboardView implements IView
                 <div class="container">
                 </div>-->
             </div>
-            <div class="milestone-list">
+            <!--<div class="milestone-list">
                 <!--<div class="milestone">
                     <div class="date">
                         <span class="month">Sep</span>
@@ -73,8 +73,8 @@ class DashboardView implements IView
                             <span>15% Completed</span>
                         </div>
                     </div>
-                </div>-->
-            </div>
+                </div>
+            </div>-->
         </div>
 <?php
 }

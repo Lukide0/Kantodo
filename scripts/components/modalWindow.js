@@ -1,4 +1,6 @@
+import { initInput } from '../utils/util.js';
 import { simpleAnimation } from './../utils/animation.js';
+import Editor from './editor.js';
 
 const ModalWindow = {
     _template: null,
@@ -19,7 +21,9 @@ const ModalWindow = {
         if (this._template == null)
             this.init();
         
-            let tmp = this._template.cloneNode(true);
+        let tmp = this._template.cloneNode(true);
+
+        tmp.querySelectorAll(".text-field > .field > input").forEach(el => initInput(el));
 
         if (content != '')
             tmp.querySelector('.content').innerHTML = content;
@@ -95,7 +99,7 @@ ModalProject.init = function() {
             </div>
         </label>
     </div>
-    <div class="editor" id="editor">
+    <div class="editor">
         <div class="menu">
             <ul class="group">
                 <li><button class="flat no-border no-padding" data-tooltip="undo" data-action="undo" data-select="none"><span class="icon round">undo</span></button></li>
@@ -117,19 +121,32 @@ ModalProject.init = function() {
             <ul class="group">
                 <li><button class="flat no-border no-padding" data-tooltip="code" data-action="code"><span class="icon round">code</span></button></li>
             </ul>
-            <button class="space-huge-left mode flat no-border" data-action="switchMode">normal mode</button>
+            <button class="space-huge-left mode flat no-border" data-action="switchMode">normal</button>
         </div>
         <div class="editable" contenteditable="true">
             
         </div>
     </div>
     <div class="row right space-big-top">
-        <button class="flat space-medium-right">Cancel</button>
+        <button data-action='close' class="flat space-medium-right">Cancel</button>
         <button class="hover-shadow">Create</button>
     </div>
     `;
-
     this._template = tmp;
+};
+
+ModalProject.create = function() {
+    if (this._template == null)
+        this.init();
+
+    let tmp = ModalWindow.create();
+    Editor.init(tmp.element.querySelector('.editor'));
+
+    tmp.element.querySelector('button[data-action=close]').addEventListener('click', function() {
+        tmp.hide(tmp);
+    });
+
+    return tmp;
 }
 
 export {ModalWindow, ModalProject};

@@ -1,15 +1,27 @@
-- přetahování úkolů mezi sloupci ✔
+# Projekt
+
+## Návrh vytvoření webové todo aplikace Kantodo
+- instalační stránka
 - realtime aktualizace
-- filtrování úkolů ❌
-- vlastní tagy (bug, grafika atd.)
-- přidávání sloupců ✔
-- přidávání členů do týmu
-- uživatel může být ve více týmech ✔
-- pluginy ❌
-- kalendář, kde se zobrazí úkoly s termínem dokončení
-- vícejazyčné
-- instalační stánka ✔
-- každý úkol může mít přílohu, komentář
-- k úkolu může být přidělen 1 a více uživatelů
-- role v týmu ✔
-- websocket
+- úkoly mohou mít 1 a více tagů
+- individuální a týmové úkoly
+- podpora více jazyků
+- vlastní MVC framework
+- notifikace na stránce
+
+
+## Obsah
+- úvod
+- rešerže
+    - porovnání realtime technik
+    - MVC architektura
+- použité technologie
+- design
+- vývoj MVC framework
+    - Cesty
+    - Model
+    - View
+    - Controller
+    - Session
+    - Migrace
+- závěr

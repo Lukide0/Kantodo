@@ -1,12 +1,12 @@
 ## cíle
-    - Websockety
+    - realtime todo aplikace
     - vlastní MVC
 ## Název práce
     - Kantodo
 ## Klíčové body
     - MVC
-    - Websockets
-    - Todo app
+    - Websockety
+    - Todo aplikace
 ## Kategorie
     - websocket
     - webová aplikace

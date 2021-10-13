@@ -157,12 +157,13 @@ const Editor = {
         let tmpText = "";
 
         const actions = {
-            switchMode: function() {
+            switchMode: function(btn) {
                 if (typeof editable.dataset.mode !== 'undefined' && editable.dataset.mode == 'preview') 
                 {
                     editable.dataset.mode = 'markdown';
                     editable.innerHTML = tmpText;
                     editable.contentEditable = true;
+                    btn.textContent = 'Normal';
                     return;
                 }
 
@@ -173,6 +174,7 @@ const Editor = {
                 filters.forEach(fn => { renderText = fn(renderText);  });
                 editable.contentEditable = false;
                 editable.innerHTML = renderText;
+                btn.textContent = 'Preview';
             },
 
             undo: function() {
@@ -262,10 +264,10 @@ const Editor = {
                 let btnAction = btn.dataset.action;
         
                 if (btnAction == "undo" || btnAction == "redo" || btnAction == 'switchMode') {
-                    actions[btnAction]();
+                    actions[btnAction](btn);
                     return;
                 }
-
+                console.log(btnAction);
 
                 let selection = window.getSelection();
         

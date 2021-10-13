@@ -41,11 +41,6 @@ class ClientLayout extends Layout
             <?=$headerContent;?>
         </head>
         <body>
-            <script>
-                function afterLoad(callback) {
-                    document.addEventListener('load', callback, {once: true});
-                }
-            </script>
             <header>
             <h1>Kantodo</h1>
             <nav>
@@ -76,7 +71,7 @@ class ClientLayout extends Layout
                     <span class="text"><?= t_('account') ?></span>
                 </a>
                 <script>
-                    afterLoad(
+                    window.addEventListener('load',
                         function() {
                             console.log("a");
                             let btn = document.querySelector("button[data-action=project]");
@@ -87,7 +82,6 @@ class ClientLayout extends Layout
                             });
                         }
                     );
-                    
                 </script>
             </nav>
         </header>

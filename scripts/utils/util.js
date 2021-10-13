@@ -46,4 +46,16 @@ function createElementFromTemplate(html) {
     return tmp.children[0];
 }
 
-export {moveAbs, getHeight, createElementFromTemplate}
+function initInput(el) {
+    if (el.value != "")
+        el.parentElement.classList.add("focus");
+
+    el.addEventListener("change", function() {
+        if (el.value == "")
+            el.parentElement.classList.remove("focus");
+        else if (!el.parentElement.classList.contains('focus'))
+            el.parentElement.classList.add("focus");
+    });
+}
+
+export {moveAbs, getHeight, createElementFromTemplate, initInput}

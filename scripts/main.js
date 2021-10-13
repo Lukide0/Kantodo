@@ -35,4 +35,4 @@ window.addEventListener("load", function() {
 
 
     
-}, {once: true});
+});

@@ -27,11 +27,9 @@ const EditorHTML = {
                 <ul class="group">
                     <li><button class="flat no-border no-padding" data-tooltip="code" data-action="code"><span class="icon round">code</span></button></li>
                 </ul>
-                <button class="space-huge-left mode flat no-border" data-action="switchMode">normal mode</button>
+                <button class="space-huge-left mode flat no-border" data-action="switchMode">normal</button>
             </div>
-            <div class="editable" contenteditable="true">
-                
-            </div>
+            <div class="editable" contenteditable="true"></div>
         </div>
         `;
         this._template = tmp.children[0];
