@@ -73,10 +73,13 @@ class ClientLayout extends Layout
                 <script>
                     window.addEventListener('load',
                         function() {
-                            console.log("a");
                             let btn = document.querySelector("button[data-action=project]");
                             let win = Modal.ModalProject.create();
                             win.setParent(document.body.querySelector('main'));
+                            win.setAction(function(data) {
+                                // TODO: switch to markdown mode
+                                console.log(data);
+                            });
                             btn.addEventListener('click', function(e) {
                                 win.show();
                             });

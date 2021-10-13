@@ -123,13 +123,11 @@ ModalProject.init = function() {
             </ul>
             <button class="space-huge-left mode flat no-border" data-action="switchMode">normal</button>
         </div>
-        <div class="editable" contenteditable="true">
-            
-        </div>
+        <div class="editable" contenteditable="true"></div>
     </div>
     <div class="row right space-big-top">
         <button data-action='close' class="flat space-medium-right">Cancel</button>
-        <button class="hover-shadow">Create</button>
+        <button class="hover-shadow" data-action='create'>Create</button>
     </div>
     `;
     this._template = tmp;
@@ -140,6 +138,16 @@ ModalProject.create = function() {
         this.init();
 
     let tmp = ModalWindow.create();
+    tmp.getData = function() {
+        return [tmp.element.querySelector('.text-field input').value, tmp.element.querySelector('.editable').textContent];
+    }
+
+    tmp.setAction = function(callback) {
+        tmp.element.querySelector('button[data-action=create]').addEventListener('click', function() {
+            callback(tmp.getData());
+        });
+    } 
+
     Editor.init(tmp.element.querySelector('.editor'));
 
     tmp.element.querySelector('button[data-action=close]').addEventListener('click', function() {
