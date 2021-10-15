@@ -7,8 +7,8 @@ namespace Kantodo\Core;
  */
 class Request
 {
-    const METHOD_GET  = 'get';
-    const METHOD_POST = 'post';
+    const METHOD_GET  = 'GET';
+    const METHOD_POST = 'POST';
 
     /**
      * Cesta na kterou bylo dotázáno
@@ -29,10 +29,10 @@ class Request
             return $this->path;
         }
 
-        $path = Application::$APP->request->getBody()[Request::METHOD_GET]['PATH_URL'] ?? "";
+        $path = BaseApplication::$APP->request->getBody()[Request::METHOD_GET]['PATH_URL'] ?? "";
 
         if ($path == "") {
-            $path = str_replace(Application::$URL_PATH, '', $_SERVER['REQUEST_URI']);
+            $path = str_replace(BaseApplication::$URL_PATH, '', $_SERVER['REQUEST_URI']);
         }
 
         $questionMarkPos = strpos($path, '?');
@@ -51,7 +51,7 @@ class Request
      */
     public function getMethod()
     {
-        return strtolower($_SERVER['REQUEST_METHOD']);
+        return $_SERVER['REQUEST_METHOD'];
     }
 
     /**
@@ -104,8 +104,9 @@ class Request
          */
         $body = [
             self::METHOD_POST => [],
-            self::METHOD_GET  => [],
+            self::METHOD_GET  => []
         ];
+    
         $body[self::METHOD_GET] = filter_input_array(INPUT_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? [];
 
         if ($this->getMethod() == self::METHOD_POST) {

@@ -9,6 +9,7 @@
 
 
 config.php
+**/routes.php
 **/config.json
 /Tests
 /Data

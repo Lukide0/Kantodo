@@ -7,14 +7,9 @@ use Kantodo\Core\Response;
 
 include_once 'loader/autoload.php';
 
-// TODO: remake lang to json and cache it 
-
 $APP = new Application();
 $APP->registerAuth(new Auth());
 $APP->session->start();
-
-// debug
-$APP->debugMode();
 
 // TODO: Mobilni verze
 if (!Application::configExits()) {

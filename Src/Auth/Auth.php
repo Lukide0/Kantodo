@@ -3,6 +3,7 @@
 namespace Kantodo\Auth;
 
 use Kantodo\Core\Application;
+use Kantodo\Core\BaseApplication;
 use Kantodo\Core\IAuth;
 use Kantodo\Models\UserModel;
 
@@ -38,7 +39,7 @@ class Auth implements IAuth
     public static function isLogged(): bool
     {
 
-        $session = Application::$APP->session;
+        $session = BaseApplication::$APP->session;
 
         if ($session->getExpiration('user') <= time()) {
             return false;
@@ -77,11 +78,11 @@ class Auth implements IAuth
             'password' => Auth::hashPassword($password, $email),
         ]);
 
-        $session = Application::$APP->session;
+        $session = BaseApplication::$APP->session;
 
         if ($user !== false) {
             $user['email'] = $email;
-            $user['role']  = Application::USER;
+            $user['role']  = BaseApplication::USER;
 
             $session->set("user", $user, time() + self::EXP);
 
@@ -98,6 +99,6 @@ class Auth implements IAuth
      */
     public static function signOut()
     {
-        Application::$APP->session->cleanData();
+        BaseApplication::$APP->session->cleanData();
     }
 }

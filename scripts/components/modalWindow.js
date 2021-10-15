@@ -1,4 +1,5 @@
 import { initInput } from '../utils/util.js';
+import Validation from '../utils/validation.js';
 import { simpleAnimation } from './../utils/animation.js';
 import Editor from './editor.js';
 
@@ -97,6 +98,7 @@ ModalProject.init = function() {
                 <span>Project name</span>
                 <input type="text">
             </div>
+            <div class="text"></div>
         </label>
     </div>
     <div class="editor">
@@ -138,15 +140,41 @@ ModalProject.create = function() {
         this.init();
 
     let tmp = ModalWindow.create();
+
+    
+    tmp.getName = function() {
+        return tmp.element.querySelector('.text-field input').value;
+    }
+    
+    tmp.getDescription = function() {
+        return tmp.element.querySelector('.editable').textContent;
+    }
+
     tmp.getData = function() {
         return [tmp.element.querySelector('.text-field input').value, tmp.element.querySelector('.editable').textContent];
     }
-
     tmp.setAction = function(callback) {
         tmp.element.querySelector('button[data-action=create]').addEventListener('click', function() {
             callback(tmp.getData());
         });
-    } 
+    }
+
+    tmp.setNameError = function(error) {
+        tmp.element.querySelector('.text-field').classList.add('error');
+        
+        tmp.element.querySelector('.text-field > .text').innerText = error;
+    }
+
+    tmp.setNameValidation = function(callback)
+    {
+        let element = tmp.element.querySelector('.text-field input');
+        Validation.eager(element, callback, element);
+    }
+
+    tmp.clearNameError = function() {
+        tmp.element.querySelector('.text-field').classList.remove('error');
+        tmp.element.querySelector('.text-field > .text').innerText = "";
+    }
 
     Editor.init(tmp.element.querySelector('.editor'));
 

@@ -12,6 +12,9 @@ return [
     'Kantodo\\Middlewares\\' => $dir . '/Pages/Middlewares/',
     'Kantodo\\Widgets\\'     => $dir . '/Pages/Widgets/',
 
+    // API
+    'Kantodo\\API\\Controllers\\' => $dir . '/API/Controllers/',
+
     // Migrations
     'Migrations\\'           => $dir . '/Migrations/Versions',
 ];

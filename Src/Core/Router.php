@@ -14,14 +14,14 @@ class Router
      *
      * @var Request
      */
-    public $request;
+    private $request;
 
     /**
      * Odpověd
      *
      * @var Response
      */
-    protected $response;
+    private $response;
     /**
      * Cesty
      *
@@ -60,7 +60,7 @@ class Router
      *
      * @return  void
      */
-    public function get(string $path, $callback, int $access = Application::GUEST, bool $strict = false)
+    public function get(string $path, $callback, int $access = BaseApplication::GUEST, bool $strict = false)
     {
         $this->routes[Request::METHOD_GET][$path] = ['callback' => $callback, 'access' => $access, 'strict' => $strict];
     }
@@ -75,7 +75,7 @@ class Router
      *
      * @return  void
      */
-    public function post(string $path, $callback, int $access = Application::GUEST, bool $strict = false)
+    public function post(string $path, $callback, int $access = BaseApplication::GUEST, bool $strict = false)
     {
         $this->routes[Request::METHOD_POST][$path] = ['callback' => $callback, 'access' => $access, 'strict' => $strict];
     }
@@ -91,7 +91,7 @@ class Router
      *
      * @return  void
      */
-    public function addRoute(string $method, string $path, $callback, int $access = Application::GUEST, bool $strict = false)
+    public function addRoute(string $method, string $path, $callback, int $access = BaseApplication::GUEST, bool $strict = false)
     {
         $this->routes[$method][$path] = ['callback' => $callback, 'access' => $access, 'strict' => $strict];
     }
@@ -194,6 +194,7 @@ class Router
     {
         $path   = $this->request->getPath();
         $method = $this->request->getMethod();
+
         $this->runPath($path, $method);
     }
 
@@ -210,9 +211,7 @@ class Router
         if (is_array($callback)) {
             $classMethod = $callback[1];
             $controller  = new $callback[0];
-
             $controller->action           = $classMethod;
-            Application::$APP->controller = $controller;
 
             try {
                 $controller->executeAllMiddlewares();
@@ -246,7 +245,7 @@ class Router
         [$callback, $params] = $this->match($path, $method);
 
         if ($callback === false) {
-            $this->handleErrorCode(Application::ERROR_NOT_FOUND);
+            $this->handleErrorCode(BaseApplication::ERROR_NOT_FOUND);
             return;
         }
         if (is_array($callback['callback'])) {
@@ -261,11 +260,9 @@ class Router
             $controller->access = $callback['access'];
 
             if (!$controller->hasAccess($callback['strict'])) {
-                $this->handleErrorCode(Application::ERROR_NOT_AUTHORIZED, [$callback['access'], Application::getRole(), $callback['strict']]);
+                $this->handleErrorCode(BaseApplication::ERROR_NOT_AUTHORIZED, [$callback['access'], BaseApplication::getRole(), $callback['strict']]);
                 return;
             }
-
-            Application::$APP->controller = $controller;
 
             $controller->executeAllMiddlewares($params);
 

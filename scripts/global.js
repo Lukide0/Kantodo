@@ -1,9 +1,10 @@
 import { Snackbar, Dialog, Banner } from "./components/modal.js";
 import { Menu, Item } from "./components/dropdown.js";
-import { XHR, Request, CONTENT_TYPE } from "./utils/request.js";
+import { XHR, Request as Action, CONTENT_TYPE } from "./utils/request.js";
 import EditorHTML from "./components/editorHTML.js";
 import {ModalWindow, ModalProject} from "./components/modalWindow.js";
 import Kantodo from "./kantodo.js";
+import Validation from "./utils/validation.js";
 
 window.Kantodo = Kantodo;
 
@@ -29,7 +30,10 @@ window.MDEditor = EditorHTML;
 window.Request = {
     XHR,
     CONTENT_TYPE,
-    Request
+    Action
 };
+
+//---- Validation ----//
+window.Validation = Validation;
 
 Kantodo.info("Globals loaded");

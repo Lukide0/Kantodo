@@ -75,10 +75,26 @@ class ClientLayout extends Layout
                         function() {
                             let btn = document.querySelector("button[data-action=project]");
                             let win = Modal.ModalProject.create();
+
                             win.setParent(document.body.querySelector('main'));
+
+                            win.setNameValidation(function(e, el){
+                                if (!el.value) {
+                                    win.setNameError('Empty');
+                                    return false;
+                                } else {
+                                    win.clearNameError();
+                                    return true;
+                                }
+                            });
                             win.setAction(function(data) {
-                                // TODO: switch to markdown mode
-                                console.log(data);
+                                if (!data[0]) 
+                                {
+                                    win.setNameError('Empty');
+                                }
+                                
+                                Request.Action('/API/create/project');
+
                             });
                             btn.addEventListener('click', function(e) {
                                 win.show();
