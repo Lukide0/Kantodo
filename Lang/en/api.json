@@ -1,0 +1,6 @@
+{
+    "empty": "Empty",
+    "user_id_missing": "User ID is missing",
+    "cannot_create": "Can not create",
+    "api_rate_limit_exceeded": "API rate limit exceeded"
+}

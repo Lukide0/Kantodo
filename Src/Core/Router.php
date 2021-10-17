@@ -209,9 +209,9 @@ class Router
     public function run($callback, array $params = [])
     {
         if (is_array($callback)) {
-            $classMethod = $callback[1];
-            $controller  = new $callback[0];
-            $controller->action           = $classMethod;
+            $classMethod        = $callback[1];
+            $controller         = new $callback[0];
+            $controller->action = $classMethod;
 
             try {
                 $controller->executeAllMiddlewares();

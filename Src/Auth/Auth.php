@@ -2,7 +2,6 @@
 
 namespace Kantodo\Auth;
 
-use Kantodo\Core\Application;
 use Kantodo\Core\BaseApplication;
 use Kantodo\Core\IAuth;
 use Kantodo\Models\UserModel;
@@ -99,6 +98,6 @@ class Auth implements IAuth
      */
     public static function signOut()
     {
-        BaseApplication::$APP->session->cleanData();
+        BaseApplication::$APP->session->cleanData('user');
     }
 }

@@ -8,7 +8,7 @@ use Kantodo\Core\Request;
 use Kantodo\Widgets\Form;
 use Kantodo\Widgets\Input;
 
-use function Kantodo\Core\Functions\t_;
+use function Kantodo\Core\Functions\t;
 
 /**
  * Přihlášení a registrace
@@ -28,7 +28,7 @@ class AuthView implements IView
 
         $errors = [];
         foreach ($signInErrors['empty'] ?? [] as $name) {
-            $errors[$name] = t_('empty_field', 'auth');
+            $errors[$name] = t('empty_field', 'auth');
         }
 
         if (isset($signInErrors['success']) && !$signInErrors['success']) {
@@ -52,14 +52,14 @@ class AuthView implements IView
         <body>
             <div class="container center middle full">
                 <div class="auth">
-                    <h2><?= t_('welcome_message', 'auth') ?></h2>
+                    <h2><?= t('welcome_message', 'auth') ?></h2>
                     <?= Form::start('/auth/signin', Request::METHOD_POST, 'container full-width middle') ?>
                         <?= Form::tokenCSRF() ?>
-                        <?= Input::text('signInEmail', t_('email', 'auth'), ['classes' => 'full-width', 'error' => $errors, 'value' => $email, 'autocomplete' => Input::AUTOCOMPLETE_EMAIL]); ?>
-                        <?= Input::password('signInPassword', t_('password', 'auth'), ['classes' => 'full-width', 'error' => $errors, 'autocomplete' => Input::AUTOCOMPLETE_CURRENT_PASSWORD]); ?>
-                        <button class="primary full-width center big space-huge-top space-huge-bottom"><?= t_('log_in', 'auth'); ?></button>
-                        <a href="?AAA" target="_blank" rel="noopener noreferrer" class="space-small-bottom"><?= t_('forgotten_password', 'auth'); ?></a>
-                        <p><?= t_('dont_have_account', 'auth') ?> <a href="#" onclick="let x=document.querySelectorAll('.auth > .container'); x[0].style.display='none'; x[1].style.display='flex';"><?= t_('register_here', 'auth') ?></a></p>
+                        <?= Input::text('signInEmail', t('email', 'auth'), ['classes' => 'full-width', 'error' => $errors, 'value' => $email, 'autocomplete' => Input::AUTOCOMPLETE_EMAIL]); ?>
+                        <?= Input::password('signInPassword', t('password', 'auth'), ['classes' => 'full-width', 'error' => $errors, 'autocomplete' => Input::AUTOCOMPLETE_CURRENT_PASSWORD]); ?>
+                        <button class="primary full-width center big space-huge-top space-huge-bottom"><?= t('log_in', 'auth'); ?></button>
+                        <a href="?AAA" target="_blank" rel="noopener noreferrer" class="space-small-bottom"><?= t('forgotten_password', 'auth'); ?></a>
+                        <p><?= t('dont_have_account', 'auth') ?> <a href="#" onclick="let x=document.querySelectorAll('.auth > .container'); x[0].style.display='none'; x[1].style.display='flex';"><?= t('register_here', 'auth') ?></a></p>
                     <?= Form::end() ?>
                     <div class="container full-width middle" style="display: none;">
                         <div class="row full-width h-space-between">
@@ -104,7 +104,7 @@ class AuthView implements IView
                         <script>
                             let snackbar;
                             window.addEventListener('load', function(){
-                                 snackbar = Modal.Snackbar.create("<?= t_('wrong_log_in_details', 'auth') ?>", []);
+                                 snackbar = Modal.Snackbar.create("<?= t('wrong_log_in_details', 'auth') ?>", []);
     
                                 snackbar.setParent(document.body);
     

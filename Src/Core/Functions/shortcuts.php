@@ -1,8 +1,8 @@
-<?php 
+<?php
 
 namespace Kantodo\Core\Functions;
 
-use Kantodo\Core\Application;
+use Kantodo\Core\BaseApplication;
 
 /**
  * Zkratka pro překlady
@@ -12,9 +12,7 @@ use Kantodo\Core\Application;
  *
  * @return  string          slovo přeložené
  */
-function t_(string $name, string $group = 'global')
+function t(string $name, string $group = 'global')
 {
-    return Application::$APP->lang->get($name, $group);
+    return BaseApplication::$APP->lang->get($name, $group);
 }
-
-?>

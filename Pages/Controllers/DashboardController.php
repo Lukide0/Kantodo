@@ -15,7 +15,7 @@ class DashboardController extends AbstractController
      *
      * @return  void
      */
-    public function dashboard()
+    public function view()
     {
         $projectModel = new ProjectModel();
 

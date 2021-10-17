@@ -4,7 +4,9 @@ namespace Kantodo\Views\Layouts;
 
 use Kantodo\Core\Application;
 use Kantodo\Core\Base\Layout;
-use function Kantodo\Core\Functions\t_;
+
+use function Kantodo\Core\Functions\base64EncodeUrl;
+use function Kantodo\Core\Functions\t;
 
 /**
  * Layout pro uživatele
@@ -46,29 +48,29 @@ class ClientLayout extends Layout
             <nav>
                 <a class="item active" href="/">
                     <span class="icon outline medium">dashboard</span>
-                    <span class="text"><?= t_('dashboard') ?></span>
+                    <span class="text"><?= t('dashboard') ?></span>
                 </a>
                 <a class="item" href="/calendar">
                     <span class="icon outline medium">event</span>
-                    <span class="text"><?= t_('calendar') ?></span>
+                    <span class="text"><?= t('calendar') ?></span>
                 </a>
                 <div class="item dropdown expanded">
                     <div>
                         <span class="icon outline medium">folder</span>
-                        <span class="text"><?= t_('projects') ?></span>
+                        <span class="text"><?= t('projects') ?></span>
                     </div>
                     <ul>
                         <?php 
                         foreach ($params['projects'] ?? [] as $project):
                         ?>
-                        <li data-id='<?= $project['uuid'] ?>'><?= $project['name'] ?></li>
+                        <li data-id='<?= $project['uuid'] ?>'><a href="/project/<?= base64EncodeUrl($project['uuid']) ?>"><?= $project['name'] ?></a></li>
                         <?php endforeach; ?>
-                        <li class="add"><button class="flat no-border" data-action="project"><?= t_('add') ?></button></li>
+                        <li class="add"><button class="flat no-border" data-action="project"><?= t('add') ?></button></li>
                     </ul>
                 </div>
                 <a class="item last" href="/account">
                     <span class="icon outline medium">account_circle</span>
-                    <span class="text"><?= t_('account') ?></span>
+                    <span class="text"><?= t('account') ?></span>
                 </a>
                 <script>
                     window.addEventListener('load',
@@ -93,8 +95,33 @@ class ClientLayout extends Layout
                                     win.setNameError('Empty');
                                 }
                                 
-                                Request.Action('/API/create/project');
+                                let response = Request.Action('/API/create/project', 'POST', {name: data[0], description: data[1]});
+                                response.then(res => {
+                                    let project = res.data.project;
+                                    Kantodo.success(`Created project (${project.uuid})`);
 
+                                    let addProjectItem = btn.parentElement;
+
+                                    let newProject = document.createElement('li');
+                                    newProject.dataset.id = project.uuid;
+                                    newProject.innerText = data[0];
+
+                                    addProjectItem.parentElement.insertBefore(newProject, addProjectItem);
+                                    
+                                    win.clear();
+
+                                    win.hide();
+
+                                    let snackbar = Modal.Snackbar.create('<?= t('project_was_created') ?>');
+
+                                    snackbar.setParent(document.body.querySelector('main'));
+                                    snackbar.show({center: true, top: 5}, 4000, true);
+
+                                }).catch(reason => {
+                                    let resJSON = JSON.parse(reason);
+                                    
+                                    
+                                });
                             });
                             btn.addEventListener('click', function(e) {
                                 win.show();

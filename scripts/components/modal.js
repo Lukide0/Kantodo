@@ -27,7 +27,7 @@ const Snackbar = {
                 parent.appendChild(this.element);
             },
 
-            show(move, visible = 4000) {
+            show(move, visible = 4000, destroy = false) {
                 moveAbs(move, this.element);
                 simpleAnimation(
                     this.element,
@@ -40,8 +40,10 @@ const Snackbar = {
                         visibility: 'visible',
                     }
                 );
-
-                setTimeout(this.hide, visible, this);
+                if (destroy)
+                    setTimeout(this.destroy, visible, this);
+                else
+                    setTimeout(this.hide, visible, this);
             },
             hide(self) {
                 let element;
@@ -62,21 +64,35 @@ const Snackbar = {
                     }
                 );
             },
-            destroy() {
-                if (this.element.style.visibility == 'visible')
-                    this.hide();
+            destroy(self) {
+                let element;
+                if (this.element === undefined)
+                    element = self.element;
+                else
+                    element = this.element;
 
-                this.element.remove();
+                if (element.style.visibility == 'visible') {
+                    self.hide();
+                    setTimeout(function() {element.remove()}, 250);
+                }
+
+                element.remove();
+
             }
 
         };
 
         let btn = tmp.querySelector('button');
-        btn.innerHTML = button.text ?? "";
-
-        if (typeof button.click === 'function' && button.click !== null)
-            btn.onclick = function (e) { button.click(snackbarObj, e) };
-        btn.classList.add(color);
+        
+        if (button) {
+            btn.innerHTML = button.text;
+            
+            if (typeof button.click === 'function' && button.click !== null)
+                btn.onclick = function (e) { button.click(snackbarObj, e) };
+            btn.classList.add(color);
+        }
+        else
+            btn.remove();
 
         return snackbarObj;
     }

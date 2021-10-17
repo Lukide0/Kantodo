@@ -6,6 +6,8 @@ use Kantodo\Core\Application;
 use Kantodo\Core\Base\IView;
 use Kantodo\Widgets\Task;
 
+use function Kantodo\Core\Functions\t;
+
 /**
  * Hlavní stránka
  */
@@ -20,12 +22,13 @@ class DashboardView implements IView
      */
     public function Render(array $params = [])
     {
+        // TODO: pridavani ukolu
         ?>
         <div class="row h-space-between">
-            <h2>Moje práce</h2>
+            <h2><?= t('my_work', 'dashboard') ?></h2>
             <div class="row">
                 <div class="button-dropdown">
-                    <button class="filled">Přidat úkol</button>
+                    <button class="filled"><?= t('add_task', 'dashboard') ?></button>
                     <button class="dropdown"><span class="icon round">expand_more</span></button>
                 </div>
                 <button class="flat icon outline space-medium-left">settings</button>

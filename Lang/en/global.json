@@ -3,5 +3,6 @@
     "calendar": "Calendar",
     "projects": "Projects",
     "add": "Add",
-    "account": "Account"
+    "account": "Account",
+    "project_was_created": "Project was created"
 }

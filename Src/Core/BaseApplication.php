@@ -90,6 +90,18 @@ class BaseApplication
     public $session;
 
     /**
+     * Jazyk
+     *
+     * @var string
+     */
+    public static $LANG = 'en';
+
+    /**
+     * @var Lang
+     */
+    public $lang;
+
+    /**
      * @var array<string,array<callable>>
      */
     private $eventListeners = [];
@@ -106,12 +118,13 @@ class BaseApplication
             )
         );
 
-        self::$URL_PATH      = str_replace($_SERVER['DOCUMENT_ROOT'], '', (str_replace('\\', '/', self::$ROOT_DIR)));
-        self::$DATA_PATH  = self::$ROOT_DIR . '/data/';
+        self::$URL_PATH  = str_replace($_SERVER['DOCUMENT_ROOT'], '', (str_replace('\\', '/', self::$ROOT_DIR)));
+        self::$DATA_PATH = self::$ROOT_DIR . '/data/';
 
         $this->request  = new Request();
         $this->response = new Response();
         $this->session  = new Session();
+        $this->lang     = new Lang();
 
         if ($this->configExits()) {
             $this->loadConfig();

@@ -175,6 +175,29 @@ class Session
     }
 
     /**
+     * Nastaví klíč s hodnotou v již existujcím klíči
+     *
+     * @param   string  $key        klíč
+     * @param   string|null   $innerKey   klíč v klíči
+     * @param   mixed  $value       hodnota
+     *
+     * @return  void
+     */
+    public function setInside(string $key, $innerKey, $value)
+    {
+        if (!isset($_SESSION['__KAN']['DATA'][$key])) {
+            return;
+        }
+
+        if ($innerKey == null) {
+            $_SESSION['__KAN']['DATA'][$key]['value'] = $value;
+        } else {
+            $_SESSION['__KAN']['DATA'][$key]['value'][$innerKey] = $value;
+        }
+
+    }
+
+    /**
      * Nastaví expiraci
      *
      * @param   string  $key  klíč
@@ -305,9 +328,13 @@ class Session
      *
      * @return  void
      */
-    public function cleanData()
+    public function cleanData(string $key = null)
     {
-        foreach ($_SESSION['__KAN']['DATA'] as $key => $__) {
+        if ($key === null) {
+            foreach ($_SESSION['__KAN']['DATA'] as $key => $__) {
+                unset($_SESSION['__KAN']['DATA'][$key]);
+            }
+        } else {
             unset($_SESSION['__KAN']['DATA'][$key]);
         }
     }

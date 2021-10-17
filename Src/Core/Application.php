@@ -2,9 +2,6 @@
 
 namespace Kantodo\Core;
 
-use Kantodo\Core\Base\AbstractController;
-use Kantodo\Core\Database\Connection;
-
 /**
  * Aplikace
  */
@@ -45,13 +42,6 @@ class Application extends BaseApplication
     public static $STYLE_URL;
 
     /**
-     * Jazyk
-     *
-     * @var string
-     */
-    public static $LANG = 'en';
-
-    /**
      * @var bool
      */
     public static $INSTALLING = false;
@@ -60,11 +50,6 @@ class Application extends BaseApplication
      * @var HeaderHTML
      */
     public $header;
-
-    /**
-     * @var Lang
-     */
-    public $lang;
 
     /**
      * @var Router
@@ -78,13 +63,12 @@ class Application extends BaseApplication
         self::$APP = $this;
 
         self::$MIGRATION_DIR = self::$ROOT_DIR . '/migrations';
-        self::$SCRIPT_URL = self::$URL_PATH . '/scripts/';
-        self::$STYLE_URL  = self::$URL_PATH . '/styles/';
-        self::$PAGES_DIR  = self::$ROOT_DIR . '/Pages';
+        self::$SCRIPT_URL    = self::$URL_PATH . '/scripts/';
+        self::$STYLE_URL     = self::$URL_PATH . '/styles/';
+        self::$PAGES_DIR     = self::$ROOT_DIR . '/Pages';
 
-        $this->header   = new HeaderHTML();
-        $this->lang = new Lang();
-        $this->router   = new Router($this->request, $this->response);
+        $this->header = new HeaderHTML();
+        $this->router = new Router($this->request, $this->response);
     }
 
     /**

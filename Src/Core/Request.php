@@ -104,9 +104,9 @@ class Request
          */
         $body = [
             self::METHOD_POST => [],
-            self::METHOD_GET  => []
+            self::METHOD_GET  => [],
         ];
-    
+
         $body[self::METHOD_GET] = filter_input_array(INPUT_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? [];
 
         if ($this->getMethod() == self::METHOD_POST) {

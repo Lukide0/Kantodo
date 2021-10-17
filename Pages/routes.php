@@ -9,4 +9,5 @@ Application::$APP->router->addRoute(Request::METHOD_GET, '/auth', [Kantodo\Contr
 Application::$APP->router->addRoute(Request::METHOD_GET, '/auth/signout', [Kantodo\Controllers\AuthController::class,'signOut'], Application::USER, false);
 Application::$APP->router->addRoute(Request::METHOD_POST, '/auth/signin', [Kantodo\Controllers\AuthController::class,'signIn'], Application::GUEST, true);
 Application::$APP->router->addRoute(Request::METHOD_POST, '/auth/create', [Kantodo\Controllers\AuthController::class,'createAccount'], Application::GUEST, true);
-Application::$APP->router->addRoute(Request::METHOD_GET, '/', [Kantodo\Controllers\DashboardController::class,'dashboard'], Application::USER, false);
+Application::$APP->router->addRoute(Request::METHOD_GET, '/', [Kantodo\Controllers\DashboardController::class,'view'], Application::USER, false);
+Application::$APP->router->addRoute(Request::METHOD_GET, '/project/{projectUUID}', [Kantodo\Controllers\ProjectController::class,'view'], Application::USER, false);

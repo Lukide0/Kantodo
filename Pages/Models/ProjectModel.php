@@ -154,7 +154,7 @@ class ProjectModel extends Model
      * @param   int     $userID  id tvůrce
      * @param   string  $name    název projektu
      *
-     * @return  int|false        vrací id záznamu nebo false pokud se nepovedlo vložit do databáze
+     * @return  array<string,mixed>|false        vrací id a UUID záznamu nebo false pokud se nepovedlo vložit do databáze
      */
     public function create(int $userID, string $name)
     {
@@ -174,9 +174,13 @@ class ProjectModel extends Model
 
             // neexistuje pozice admin v databázi
             if ($posID === false) {
-                // smaže projekt
-                $this->delete($projID);
-                return false;
+                $posID = $this->createPosition('admin');
+                
+                if ($posID === false) {
+                    // smaže projekt
+                    $this->delete($projID);
+                    return false;
+                }
             }
 
             // vytvoří admina
@@ -189,7 +193,7 @@ class ProjectModel extends Model
                 return false;
             }
 
-            return $projID;
+            return ['id' => $projID, 'uuid' => $uuid];
         }
 
         return false;
@@ -215,7 +219,7 @@ class ProjectModel extends Model
         if ($status === true) {
             $result = $sth->fetch(PDO::FETCH_ASSOC);
 
-            if (count($result) != 0) {
+            if ($result !== false && count($result) != 0) {
                 return $result['project_position_id'];
             }
 

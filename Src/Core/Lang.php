@@ -29,41 +29,52 @@ class Lang
     {
         /** @phpstan-ignore-next-line */
         $pathCache = STORAGE_CACHE . '/Lang';
-        $path = Application::$ROOT_DIR . '/Lang';
-        $lang = Application::$LANG;
-        
-        $pathPHP = "{$pathCache}/{$lang}_{$group}.php";
+        $path      = Application::$ROOT_DIR . '/Lang';
+        $lang      = Application::$LANG;
+
+        $pathPHP  = "{$pathCache}/{$lang}_{$group}.php";
         $pathJSON = "{$path}/{$lang}/{$group}.json";
 
         $status = true;
-        
+
         if (isset($this->data[$group])) {
             return $status;
         }
-        
+
         if (!is_dir("{$path}/{$lang}")) {
-            
+
             $lang   = $this->default;
             $status = false;
         }
 
-        $fileNotExists = !file_exists($pathPHP);
-        $fileModified = filemtime($pathPHP) < filemtime($pathJSON);
-        if ($fileNotExists || $fileModified || Application::$DEBUG_MODE) {
-            if (file_exists($pathJSON)) {
-                
-                /** @phpstan-ignore-next-line */
-                $json = json_decode(file_get_contents($pathJSON), true);
-                $this->data[$group] = $json;
-                return $this->cacheJson($json, $lang, $group);
-            } else {
-                return false;
-            }
+        $filePHPExists = file_exists($pathPHP);
+        $fileJSONExists = file_exists($pathJSON);
 
+        if (!$fileJSONExists) 
+            return false;
+
+        
+        if (!$filePHPExists || Application::$DEBUG_MODE) 
+        {
+            /** @phpstan-ignore-next-line */
+            $json               = json_decode(file_get_contents($pathJSON), true);
+            $this->data[$group] = $json;
+            return $this->cacheJson($json, $lang, $group);
         }
-    
-        $this->data[$group] = include $pathPHP;
-        return true;
+
+        $fileModified  = filemtime($pathPHP) < filemtime($pathJSON);
+
+
+        if ($fileModified) {
+            /** @phpstan-ignore-next-line */
+            $json               = json_decode(file_get_contents($pathJSON), true);
+            $this->data[$group] = $json;
+            return $this->cacheJson($json, $lang, $group);
+        } else {
+            $this->data[$group] = include $pathPHP;
+            return true;
+        }
+
 
     }
 
@@ -77,10 +88,11 @@ class Lang
      */
     public function get(string $name, string $group = 'global')
     {
-        if (!isset($this->data[$group]))
+        if (!isset($this->data[$group])) {
             $this->load($group);
+        }
 
-        return $this->data[$group][$name] ?? "{$group}_{$name}";
+        return $this->data[$group][$name] ?? "{$group}:{$name}";
     }
 
     /**
@@ -99,7 +111,6 @@ class Lang
 
         $fileContent = "<?php\n\nreturn [\n";
 
-        
         foreach ($json as $key => $value) {
             /**
              * @var string
@@ -111,8 +122,9 @@ class Lang
 
         $fileContent .= "];";
 
-        if (!is_dir($path))
+        if (!is_dir($path)) {
             mkdir($path, 0777, true);
+        }
 
         return file_put_contents($path . "/{$lang}_{$group}.php", $fileContent) !== false;
     }

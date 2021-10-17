@@ -2,7 +2,6 @@
 
 namespace Kantodo\Core\Functions;
 
-
 /**
  * https://www.php.net/manual/en/function.base64-encode.php#123098
  *
