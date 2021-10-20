@@ -1,5 +1,6 @@
 @use "../abstracts" as *;
 
+// TODO: background color (error, info, success, default)
 .snackbar {
     --color: #{color(primary)};
     @include material-shadow(8);

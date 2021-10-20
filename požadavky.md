@@ -24,4 +24,5 @@
     - Controller
     - Session
     - Migrace
+- Funkce aplikace
 - závěr
