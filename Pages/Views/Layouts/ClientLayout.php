@@ -65,7 +65,7 @@ class ClientLayout extends Layout
                         ?>
                         <li data-id='<?= $project['uuid'] ?>'><a href="/project/<?= base64EncodeUrl($project['uuid']) ?>"><?= $project['name'] ?></a></li>
                         <?php endforeach; ?>
-                        <li class="add"><button class="flat no-border" data-action="project"><?= t('add') ?></button></li>
+                        <li class="add"><button class="flat no-border info" data-action="project"><span class="icon outline small">add_box</span><?= t('add') ?></button></li>
                     </ul>
                 </div>
                 <a class="item last" href="/account">
@@ -112,15 +112,13 @@ class ClientLayout extends Layout
 
                                     win.hide();
 
-                                    let snackbar = Modal.Snackbar.create('<?= t('project_was_created') ?>');
+                                    let snackbar = Modal.Snackbar.create('<?= t('project_was_created') ?>', null, 'success');
 
                                     snackbar.setParent(document.body.querySelector('main'));
                                     snackbar.show({center: true, top: 5}, 4000, true);
 
                                 }).catch(reason => {
-                                    let resJSON = JSON.parse(reason);
-                                    
-                                    
+                                    Kantodo.error(reason);
                                 });
                             });
                             btn.addEventListener('click', function(e) {
@@ -138,7 +136,6 @@ class ClientLayout extends Layout
 
         </html>
 <?php
-
     }
 }
 

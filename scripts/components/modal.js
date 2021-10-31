@@ -12,12 +12,15 @@ const Snackbar = {
         </div>
         `);
     },
-    create(label, button, color = 'primary') {
+    create(label, button = null, color = null) {
         if (this._template == null)
             this.init();
 
         let tmp = this._template.cloneNode(true);
         tmp.querySelector('p').innerHTML = label;
+
+        if (color)
+            tmp.classList.add(color);
 
         tmp.style.visibility = 'hidden';
 
@@ -89,7 +92,6 @@ const Snackbar = {
             
             if (typeof button.click === 'function' && button.click !== null)
                 btn.onclick = function (e) { button.click(snackbarObj, e) };
-            btn.classList.add(color);
         }
         else
             btn.remove();

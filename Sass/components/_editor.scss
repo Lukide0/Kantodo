@@ -39,5 +39,10 @@
         & > button {
             margin-left: auto;
         }
+
+        & button > .icon {
+            padding: space(small);
+            margin-right: 0;
+        }
     }
 }

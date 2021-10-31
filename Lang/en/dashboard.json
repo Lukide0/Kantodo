@@ -1,4 +1,8 @@
 {
     "my_work": "My work",
-    "add_task": "Add task"
+    "add_task": "Add task",
+    "task_name": "Task name",
+    "create_task": "Create task",
+    "select_project": "Select project",
+    "attachment": "Attachment"
 }

@@ -2,7 +2,7 @@
 
 // TODO: background color (error, info, success, default)
 .snackbar {
-    --color: #{color(primary)};
+    --color: transparent;
     @include material-shadow(8);
     position: absolute;
     top: 0;
@@ -14,6 +14,7 @@
     color: $snackbar-color-text;
     font-size: fontSize(regular);
     border-radius: borderRadius(small);
+    border-left: borderRadius(regular) solid var(--color);
 
     & > button {
         all: unset;

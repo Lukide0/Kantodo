@@ -3,6 +3,7 @@
 use Kantodo\Auth\Auth;
 use Kantodo\API\API;
 use Kantodo\API\Controllers\ProjectController;
+use Kantodo\API\Controllers\TaskController;
 use Kantodo\API\Response;
 use Kantodo\Core\BaseApplication;
 
@@ -40,6 +41,7 @@ if (!$session->get('API', false))
 
 
 $API->router->post('create/project', [ProjectController::class, 'create'], BaseApplication::USER);
+$API->router->post('create/task', [TaskController::class, 'create'], BaseApplication::USER);
 
 $API->run();
 

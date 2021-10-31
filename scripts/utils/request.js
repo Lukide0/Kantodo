@@ -12,9 +12,19 @@ function Request(url, method = 'GET', params = {}, sentEmpty = false, contentTyp
         const xhrOBJ = XHR(url, method, params, sentEmpty, contentType);
         xhrOBJ.xhr.onload = function() {
             if (this.status >= 200 && this.status < 300) {
-                resolve(JSON.parse(xhrOBJ.xhr.response));
+                try {
+                    resolve(JSON.parse(xhrOBJ.xhr.response));
+                } catch (error) {
+                    reject({
+                        status: xhrOBJ.xhr.status,
+                        statusText: "JSON ERROR"
+                    });
+                }
             } else {
-                reject(xhrOBJ.xhr.response);
+                reject({
+                    status: xhrOBJ.xhr.status,
+                    statusText: xhrOBJ.xhr.statusText
+                });
             }
         };
 

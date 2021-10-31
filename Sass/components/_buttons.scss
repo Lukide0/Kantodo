@@ -90,7 +90,7 @@ button {
     & > .icon {
         font-weight: 500;
         font-size: $icon-small;
-        padding: space(small);
+        margin-right: space(small);
         color: fontColor(900);
     }
 

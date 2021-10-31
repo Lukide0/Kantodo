@@ -3,6 +3,9 @@
     "calendar": "Calendar",
     "projects": "Projects",
     "add": "Add",
+    "or": "or",
+    "cancel": "cancel",
+    "create": "create",
     "account": "Account",
     "project_was_created": "Project was created"
 }
