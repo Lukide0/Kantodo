@@ -6,6 +6,7 @@ use Kantodo\API\API;
 use Kantodo\Core\Base\AbstractController;
 use Kantodo\Core\Request;
 use Kantodo\API\Response;
+use Kantodo\Core\Validation\Data;
 use Kantodo\Models\TaskModel;
 
 use function Kantodo\Core\Functions\t;
@@ -18,7 +19,19 @@ class TaskController extends AbstractController
         $response = API::$APP->response;
         $session = API::$APP->session;
 
+        $keys = [
+            'task_name',
+        ];
+
+        if (Data::isEmpty($body[Request::METHOD_POST], $keys)) 
+        {
+            $response->fail(['task_name' => t('empty', 'api')]);
+            exit;
+        }
+
         var_dump($body);
+
+        
 
         // if (empty($body[Request::METHOD_POST]['name'])) 
         // {

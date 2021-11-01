@@ -38,7 +38,7 @@ class DashboardView implements IView
                         <label class="text-field">
                             <div class="field">
                                 <span><?= t('task_name', 'dashboard') ?></span>
-                                <input type="text" data-input='name'>
+                                <input type="text" data-input='task_name'>
                             </div>
                             <div class="text"></div>
                         </label>
