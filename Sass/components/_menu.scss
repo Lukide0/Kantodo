@@ -14,12 +14,15 @@ ul.dropdown-menu {
 
     & > li {
         padding: space(regular) space(huge) space(regular) space(medium);
-        display: grid;
-        grid-template-columns: $icon-small 1fr $icon-small;
-        gap: space(medium);
         white-space: nowrap;
         align-items: center;
         cursor: pointer;
+        
+        &.icon {
+            display: grid;
+            grid-template-columns: $icon-small 1fr $icon-small;
+            gap: space(medium);
+        }
 
         & > .icon {
             margin-right: space(medium);

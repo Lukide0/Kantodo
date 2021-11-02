@@ -8,6 +8,8 @@ use Kantodo\Core\Request;
 use Kantodo\API\Response;
 use Kantodo\Models\ProjectModel;
 
+use function Kantodo\Core\Functions\base64DecodeUrl;
+use function Kantodo\Core\Functions\base64EncodeUrl;
 use function Kantodo\Core\Functions\t;
 
 class ProjectController extends AbstractController
@@ -39,6 +41,14 @@ class ProjectController extends AbstractController
             $response->error(t('cannot_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
         }
 
-        $response->success(['project' => [ 'uuid' => $status['uuid']]], Response::STATUS_CODE_CREATED);
+        $response->success([
+            'project' => 
+                [
+                    'uuid' => $status['uuid'],
+                    'uuidSafe' => base64EncodeUrl($status['uuid'])
+                ]
+            ],
+            Response::STATUS_CODE_CREATED
+        );
     }
 }

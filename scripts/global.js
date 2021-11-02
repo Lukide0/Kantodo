@@ -1,7 +1,6 @@
 import { Snackbar, Dialog, Banner } from "./components/modal.js";
 import { Menu, Item } from "./components/dropdown.js";
 import { XHR, Request as Action, CONTENT_TYPE } from "./utils/request.js";
-import EditorHTML from "./components/editorHTML.js";
 import { EditorModalWindow, ModalProject } from "./components/modalWindow.js";
 import Kantodo from "./kantodo.js";
 import Validation from "./utils/validation.js";
@@ -22,9 +21,6 @@ window.Dropdown = {
     Menu,
     Item
 };
-
-//---- Editor ----//
-window.MDEditor = EditorHTML;
 
 //---- Request ----//
 window.Request = {

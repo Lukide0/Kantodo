@@ -39,7 +39,6 @@ if (!$session->get('API', false))
     $session->setInside('API', null, ['actionCount' => ++$info['actionCount'], 'lastAction' => time()]);
 }
 
-
 $API->router->post('create/project', [ProjectController::class, 'create'], BaseApplication::USER);
 $API->router->post('create/task', [TaskController::class, 'create'], BaseApplication::USER);
 

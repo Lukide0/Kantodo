@@ -8,7 +8,7 @@ const Menu = {
             items,
             render() {
                 element.innerHTML = "";
-
+                element.setAttribute('tabindex', -1);
                 items.forEach(item => {
                     item.render();
                     element.appendChild(item.element);
@@ -19,8 +19,10 @@ const Menu = {
 };
 
 const Item = {
-    create(text, icon = null, items = []) {
+    create(text, action = null,icon = null, items = []) {
         let element = document.createElement('li');
+        if (typeof action === 'function')
+            element.addEventListener('click', action);
 
         return {
             element,

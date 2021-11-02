@@ -41,6 +41,12 @@ class ClientLayout extends Layout
             <script src="<?= Application::$SCRIPT_URL ?>main.js"></script>
             <script src="<?= Application::$SCRIPT_URL ?>global.js" type="module"></script>
             <?=$headerContent;?>
+            <!-- MD editor - START-->
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+            <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/highlight.js/latest/highlight.min.js"></script>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/highlight.js/latest/styles/github.min.css">
+            <!-- MD editor - END-->
         </head>
         <body>
             <header>
@@ -63,7 +69,7 @@ class ClientLayout extends Layout
                         <?php 
                         foreach ($params['projects'] ?? [] as $project):
                         ?>
-                        <li data-id='<?= $project['uuid'] ?>'><a href="/project/<?= base64EncodeUrl($project['uuid']) ?>"><?= $project['name'] ?></a></li>
+                        <li data-project-id='<?= $project['uuid'] ?>'><a href="/project/<?= base64EncodeUrl($project['uuid']) ?>"><?= $project['name'] ?></a></li>
                         <?php endforeach; ?>
                         <li class="add"><button class="flat no-border info" data-action="project"><span class="icon outline small">add_box</span><?= t('add') ?></button></li>
                     </ul>
@@ -73,6 +79,9 @@ class ClientLayout extends Layout
                     <span class="text"><?= t('account') ?></span>
                 </a>
                 <script>
+                    const projects = [];
+                    document.querySelectorAll('[data-project-id]').forEach(el => projects.push({ id: el.dataset.projectId, name: el.children[0].textContent}));
+
                     window.addEventListener('load',
                         function() {
                             let btn = document.querySelector("button[data-action=project]");
@@ -95,7 +104,7 @@ class ClientLayout extends Layout
                                     win.setNameError('Empty');
                                 }
                                 
-                                let response = Request.Action('/API/create/project', 'POST', {name: data[0], description: data[1]});
+                                let response = Request.Action('/API/create/project', 'POST', {name: data[0]});
                                 response.then(res => {
                                     let project = res.data.project;
                                     Kantodo.success(`Created project (${project.uuid})`);
@@ -103,13 +112,12 @@ class ClientLayout extends Layout
                                     let addProjectItem = btn.parentElement;
 
                                     let newProject = document.createElement('li');
-                                    newProject.dataset.id = project.uuid;
-                                    newProject.innerText = data[0];
+                                    newProject.dataset['projectId'] = project.uuid;
+                                    newProject.innerHTML = `<a href="/project/${project.uuidSafe}">${data[0]}</a>`;
+                                    projects.push({id: project.uuid, name: data[0]});
 
                                     addProjectItem.parentElement.insertBefore(newProject, addProjectItem);
-                                    
                                     win.clear();
-
                                     win.hide();
 
                                     let snackbar = Modal.Snackbar.create('<?= t('project_was_created') ?>', null, 'success');
@@ -118,6 +126,7 @@ class ClientLayout extends Layout
                                     snackbar.show({center: true, top: 5}, 4000, true);
 
                                 }).catch(reason => {
+                                    console.log(reason);
                                     Kantodo.error(reason);
                                 });
                             });

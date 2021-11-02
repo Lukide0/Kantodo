@@ -3,6 +3,7 @@
 .text-field {
     --color: #{color(primary)};
     z-index: 2;
+    position: relative;
 
     & > .field {
         position: relative;
@@ -82,6 +83,10 @@
         & > .text {
             color: color(error);
         }
+
+        & > .field::before {
+            color: color(error) !important;
+        }
     }
 
     &.outline {
@@ -116,6 +121,62 @@
             &::after {
                 all: unset;
             }
+        }
+    }
+
+    &.selector {
+        .field {
+
+            &::before {
+                @include pseudo-icon('arrow_drop_down');
+                position: absolute;
+                right: space(medium);
+                top: 50%;
+                font-size: $icon-big;
+                color: fontColor(800);
+                transform: translate(0,-50%);
+                transition: 200ms color ease-out;
+            }
+            
+            & > input {
+                padding-right: space(big) + $icon-small + 10px;
+            }
+
+            
+        }
+
+        &:focus-within:not(.active) {
+            .field::before {
+                transform: translate(0, -50%) scaleY(-1);
+                color: var(--color);
+            }
+
+            & > .options {
+                visibility: visible;
+                opacity: 1;
+                transition: 200ms ease-out;
+            }
+        }
+
+        &.active, &.focus  {
+            &.outline span {
+                top: 0;
+                transform: translate(0, -50%);
+            }
+
+            & span {
+                font-size: fontSize(small);
+                top: space(small);
+            }
+        }
+
+        & > .options {
+            @include material-shadow(5);
+            width: 100%;
+            z-index: 99;
+            visibility: hidden;
+            opacity: 0;
+            max-width: 100%;
         }
     }
 }

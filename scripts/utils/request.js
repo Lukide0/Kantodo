@@ -17,13 +17,15 @@ function Request(url, method = 'GET', params = {}, sentEmpty = false, contentTyp
                 } catch (error) {
                     reject({
                         status: xhrOBJ.xhr.status,
-                        statusText: "JSON ERROR"
+                        statusText: "JSON ERROR",
+                        response: xhrOBJ.xhr.responseText
                     });
                 }
             } else {
                 reject({
                     status: xhrOBJ.xhr.status,
-                    statusText: xhrOBJ.xhr.statusText
+                    statusText: xhrOBJ.xhr.statusText,
+                    response: xhrOBJ.xhr.responseText
                 });
             }
         };

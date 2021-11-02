@@ -43,30 +43,7 @@ class DashboardView implements IView
                             <div class="text"></div>
                         </label>
                         <div class="editor">
-                            <div class="menu">
-                                <ul class="group">
-                                    <li><button class="flat no-border no-padding" data-tooltip="undo" data-action="undo" data-select="none"><span class="icon round">undo</span></button></li>
-                                    <li><button class="flat no-border no-padding" data-tooltip="redo" data-action="redo"><span class="icon round">redo</span></button></li>
-                                </ul>
-                                <ul class="group">
-                                    <li><button class="flat no-border no-padding" data-tooltip="bold" data-action="bold"><span class="icon round">format_bold</span></button></li>
-                                    <li><button class="flat no-border no-padding" data-tooltip="italic" data-action="italic"><span class="icon round">format_italic</span></button></li>
-                                </ul>
-                                <ul class="group">
-                                    <li><button class="flat no-border no-padding" data-tooltip="heading" data-action="heading" data-select="none"><span class="icon round">format_size</span></button></li>
-                                    <li><button class="flat no-border no-padding" data-tooltip="strikethrough" data-action="strikethrough"><span class="icon round">strikethrough_s</span></button></li>
-                                    <li><button class="flat no-border no-padding" data-tooltip="quote" data-action="quote" data-select="none"><span class="icon round">format_quote</span></button></li>
-                                </ul>
-                                <ul class="group">
-                                    <li><button class="flat no-border no-padding" data-tooltip="list" data-action="list" data-select="none"><span class="icon round">format_list_bulleted</span></button></li>
-                                    <li><button class="flat no-border no-padding" data-tooltip="checklist" data-action="list" data-select="none"><span class="icon round">checklist</span></button></li>
-                                </ul>
-                                <ul class="group">
-                                    <li><button class="flat no-border no-padding" data-tooltip="code" data-action="code"><span class="icon round">code</span></button></li>
-                                </ul>
-                                <button class="space-huge-left mode flat no-border">normal mode</button>
-                            </div>
-                            <div class="editable" contenteditable="true"></div>
+                            <textarea></textarea>
                         </div>
                         <div class="sub-tasks">
                             <div class="title">
@@ -96,9 +73,13 @@ class DashboardView implements IView
                         </div>
                     </div>
                     <div class="settings">
-                        <button class="flat">
-                            <span class="icon outline colored">dashboard</span><p class="space-regular-right"><?= t('select_project', 'dashboard') ?></p>
-                        </button>
+                    <label class="text-field selector outline">
+                        <div class="field">
+                            <span><?= t('select_project', 'dashboard') ?></span>
+                            <input type="text" data-input='project' data-value=''>
+                        </div>
+                        <ul class="options dropdown-menu" data-select='project' tabindex='-1'></ul>
+                    </label>
                         <div class="attributes">
                             <div class="title">Attributes</div>
                             <div class="attribute-list">
@@ -136,6 +117,57 @@ class DashboardView implements IView
                     window.addEventListener('load', function(){
                         let btn = document.querySelector('button[data-action=task]');
                         let win = Modal.EditorModalWindow.create(modalTaskHTML);
+                        let editor = new SimpleMDE({
+                            element: win.element.querySelector('textarea'),
+                            renderingConfig: {
+                                codeSyntaxHighlighting: true,
+                            },
+                            tabSize: 4,
+                            spellChecker: false
+                        });
+
+                        // FIX: bug -> při smazání se neposune span dolů
+                        let menu = win.element.querySelector('[data-select=project]');
+                        let input = win.element.querySelector('[data-input=project]');
+                        let textField = input.parentElement.parentElement;
+                        function createOptions() {
+                            if (input.value.length != 0)
+                                textField.classList.remove('active');
+
+                            menu.innerHTML = "";
+                            let options;
+
+                            // filter
+                            options = projects.filter(proj => proj.name.includes(input.value));
+
+                            if (options.length == 0) 
+                            {
+                                textField.classList.add('error');
+                                textField.classList.add('active')
+                                return;
+                            } else {
+                                textField.classList.remove('error');
+                            }
+
+                            options.forEach(project => {
+                                let item = document.createElement('li');
+                                item.textContent = project.name;
+                                item.dataset.projectId = project.id;
+                                item.onclick = function(e) {
+                                    input.dataset.value = project.id;
+                                    input.value = item.textContent;
+                                    textField.classList.add('active');
+                                    e.preventDefault();
+                                    input.blur();
+                                    console.trace("test");
+                                }
+                                menu.appendChild(item);
+                            });
+                        }
+
+                        createOptions();
+                        input.addEventListener('input', createOptions);
+                        input.addEventListener('click', createOptions);
 
                         win.element.querySelector('[data-action=create]').addEventListener('click', function() {
                             let inputs = win.element.querySelectorAll('[data-input]');
@@ -144,6 +176,8 @@ class DashboardView implements IView
                             inputs.forEach(input => {
                                 data[input.dataset.input] = input.value;
                             });
+
+                            data.description = editor.value();
 
                             let response = Request.Action('/API/create/task', 'POST', data);
                             response.then(res => {
@@ -160,7 +194,8 @@ class DashboardView implements IView
                                 snackbar.show({center: true, top: 5}, 4000, true);
 
                             }).catch(reason => {
-                                Kantodo.error(reason);
+                                console.log(reason);
+                                Kantodo.error(`{ status: ${reason.status}, statusText: ${reason.statusText} }`);
                             });
                         });
 
