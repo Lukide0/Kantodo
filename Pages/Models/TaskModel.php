@@ -55,7 +55,8 @@ class TaskModel extends Model
             `end_date`,
             `creator_id`,
             `milestone_id`,
-            `project_id`
+            `project_id`,
+            `completed`
         )
         VALUES(
             :name,
@@ -64,7 +65,8 @@ class TaskModel extends Model
             :endDate,
             :creatorID,
             :milestoneID,
-            :projID
+            :projID,
+            0
         )
         SQL;
 

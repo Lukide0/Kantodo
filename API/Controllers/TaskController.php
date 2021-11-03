@@ -6,9 +6,12 @@ use Kantodo\API\API;
 use Kantodo\Core\Base\AbstractController;
 use Kantodo\Core\Request;
 use Kantodo\API\Response;
+use Kantodo\Core\Router;
 use Kantodo\Core\Validation\Data;
+use Kantodo\Models\ProjectModel;
 use Kantodo\Models\TaskModel;
 
+use function Kantodo\Core\Functions\base64EncodeUrl;
 use function Kantodo\Core\Functions\t;
 
 class TaskController extends AbstractController
@@ -21,39 +24,59 @@ class TaskController extends AbstractController
 
         $keys = [
             'task_name',
+            'task_desc',
+            'task_proj'
         ];
 
-        if (Data::isEmpty($body[Request::METHOD_POST], $keys)) 
+        $empty = Data::empty($body[Request::METHOD_POST], $keys);
+
+        if (count($empty) != 0) 
         {
-            $response->fail(['task_name' => t('empty', 'api')]);
-            exit;
+            $response->fail(array_fill_keys($empty, t('empty', 'api')));
         }
 
-        var_dump($body);
+        $taskName = $body[Request::METHOD_POST]['task_name'];
+        $taskDesc = $body[Request::METHOD_POST]['task_desc'];
+        $projUUID = $body[Request::METHOD_POST]['task_proj'];
+        $user = $session->get('user');
 
+        if (empty($user['id'])) 
+        {
+            $response->error(t('user_id_missing', 'api'));
+        }
+
+        $projModel = new ProjectModel();
+
+        $details = $projModel->getBaseDetails($user['id'], $projUUID);
+        if ($details === false) 
+        {
+            $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
+        }
+        $priv = $projModel->getPositionPriv($details['name']);
+
+        if (!$priv['addTask']) 
+        {
+            $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
+        }
         
+        
+        $taskModel = new TaskModel();
 
-        // if (empty($body[Request::METHOD_POST]['name'])) 
-        // {
-        //     $response->fail(['name' => t('empty', 'api')]);
-        // }
+        // TODO: priorita, milnik a konec
+        $taskID = $taskModel->create($taskName, $user['id'], $details['id'], $taskDesc);
+        
+        if ($taskID === false) 
+        {
+            $response->error(t('cannot_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
+        }
 
-        // $projectName = $body[Request::METHOD_POST]['name'];
-        // $user = $session->get('user');
-
-        // if (empty($user['id'])) 
-        // {
-        //     $response->error(t('user_id_missing', 'api'));
-        // }
-
-        // $projModel = new ProjectModel();
-
-        // $status = $projModel->create($user['id'], $projectName);
-        // if ($status === false) 
-        // {
-        //     $response->error(t('cannot_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
-        // }
-
-        // $response->success(['project' => [ 'uuid' => $status['uuid']]], Response::STATUS_CODE_CREATED);
+        $response->success([
+            'task' => 
+                [
+                    'id' => base64EncodeUrl($taskID),
+                ]
+            ],
+            Response::STATUS_CODE_CREATED
+        );
     }
 }

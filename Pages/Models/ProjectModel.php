@@ -230,6 +230,55 @@ class ProjectModel extends Model
     }
 
     /**
+     * Vrací id projektu a název pozice podle id uživatele a uuid projektu
+     *
+     * @param   int  $userID  id uživatele
+     * @param   string $projUUID uuid projektu
+     *
+     * @return  int|false      vrací false pokud pozice neexistuje nebo pokud se nepodařilo získat id
+     */
+    public function getBaseDetails(int $userID, string $projUUID)
+    {
+        $projPos = Connection::formatTableName('project_positions');
+        $userProj = Connection::formatTableName('user_projects');
+        $sth = $this->con->prepare(<<<SQL
+        SELECT
+            proj_pos.name,
+            proj.project_id as id
+        FROM 
+            {$userProj} as user_proj
+        INNER JOIN 
+            {$this->table} as proj
+        ON
+            user_proj.project_id = proj.project_id
+        INNER JOIN
+            {$projPos} as proj_pos
+        ON
+            user_proj.project_position_id = proj_pos.project_position_id
+        WHERE
+            proj.uuid = :uuid AND user_proj.user_id = :userID
+        SQL);
+
+        $status = $sth->execute([
+            ':userID'   => $userID,
+            ':uuid'   => $projUUID,
+        ]);
+
+        if ($status === true) {
+            $result = $sth->fetch(PDO::FETCH_ASSOC);
+
+            if ($result !== false && count($result) != 0) {
+                return $result;
+            }
+
+            return false;
+        }
+
+        return false;
+
+    }
+
+    /**
      * Nastaví uživateli pozici v projektu
      *
      * @param   int  $userID  id uživatele

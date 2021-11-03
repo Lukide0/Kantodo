@@ -12,6 +12,8 @@ $APP->registerAuth(new Auth());
 $APP->session->start();
 
 // TODO: Mobilni verze
+
+// TODO: Browser support
 if (!Application::configExits()) {
     $APP->router->run([Kantodo\Controllers\InstallController::class, 'installView'], [$APP->request->getPath()]);
     exit;

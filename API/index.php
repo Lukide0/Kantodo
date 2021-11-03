@@ -15,6 +15,9 @@ include "../Loader/autoload.php";
 $API = new API();
 $API->registerAuth(new Auth());
 
+// TODO: odstranit
+$API->debugMode(true);
+
 $session = $API->session;
 $session->start();
 

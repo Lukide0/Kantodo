@@ -33,7 +33,7 @@ class Response extends CoreResponse
     {
         http_response_code($code);
         $this->setContentType(self::CONTENT_TYPE_JSON);
-        echo json_encode(['status' => 'error', 'data' => $data, 'code' => $code]);
+        echo json_encode(['status' => 'fail', 'data' => $data, 'code' => $code]);
         exit;
     }
 
@@ -48,7 +48,7 @@ class Response extends CoreResponse
     {
         http_response_code($code);
         $this->setContentType(self::CONTENT_TYPE_JSON);
-        echo json_encode(['status' => 'error', 'message' => $message, 'code' => $code]);
+        echo json_encode(['status' => 'error', 'error' => $message, 'code' => $code]);
         exit;
     }
 

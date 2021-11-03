@@ -138,7 +138,7 @@ class DashboardView implements IView
                             let options;
 
                             // filter
-                            options = projects.filter(proj => proj.name.includes(input.value));
+                            options = projects.filter(proj => proj.name.toLowerCase().includes(input.value.toLowerCase()));
 
                             if (options.length == 0) 
                             {
@@ -170,21 +170,21 @@ class DashboardView implements IView
                         input.addEventListener('click', createOptions);
 
                         win.element.querySelector('[data-action=create]').addEventListener('click', function() {
-                            let inputs = win.element.querySelectorAll('[data-input]');
+                            let inputName = win.element.querySelector('[data-input=task_name]');
                             let data = {};
 
-                            inputs.forEach(input => {
-                                data[input.dataset.input] = input.value;
-                            });
-
-                            data.description = editor.value();
+                            data.task_name = inputName.value;
+                            data.task_desc = editor.value();
+                            data.task_proj = input.dataset.value;
 
                             let response = Request.Action('/API/create/task', 'POST', data);
                             response.then(res => {
                                 let task = res.data.task;
-                                Kantodo.success(`Created task (${project.uuid})`);
-                                
-                                win.clear();
+                                Kantodo.success(`Created task (${task.id})`);
+                        
+                                inputName.value = "";
+                                editor.value("");
+                                input.dataset.value = null;
 
                                 win.hide();
 

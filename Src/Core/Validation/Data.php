@@ -19,7 +19,7 @@ class Data
      *
      * @return  array<mixed>         klíče
      */
-    function empty(array $data, array $keys) {
+    public static function empty(array $data, array $keys) {
 
         $emptyKeys = [];
         foreach ($keys as $key) {
