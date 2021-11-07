@@ -25,7 +25,6 @@ class AuthController extends AbstractController
     public function authenticate()
     {
         $body = Application::$APP->request->getBody();
-
         // cesta z které byl uživatel přesměrován
         if (empty($body[Request::METHOD_GET]['path']) || Data::isURLExternal($body[Request::METHOD_GET]['path'])) {
             $this->renderView(AuthView::class);
@@ -56,7 +55,6 @@ class AuthController extends AbstractController
         $body = Application::$APP->request->getBody();
 
         $path = (isset($body[Request::METHOD_GET]['path']) && Data::isURLExternal($body[Request::METHOD_GET]['path']) === false) ? $body[Request::METHOD_GET]['path'] : '';
-
         if (!Application::$APP->request->isValidTokenCSRF()) {
             $path = urlencode($path); 
             Application::$APP->response->setLocation("/auth?path={$path}");
@@ -65,14 +63,13 @@ class AuthController extends AbstractController
         // prázdné email nebo heslo
         if (Data::isEmpty($body[Request::METHOD_POST], ['signInEmail', 'signInPassword'])) {
             $empty = [];
-
+            
             // email
             if (!empty($body[Request::METHOD_POST]['signInEmail'])) {
                 Application::$APP->session->addFlashMessage('userEmail', $body[Request::METHOD_POST]['signInEmail']);
             } else {
                 $empty[] = 'signInEmail';
             }
-
             // heslo
             if (empty($body[Request::METHOD_POST]['signInPassword'])) {
                 $empty[] = 'signInPassword';
@@ -96,8 +93,9 @@ class AuthController extends AbstractController
          * @var bool true => pokud je zadáno správné heslo i email
          */
         $status = Auth::signIn($body[Request::METHOD_POST]['signInEmail'], $body[Request::METHOD_POST]['signInPassword']);
-
+        
         if ($status) {
+
             Application::$APP->session->regenerateID();
 
             if (!empty($path)) {

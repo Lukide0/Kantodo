@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 use Kantodo\Auth\Auth;
 use Kantodo\Core\Application;
@@ -12,7 +13,7 @@ $APP->registerAuth(new Auth());
 $APP->session->start();
 
 // TODO: Mobilni verze
-
+// TODO: declare(strict_types = 1); + generator
 // TODO: Browser support
 if (!Application::configExits()) {
     $APP->router->run([Kantodo\Controllers\InstallController::class, 'installView'], [$APP->request->getPath()]);

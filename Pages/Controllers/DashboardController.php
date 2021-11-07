@@ -20,7 +20,6 @@ class DashboardController extends AbstractController
         $projectModel = new ProjectModel();
 
         $projects = $projectModel->getUserProjects(Application::$APP->session->get('user')['id']);
-
         $this->renderView(DashboardView::class, ['projects' => $projects], ClientLayout::class);
     }
 }

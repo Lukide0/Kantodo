@@ -38,7 +38,7 @@ class UserModel extends Model
      * @param   string  $password   heslo (hash)
      * @param   string  $nickname   nickname
      *
-     * @return  int|false           vrací id záznamu nebo false pokud se nepovedlo vložit do databáze
+     * @return  array<int,string>|false   vrací id a secret záznamu nebo false pokud se nepovedlo vložit do databáze
      */
     public function create(string $firstname, string $lastname, string $email, string $password, string $nickname = null)
     {
@@ -54,7 +54,7 @@ class UserModel extends Model
             ':nickname'  => $nickname,
         ]);
 
-        return ($status === true) ? (int)$this->con->lastInsertId() : false;
+        return ($status === true) ? [$this->con->lastInsertId(), $secret] : false;
     }
 
     /**

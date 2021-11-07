@@ -13,6 +13,7 @@ use Kantodo\Core\Validation\Data;
 use Kantodo\Models\UserModel;
 use Kantodo\Views\InstallView;
 use Kantodo\Views\Layouts\InstallLayout;
+use ParagonIE\Paseto\Keys\Version4\SymmetricKey;
 
 /**
  * Třída na instalaci
@@ -167,7 +168,6 @@ class InstallController extends AbstractController
         $runner->run($installVersion, true, true);
 
 
-
         Application::$APP->session->set('constantsDB', $dbConstants);
         Application::$APP->response->setLocation("/install-storage");
 
@@ -303,7 +303,7 @@ class InstallController extends AbstractController
         var_dump($firstname);
 
         $userModel = new UserModel();
-        $id = $userModel->create($firstname, $lastname, $email, $pass);
+        [$id] = $userModel->create($firstname, $lastname, $email, $pass);
 
         // TODO: frontend error
         if ($id == false) {
@@ -312,8 +312,8 @@ class InstallController extends AbstractController
         }
 
         // TODO: frontend error
-        if ($userModel->addMeta('position', 'admin', $id) == false) {
-            $userModel->delete($id);
+        if ($userModel->addMeta('position', 'admin', (int)$id) == false) {
+            $userModel->delete((int)$id);
 
             Application::$APP->response->setLocation('/install-admin');
             exit;
@@ -321,9 +321,11 @@ class InstallController extends AbstractController
 
         $constantsDB = array_map(function($value) { return "'{$value}'";}, Application::$APP->session->get('constantsDB'));
         $constantsFolder = Application::$APP->session->get('constantsStorage');
-        
-        $constants = array_merge($constantsDB, $constantsFolder);
 
+        Application::createSymmetricKey();
+
+        $constants = array_merge($constantsDB, $constantsFolder);
+        
         Application::overrideConfig($constants);
 
         Application::$APP->session->destroy();

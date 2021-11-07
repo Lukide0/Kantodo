@@ -1,3 +1,3 @@
 # Cache
 
-// TODO: dodelat
+- Tento adresář obsahuje cache

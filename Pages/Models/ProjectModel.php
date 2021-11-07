@@ -17,7 +17,7 @@ class ProjectModel extends Model
     /**
      * Pozice
      *
-     * @var array<string, array<string, bool>>
+     * @var array<string,array<string,bool>>
      */
     const POSITIONS = [
 

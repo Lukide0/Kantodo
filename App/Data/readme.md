@@ -1,3 +1,3 @@
 # Data
 
-// TODO: dodelat
+- Tento adresář obsahuje data

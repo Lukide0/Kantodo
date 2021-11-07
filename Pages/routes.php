@@ -4,7 +4,6 @@
 use Kantodo\Core\Application;
 use Kantodo\Core\Request;
 
-
 Application::$APP->router->addRoute(Request::METHOD_GET, '/auth', [Kantodo\Controllers\AuthController::class,'authenticate'], Application::GUEST, true);
 Application::$APP->router->addRoute(Request::METHOD_GET, '/auth/signout', [Kantodo\Controllers\AuthController::class,'signOut'], Application::USER, false);
 Application::$APP->router->addRoute(Request::METHOD_POST, '/auth/signin', [Kantodo\Controllers\AuthController::class,'signIn'], Application::GUEST, true);

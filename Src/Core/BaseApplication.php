@@ -4,6 +4,8 @@ namespace Kantodo\Core;
 
 use Kantodo\Core\Base\AbstractController;
 use Kantodo\Core\Database\Connection;
+use ParagonIE\Paseto\Keys\Version4\SymmetricKey;
+use ParagonIE\Paseto\Protocol\Version4;
 
 /**
  * Aplikace
@@ -45,6 +47,13 @@ class BaseApplication
      * @var string
      */
     public static $DATA_PATH;
+
+    /**
+     * Cesta k klíčům
+     *
+     * @var string
+     */
+    public static $KEYS_PATH;
     /**
      * Předpona tabulek
      *
@@ -120,6 +129,7 @@ class BaseApplication
 
         self::$URL_PATH  = str_replace($_SERVER['DOCUMENT_ROOT'], '', (str_replace('\\', '/', self::$ROOT_DIR)));
         self::$DATA_PATH = self::$ROOT_DIR . '/data/';
+        self::$KEYS_PATH = self::$ROOT_DIR . '/App/Keys/';
 
         $this->request  = new Request();
         $this->response = new Response();
@@ -207,6 +217,33 @@ class BaseApplication
         foreach ($callbacks as $callback) {
             call_user_func($callback);
         }
+    }
+
+    /**
+     * Vytvoří symetrický klíč
+     *
+     * @return  string klíč
+     */
+    public static function createSymmetricKey() 
+    {
+        $key = Version4::generateSymmetricKey()->raw();
+        file_put_contents(Application::$KEYS_PATH . 'symmetric.key', $key);
+
+        return $key;
+    }
+
+    /**
+     * Načte nebo vytvoří symetrický klíč
+     *
+     * @return  string|false  klíč, false v případě, že se nepodařilo přečíst soubor
+     */
+    public static function getSymmetricKey()
+    {
+        $path = Application::$KEYS_PATH . 'symmetric.key';
+        if (file_exists($path))
+            return file_get_contents($path);
+        else
+            return self::createSymmetricKey();
     }
 
     /**

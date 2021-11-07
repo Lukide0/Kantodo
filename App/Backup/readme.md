@@ -1,3 +1,3 @@
 # Backup
 
-// TODO: dodelat
+- Tento adresář obsahuje backup soubory

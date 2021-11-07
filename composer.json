@@ -1,4 +1,7 @@
 {
+    "require": {
+        "paragonie/paseto": "^2.2.0"
+    },
     "require-dev": {
         "phpstan/phpstan": "^0.12.99"
     }
