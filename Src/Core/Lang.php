@@ -2,6 +2,11 @@
 
 namespace Kantodo\Core;
 
+use const Kantodo\Core\Functions\FILE_FLAG_CREATE_DIR;
+use const Kantodo\Core\Functions\FILE_FLAG_OVERRIDE;
+
+use function Kantodo\Core\Functions\filePutContentSafe;
+
 /**
  * Překlad
  */
@@ -122,10 +127,6 @@ class Lang
 
         $fileContent .= "];";
 
-        if (!is_dir($path)) {
-            mkdir($path, 0777, true);
-        }
-
-        return file_put_contents($path . "/{$lang}_{$group}.php", $fileContent) !== false;
+        return filePutContentSafe($path . "/{$lang}_{$group}.php", $fileContent, FILE_FLAG_OVERRIDE | FILE_FLAG_CREATE_DIR);
     }
 }

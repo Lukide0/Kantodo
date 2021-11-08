@@ -4,6 +4,10 @@ namespace Kantodo\Core\Database\Migration;
 
 use Kantodo\Core\Application;
 
+use const Kantodo\Core\Functions\FILE_FLAG_OVERRIDE;
+
+use function Kantodo\Core\Functions\filePutContentSafe;
+
 /**
  * Základ migrace
  */
@@ -43,7 +47,7 @@ abstract class AbstractMigration
 
         $objSer = serialize($schema);
 
-        return file_put_contents(Application::$MIGRATION_DIR . '/currentSchema.ser', $objSer) !== false;
+        return filePutContentSafe(Application::$MIGRATION_DIR . '/currentSchema.ser', $objSer, FILE_FLAG_OVERRIDE ) !== false;
     }
 
     /**

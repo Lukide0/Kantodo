@@ -7,6 +7,12 @@ use Kantodo\Core\Database\Connection;
 use ParagonIE\Paseto\Keys\Version4\SymmetricKey;
 use ParagonIE\Paseto\Protocol\Version4;
 
+use const Kantodo\Core\Functions\FILE_FLAG_CREATE;
+use const Kantodo\Core\Functions\FILE_FLAG_CREATE_DIR;
+use const Kantodo\Core\Functions\FILE_FLAG_OVERRIDE;
+
+use function Kantodo\Core\Functions\filePutContentSafe;
+
 /**
  * Aplikace
  */
@@ -227,7 +233,8 @@ class BaseApplication
     public static function createSymmetricKey() 
     {
         $key = Version4::generateSymmetricKey()->raw();
-        file_put_contents(Application::$KEYS_PATH . 'symmetric.key', $key);
+
+        filePutContentSafe(Application::$KEYS_PATH . 'symmetric.key', $key, FILE_FLAG_OVERRIDE | FILE_FLAG_CREATE_DIR);
 
         return $key;
     }

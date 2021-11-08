@@ -204,7 +204,6 @@ class ProjectView implements IView
 
                         const request = self.request(params);
                         request.then(result => {
-                            console.log(result);
                             /*let res = JSON.parse(result);
                             if (res.data == true)
                             {
@@ -313,7 +312,6 @@ class ProjectView implements IView
 
                         const request = self.request(params);
                         request.then(result => {
-                            console.log(result);
                             /*let res = JSON.parse(result);
                             if (res.data == true)
                             {

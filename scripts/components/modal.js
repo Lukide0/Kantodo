@@ -71,8 +71,10 @@ const Snackbar = {
                 let element;
                 if (this.element === undefined)
                     element = self.element;
-                else
+                else {
                     element = this.element;
+                    self = this;
+                }
 
                 if (element.style.visibility == 'visible') {
                     self.hide();

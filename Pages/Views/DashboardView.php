@@ -23,6 +23,7 @@ class DashboardView implements IView
     public function Render(array $params = [])
     {
         // TODO: pridavani ukolu
+        // TODO: pridavani projektu s ukoly po vytvoreni
         ?>
         <div class="row h-space-between">
             <h2><?= t('my_work', 'dashboard') ?></h2>
@@ -188,13 +189,12 @@ class DashboardView implements IView
 
                                 win.hide();
 
-                                let snackbar = Modal.Snackbar.create('<?= t('task_was_created') ?>');
+                                let snackbar = Modal.Snackbar.create('<?= t('task_was_created') ?>', null ,'success');
 
                                 snackbar.setParent(document.body.querySelector('main'));
-                                snackbar.show({center: true, top: 5}, 4000, true);
+                                snackbar.show({center: true, top: 5}, 4000, false);
 
                             }).catch(reason => {
-                                console.log(reason);
                                 Kantodo.error(`{ status: ${reason.status}, statusText: ${reason.statusText} }`);
                             });
                         });
@@ -211,13 +211,44 @@ class DashboardView implements IView
         </div>
         <div class="row nowrap">
             <div class="task-list">
-                <!--<div class="dropdown-header">
-                    <h3>KantodoApp</h3>
+                <?php foreach ($params['projects'] as $project) :?>
+                <div class="dropdown-header">
+                    <h3><?= $project['name']?></h3>
                     <div class="line"></div>
                     <button class="flat icon round">filter_alt</button>
                 </div>
                 <div class="container">
-                </div>-->
+                    <!--<div class="task">
+                        <header>
+                            <div>
+                                <label class="checkbox">
+                                    <input type="checkbox">
+                                    <div class="background"></div>
+                                </label>
+                                <h4>Search inspirations for upcoming project</h4>
+                            </div>
+                            <div>
+                                <div class="important">Important</div>
+                                <button class="flat no-border icon round">more_vert</button>
+                            </div>
+                        </header>
+                        <main>
+                            <p>There is so much great inspiration in this world.</p>
+                        </main>
+                        <footer>
+                            <div class="avatars">
+                                <div class="avatar"></div>
+                            </div>
+                            <div class="row">
+                                <div class="tags">
+                                    <div class="tag">New Client</div>
+                                </div>
+                                <div class="row middle"><span class="space-small-right">3 Comments</span><span class="icon round">chat_bubble</span></div>
+                            </div>
+                        </footer>
+                    </div>-->
+                </div>
+                <?php endforeach; ?>
             </div>
             <!--<div class="milestone-list">
                 <!--<div class="milestone">

@@ -4,5 +4,6 @@ $dir = dirname(dirname(__FILE__));
 
 return [
     $dir . '/Src/Core/Functions/base64.php',
-    $dir . '/Src/Core/Functions/shortcuts.php'
+    $dir . '/Src/Core/Functions/shortcuts.php',
+    $dir . '/Src/Core/Functions/safeFileOperations.php'
 ];

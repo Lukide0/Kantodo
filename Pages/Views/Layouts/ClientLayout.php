@@ -126,7 +126,6 @@ class ClientLayout extends Layout
                                     snackbar.show({center: true, top: 5}, 4000, true);
 
                                 }).catch(reason => {
-                                    console.log(reason);
                                     Kantodo.error(reason);
                                 });
                             });
