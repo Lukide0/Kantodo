@@ -43,7 +43,7 @@ class API extends BaseApplication
         parent::__construct();
 
         self::$APP          = $this;
-        self::$ACTIONS_PATH = self::$ROOT_DIR . '/API/Actions';
+        self::$ACTIONS_PATH = self::$ROOT_DIR . '/api/Actions';
 
         $this->response = new Response();
         $this->router   = new Router($this->request, $this->response);

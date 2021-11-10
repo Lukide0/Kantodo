@@ -177,7 +177,7 @@ class DashboardView implements IView
                             data.task_desc = editor.value();
                             data.task_proj = input.dataset.value;
 
-                            let response = Request.Action('/API/create/task', 'POST', data);
+                            let response = Request.Action('/api/create/task', 'POST', data);
                             response.then(res => {
                                 let task = res.data.task;
                                 Kantodo.success(`Created task (${task.id})`);

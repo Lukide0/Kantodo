@@ -4,10 +4,8 @@ namespace Kantodo\Core;
 
 use Kantodo\Core\Base\AbstractController;
 use Kantodo\Core\Database\Connection;
-use ParagonIE\Paseto\Keys\Version4\SymmetricKey;
 use ParagonIE\Paseto\Protocol\Version4;
 
-use const Kantodo\Core\Functions\FILE_FLAG_CREATE;
 use const Kantodo\Core\Functions\FILE_FLAG_CREATE_DIR;
 use const Kantodo\Core\Functions\FILE_FLAG_OVERRIDE;
 
@@ -239,6 +237,22 @@ class BaseApplication
         return $key;
     }
 
+
+    /**
+     * Vytvoří asymetrický soukromý klíč
+     *
+     * @return  string klíč
+     */
+    public static function createAsymmetricSecretKey() 
+    {
+        $key = Version4::generateAsymmetricSecretKey()->raw();
+
+        filePutContentSafe(Application::$KEYS_PATH . 'asymmetric_secret.key', $key, FILE_FLAG_OVERRIDE | FILE_FLAG_CREATE_DIR);
+
+        return $key;
+    }
+
+
     /**
      * Načte nebo vytvoří symetrický klíč
      *
@@ -252,6 +266,21 @@ class BaseApplication
         else
             return self::createSymmetricKey();
     }
+
+    /**
+     * Načte nebo vytvoří asymetrický soukromý klíč
+     *
+     * @return  string|false  klíč, false v případě, že se nepodařilo přečíst soubor
+     */
+    public static function getAsymmetricSecretKey()
+    {
+        $path = Application::$KEYS_PATH . 'asymmetric_secret.key';
+        if (file_exists($path))
+            return file_get_contents($path);
+        else
+            return self::createAsymmetricSecretKey();
+    }
+
 
     /**
      * Zkontroluje jestli existuje config.php

@@ -104,7 +104,7 @@ class ClientLayout extends Layout
                                     win.setNameError('Empty');
                                 }
                                 
-                                let response = Request.Action('/API/create/project', 'POST', {name: data[0]});
+                                let response = Request.Action('/api/create/project', 'POST', {name: data[0]});
                                 response.then(res => {
                                     let project = res.data.project;
                                     Kantodo.success(`Created project (${project.uuid})`);

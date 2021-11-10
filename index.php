@@ -14,6 +14,7 @@ $APP->session->start();
 
 // TODO: Mobilni verze
 // TODO: declare(strict_types = 1); + generator
+// PREDELAT local na public token
 // TODO: Browser support
 if (!Application::configExits()) {
     $APP->router->run([Kantodo\Controllers\InstallController::class, 'installView'], [$APP->request->getPath()]);

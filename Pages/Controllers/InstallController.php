@@ -323,6 +323,7 @@ class InstallController extends AbstractController
         $constantsFolder = Application::$APP->session->get('constantsStorage');
 
         Application::createSymmetricKey();
+        Application::createAsymmetricSecretKey();
 
         $constants = array_merge($constantsDB, $constantsFolder);
         

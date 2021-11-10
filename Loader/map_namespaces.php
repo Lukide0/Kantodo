@@ -13,7 +13,7 @@ return [
     'Kantodo\\Widgets\\'     => $dir . '/Pages/Widgets/',
 
     // API
-    'Kantodo\\API\\Controllers\\' => $dir . '/API/Controllers/',
+    'Kantodo\\API\\Controllers\\' => $dir . '/api/Controllers/',
 
     // Migrations
     'Migrations\\'           => $dir . '/Migrations/Versions',
