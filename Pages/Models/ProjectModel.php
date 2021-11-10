@@ -418,7 +418,8 @@ class ProjectModel extends Model
         $query = <<<SQL
         SELECT 
             p.name,
-            p.uuid
+            p.uuid,
+            p.project_id
         FROM 
             {$this->table} as p
         INNER JOIN 

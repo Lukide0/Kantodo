@@ -79,8 +79,8 @@ class ClientLayout extends Layout
                     <span class="text"><?= t('account') ?></span>
                 </a>
                 <script>
-                    const projects = [];
-                    document.querySelectorAll('[data-project-id]').forEach(el => projects.push({ id: el.dataset.projectId, name: el.children[0].textContent}));
+                    const Projects = [];
+                    document.querySelectorAll('[data-project-id]').forEach(el => Projects.push({ id: el.dataset.projectId, name: el.children[0].textContent}));
 
                     window.addEventListener('load',
                         function() {
@@ -114,7 +114,7 @@ class ClientLayout extends Layout
                                     let newProject = document.createElement('li');
                                     newProject.dataset['projectId'] = project.uuid;
                                     newProject.innerHTML = `<a href="/project/${project.uuidSafe}">${data[0]}</a>`;
-                                    projects.push({id: project.uuid, name: data[0]});
+                                    Projects.push({id: project.uuid, name: data[0]});
 
                                     addProjectItem.parentElement.insertBefore(newProject, addProjectItem);
                                     win.clear();

@@ -4,35 +4,57 @@
     margin-top: space(big);
     flex: 1;
 
-    & > .dropdown-header {
-        @include font(900, big, 900);
-        display: flex;
-        align-items: center;
+    & > .project {
+        transition: all 250ms ease;
+        margin-top: space(medium);
 
-        & > h3 {
-            display: flex;
-            align-items: center;
+        &.expanded {
+            & > .dropdown-header > h3::before {
+                transform: rotate(90deg);
+            }
 
-            &::before {
-                @include pseudo-icon("chevron_right", "round");
-
-                font-size: $icon-small;
-                margin-right: space(small);
-                transition: transform 200ms ease-out;
-
-                @at-root {
-                    .expanded#{&} {
-                        transform: rotate(90deg);
-                    }
-                }
+            & > .container {
+                max-height: unset;
+                visibility: visible;
+                opacity: 1;
             }
         }
 
-        & > .line {
-            flex-grow: 1;
-            height: 2px;
-            background: color(border);
-            margin: 0 space(medium);
+        & > .dropdown-header {
+            @include font(900, big, 900);
+            display: flex;
+            align-items: center;
+
+            & > h3 {
+                display: flex;
+                align-items: center;
+                user-select: none;
+                cursor: pointer;
+    
+                &::before {
+                    @include pseudo-icon("chevron_right", "round");
+    
+                    font-size: $icon-small;
+                    margin-right: space(small);
+                    transition: transform 200ms ease-out;
+
+                }
+            }
+    
+            & > .line {
+                flex-grow: 1;
+                height: 2px;
+                background: color(border);
+                margin: 0 space(medium);
+            }
+        }
+
+        & > .container {
+            visibility: hidden;
+            opacity: 0;
+            max-height: 0;
+            transition: opacity 300ms ease-in, visibility 300ms ease-in;
+            transition-property: opacity, visibility;
         }
     }
 }

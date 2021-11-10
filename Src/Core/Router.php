@@ -214,7 +214,7 @@ class Router
             $controller->action = $classMethod;
 
             try {
-                $controller->executeAllMiddlewares();
+                $controller->executeAllMiddlewares($params);
             } catch (\Throwable $th) {
                 if ($this->errorHandler != null) {
                     call_user_func($this->errorHandler, $th);
@@ -260,11 +260,26 @@ class Router
             $controller->access = $callback['access'];
 
             if (!$controller->hasAccess($callback['strict'])) {
-                $this->handleErrorCode(BaseApplication::ERROR_NOT_AUTHORIZED, [$callback['access'], BaseApplication::getRole(), $callback['strict']]);
+                $this->handleErrorCode(
+                    BaseApplication::ERROR_NOT_AUTHORIZED,
+                    [
+                        $callback['access'],
+                        BaseApplication::getRole(),
+                        $callback['strict']
+                    ]
+                );
                 return;
             }
 
-            $controller->executeAllMiddlewares($params);
+            try {
+                $controller->executeAllMiddlewares($params);
+            } catch (\Throwable $th) {
+                if ($this->errorHandler != null) {
+                    call_user_func($this->errorHandler, $th);
+                }
+                $this->response->setStatusCode($th->getCode());
+                exit;
+            }
 
             /** @phpstan-ignore-next-line */
             call_user_func([$controller, $classMethod], $params);

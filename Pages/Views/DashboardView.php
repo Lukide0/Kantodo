@@ -34,6 +34,7 @@ class DashboardView implements IView
                 </div>
                 <button class="flat icon outline space-medium-left">settings</button>
                 <script>
+                    const TaskList = [];
                     const modalTaskHTML = `
                     <div class="content">
                         <label class="text-field">
@@ -113,8 +114,6 @@ class DashboardView implements IView
                         </div>
                     </div>
                     `
-
-
                     window.addEventListener('load', function(){
                         let btn = document.querySelector('button[data-action=task]');
                         let win = Modal.EditorModalWindow.create(modalTaskHTML);
@@ -139,7 +138,7 @@ class DashboardView implements IView
                             let options;
 
                             // filter
-                            options = projects.filter(proj => proj.name.toLowerCase().includes(input.value.toLowerCase()));
+                            options = Projects.filter(proj => proj.name.toLowerCase().includes(input.value.toLowerCase()));
 
                             if (options.length == 0) 
                             {
@@ -212,44 +211,30 @@ class DashboardView implements IView
         <div class="row nowrap">
             <div class="task-list">
                 <?php foreach ($params['projects'] as $project) :?>
-                <div class="dropdown-header">
-                    <h3><?= $project['name']?></h3>
-                    <div class="line"></div>
-                    <button class="flat icon round">filter_alt</button>
-                </div>
-                <div class="container">
-                    <!--<div class="task">
-                        <header>
-                            <div>
-                                <label class="checkbox">
-                                    <input type="checkbox">
-                                    <div class="background"></div>
-                                </label>
-                                <h4>Search inspirations for upcoming project</h4>
-                            </div>
-                            <div>
-                                <div class="important">Important</div>
-                                <button class="flat no-border icon round">more_vert</button>
-                            </div>
-                        </header>
-                        <main>
-                            <p>There is so much great inspiration in this world.</p>
-                        </main>
-                        <footer>
-                            <div class="avatars">
-                                <div class="avatar"></div>
-                            </div>
-                            <div class="row">
-                                <div class="tags">
-                                    <div class="tag">New Client</div>
-                                </div>
-                                <div class="row middle"><span class="space-small-right">3 Comments</span><span class="icon round">chat_bubble</span></div>
-                            </div>
-                        </footer>
-                    </div>-->
+                <div class="project" data-project-id='<?= $project['uuid']?>'>
+                    <div class="dropdown-header">
+                        <h3><?= $project['name']?></h3>
+                        <div class="line"></div>
+                        <button class="flat icon round">filter_alt</button>
+                    </div>
+                    <div class="container">
+                    <?php foreach ($project['tasks'] as $task) :?>
+                        <?= Task::Create($task['name'], '', $task['completed']); ?>
+                    <?php endforeach; ?>
+                    </div>
                 </div>
                 <?php endforeach; ?>
             </div>
+            <script>
+                document.querySelectorAll('.task-list > .project > .dropdown-header > h3').forEach(el => {
+                    el.addEventListener('click', function() {
+                        if (el.parentElement.parentElement.classList.contains('expanded')) 
+                            el.parentElement.parentElement.classList.remove('expanded');
+                        else 
+                            el.parentElement.parentElement.classList.add('expanded');
+                    })
+                });
+            </script>
             <!--<div class="milestone-list">
                 <!--<div class="milestone">
                     <div class="date">
