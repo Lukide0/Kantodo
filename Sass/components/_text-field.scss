@@ -125,6 +125,9 @@
     }
 
     &.selector {
+        z-index: 3;
+
+
         .field {
 
             &::before {

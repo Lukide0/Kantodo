@@ -28,6 +28,10 @@ class TaskModel extends Model
         ]);
     }
 
+    //--------------------//
+    //-- Veřejné metody --//
+    //--------------------//
+
     /**
      * Vytvoří úkol
      *

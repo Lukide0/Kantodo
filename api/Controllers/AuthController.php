@@ -13,6 +13,11 @@ use function Kantodo\Core\Functions\t;
 
 class AuthController extends AbstractController
 {
+    /**
+     * Akce na obnovení paseto tokenu
+     *
+     * @return  void
+     */
     public function refreshToken()
     {
         $body = API::$APP->request->getBody();
