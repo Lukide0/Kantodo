@@ -78,4 +78,25 @@ class TaskController extends AbstractController
             Response::STATUS_CODE_CREATED
         );
     }
+
+    public function get(array $params = [])
+    {
+        $response = API::$APP->response;
+        $session = API::$APP->session;
+        $user = $session->get('user');
+
+        if (empty($user['id'])) 
+        {
+            $response->error(t('user_id_missing', 'api'));
+        }
+
+        if (empty($params['projectUUID']))
+            $response->error(t('project uuid missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
+
+        $projectModel = new ProjectModel();
+
+        $pos = $projectModel->isProjectMember((int)$user['id'], $params['projectUUID']);
+
+        var_dump($pos);
+    }
 }

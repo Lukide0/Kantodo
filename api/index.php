@@ -48,6 +48,7 @@ $API->router->registerErrorCodeHandler(API::ERROR_NOT_AUTHORIZED, function () {
 
 $API->router->post('create/project', [ProjectController::class, 'create'], API::USER);
 $API->router->post('create/task', [TaskController::class, 'create'], API::USER);
+$API->router->get('get/task/{projectUUID}', [TaskController::class, 'get'], API::USER);
 $API->router->post('auth/refreshToken', [AuthController::class, 'refreshToken'], API::USER);
 
 $API->run();

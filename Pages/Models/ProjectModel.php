@@ -404,6 +404,49 @@ class ProjectModel extends Model
     }
 
     /**
+     * Zjistí jestli uživatel patří do projektu
+     *
+     * @param   int     $userID       id uživatele
+     * @param   string  $projectUUID  uuid projektu
+     *
+     * @return  bool                 pokud neexistuje uživatel, vrací false
+     */
+    public function isProjectMember(int $userID, string $projectUUID)
+    {
+        $userProj = Connection::formatTableName('user_projects');
+
+        $query = <<<SQL
+        SELECT 
+            p.project_id
+        FROM 
+            {$this->table} as p
+        INNER JOIN 
+            {$userProj} as up
+        ON 
+            up.project_id = p.project_id
+        WHERE 
+            up.user_id = :userID AND p.uuid = :uuid
+        LIMIT 1
+        SQL;
+
+        $sth    = $this->con->prepare($query);
+        $status = $sth->execute([
+            ':userID' => $userID,
+            ':uuid' => $projectUUID
+        ]);
+
+        if ($status === true) {
+            $result = $sth->fetch(PDO::FETCH_ASSOC);
+            if ($result != false && count($result) != 0)
+                return true;
+            else
+                return false;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Vrací projekty ve kterých je uživatel
      *
      * @param   int  $userID  id uživatele
