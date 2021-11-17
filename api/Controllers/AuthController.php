@@ -22,7 +22,6 @@ class AuthController extends AbstractController
     {
         $body = API::$APP->request->getBody();
         $response = API::$APP->response;
-
         $keys = [
             'email',
             'secret',

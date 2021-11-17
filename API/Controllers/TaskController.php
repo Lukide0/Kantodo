@@ -88,11 +88,23 @@ class TaskController extends AbstractController
         );
     }
 
+    /**
+     * Akce na získání úkolů v projektu
+     *
+     * @param   array<string>  $params  parametry
+     *
+     * @return  void
+     */
     public function get(array $params = [])
     {
+        $limit = 10;
         $response = API::$APP->response;
         $session = API::$APP->session;
         $user = $session->get('user');
+        $body = API::$APP->request->getBody();
+    
+        $offset = ($body[Request::METHOD_GET]['page'] ?? 0) * $limit;
+
 
         if (empty($user['id'])) 
         {
@@ -102,10 +114,19 @@ class TaskController extends AbstractController
         if (empty($params['projectUUID']))
             $response->error(t('project uuid missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
 
+        $uuid = $params['projectUUID'];
         $projectModel = new ProjectModel();
 
-        $pos = $projectModel->isProjectMember((int)$user['id'], $params['projectUUID']);
+        $pos = $projectModel->isProjectMember((int)$user['id'], $uuid);
 
-        var_dump($pos);
+        if (!$pos)
+            $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
+        
+        $taskModel = new TaskModel();
+
+
+        $tasks = $taskModel->get(['*'], ['uuid' => $uuid], $limit, $offset);
+        
+        $response->success(['tasks' => $tasks]);      
     }
 }

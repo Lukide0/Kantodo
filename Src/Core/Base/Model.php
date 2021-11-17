@@ -37,11 +37,12 @@ class Model
      * @param   array<string>|array<string,string>   $select             sloupce, které chceceme vybrat ve formátu ['sloupec', 'sloupec'] nebo ['sloupec' => 'alias']
      * @param   array<string,mixed>   $search             např. ['id' => 5]
      * @param   int     $limit              limit
-     *
+     * @param   int     $offset             offset
+     * 
      * @return  array<mixed>|false                 vrací false pokud se nepodařilo získat data z tabulky
      */
-    public function get(array $select = ['*'], array $search = [], int $limit = 0)
-    {
+    public function get(array $select = ['*'], array $search = [], int $limit = 0, int $offset = 0)
+    {        
         if (count($select) == 0) {
             return [];
         }
@@ -78,7 +79,15 @@ class Model
             $query .= ' WHERE ' . implode(' AND ', $searchData);
         }
 
-        if ($limit >= 1) {
+        if ($limit >= 1 && $offset >= 1) {
+            $query .= " LIMIT {$offset},{$limit}";
+        } 
+        else if ($offset >= 1) 
+        {
+            $query .= " OFFSET {$offset}";
+        } 
+        else if ($limit >= 1) 
+        {
             $query .= " LIMIT {$limit}";
         }
 

@@ -23,11 +23,6 @@ class DashboardController extends AbstractController
 
         if ($projects === false)
             $projects = [];
-
-        $taskModel = new TaskModel();
-        foreach ($projects as &$project) {
-            $project['tasks'] = $taskModel->get(['name', 'priority', 'end_date', 'creator_id', 'milestone_id', 'completed', 'task_id'], ['project_id' => $project['project_id']]);
-        }
         $this->renderView(DashboardView::class, ['projects' => $projects], ClientLayout::class);
     }
 }

@@ -234,11 +234,7 @@ class DashboardView implements IView
                         <div class="line"></div>
                         <button class="flat icon round">filter_alt</button>
                     </div>
-                    <div class="container">
-                    <?php foreach ($project['tasks'] as $task) :?>
-                        <?= Task::Create($task['name'], '', $task['completed']); ?>
-                    <?php endforeach; ?>
-                    </div>
+                    <div class="container"></div>
                 </div>
                 <?php endforeach; ?>
             </div>
