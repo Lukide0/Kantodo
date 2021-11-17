@@ -15,6 +15,11 @@ use function Kantodo\Core\Functions\t;
 
 class TaskController extends AbstractController
 {
+    /**
+     * Akce na vytvoření úkolu
+     *
+     * @return  void
+     */
     public function create()
     {
         $body = API::$APP->request->getBody();
@@ -44,16 +49,19 @@ class TaskController extends AbstractController
             $response->error(t('user_id_missing', 'api'));
         }
 
+
+
         $projModel = new ProjectModel();
 
         $details = $projModel->getBaseDetails($user['id'], $projUUID);
         if ($details === false) 
         {
             $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
+            return;
         }
         $priv = $projModel->getPositionPriv($details['name']);
 
-        if (!$priv['addTask']) 
+        if ($priv === false || !$priv['addTask']) 
         {
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
         }
@@ -62,17 +70,18 @@ class TaskController extends AbstractController
         $taskModel = new TaskModel();
 
         // TODO: priorita, milnik a konec
-        $taskID = $taskModel->create($taskName, $user['id'], $details['id'], $taskDesc);
+        $taskID = $taskModel->create($taskName, $user['id'], (int)$details['id'], $taskDesc);
         
         if ($taskID === false) 
         {
             $response->error(t('cannot_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
+            return;
         }
 
         $response->success([
             'task' => 
                 [
-                    'id' => base64EncodeUrl($taskID),
+                    'id' => base64EncodeUrl((string)$taskID),
                 ]
             ],
             Response::STATUS_CODE_CREATED

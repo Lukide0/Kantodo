@@ -87,11 +87,28 @@ class DashboardView implements IView
                             <div class="attribute-list">
                                 <div class="attribute">
                                     <div class="name">Status</div>
-                                    <div class="value warning"><span class="dot"></span>In progress</div>
+                                    <label class="text-field selector">
+                                        <div class="field">
+                                            <input type="text" data-input='project' data-value=''>
+                                        </div>
+                                        <ul class="options dropdown-menu" data-select='project' tabindex='-1'>
+                                            <li>Open</li>
+                                            <li>Closed</li>
+                                        </ul>
+                                    </label>
                                 </div>
                                 <div class="attribute">
                                     <div class="name">Priority</div>
-                                    <div class="value error"><span class="dot"></span> High</div>
+                                    <label class="text-field selector">
+                                        <div class="field">
+                                            <input type="text" data-input='project' data-value=''>
+                                        </div>
+                                        <ul class="options dropdown-menu" data-select='project' tabindex='-1'>
+                                            <li>Low</li>
+                                            <li>Medium</li>
+                                            <li>High</li>
+                                        </ul>
+                                    </label>
                                 </div>
                                 <div class="attribute">
                                     <div class="name">Assignee</div>

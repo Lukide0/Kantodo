@@ -109,7 +109,7 @@ class ProjectModel extends Model
     {
         parent::__construct();
         $this->table = Connection::formatTableName('projects');
-
+        
         $this->setColumns([
             'project_id',
             'name',
@@ -118,6 +118,10 @@ class ProjectModel extends Model
             'is_public',
         ]);
     }
+    
+    //--------------------//
+    //-- Veřejné metody --//
+    //--------------------//
 
     /**
      * Smaže projekt
@@ -132,10 +136,10 @@ class ProjectModel extends Model
         $status = $sth->execute([
             ":projID" => $projID,
         ]);
-
+        
         return $status;
     }
-
+    
     /**
      * Vrátí pravomoce pozice
      *
@@ -147,7 +151,8 @@ class ProjectModel extends Model
     {
         return self::POSITIONS[$name] ?? false;
     }
-
+    
+    
     /**
      * Vytvoří projekt
      *
@@ -159,19 +164,19 @@ class ProjectModel extends Model
     public function create(int $userID, string $name)
     {
         $uuid = Generator::uuidV4();
-
+        
         $query  = "INSERT INTO {$this->table} (`name`, `is_open`, `uuid`, `is_public`) VALUES (:name, '1', :uuid, '0')";
         $sth    = $this->con->prepare($query);
         $status = $sth->execute([
             ':name'   => $name,
             ':uuid'   => $uuid,
         ]);
-
+        
         // podařilo se vytvořit projekt
         if ($status === true) {
             $projID = (int)$this->con->lastInsertId();
             $posID  = $this->getPosition('admin');
-
+            
             // neexistuje pozice admin v databázi
             if ($posID === false) {
                 $posID = $this->createPosition('admin');
@@ -182,23 +187,23 @@ class ProjectModel extends Model
                     return false;
                 }
             }
-
+            
             // vytvoří admina
             $status = $this->setUserPosition($userID, $projID, $posID);
-
+            
             // nepodařilo se vytvořit admina
             if ($status === false) {
                 //smaže projekt
                 $this->delete($projID);
                 return false;
             }
-
+            
             return ['id' => $projID, 'uuid' => $uuid];
         }
-
+        
         return false;
     }
-
+    
     /**
      * Vrací id pozice podle jména
      *
@@ -209,33 +214,33 @@ class ProjectModel extends Model
     public function getPosition(string $name)
     {
         $projPos = Connection::formatTableName('project_positions');
-
+        
         $sth = $this->con->prepare("SELECT `project_position_id` FROM {$projPos} WHERE `name` = :name LIMIT 1");
-
+        
         $status = $sth->execute([
             ':name' => $name,
         ]);
-
+        
         if ($status === true) {
             $result = $sth->fetch(PDO::FETCH_ASSOC);
-
+            
             if ($result !== false && count($result) != 0) {
                 return $result['project_position_id'];
             }
-
+            
             return false;
         }
-
+        
         return false;
     }
-
+    
     /**
      * Vrací id projektu a název pozice podle id uživatele a uuid projektu
      *
      * @param   int  $userID  id uživatele
      * @param   string $projUUID uuid projektu
      *
-     * @return  int|false      vrací false pokud pozice neexistuje nebo pokud se nepodařilo získat id
+     * @return  array<string,string>|false      vrací false pokud pozice neexistuje nebo pokud se nepodařilo získat id
      */
     public function getBaseDetails(int $userID, string $projUUID)
     {
@@ -258,26 +263,26 @@ class ProjectModel extends Model
         WHERE
             proj.uuid = :uuid AND user_proj.user_id = :userID
         SQL);
-
+        
         $status = $sth->execute([
             ':userID'   => $userID,
             ':uuid'   => $projUUID,
         ]);
-
+        
         if ($status === true) {
             $result = $sth->fetch(PDO::FETCH_ASSOC);
-
+            
             if ($result !== false && count($result) != 0) {
                 return $result;
             }
-
+            
             return false;
         }
-
+        
         return false;
-
+        
     }
-
+    
     /**
      * Nastaví uživateli pozici v projektu
      *
@@ -296,10 +301,10 @@ class ProjectModel extends Model
             ':projID' => $projID,
             ':posID'  => $posID,
         ]);
-
+        
         return ($status === true) ? (int)$this->con->lastInsertId() : false;
     }
-
+    
     /**
      * Vytvoří pozici v databázi
      *
@@ -310,19 +315,19 @@ class ProjectModel extends Model
     public function createPosition(string $name)
     {
         $projPos = Connection::formatTableName('project_positions');
-
+        
         $query = <<<SQL
         INSERT INTO {$projPos} ( `name` ) VALUES ( :name )
         SQL;
-
+        
         $sth    = $this->con->prepare($query);
         $status = $sth->execute([
             ':name' => $name,
         ]);
-
+        
         return ($status === true) ? (int)$this->con->lastInsertId() : false;
     }
-
+    
     /**
      * Vrací jméno pozice
      *
@@ -335,7 +340,7 @@ class ProjectModel extends Model
     {
         $projPos  = Connection::formatTableName('project_positions');
         $userProj = Connection::formatTableName('user_projects');
-
+        
         $query = <<<SQL
         SELECT
             proj_pos.name
@@ -344,26 +349,26 @@ class ProjectModel extends Model
                 ON user_proj.project_position_id = proj_pos.project_position_id
         WHERE user_proj.project_id = :projID AND user_proj.user_id = :userID
         SQL;
-
+        
         $sth    = $this->con->prepare($query);
         $status = $sth->execute([
             ':projID'     => $projID,
             ':userID' => $userID,
         ]);
-
+        
         if ($status === true) {
             $pos = $sth->fetch(PDO::FETCH_ASSOC);
-
+            
             if (empty($pos)) {
                 return false;
             }
-
+            
             return $pos['name'];
         }
-
+        
         return false;
     }
-
+    
     /**
      * Vrací iniciály členů týmu
      *
@@ -375,7 +380,7 @@ class ProjectModel extends Model
     {
         $users    = Connection::formatTableName('users');
         $userProj = Connection::formatTableName('user_projects');
-
+        
         $query = <<<SQL
         SELECT
             CONCAT(
@@ -390,19 +395,19 @@ class ProjectModel extends Model
         WHERE
             user_proj.project_id = :projID
         SQL;
-
+        
         $sth    = $this->con->prepare($query);
         $status = $sth->execute([
             ':projID' => $projID,
         ]);
-
+        
         if ($status === true) {
             return $sth->fetchAll(PDO::FETCH_COLUMN);
         }
-
+        
         return false;
     }
-
+    
     /**
      * Zjistí jestli uživatel patří do projektu
      *
@@ -456,8 +461,8 @@ class ProjectModel extends Model
     public function getUserProjects(int $userID)
     {
         $userProj = Connection::formatTableName('user_projects');
-
-
+        
+        
         $query = <<<SQL
         SELECT 
             p.name,
@@ -472,16 +477,47 @@ class ProjectModel extends Model
         WHERE 
             up.user_id = :userID
         SQL;
-
+        
         $sth    = $this->con->prepare($query);
         $status = $sth->execute([
             ':userID' => $userID,
         ]);
-
+        
         if ($status === true) {
             return $sth->fetchAll(PDO::FETCH_ASSOC);
         }
         return false;
+        
+    }
 
+    //---------------------//
+    //-- Statické metody --//
+    //---------------------//
+
+    /**
+     * Zjistí jestli má uživatel přístup k akci v projektu
+     *
+     * @param   string  $key          akce viz. POSITIONS
+     * @param   int     $userID       id uživatele
+     * @param   string  $projectUUID  UUID projektu
+     *
+     * @return  bool|null             Vrací false v případě, že akce neexistuje nebo uživatel nemá přístup k akci 
+     */
+    public static function hasPrivTo(string $key, int $userID, string $projectUUID)
+    {
+        if (!array_key_exists($key, self::POSITIONS))
+            return null;
+
+        $projModel = new ProjectModel();
+
+        $details = $projModel->getBaseDetails($userID, $projectUUID);
+        if ($details === false) 
+            return false;
+
+        $priv = $projModel->getPositionPriv($details['name']);
+
+        if ($priv === false || !$priv[$key]) 
+            return false;
+        return true;
     }
 }

@@ -14,6 +14,11 @@ use function Kantodo\Core\Functions\t;
 
 class ProjectController extends AbstractController
 {
+    /**
+     * Akce na vytvoření projektu
+     *
+     * @return  void
+     */
     public function create()
     {
         $body = API::$APP->request->getBody();
@@ -39,6 +44,7 @@ class ProjectController extends AbstractController
         if ($status === false) 
         {
             $response->error(t('cannot_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
+            return;
         }
 
         $response->success([
