@@ -75,7 +75,7 @@ class Model
         }
 
         $query = 'SELECT ' . implode(', ', $columns) . " FROM {$this->table}";
-        if (count($search) != 0) {
+        if (count($searchData) != 0) {
             $query .= ' WHERE ' . implode(' AND ', $searchData);
         }
 
@@ -90,7 +90,6 @@ class Model
         {
             $query .= " LIMIT {$limit}";
         }
-
         $sth = $this->con->prepare($query);
         $sth->execute($queryData);
         $data = $sth->fetchAll(\PDO::FETCH_ASSOC);

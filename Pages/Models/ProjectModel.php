@@ -414,9 +414,9 @@ class ProjectModel extends Model
      * @param   int     $userID       id uživatele
      * @param   string  $projectUUID  uuid projektu
      *
-     * @return  bool                 pokud neexistuje uživatel, vrací false
+     * @return  int|false                 pokud existuje vrací id projektu jinak vrací false
      */
-    public function isProjectMember(int $userID, string $projectUUID)
+    public function projectMember(int $userID, string $projectUUID)
     {
         $userProj = Connection::formatTableName('user_projects');
 
@@ -443,7 +443,7 @@ class ProjectModel extends Model
         if ($status === true) {
             $result = $sth->fetch(PDO::FETCH_ASSOC);
             if ($result != false && count($result) != 0)
-                return true;
+                return $result['project_id'];
             else
                 return false;
         } else {

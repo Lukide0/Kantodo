@@ -6,6 +6,7 @@ use Kantodo\Core\Application;
 use Kantodo\Core\Base\IView;
 use Kantodo\Widgets\Task;
 
+use function Kantodo\Core\Functions\base64EncodeUrl;
 use function Kantodo\Core\Functions\t;
 
 /**
@@ -228,7 +229,7 @@ class DashboardView implements IView
         <div class="row nowrap">
             <div class="task-list">
                 <?php foreach ($params['projects'] as $project) :?>
-                <div class="project" data-project-id='<?= $project['uuid']?>'>
+                <div class="project" data-project-id='<?= base64EncodeUrl($project['uuid']) ?>'>
                     <div class="dropdown-header">
                         <h3><?= $project['name']?></h3>
                         <div class="line"></div>
@@ -241,10 +242,54 @@ class DashboardView implements IView
             <script>
                 document.querySelectorAll('.task-list > .project > .dropdown-header > h3').forEach(el => {
                     el.addEventListener('click', function() {
-                        if (el.parentElement.parentElement.classList.contains('expanded')) 
+                        if (el.parentElement.parentElement.classList.contains('expanded'))
                             el.parentElement.parentElement.classList.remove('expanded');
-                        else 
-                            el.parentElement.parentElement.classList.add('expanded');
+                        else {
+                            let projectEl = el.parentElement.parentElement;
+                            projectEl.classList.add('expanded');
+                            
+                            if (projectEl.dataset.loaded)
+                                return;
+
+                            projectEl.dataset.loaded = true;
+
+                            // TODO: nacteni ukolu
+                            let response = Request.Action('/api/get/task/' + projectEl.dataset.projectId, 'GET');
+                            response.then(res => {
+                                let tasks = res.data.tasks;
+                                let tmp = '';
+                                tasks.forEach(task => {
+                                    tmp += `<div class="task">
+                                                <header>
+                                                    <div>
+                                                        <label class="checkbox">
+                                                            <input type="checkbox">
+                                                            <div class="background"></div>
+                                                        </label>
+                                                        <h4>${task.name}</h4>
+                                                    </div>
+                                                    <div>
+                                                        <div class="important">Important</div>
+                                                        <button class="flat no-border icon round">more_vert</button>
+                                                    </div>
+                                                </header>
+                                                <footer>
+                                                    <div class="avatars">
+                                                        <div class="avatar"></div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="tags">
+                                                            <div class="tag">New Client</div>
+                                                        </div>
+                                                        <div class="row middle"><span class="space-small-right">3 Comments</span><span class="icon round">chat_bubble</span></div>
+                                                    </div>
+                                                </footer>
+                                            </div>`;
+                                });
+
+                                projectEl.querySelector('.container').innerHTML = tmp;
+                            })
+                        }
                     })
                 });
             </script>

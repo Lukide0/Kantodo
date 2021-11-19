@@ -10,6 +10,7 @@ use Kantodo\Core\Validation\Data;
 use Kantodo\Models\ProjectModel;
 use Kantodo\Models\TaskModel;
 
+use function Kantodo\Core\Functions\base64DecodeUrl;
 use function Kantodo\Core\Functions\base64EncodeUrl;
 use function Kantodo\Core\Functions\t;
 
@@ -114,18 +115,16 @@ class TaskController extends AbstractController
         if (empty($params['projectUUID']))
             $response->error(t('project uuid missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
 
-        $uuid = $params['projectUUID'];
+        $uuid = base64DecodeUrl($params['projectUUID']);
         $projectModel = new ProjectModel();
 
-        $pos = $projectModel->isProjectMember((int)$user['id'], $uuid);
+        $projectId = $projectModel->projectMember((int)$user['id'], $uuid);
 
-        if (!$pos)
+        if (!$projectId)
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
         
         $taskModel = new TaskModel();
-
-
-        $tasks = $taskModel->get(['*'], ['uuid' => $uuid], $limit, $offset);
+        $tasks = $taskModel->get(['*'], ['project_id' => $projectId], $limit, $offset);
         
         $response->success(['tasks' => $tasks]);      
     }
