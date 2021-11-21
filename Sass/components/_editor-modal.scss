@@ -50,51 +50,6 @@
             }
         }
 
-        & > .sub-tasks {
-            display: flex;
-            flex-direction: column;
-            margin-top: space(big);
-
-            padding-left: space(regular);
-            border-left: 2px solid color(border);
-
-            & > .title {
-                @include font(800, medium, 700);
-                display: flex;
-                align-items: baseline;
-
-                & > p {
-                    margin-right: space(regular);
-                }
-            }
-
-            & > .tasks {
-                font-size: fontSize(regular);
-                color: fontColor(800);
-                margin-top: space(medium);
-                font-weight: 600;
-
-                & > .sub-task {
-                    display: flex;
-                    align-items: center;
-                    margin-bottom: space(medium);
-
-                    & > *:not(:last-child) {
-                        margin-right: space(regular);
-                    }
-                }
-
-                & > .actions {
-                    display: flex;
-                    align-items: center;
-
-                    & > span {
-                        margin: 0 space(regular);
-                    }
-                }
-            }
-        }
-
         & > .actions {
             margin-top: space(huge);
             display: flex;
@@ -124,7 +79,6 @@
 
                 & > .attribute {
                     @include font(700, regular, 600);
-
                     display: grid;
                     grid-template-columns: 3fr 3fr 1fr;
                     gap: space(regular);
@@ -137,26 +91,14 @@
                     & > .value {
                         --color-raw: #{colorRaw(primary)};
                         --text: #{color(primary, text)};
-
                         display: flex;
                         align-items: center;
                         padding: space(small) space(regular);
-                        background: rgba(var(--color-raw), 0.25);
                         border-radius: borderRadius(small);
 
-                        &.no-color {
-                            background: background(primary);
+                        &.disabled {
+                            background: background(secondary);
                             border: 1px solid color(border);
-                        }
-
-                        & > .dot {
-                            height: 10px;
-                            width: 10px;
-                            display: block;
-                            float: left;
-                            margin-right: space(regular);
-                            border-radius: 50%;
-                            background: rgb(var(--color-raw));
                         }
 
                         & > .icon {

@@ -2,7 +2,6 @@
 
 .text-field {
     --color: #{color(primary)};
-    z-index: 2;
     position: relative;
 
     & > .field {
@@ -125,9 +124,6 @@
     }
 
     &.selector {
-        z-index: 3;
-
-
         .field {
 
             &::before {

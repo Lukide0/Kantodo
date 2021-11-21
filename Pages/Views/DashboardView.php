@@ -48,29 +48,6 @@ class DashboardView implements IView
                         <div class="editor">
                             <textarea></textarea>
                         </div>
-                        <div class="sub-tasks">
-                            <div class="title">
-                                <p>sub-tasks</p>
-                                <div class="progress-bar">
-                                    <div class="bar">
-                                        <div class="completed" style="width: 0%;"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tasks">
-                                <div class="sub-task">
-                                    <span class="icon medium round">drag_indicator</span>
-                                    <label class="checkbox success small">
-                                        <input type="checkbox">
-                                        <div class="background"></div>
-                                    </label>
-                                    <p>Create real time socket for agenda</p>
-                                </div>
-                                <div class="actions">
-                                    <button class="flat action"><?= t('add_task', 'dashboard') ?></button><span><?= t('or') ?></span><button class="flat action"><?= t('create_task', 'dashboard') ?></button>
-                                </div>
-                            </div>
-                        </div>
                         <div class="actions">
                             <button class="flat"><?= t('attachment', 'dashboard') ?></button>
                         </div>
@@ -113,17 +90,28 @@ class DashboardView implements IView
                                 </div>
                                 <div class="attribute">
                                     <div class="name">Assignee</div>
-                                    <div class="value no-color">Lukas Koliandr</div>
+                                    <div class="value disabled">Lukas Koliandr</div>
                                 </div>
                                 <div class="attribute">
                                     <div class="name">Due date</div>
-                                    <div class="value no-color"><span class="icon extra-small outline">calendar_today</span>14-01-2022</div>
+                                    <div class="value"><span class="icon extra-small outline">calendar_today</span>14-01-2022</div>
                                     <button class="icon outline flat no-border">close</button>
                                 </div>
-                                <button class="add-attribute flat no-border">
-                                    <span class="icon outline">add</span>
-                                    <p>Add attribute</p>
-                                </button>
+                                <div class="attribute">
+                                    <div class="name">Tags</div>
+                                    <div class="value">
+                                        <div class="chips-container">
+                                            <div class="chips">
+                                                <div class="chip"><span>Name</span><button class="icon outline flat no-border">close</button></div>
+                                                <div class="chip"><span>Name</span><button class="icon outline flat no-border">close</button></div>
+                                            </div>
+                                            <label class="row middle">
+                                                <span class="icon small outline">search</span>
+                                                <input type='text' id="tagInput">
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="actions">
@@ -141,7 +129,8 @@ class DashboardView implements IView
                                 codeSyntaxHighlighting: true,
                             },
                             tabSize: 4,
-                            spellChecker: false
+                            spellChecker: false,
+                            toolbar: ['bold', 'italic', 'strikethrough', '|', 'heading-1', 'heading-2', 'heading-3', '|', 'quote', 'link', 'table', '|', 'unordered-list', 'ordered-list', '|' , 'preview', 'guide']
                         });
 
                         // FIX: bug -> při smazání se neposune span dolů

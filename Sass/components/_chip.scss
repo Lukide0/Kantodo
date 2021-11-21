@@ -1,0 +1,64 @@
+@use "../abstracts" as *;
+
+
+.chips-container {
+    border: 1px solid color(border);
+    border-radius: borderRadius(small);
+
+    & > .chips {
+        display: flex;
+        flex-wrap: wrap;
+        align-content: space-between;
+        padding: space(regular) space(small);
+
+        & > .chip:last-child {
+            margin-right: 0;
+        }
+    }
+
+    & > label {
+        width: 100%;
+        border: none;
+        border-top: 1px solid color(border);
+        outline: none;
+        padding: space(small);
+        
+        & > .icon {
+            padding-left: space(small);
+        }
+
+        & > input {
+            border: none;
+            padding: 0 space(regular);
+            height: 100%;
+            font-size: fontSize(regular);
+            outline: none;
+        }
+    }
+}
+
+.chip {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    margin-right: space(regular);
+
+    border-radius: borderRadius(regular);
+    padding: space(small) space(regular);
+    border: 1px solid color("border");
+
+    & > :first-child {
+        margin-right: space(regular);
+    }
+
+    & > button {
+        padding: 2px;
+        margin: 0;
+        background-color: transparent;
+
+        &:hover {
+            background-color: transparent !important;
+        }
+    }
+}
