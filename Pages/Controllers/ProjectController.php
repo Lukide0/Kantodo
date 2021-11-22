@@ -9,6 +9,7 @@ use Kantodo\Core\Request;
 use Kantodo\Core\Validation\Data;
 use Kantodo\Middlewares\ProjectAccessMiddleware;
 use Kantodo\Models\ProjectModel;
+use Kantodo\Models\TagModel;
 use Kantodo\Models\TaskModel;
 use Kantodo\Models\TeamModel;
 use Kantodo\Views\Layouts\ClientLayout;
@@ -34,10 +35,7 @@ class ProjectController extends AbstractController
 
         $projUUID = base64DecodeUrl($params['projectUUID']);
 
-
         $project = $projModel->getSingle(['*'], ['uuid' => $projUUID]);
-
-        var_dump($project);
 
         //$this->renderView(ProjectView::class, $params, ClientLayout::class);
     }

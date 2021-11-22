@@ -165,8 +165,6 @@ class Version_1_0 extends AbstractMigration
         $schema->create('tags', function (Blueprint $table) {
             $table->addColumn('tag_id', 'bigint', ['unsigned' => true, 'autoincrement' => true]);
             $table->addColumn('name', 'varchar', ['length' => 50, 'unique' => true]);
-            $table->addColumn('description', 'varchar', ['length' => 150, 'notNull' => false]);
-
             //keys
             $table->addPrimaryKey('tag_id');
         });
@@ -197,6 +195,20 @@ class Version_1_0 extends AbstractMigration
             $table->addPrimaryKey('task_attachment_id');
 
             $table->addForeignKey('task_id', $schema->getTable('tasks'), 'task_id', Blueprint::ACTION_AFFECT);
+        });
+
+        ////////////////////////
+        // TABLE TAG_PROJECTS //
+        ////////////////////////
+        $schema->create('tag_projects',  function (Blueprint $table, Schema $schema) {
+            $table->addColumn('tag_id', 'bigint', ['unsigned' => true]);
+            $table->addColumn('project_id', 'bigint', ['unsigned' => true]);
+
+            $table->addPrimaryKey('tag_id');
+            $table->addPrimaryKey('project_id');
+
+            $table->addForeignKey('tag_id', $schema->getTable('tags'), 'tag_id', Blueprint::ACTION_AFFECT);
+            $table->addForeignKey('project_id', $schema->getTable('projects'), 'project_id', Blueprint::ACTION_AFFECT);
         });
     }
 

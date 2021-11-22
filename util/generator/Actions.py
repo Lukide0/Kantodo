@@ -1,6 +1,7 @@
 from genericpath import isfile
 import re
 import json
+import sys
 from os import chdir, rename, system, name, path, getcwd
 from Console import Console
 
@@ -33,18 +34,18 @@ def add_command(commands):
             return
         
 
-        with open("controller_template.txt", "r") as template:
+        with open(path.join(sys.path[0] ,"controller_template.txt"), "r") as template:
             temp = template.read()
         
         temp = temp.replace("{{NAME}}", name, 1)
 
         name = f"{name}Controller.php"
 
-        if path.isfile(PATH_CONTROLLER + name):
+        if path.isfile(path.join(sys.path[0] ,PATH_CONTROLLER + name)):
             Console.set_style(Console.RED_FG, content="Controller exits\n")
             return
 
-        with open(PATH_CONTROLLER + name, "x") as file:
+        with open(path.join(sys.path[0] ,PATH_CONTROLLER + name), "x") as file:
             file.write(temp)
         
         Console.set_style(Console.GREEN_FG, content="Controller was created\n")
@@ -56,18 +57,18 @@ def add_command(commands):
             return
         
 
-        with open("view_template.txt", "r") as template:
+        with open(path.join(sys.path[0] ,"view_template.txt"), "r") as template:
             temp = template.read()
         
         temp = temp.replace("{{NAME}}", name, 1)
 
         name = f"{name}View.php"
 
-        if path.isfile(PATH_VIEW + name):
+        if path.isfile(path.join(sys.path[0] ,PATH_VIEW + name)):
             Console.set_style(Console.RED_FG, content="View exits\n")
             return
 
-        with open(PATH_VIEW + name, "x") as file:
+        with open(path.join(sys.path[0] ,PATH_VIEW + name), "x") as file:
             file.write(temp)
         
         Console.set_style(Console.GREEN_FG, content="View was created\n")
@@ -91,18 +92,18 @@ def add_command(commands):
         else:
             template_path = "widget_template.txt"
 
-        with open(template_path, "r") as template:
+        with open(path.join(sys.path[0] ,template_path), "r") as template:
             temp = template.read()
         
         temp = temp.replace("{{NAME}}", name, 1)
 
         name = f"{name}.php"
 
-        if path.isfile(PATH_WIDGET + name):
+        if path.isfile(path.join(sys.path[0] ,PATH_WIDGET + name)):
             Console.set_style(Console.RED_FG, content="Widget exits\n")
             return
 
-        with open(PATH_WIDGET + name, "x") as file:
+        with open(path.join(sys.path[0] ,PATH_WIDGET + name), "x") as file:
             file.write(temp)
         Console.set_style(Console.GREEN_FG, content="Widget was created\n")
     elif action == "-m":
@@ -126,7 +127,7 @@ def add_command(commands):
         else:
             table_line = ""
 
-        with open("model_template.txt", "r") as template:
+        with open(path.join(sys.path[0] ,"model_template.txt"), "r") as template:
             temp = template.read()
         
         temp = temp.replace("{{NAME}}", name, 1)
@@ -134,11 +135,11 @@ def add_command(commands):
 
         name = f"{name}Model.php"
 
-        if path.isfile(PATH_MODEL + name):
+        if path.isfile(path.join(sys.path[0] ,PATH_MODEL + name)):
             Console.set_style(Console.RED_FG, content="Model exits\n")
             return
 
-        with open(PATH_MODEL + name, "x") as file:
+        with open(path.join(sys.path[0] ,PATH_MODEL + name), "x") as file:
             file.write(temp)
         
         Console.set_style(Console.GREEN_FG, content="Model was created\n")
@@ -195,19 +196,19 @@ def rename_command(commands):
         rename_command_help()
         return
     
-    if path.isfile(folder + name + ".php") == False:
+    if path.isfile(path.join(sys.path[0] ,folder + name + ".php")) == False:
         Console.set_style(Console.RED_FG, content=f"{name} doen't exits\n")
         return
 
-    with open(folder + name + ".php") as file:
+    with open(path.join(sys.path[0] ,folder + name + ".php")) as file:
         content = file.read()
 
     content = content.replace(name, new_name)
 
-    with open(folder + name + ".php", "w") as file:
+    with open(path.join(sys.path[0] ,folder + name + ".php"), "w") as file:
         file.write(content) 
 
-    rename(folder + name + ".php", folder + new_name + ".php")
+    rename(path.join(sys.path[0] ,folder + name + ".php"),path.join(sys.path[0] , folder + new_name + ".php"))
 
     
 

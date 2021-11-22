@@ -29,10 +29,6 @@ class UserModel extends Model
         ]);
     }
 
-    //--------------------//
-    //-- Veřejné metody --//
-    //--------------------//
-
     /**
      * Vytvoří uživatele
      *

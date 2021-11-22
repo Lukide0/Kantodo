@@ -119,10 +119,6 @@ class ProjectModel extends Model
         ]);
     }
     
-    //--------------------//
-    //-- Veřejné metody --//
-    //--------------------//
-
     /**
      * Smaže projekt
      *
