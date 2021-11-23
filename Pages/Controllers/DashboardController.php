@@ -1,4 +1,6 @@
-<?php 
+<?php
+
+declare(strict_types = 1);
 
 namespace Kantodo\Controllers;
 
@@ -19,7 +21,7 @@ class DashboardController extends AbstractController
     public function view()
     {
         $projectModel = new ProjectModel();
-        $projects = $projectModel->getUserProjects(Application::$APP->session->get('user')['id']);
+        $projects = $projectModel->getUserProjects((int)Application::$APP->session->get('user')['id']);
 
         if ($projects === false)
             $projects = [];

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Kantodo\API\Controllers;
 
@@ -20,8 +21,8 @@ class AuthController extends AbstractController
      */
     public function refreshToken()
     {
-        $body = API::$APP->request->getBody();
-        $response = API::$APP->response;
+        $body = API::$API->request->getBody();
+        $response = API::$API->response;
         $keys = [
             'email',
             'secret',

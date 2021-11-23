@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Kantodo\Controllers;
 
 use Kantodo\Auth\Auth;
@@ -303,17 +305,21 @@ class InstallController extends AbstractController
         var_dump($firstname);
 
         $userModel = new UserModel();
-        [$id] = $userModel->create($firstname, $lastname, $email, $pass);
+        $status = $userModel->create($firstname, $lastname, $email, $pass);
+
+
 
         // TODO: frontend error
-        if ($id == false) {
+        if ($status == false) {
             Application::$APP->response->setLocation('/install-admin');
             exit;
         }
 
+        [$id] = $status;
+
         // TODO: frontend error
-        if ($userModel->addMeta('position', 'admin', (int)$id) == false) {
-            $userModel->delete((int)$id);
+        if ($userModel->addMeta('position', 'admin', $id) == false) {
+            $userModel->delete($id);
 
             Application::$APP->response->setLocation('/install-admin');
             exit;

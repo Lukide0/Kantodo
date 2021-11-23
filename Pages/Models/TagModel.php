@@ -1,5 +1,7 @@
 <?php 
 
+declare(strict_types = 1);
+
 namespace Kantodo\Models;
 
 use Kantodo\Core\Database\Connection;
@@ -52,7 +54,7 @@ class TagModel extends Model
     {
         $tagID = $this->getSingle(['tag_id'],['name' => $name]);
 
-        if (!$tagID)
+        if ($tagID === false)
             $tagID = $this->create($name);
         else 
             $tagID = (int)$tagID['tag_id'];
@@ -72,7 +74,7 @@ class TagModel extends Model
         ]);
 
         $result = $sth->fetch(PDO::FETCH_ASSOC);
-        if ($status && $result)
+        if ($status && $result !== false)
             return true;
 
             

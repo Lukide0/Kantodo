@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Kantodo\Controllers;
 
 use function Kantodo\Core\Functions\base64DecodeUrl;

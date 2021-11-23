@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Kantodo\Core;
 
 /**
@@ -112,8 +114,8 @@ class HeaderHTML
         $header .= "<title>{$this->title}</title>";
 
         foreach ($this->scripts as $script) {
-            $attr = ($script['defer']) ? 'defer ' : '';
-            $attr .= ($script['async']) ? 'async' : '';
+            $attr = ($script['defer'] === true) ? 'defer ' : '';
+            $attr .= ($script['async'] === true) ? 'async' : '';
 
             $type = ($script['type'] != '') ? "type='{$script['type']}'" : '';
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Kantodo\Widgets;
 
 use Kantodo\Core\Base\AbstractWidget;
@@ -263,11 +265,11 @@ class Input extends AbstractWidget
                 array_keys($this->dataAttr)
             )
         );
-        $outline = $this->getOption('outline') ? "outline" : "";
+        $outline = $this->getOption('outline') === true ? "outline" : "";
         $color   = $this->getOption("color", "");
         $classes = $this->getOption("classes", "");
         $type = $this->getOption('type', "text");
-        $errorClass = $this->getOption('error', false) ? 'error' : '';
+        $errorClass = $this->getOption('error', false) === true ? 'error' : '';
 
         return <<<HTML
             <label class="text-field {$outline} {$color} space-big-bottom {$classes} {$errorClass}">

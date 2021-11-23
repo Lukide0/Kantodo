@@ -1,5 +1,6 @@
 <?php 
 
+declare(strict_types = 1);
 
 namespace Kantodo\Widgets;
 
@@ -63,11 +64,11 @@ class Task extends AbstractWidget
      * @return string
      *
      */
-    public static function Create(string $title, string $description, bool $completed = false, array $options = [])
+    public static function create(string $title, string $description, bool $completed = false, array $options = [])
     {
        $task = new Task($title, $description, $completed, $options);
 
-       return $task->GetHTML();
+       return $task->getHTML();
     }
 
     /**
@@ -75,9 +76,9 @@ class Task extends AbstractWidget
      *
      * @return  string
      */
-    public function GetHTML()
+    public function getHTML()
     {
-        $important = ($this->getOption('important', false)) ? '<div class="important">Important</div>' : "";
+        $important = ($this->getOption('important', false) === true) ? '<div class="important">Important</div>' : "";
         $avatars = implode("", array_map(function($element)
         {
             return "<div class='avatar'>{$element}</div>";

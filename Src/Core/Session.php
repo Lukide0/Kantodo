@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Kantodo\Core;
 
 /**
@@ -328,8 +330,8 @@ class Session
     public function cleanData(string $key = null)
     {
         if ($key === null) {
-            foreach ($_SESSION['__KAN']['DATA'] as $key => $__) {
-                unset($_SESSION['__KAN']['DATA'][$key]);
+            foreach ($_SESSION['__KAN']['DATA'] as $sessionKey => $__) {
+                unset($_SESSION['__KAN']['DATA'][$sessionKey]);
             }
         } else {
             unset($_SESSION['__KAN']['DATA'][$key]);

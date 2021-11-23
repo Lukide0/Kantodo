@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Kantodo\Views\Layouts;
 
 use Kantodo\Core\Application;
@@ -19,7 +21,7 @@ class InstallLayout extends Layout
      *
      * @return  void
      */
-    public function Render(string $content = '', array $params = [])
+    public function render(string $content = '', array $params = [])
     {
         $title = $params['title'] ?? 'Kantodo - Install';
         $sectionName = $params['sectionName'] ?? '';

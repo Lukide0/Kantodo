@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Kantodo\Core\Database;
 
 use InvalidArgumentException;
@@ -113,6 +115,7 @@ class Connection
             $queries = [$queries];
         }
 
+        /** @phpstan-ignore-next-line */
         if (!is_array($queries)) {
             throw new InvalidArgumentException('Parameter $queries is not string|array.');
         }
@@ -166,14 +169,14 @@ class Connection
             return [];
         }
 
-        if (in_array('*', $select)) {
+        if (in_array('*', $select, true)) {
             $columns = ['*'];
         } else {
             $columns = [];
             foreach ($select as $key => $name) {
                 if (in_array($key, $tableColumns, true)) {
                     $columns[] = "$key as $name";
-                } else if (in_array($name, $tableColumns)) {
+                } else if (in_array($name, $tableColumns, true)) {
                     $columns[] = $name;
                 }
             }

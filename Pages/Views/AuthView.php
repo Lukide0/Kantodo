@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Kantodo\Views;
 
 use Kantodo\Core\Application;
@@ -31,7 +33,7 @@ class AuthView implements IView
             $errors[$name] = t('empty_field', 'auth');
         }
 
-        if (isset($signInErrors['success']) && !$signInErrors['success']) {
+        if (isset($signInErrors['success']) && $signInErrors['success'] === false) {
             $errors['signInEmail'] = " ";
             $errors['signInPassword'] = " ";
         }

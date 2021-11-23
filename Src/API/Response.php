@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Kantodo\API;
 
 use Kantodo\Core\Response as CoreResponse;

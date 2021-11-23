@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Kantodo\Core;
 
 use Kantodo\Core\Base\AbstractController;
@@ -140,7 +142,7 @@ class BaseApplication
         $this->session  = new Session();
         $this->lang     = new Lang();
 
-        if ($this->configExits()) {
+        if (self::configExits()) {
             $this->loadConfig();
         }
     }
@@ -315,6 +317,7 @@ class BaseApplication
             return self::$APP->userRole;
         }
 
+        /** @phpstan-ignore-next-line */
         if (isset(self::$AUTH) && !self::$AUTH::isLogged()) {
             self::$APP->userRole = self::GUEST;
             return self::GUEST;

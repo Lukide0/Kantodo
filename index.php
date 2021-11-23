@@ -13,18 +13,6 @@ $APP->registerAuth(new Auth());
 $APP->session->start();
 
 // TODO: Mobilni verze
-// TODO: declare(strict_types = 1);
-// TODO: Browser support
-
-
-
-
-// TODO: Tabulka na TagProject
-// TODO: Pridavani ukolu + fix css
-
-
-
-
 
 
 if (!Application::configExits()) {

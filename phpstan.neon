@@ -6,3 +6,12 @@ parameters:
         - api
     bootstrapFiles:
         - Loader/autoload.php
+    ignoreErrors:
+        -
+            message: '#Construct empty\(\) is not allowed. Use more strict comparison.#'
+            paths:
+                - Src
+                - Pages
+                - api
+includes:
+    - vendor/phpstan/phpstan-strict-rules/rules.neon

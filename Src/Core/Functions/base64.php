@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Kantodo\Core\Functions;
 
 /**
@@ -19,9 +21,9 @@ function base64EncodeUrl(string $string)
  *
  * @param   string  $string
  *
- * @return  string
+ * @return  string|false
  */
 function base64DecodeUrl(string $string)
 {
-    return base64_decode(str_replace(['-', '_'], ['+', '/'], $string));
+    return base64_decode(str_replace(['-', '_'], ['+', '/'], $string), true);
 }

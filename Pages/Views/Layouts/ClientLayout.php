@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Kantodo\Views\Layouts;
 
 use Kantodo\Core\Application;
@@ -21,9 +23,9 @@ class ClientLayout extends Layout
      *
      * @return  void
      */
-    public function Render(string $content = '', array $params = [])
+    public function render(string $content = '', array $params = [])
     {
-        $headerContent = Application::$APP->header->GetContent();
+        $headerContent = Application::$APP->header->getContent();
 
         // TODO: generovat menu z array
         //$userID = Application::$APP->session->get('user')['id'];

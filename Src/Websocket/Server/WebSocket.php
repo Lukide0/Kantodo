@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Kantodo\Websocket\Server;
 
 use Socket;
@@ -86,7 +88,7 @@ class WebSocket
 
         $parts = parse_url($this->uri);
 
-        if (!$parts || !isset($parts['scheme'], $parts['host'], $parts['port'])) {
+        if ($parts === false || !isset($parts['scheme'], $parts['host'], $parts['port'])) {
             throw new \InvalidArgumentException('Invalid URI');
         }
 
@@ -124,6 +126,7 @@ class WebSocket
 
         Console::log("Listening on uri: {$this->uri}");
 
+        /** @phpstan-ignore-next-line */
         while (true) {
             /**
              * @var array<resource>
@@ -316,7 +319,7 @@ class WebSocket
             } else {
                 if (substr($h[0], 0, 1) == "\t") {
                     $headers[$key] .= "\r\n\t" . trim($h[0]);
-                } elseif (!$key) {
+                } elseif ($key == '') {
                     $headers[0] = trim($h[0]);
                 }
 
