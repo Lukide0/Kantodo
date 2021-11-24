@@ -21,9 +21,9 @@ class ProjectController extends AbstractController
      */
     public function create()
     {
-        $body = API::$APP->request->getBody();
-        $response = API::$APP->response;
-        $session = API::$APP->session;
+        $body = API::$API->request->getBody();
+        $response = API::$API->response;
+        $session = API::$API->session;
 
         if (empty($body[Request::METHOD_POST]['name'])) 
         {

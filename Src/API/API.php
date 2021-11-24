@@ -36,7 +36,7 @@ class API extends BaseApplication
     public $router;
 
     /**
-     * @var Response
+     * @var \Kantodo\API\Response
      */
     public $response;
 

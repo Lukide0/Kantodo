@@ -23,9 +23,9 @@ class TaskController extends AbstractController
      */
     public function create()
     {
-        $body = API::$APP->request->getBody();
-        $response = API::$APP->response;
-        $session = API::$APP->session;
+        $body = API::$API->request->getBody();
+        $response = API::$API->response;
+        $session = API::$API->session;
 
         $keys = [
             'task_name',
@@ -99,10 +99,10 @@ class TaskController extends AbstractController
     public function get(array $params = [])
     {
         $limit = 10;
-        $response = API::$APP->response;
-        $session = API::$APP->session;
+        $response = API::$API->response;
+        $session = API::$API->session;
         $user = $session->get('user');
-        $body = API::$APP->request->getBody();
+        $body = API::$API->request->getBody();
     
         $offset = ($body[Request::METHOD_GET]['page'] ?? 0) * $limit;
 
@@ -116,11 +116,18 @@ class TaskController extends AbstractController
             $response->error(t('project uuid missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
 
         $uuid = base64DecodeUrl($params['projectUUID']);
+
+        if ($uuid === false)
+        {
+            $response->error(t('project uuid missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
+            exit;
+        }
+
         $projectModel = new ProjectModel();
 
         $projectId = $projectModel->projectMember((int)$user['id'], $uuid);
 
-        if (!$projectId)
+        if ($projectId === false)
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
         
         $taskModel = new TaskModel();
