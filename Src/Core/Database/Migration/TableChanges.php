@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Kantodo\Core\Database\Migration;
 
 use Kantodo\Core\Database\Migration\Exception\TableException;

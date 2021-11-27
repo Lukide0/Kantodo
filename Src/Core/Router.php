@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Kantodo\Core;
 
 use Kantodo\Core\Base\AbstractController;
@@ -210,6 +212,9 @@ class Router
     {
         if (is_array($callback)) {
             $classMethod        = $callback[1];
+            /**
+             * @var AbstractController
+             */
             $controller         = new $callback[0];
             $controller->action = $classMethod;
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Kantodo\Core\Database\Migration;
 
 use InvalidArgumentException;
@@ -130,7 +132,7 @@ class Blueprint
 
         $type = strtoupper($type);
 
-        if (!in_array($type, self::VALID_DATA_TYPES)) {
+        if (!in_array($type, self::VALID_DATA_TYPES, true)) {
             throw new ColumnException("Column data type `$type` is not supported");
         }
 
@@ -183,7 +185,7 @@ class Blueprint
 
         $type = strtoupper($type);
 
-        if (!in_array($type, self::VALID_DATA_TYPES)) {
+        if (!in_array($type, self::VALID_DATA_TYPES, true)) {
             throw new ColumnException("Column data type `$type` is not supported");
         }
 
@@ -256,7 +258,7 @@ class Blueprint
         }
 
         // pokud již existuje
-        if (in_array($column, $this->primary)) {
+        if (in_array($column, $this->primary, true)) {
             return false;
         }
 
@@ -280,7 +282,7 @@ class Blueprint
         }
 
         // sloupec nemá primární klíč
-        $index = array_search($column, $this->primary);
+        $index = array_search($column, $this->primary, true);
         if ($index === false) {
             return false;
         }
@@ -311,7 +313,7 @@ class Blueprint
 
         $key = implode(';', $columns);
 
-        if (in_array($key, $this->unique)) {
+        if (in_array($key, $this->unique, true)) {
             return;
         }
 
@@ -334,7 +336,7 @@ class Blueprint
 
             $key = implode(';', $columns);
 
-            $index = array_search($key, $this->unique);
+            $index = array_search($key, $this->unique, true);
 
             if ($index === false) {
                 return false;
@@ -344,13 +346,13 @@ class Blueprint
 
             return true;
         }
-
-        if (is_string($columns)) {
+        /** @phpstan-ignore-next-line */
+        else if (is_string($columns)) {
             $match = false;
             foreach ($this->unique as $index => $key) {
                 $keyColumns = explode(';', $key);
 
-                if (in_array($columns, $keyColumns)) {
+                if (in_array($columns, $keyColumns, true)) {
                     $match = true;
                     unset($this->unique[$index]);
                 }

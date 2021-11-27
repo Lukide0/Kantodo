@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Kantodo\Core\Base;
 
 use Kantodo\Core\Database\Connection;
@@ -47,14 +49,14 @@ class Model
             return [];
         }
 
-        if (in_array('*', $select)) {
+        if (in_array('*', $select, true)) {
             $columns = ['*'];
         } else {
             $columns = [];
             foreach ($select as $key => $name) {
                 if (in_array($key, $this->tableColumns, true)) {
                     $columns[] = "`$key` as '$name'";
-                } else if (in_array($name, $this->tableColumns)) {
+                } else if (in_array($name, $this->tableColumns, true)) {
                     $columns[] = "`$name`";
                 }
             }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Kantodo\Core\Base;
 
 use InvalidArgumentException;
@@ -69,7 +71,7 @@ abstract class AbstractController
     {
         if ($layout == null) {
             /* @phpstan-ignore-next-line */
-            call_user_func([new $class, 'Render'], $params);
+            call_user_func([new $class, 'render'], $params);
             return;
         }
 

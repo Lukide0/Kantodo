@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Kantodo\Core;
 
 use const Kantodo\Core\Functions\FILE_FLAG_CREATE_DIR;

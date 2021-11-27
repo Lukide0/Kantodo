@@ -12,19 +12,7 @@ $APP = new Application();
 $APP->registerAuth(new Auth());
 $APP->session->start();
 
-// TODO: Mobilni verze
-// TODO: declare(strict_types = 1);
-// TODO: Browser support
-
-
-
-
-// TODO: Tabulka na TagProject
-// TODO: Pridavani ukolu + fix css
-
-
-
-
+// TODO: Mobilni verze, pri vytvareni zamknout tlacitko pridat => bug 2x se prida
 
 
 if (!Application::configExits()) {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Kantodo\Core\Database\Migration;
 
 use Kantodo\Core\Application;
@@ -70,6 +72,7 @@ class Runner
 
         $versions = $this->getAllVersions();
 
+        /** @phpstan-ignore-next-line */
         uksort($versions, [$this, 'CompareVersions']);
 
         $between = [];
@@ -198,7 +201,7 @@ class Runner
              * @var string
              */
             $file = str_replace(Application::$MIGRATION_DIR . '/Versions/', '', $file);
-            if (preg_match("/^Version_(?<version>[0-9]+(_[0-9]+)*)\.php$/", $file, $matches)) {
+            if (preg_match("/^Version_(?<version>[0-9]+(_[0-9]+)*)\.php$/", $file, $matches) !== false) {
                 $valid[$matches['version']] = $file;
             }
         }

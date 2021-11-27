@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Kantodo\Models;
 
 use Kantodo\Core\Base\Model;

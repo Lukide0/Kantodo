@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Kantodo\API;
 
 use Kantodo\API\Response;
@@ -12,7 +14,7 @@ class API extends BaseApplication
     /**
      * @var self
      */
-    public static $APP;
+    public static $API;
 
     /**
      * Cesta k akcím
@@ -34,7 +36,7 @@ class API extends BaseApplication
     public $router;
 
     /**
-     * @var Response
+     * @var \Kantodo\API\Response
      */
     public $response;
 
@@ -42,7 +44,7 @@ class API extends BaseApplication
     {
         parent::__construct();
 
-        self::$APP          = $this;
+        self::$API          = $this;
         self::$ACTIONS_PATH = self::$ROOT_DIR . '/api/Actions';
 
         $this->response = new Response();

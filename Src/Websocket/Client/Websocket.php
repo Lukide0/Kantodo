@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Kantodo\Websocket\Client;
 
 class Websocket
@@ -63,7 +65,7 @@ class Websocket
         /** @phpstan-ignore-next-line */
         $ru = fwrite($this->streamSocket, $header);
 
-        if (!$ru) {
+        if ($ru === false) {
             return false;
         }
 
@@ -128,7 +130,7 @@ class Websocket
         do {
             $header = fread($this->streamSocket, 2);
 
-            if (!$header) {
+            if ($header === false) {
                 return false;
             }
 
@@ -149,7 +151,7 @@ class Websocket
 
                 $header = fread($this->streamSocket, $extLength);
 
-                if (!$header) {
+                if ($header === false) {
                     return false;
                 }
 
@@ -160,12 +162,12 @@ class Websocket
 
             }
 
-            if ($masked) {
+            if ($masked == false) {
                 $mask = fread($this->streamSocket, 4);
-                if (!$mask) {
+                if ($mask == false) {
                     return false;
                 }
-
+                $mask = (int)$mask;
             } else {
                 $mask = 0;
             }
@@ -175,7 +177,7 @@ class Websocket
 
                 $frame = fread($this->streamSocket, $payloadLength);
 
-                if (!$frame) {
+                if ($frame === false) {
                     return false;
                 }
 
@@ -198,14 +200,17 @@ class Websocket
 
             // Unmask data
             $dataLength = strlen($frameData);
+            /** @phpstan-ignore-next-line */
             if ($masked) {
                 for ($i = 0; $i < $dataLength; $i++) {
+                    /** @phpstan-ignore-next-line */
                     $data .= $frameData[$i] ^ $mask[$i % 4];
                 }
             } else {
                 $data .= $frameData;
             }
-
+        
+        /** @phpstan-ignore-next-line */
         } while (!$final);
 
         return $data;

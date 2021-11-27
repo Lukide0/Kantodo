@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Kantodo\Models;
 
 use Kantodo\Core\Application;
@@ -221,7 +223,7 @@ class ProjectModel extends Model
             $result = $sth->fetch(PDO::FETCH_ASSOC);
             
             if ($result !== false && count($result) != 0) {
-                return $result['project_position_id'];
+                return (int)$result['project_position_id'];
             }
             
             return false;

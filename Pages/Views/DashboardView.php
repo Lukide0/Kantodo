@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Kantodo\Views;
 
 use Kantodo\Core\Application;
@@ -21,7 +23,7 @@ class DashboardView implements IView
      *
      * @return  void
      */
-    public function Render(array $params = [])
+    public function render(array $params = [])
     {
         // TODO: pridavani ukolu
         // TODO: pridavani projektu s ukoly po vytvoreni
