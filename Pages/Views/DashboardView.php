@@ -137,6 +137,12 @@ class DashboardView implements IView
                         let menu = win.element.querySelector('[data-select=project]');
                         let input = win.element.querySelector('[data-input=project]');
                         let textField = input.parentElement.parentElement;
+                        let chipsContainer = win.element.querySelector('.chips-container');
+                        let chips = chipsContainer.querySelector('.chips');
+                        let chipInput = chipsContainer.querySelector('input');
+                        let chipsArray = [];
+
+
                         function createOptions() {
                             if (input.value.length != 0)
                                 textField.classList.remove('active');
@@ -173,6 +179,28 @@ class DashboardView implements IView
                         }
 
                         createOptions();
+                        chipInput.addEventListener('change', function() {
+                            let value = chipInput.value.trim();
+                            if (value == '' || chipsArray.includes(value))
+                                return;
+
+
+                            chipsArray.push(value)
+                            let tmpEl = document.createElement('div');
+                            tmpEl.innerHTML = `<div class="chip"><span>${value}</span><button class="icon outline flat no-border">close</button></div>`;
+                            let tmpBtn = tmpEl.getElementsByTagName('button')[0];
+                            
+                            tmpBtn.addEventListener('click', function() {
+                                tmpBtn.parentElement.remove();
+                                let index = chipsArray.indexOf(value);
+                                if (index !== -1)
+                                    chipsArray.splice(index, 1);
+                            });
+                        chips.appendChild(tmpEl.children[0]);
+
+
+                            chipInput.value = "";
+                        });
                         input.addEventListener('input', createOptions);
                         input.addEventListener('click', createOptions);
 
@@ -183,6 +211,11 @@ class DashboardView implements IView
                             data.task_name = inputName.value;
                             data.task_desc = editor.value();
                             data.task_proj = input.dataset.value;
+
+                            for (let i = 0; i < chipsArray.length; i++) {
+                                data[`task_tag[${i}]`] = chipsArray[i];
+                            }
+                            console.log(data);
 
                             let response = Request.Action('/api/create/task', 'POST', data);
                             response.then(res => {
@@ -201,7 +234,7 @@ class DashboardView implements IView
                                 snackbar.show({center: true, top: 5}, 4000, false);
 
                             }).catch(reason => {
-                                Kantodo.error(`{ status: ${reason.status}, statusText: ${reason.statusText} }`);
+                                Kantodo.error(reason);
                             });
                         });
 
