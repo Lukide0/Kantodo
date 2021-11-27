@@ -48,7 +48,7 @@ class TagModel extends Model
      * @param   string  $name       název štítku
      * @param   int     $projectID  projekt id
      *
-     * @return  bool                status
+     * @return  int|false           id štítku nebo false
      */
     public function createInProject(string $name, int $projectID)
     {
@@ -75,7 +75,7 @@ class TagModel extends Model
 
         $result = $sth->fetch(PDO::FETCH_ASSOC);
         if ($status && $result !== false)
-            return true;
+            return $tagID;
 
             
         $query = "INSERT INTO {$tagProject} (`tag_id`, `project_id`) VALUES(:tagID, :projectID)";
@@ -86,10 +86,30 @@ class TagModel extends Model
         ]);
 
         if ($status === true) {
-            return true;
+            return $tagID;
         }
 
         return false;
+    }
+
+    /**
+     * Přidá štítky úkolu
+     *
+     * @param   array<int,int>  $tags  id štítků
+     * @param   int  $taskID  id úkolu
+     *
+     * @return  bool                   status
+     */
+    public function addTagsToTask(array $tags, int $taskID)
+    {
+        $queries = [];
+        $taskTag = Connection::formatTableName('task_tags');
+
+        foreach ($tags as $tagID) {
+            $queries[] = "INSERT INTO {$taskTag} (`tag_id`, `task_id`) VALUES ({$tagID}, {$taskID})";
+        }
+        
+        return Connection::runInTransaction($queries);
     }
 }
 

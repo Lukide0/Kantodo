@@ -106,7 +106,7 @@ class Connection
      * @param   array<string>|string $queries  příkazy
      * @param   array<string,mixed>  $data
      *
-     * @return  void
+     * @return  bool                status
      */
     public static function runInTransaction($queries, array $data = [])
     {
@@ -130,10 +130,14 @@ class Connection
         try {
             $con->beginTransaction();
 
+            $status = false;
             foreach ($queries as $query) {
                 $pdoStatement = $con->prepare($query);
-                $pdoStatement->execute($data);
+                $status = $pdoStatement->execute($data);
             }
+
+            if ($status === false)
+                return false;
 
             $con->commit();
 
@@ -141,13 +145,15 @@ class Connection
                 $con->setAttribute(PDO::ATTR_ERRMODE, $errorMode);
             }
 
+            return true;
+
         } catch (\Throwable $th) {
             if ($errorMode != PDO::ERRMODE_EXCEPTION) {
                 $con->setAttribute(PDO::ATTR_ERRMODE, $errorMode);
             }
 
             $con->rollBack();
-            throw $th;
+            return false;
         }
     }
 

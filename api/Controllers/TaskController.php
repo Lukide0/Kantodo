@@ -6,8 +6,10 @@ use Kantodo\API\API;
 use Kantodo\Core\Base\AbstractController;
 use Kantodo\Core\Request;
 use Kantodo\API\Response;
+use Kantodo\Core\Database\Connection;
 use Kantodo\Core\Validation\Data;
 use Kantodo\Models\ProjectModel;
+use Kantodo\Models\TagModel;
 use Kantodo\Models\TaskModel;
 
 use function Kantodo\Core\Functions\base64DecodeUrl;
@@ -72,11 +74,35 @@ class TaskController extends AbstractController
 
         // TODO: priorita, milnik a konec
         $taskID = $taskModel->create($taskName, $user['id'], (int)$details['id'], $taskDesc);
-        
         if ($taskID === false) 
         {
             $response->error(t('cannot_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
             return;
+        }
+        
+
+        if (!empty($body[Request::METHOD_POST]['task_tags']) && is_array($body[Request::METHOD_POST]['task_tags'])) 
+        {
+            $tagModel = new TagModel();
+
+            $tags = [];
+            foreach ($body[Request::METHOD_POST]['task_tags'] as $tag) {
+                $tagID = $tagModel->createInProject($tag, (int)$details['id']);
+                
+                if ($tagID === false) 
+                {
+                    $response->error(t('cannot_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
+                } 
+                else
+                    $tags[] = $tagID;
+            
+            }
+
+            
+            $status = $tagModel->addTagsToTask($tags, $taskID);
+
+            if ($status === false)
+                $response->error(t('cannot_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
         }
 
         $response->success([

@@ -215,7 +215,7 @@ class DashboardView implements IView
                             data.task_proj = input.dataset.value;
 
                             for (let i = 0; i < chipsArray.length; i++) {
-                                data[`task_tag[${i}]`] = chipsArray[i];
+                                data[`task_tags[${i}]`] = chipsArray[i];
                             }
                             console.log(data);
 
