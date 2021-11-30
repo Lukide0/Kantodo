@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace Kantodo\Websocket\Client;
 
+use Kantodo\Websocket\Server\WebSocket as _Websocket;
+
 class Websocket
 {
     /**
@@ -95,27 +97,79 @@ class Websocket
      *
      * @return  int|false počet odeslaných bytů
      */
-    public function send(string $message)
+    public function send(string $message, int $type = 0x81)
     {
-        $header = '';
-        if (strlen($message) < 126) {
-            $header .= chr(0x80 | strlen($message));
-        } elseif (strlen($message) < 0xFFFF) {
-            $header .= chr(0x80 | 126) . pack('n', strlen($message));
+        // https://stackoverflow.com/a/16608429/14456367
+        $frameHead = array();
+        $frame = '';
+        $payloadLength = strlen($message);
+        
+        
+        switch ($type) {
+            case 0x81:
+                // first byte indicates FIN, Text-Frame (10000001):
+                $frameHead[0] = 129;
+                break;
+
+            case 0x88:
+                // first byte indicates FIN, Close Frame(10001000):
+                $frameHead[0] = 136;
+                break;
+
+            case 0x89:
+                // first byte indicates FIN, Ping frame (10001001):
+                $frameHead[0] = 137;
+                break;
+
+            case 0x8A:
+                // first byte indicates FIN, Pong frame (10001010):
+                $frameHead[0] = 138;
+                break;
+            default:
+                return false;
+        }
+
+        // set mask and payload length (using 1, 3 or 9 bytes)
+        if ($payloadLength > 65535) {
+            $payloadLengthBin = str_split(sprintf('%064b', $payloadLength), 8);
+            $frameHead[1] = 255;
+            for ($i = 0; $i < 8; $i++) {
+                $frameHead[$i + 2] = bindec($payloadLengthBin[$i]);
+            }
+
+            // most significant bit MUST be 0 (close connection if frame too big)
+            if ($frameHead[2] > 127) {
+                return false;
+            }
+        } elseif ($payloadLength > 125) {
+            $payloadLengthBin = str_split(sprintf('%016b', $payloadLength), 8);
+            $frameHead[1] = 254;
+            $frameHead[2] = bindec($payloadLengthBin[0]);
+            $frameHead[3] = bindec($payloadLengthBin[1]);
         } else {
-            $header .= chr(0x80 | 127) . pack('N', 0) . pack('N', strlen($message));
+            $frameHead[1] = $payloadLength + 128;
         }
 
-        // Add mask
-        $mask = pack('N', rand(1, 0x7FFFFFFF));
-        $header .= $mask;
-
-        // Mask application message.
-        for ($i = 0; $i < strlen($message); $i++) {
-            $message[$i] = chr(ord($message[$i]) ^ ord($mask[$i % 4]));
+        // convert frame-head to string:
+        foreach (array_keys($frameHead) as $i) {
+            $frameHead[$i] = chr($frameHead[$i]);
         }
 
-        return fwrite($this->streamSocket, $header . $message);
+        
+        // generate a random mask:
+        $mask = array();
+        for ($i = 0; $i < 4; $i++) {
+            $mask[$i] = chr(rand(0, 255));
+        }
+
+        $frameHead = array_merge($frameHead, $mask);
+        $frame = implode('', $frameHead);
+        // append payload to frame:
+        for ($i = 0; $i < $payloadLength; $i++) {
+            $frame .= $message[$i] ^ $mask[$i % 4];
+        }
+
+        return fwrite($this->streamSocket, $frame . $message);
     }
 
     /**
@@ -133,6 +187,9 @@ class Websocket
             if ($header === false) {
                 return false;
             }
+
+            if (strlen($header) == 0)
+                return false;
 
             $opcode        = ord($header[0]) & 0x0F;
             $final         = ord($header[0]) & 0x80;

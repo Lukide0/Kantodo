@@ -11,6 +11,7 @@ use Kantodo\Core\Validation\Data;
 use Kantodo\Models\ProjectModel;
 use Kantodo\Models\TagModel;
 use Kantodo\Models\TaskModel;
+use Kantodo\Websocket\Client\Websocket;
 
 use function Kantodo\Core\Functions\base64DecodeUrl;
 use function Kantodo\Core\Functions\base64EncodeUrl;
@@ -73,8 +74,8 @@ class TaskController extends AbstractController
         $taskModel = new TaskModel();
 
         // TODO: priorita, milnik a konec
-        $taskID = $taskModel->create($taskName, $user['id'], (int)$details['id'], $taskDesc);
-        if ($taskID === false) 
+        $taskID = 1;//$taskModel->create($taskName, $user['id'], (int)$details['id'], $taskDesc);
+        /* if ($taskID === false) 
         {
             $response->error(t('cannot_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
             return;
@@ -103,7 +104,15 @@ class TaskController extends AbstractController
 
             if ($status === false)
                 $response->error(t('cannot_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
-        }
+        } */
+
+
+
+        $client = new Websocket('tcp://localhost', 8443);
+        $client->connect();
+        $client->send("TEST");
+        $client->disconnect();
+        $response->error("SEND", Response::STATUS_CODE_BAD_REQUEST);
 
         $response->success([
             'task' => 

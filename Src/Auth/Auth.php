@@ -129,7 +129,7 @@ class Auth implements IAuth
 
         // KROK B.1 - získat session
         $session = BaseApplication::$APP->session;
-
+        
         // KROK B.2 - zkontrolovat expiraci
         if ($session->getExpiration('user') > time())
             return true;

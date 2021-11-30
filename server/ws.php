@@ -33,5 +33,5 @@ $server->onMessage = "message";
 function message($data)
 {
     echo $data['message'] . "\n";
-};
+}
 $server->run();

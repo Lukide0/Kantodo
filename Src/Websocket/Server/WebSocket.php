@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace Kantodo\Websocket\Server;
 
-use Socket;
 
 define('WS_MSG_TEXT', 0x81);
 define('WS_MSG_BINARY', 0x82);
@@ -226,7 +225,6 @@ class WebSocket
      */
     private function connect($socket)
     {
-
         $this->sockets[(int) $socket] = $socket;
 
         if ($this->onConnect !== null) {
@@ -247,7 +245,6 @@ class WebSocket
      */
     private function disconnect(&$socket, $code = 0)
     {
-
         if ($this->onDisconnect !== null) {
             call_user_func($this->onDisconnect, $this->clients[(int) $socket], $code);
         }
@@ -398,7 +395,7 @@ class WebSocket
                 $this->disconnect($socket, 'decodedData');
                 return [];
         }
-
+        
         if ($payloadLength == 126) {
             $mask          = substr($data, 4, 4); // 4 => bytes offset from start
             $payloadOffset = 8; // offset mask + mask size
