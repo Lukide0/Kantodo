@@ -12,9 +12,16 @@ class Client
     public $handshake = false;
 
     /**
+     * @var bool
+     */
+    public $verified = false;
+
+    /**
      * @var resource
      */
     public $socket;
+
+    public $token = null;
     //public $sockets = array();
 
     /**

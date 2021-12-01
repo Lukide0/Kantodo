@@ -9,9 +9,10 @@ include "../loader/autoload.php";
 
 $app = new Application();
 
-$config = json_decode(file_get_contents('config.json'), true)['websocket-server'];
+define('WS_SECURE', false);
+define('WS_PORT', 8443);
 
-if (isset($config['secure']) && $config['secure'] === true) {
+if (WS_SECURE) {
     $uri = 'tls://localhost';
 } else {
     $uri = 'tcp://localhost';
@@ -26,7 +27,7 @@ if (isset($config['secure']) && $config['secure'] === true) {
 // var_dump($cert);
 // exit;
 
-$server = new WebSocket($uri, $config['port'], Application::$URL_PATH . '/websockets');
+$server = new WebSocket($uri, WS_PORT, Application::$URL_PATH . '/websockets');
 
 $server->onMessage = "message";
 

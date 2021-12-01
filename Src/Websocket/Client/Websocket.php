@@ -4,8 +4,6 @@ declare(strict_types = 1);
 
 namespace Kantodo\Websocket\Client;
 
-use Kantodo\Websocket\Server\WebSocket as _Websocket;
-
 class Websocket
 {
     /**
@@ -37,16 +35,18 @@ class Websocket
     {
         $errorCode = null;
 
-        $context = stream_context_create([
+        $contextOpts = [
             'ssl' => [
                 'verify_peer'       => false,
                 'verify_peer_name'  => false,
                 'allow_self_signed' => true,
-            ],
-        ]);
+            ]
+        ];
+
+        $context = stream_context_create($contextOpts);
 
         /** @phpstan-ignore-next-line */
-        $this->streamSocket = stream_socket_client($this->address, $errorCode, $errorMsg, $this->timeout, STREAM_CLIENT_CONNECT, $context);
+        $this->streamSocket = @stream_socket_client($this->address, $errorCode, $errorMsg, $this->timeout, STREAM_CLIENT_CONNECT, $context);
 
         if ($errorCode != null) {
             return false;
@@ -82,8 +82,10 @@ class Websocket
     /**
      * @return  void
      */
-    public function disconnect()
+    public function disconnect(int $ms = 0)
     {
+        if ($ms > 0)
+            stream_set_timeout($this->streamSocket, 0, $ms);
         if ($this->streamSocket != null) {
             fclose($this->streamSocket);
         }
@@ -170,6 +172,12 @@ class Websocket
         }
 
         return fwrite($this->streamSocket, $frame . $message);
+    }
+
+    public function timeout(int $ms = 0)
+    {
+        if ($ms > 0)
+            stream_set_timeout($this->streamSocket, 0, $ms);
     }
 
     /**

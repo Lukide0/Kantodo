@@ -6,12 +6,18 @@ use Kantodo\API\API;
 use Kantodo\Core\Base\AbstractController;
 use Kantodo\Core\Request;
 use Kantodo\API\Response;
+use Kantodo\Auth\Auth;
+use Kantodo\Core\BaseApplication;
 use Kantodo\Core\Database\Connection;
 use Kantodo\Core\Validation\Data;
 use Kantodo\Models\ProjectModel;
 use Kantodo\Models\TagModel;
 use Kantodo\Models\TaskModel;
 use Kantodo\Websocket\Client\Websocket;
+use ParagonIE\Paseto\Builder;
+use ParagonIE\Paseto\Keys\Version4\SymmetricKey;
+use ParagonIE\Paseto\Protocol\Version4;
+use ParagonIE\Paseto\Purpose;
 
 use function Kantodo\Core\Functions\base64DecodeUrl;
 use function Kantodo\Core\Functions\base64EncodeUrl;
@@ -106,12 +112,37 @@ class TaskController extends AbstractController
                 $response->error(t('cannot_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
         } */
 
+        $keyMaterial = API::getSymmetricKey();
 
+        if ($keyMaterial === false)
+            return null;
 
+        $key = new SymmetricKey($keyMaterial);
+        $paseto = (new Builder())
+            ->setVersion(new Version4)
+            ->setPurpose(Purpose::local())
+            ->setKey($key)
+            // nastavení dat
+            ->setClaims([
+                'task_id' => $taskID,
+                'project_uuid' => $projUUID                
+            ])
+            // nastavení vzniku
+            ->setIssuedAt()
+            // nastavení předmětu
+            ->setSubject('task_create')
+            ->toString();
+        $paseto = base64EncodeUrl($paseto);
         $client = new Websocket('tcp://localhost', 8443);
-        $client->connect();
-        $client->send("TEST");
-        $client->disconnect();
+        if ($client->connect("/")) 
+        {
+
+            $client->send(Auth::$PASETO_RAW);
+            $client->timeout(50);
+            $client->send("TODO CREATE");
+            $client->timeout(50);
+            $client->disconnect();
+        }
         $response->error("SEND", Response::STATUS_CODE_BAD_REQUEST);
 
         $response->success([

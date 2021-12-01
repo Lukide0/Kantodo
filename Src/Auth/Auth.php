@@ -35,6 +35,8 @@ class Auth implements IAuth
      * @var JsonToken|false
      */
     static $PASETO = false;
+
+    static $PASETO_RAW = false;
     /**
      * Hash hesla
      *
@@ -76,6 +78,7 @@ class Auth implements IAuth
                 'secret' => $secret
             ])
             // nastavení expirace
+            ->setNotBefore()
             ->setIssuedAt()
             ->setExpiration($expiration)
             // nastavení předmětu
@@ -86,13 +89,53 @@ class Auth implements IAuth
     }
 
     /**
+     * Získá bearer token (paseto)
+     *
+     * @return  string|false  token
+     */
+    public static function getBearerToken()
+    {
+        // https://stackoverflow.com/a/40582472
+        $headers = (isset($_SERVER['Authorization'])) ? trim($_SERVER['Authorization']) : ((isset($_SERVER['HTTP_AUTHORIZATION'])) ? trim($_SERVER["HTTP_AUTHORIZATION"]) : false);
+
+        if ($headers === false && function_exists('apache_request_headers')) 
+        {
+            $requestHeaders = apache_request_headers();
+            $requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
+
+            if (isset($requestHeaders['Authorization'])) {
+                $headers = trim($requestHeaders['Authorization']);
+            }
+        }
+
+        if ($headers === false)
+            return $headers;
+
+        if (preg_match('/Bearer\s(\S+)/', $headers, $matches))
+            return $matches[1];
+
+        return false;
+    }
+
+    public static function getPasetoTokenFromRequest()
+    {
+        $paseto = $_COOKIE[self::COOKIE_KEY] ?? false;
+        
+        if ($paseto === false) 
+            $paseto = self::getBearerToken();
+        
+        self::$PASETO_RAW = $paseto;
+        return $paseto;
+    }
+
+    /**
      * Dekoduje paseto token
      *
      * @param   string  $token  token
      *
      * @return  bool            Vrací status zpracování tokenu
      */
-    public static function checkToken(string $token)
+    public static function checkToken(string $token, string $subject = self::SUBJECT)
     {
         $key = BaseApplication::getSymmetricKey();
 
@@ -102,11 +145,12 @@ class Auth implements IAuth
         
         $parser = Parser::getLocal(new SymmetricKey($key), ProtocolCollection::v4())
             ->addRule(new ValidAt)
-            ->addRule(new Subject(self::SUBJECT));
+            ->addRule(new Subject($subject));
         
         try {
             self::$PASETO = $parser->parse($token);
         } catch (\Throwable $th) {
+            throw $th;
             return false;
         }
 
@@ -121,7 +165,7 @@ class Auth implements IAuth
     public static function isLogged(): bool
     {
         // KROK A.1 - zkontrolovat jestli má uživatel paseto token
-        $paseto = $_COOKIE[self::COOKIE_KEY] ?? false;
+        $paseto = self::getPasetoTokenFromRequest();
 
         // KROK A.2 - zkontrolovat jestli je validní
         if ($paseto !== false && self::checkToken($paseto)) 
@@ -233,7 +277,7 @@ class Auth implements IAuth
             if ($paseto === null)
                 return false;
 
-            setcookie('token', $paseto, $expirationUnix, "/");
+            setcookie(self::COOKIE_KEY, $paseto, $expirationUnix, "/");
             $session->set("user", $user, $expirationUnix);
 
             return true;

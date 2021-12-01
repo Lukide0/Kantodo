@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Kantodo\Websocket\Server;
 
+use Kantodo\Auth\Auth;
 
 define('WS_MSG_TEXT', 0x81);
 define('WS_MSG_BINARY', 0x82);
@@ -162,7 +163,7 @@ class WebSocket
 
                 $client = $this->clients[(int) $socket];
 
-                if ($client->handshake == false) {
+                if ($client->handshake === false) {
                     $client->handshake = true;
                     $this->handshake($socket, $buffer);
 
@@ -174,10 +175,35 @@ class WebSocket
                 $data = $this->decodeData($socket, $buffer);
 
                 if (!empty($data)) {
+
+                    // kontrola jestli je uživatel ověřen
+                    if ($client->verified === false) 
+                    {
+                        if ($data['type'] !== WS_MSG_TEXT) 
+                        {
+                            $this->disconnect($socket);
+                            continue;
+                        }
+                        
+                        if (Auth::checkToken($data['message'])) 
+                        {
+                            $client->token = Auth::$PASETO;
+                            $client->verified = true;
+                            continue;
+                        }
+                        else 
+                        {
+                            $this->disconnect($socket);
+                            continue;
+                        }
+
+
+                    }
+
                     switch ($data['type']) {
                         case WS_MSG_TEXT:
                             if ($this->onMessage !== null) {
-                                call_user_func($this->onMessage, $data, $socket);
+                                call_user_func($this->onMessage, $data, $client);
                             }
 
                             break;
@@ -225,6 +251,7 @@ class WebSocket
      */
     private function connect($socket)
     {
+        Console::log("CONNECT");
         $this->sockets[(int) $socket] = $socket;
 
         if ($this->onConnect !== null) {
@@ -245,6 +272,7 @@ class WebSocket
      */
     private function disconnect(&$socket, $code = 0)
     {
+        Console::error($code);
         if ($this->onDisconnect !== null) {
             call_user_func($this->onDisconnect, $this->clients[(int) $socket], $code);
         }
@@ -265,6 +293,7 @@ class WebSocket
      */
     private function handshake($socket, $buffer)
     {
+        Console::warning("HANDSHAKE");
         $headers = $this->parseHeaders($buffer);
 
         if (!isset($headers['Sec-WebSocket-Key'])) {
