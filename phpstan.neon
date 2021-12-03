@@ -4,6 +4,7 @@ parameters:
         - Src
         - Pages
         - api
+        - server
     bootstrapFiles:
         - Loader/autoload.php
     ignoreErrors:
@@ -11,6 +12,7 @@ parameters:
             message: '#Construct empty\(\) is not allowed. Use more strict comparison.#'
             paths:
                 - Src
+                - server
                 - Pages
                 - api
 includes:

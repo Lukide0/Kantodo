@@ -124,6 +124,7 @@ class TaskController extends AbstractController
             ->setKey($key)
             // nastavení dat
             ->setClaims([
+                // TODO: user id
                 'task_id' => $taskID,
                 'project_uuid' => $projUUID                
             ])
@@ -133,16 +134,10 @@ class TaskController extends AbstractController
             ->setSubject('task_create')
             ->toString();
         $paseto = base64EncodeUrl($paseto);
-        $client = new Websocket('tcp://localhost', 8443);
-        if ($client->connect("/")) 
-        {
-
-            $client->send(Auth::$PASETO_RAW);
-            $client->timeout(50);
-            $client->send("TODO CREATE");
-            $client->timeout(50);
-            $client->disconnect();
-        }
+        $client = \Ratchet\Client\connect('ws://127.0.0.1:8443')->then(function($conn) use ($paseto){
+            $conn->send($paseto);
+            $conn->close();
+        });
         $response->error("SEND", Response::STATUS_CODE_BAD_REQUEST);
 
         $response->success([

@@ -1,6 +1,8 @@
 {
     "require": {
-        "paragonie/paseto": "^2.2.0"
+        "paragonie/paseto": "^2.2.0",
+        "cboden/ratchet": "^0.4.3",
+        "ratchet/pawl": "^0.4.0"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.2.0",
