@@ -23,7 +23,7 @@ const EditorModalWindow = {
         let tmp = this._template.cloneNode(true);
         if (content != '')
             tmp.querySelector('.editor-modal').innerHTML = content;
-        tmp.querySelectorAll(".text-field > .field > input").forEach(el => {initInput(el); console.log(el)});
+        tmp.querySelectorAll(".text-field > .field > input").forEach(el => {initInput(el);});
 
         tmp.style.visibility = 'hidden';
 

@@ -46,6 +46,7 @@
 
         .tags {
             margin-right: space(medium);
+            display: flex;
 
             & > .tag {
                 margin-right: space(small);

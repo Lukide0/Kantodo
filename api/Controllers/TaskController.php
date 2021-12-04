@@ -80,8 +80,8 @@ class TaskController extends AbstractController
         $taskModel = new TaskModel();
 
         // TODO: priorita, milnik a konec
-        $taskID = 1;//$taskModel->create($taskName, $user['id'], (int)$details['id'], $taskDesc);
-        /* if ($taskID === false) 
+        $taskID = $taskModel->create($taskName, $user['id'], (int)$details['id'], $taskDesc);
+        if ($taskID === false) 
         {
             $response->error(t('cannot_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
             return;
@@ -110,14 +110,14 @@ class TaskController extends AbstractController
 
             if ($status === false)
                 $response->error(t('cannot_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
-        } */
+        }
 
         $keyMaterial = API::getSymmetricKey();
 
         if ($keyMaterial === false)
             return null;
 
-        $key = new SymmetricKey($keyMaterial);
+        /*$key = new SymmetricKey($keyMaterial);
         $paseto = (new Builder())
             ->setVersion(new Version4)
             ->setPurpose(Purpose::local())
@@ -139,7 +139,7 @@ class TaskController extends AbstractController
             $conn->close();
         });
         $response->error("SEND", Response::STATUS_CODE_BAD_REQUEST);
-
+        */
         $response->success([
             'task' => 
                 [
@@ -192,8 +192,16 @@ class TaskController extends AbstractController
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
         
         $taskModel = new TaskModel();
-        $tasks = $taskModel->get(['*'], ['project_id' => $projectId], $limit, $offset);
+        $tasks = $taskModel->get(['task_id', 'name', 'description', 'priority', 'completed', 'end_date'], ['project_id' => $projectId], $limit, $offset);
         
+        $tagModel = new TagModel();
+        
+        foreach ($tasks as &$task) {
+            $taskID = $task['task_id'];
+            unset($task['task_id']);
+            $task['tags'] = $tagModel->getTaskTags($taskID);
+        }
+
         $response->success(['tasks' => $tasks]);      
     }
 }

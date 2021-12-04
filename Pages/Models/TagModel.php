@@ -111,6 +111,34 @@ class TagModel extends Model
         
         return Connection::runInTransaction($queries);
     }
+
+    /**
+     * Získá štítky úkolu
+     *
+     * @param   int  $taskID  id úkolu
+     *
+     * @return  array<int,string>  štítky
+     */
+    public function getTaskTags(int $taskID)
+    {
+        $taskTags = Connection::formatTableName('task_tags');
+
+        $query = "SELECT tag.name FROM {$taskTags} as tt INNER JOIN {$this->table} as tag ON tag.tag_id = tt.tag_id WHERE tt.task_id = :taskID";
+        $sth    = $this->con->prepare($query);
+        $status = $sth->execute([
+            ':taskID' => $taskID,
+        ]);
+
+        if ($status === true) 
+        {
+            $result = $sth->fetchAll(PDO::FETCH_COLUMN);
+            if ($result !== false) {
+                return $result;
+            }
+            return false;
+        }
+
+    }
 }
 
 

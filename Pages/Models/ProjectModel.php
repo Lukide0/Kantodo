@@ -31,32 +31,11 @@ class ProjectModel extends Model
             'removeTask'           => true,
             'canCloseTask'         => true,
 
-            'addMilestone'         => true,
-            'editMilestone'        => true,
-            'removeMilestone'      => true,
-
-
             'addPeople'            => true,
             'removePeople'         => true,
             'changePeoplePosition' => true,
         ],
-        'project_manager' => [
-            'editProjectSettings'  => true,
-
-            'addTask'              => true,
-            'editTask'             => true,
-            'removeTask'           => true,
-            'canCloseTask'         => true,
-
-            'addMilestone'         => true,
-            'editMilestone'        => true,
-            'removeMilestone'      => true,
-
-            'addPeople'            => true,
-            'removePeople'         => true,
-            'changePeoplePosition' => true,
-        ],
-        'assignor'        => [
+        'user'        => [
             'editProjectSettings'  => false,
 
             'addTask'              => true,
@@ -64,41 +43,17 @@ class ProjectModel extends Model
             'removeTask'           => true,
             'canCloseTask'         => true,
 
-            'addMilestone'         => true,
-            'editMilestone'        => true,
-            'removeMilestone'      => true,
-
             'addPeople'            => false,
             'removePeople'         => false,
             'changePeoplePosition' => false,
         ],
-        'reviewer'        => [
-            'editProjectSettings'  => false,
-
-            'addTask'              => false,
-            'editTask'             => false,
-            'removeTask'           => false,
-            'canCloseTask'         => true,
-
-            'addMilestone'         => false,
-            'editMilestone'        => false,
-            'removeMilestone'      => false,
-
-            'addPeople'            => false,
-            'removePeople'         => false,
-            'changePeoplePosition' => false,
-        ],
-        'user'            => [
+        'viewer'            => [
             'editProjectSettings'  => false,
 
             'addTask'              => false,
             'editTask'             => false,
             'removeTask'           => false,
             'canCloseTask'         => false,
-
-            'addMilestone'         => false,
-            'editMilestone'        => false,
-            'removeMilestone'      => false,
 
             'addPeople'            => false,
             'removePeople'         => false,

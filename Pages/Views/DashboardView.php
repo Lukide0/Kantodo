@@ -31,10 +31,7 @@ class DashboardView implements IView
         <div class="row h-space-between">
             <h2><?= t('my_work', 'dashboard') ?></h2>
             <div class="row">
-                <div class="button-dropdown">
-                    <button data-action='task' class="filled"><?= t('add_task', 'dashboard') ?></button>
-                    <button class="dropdown icon round">expand_more</button>
-                </div>
+                <button data-action='task' class="filled"><?= t('add_task', 'dashboard') ?></button>
                 <button class="flat icon outline space-medium-left">settings</button>
                 <script>
                     const TaskList = [];
@@ -103,10 +100,7 @@ class DashboardView implements IView
                                     <div class="name">Tags</div>
                                     <div class="value">
                                         <div class="chips-container">
-                                            <div class="chips">
-                                                <div class="chip"><span>Name</span><button class="icon outline flat no-border">close</button></div>
-                                                <div class="chip"><span>Name</span><button class="icon outline flat no-border">close</button></div>
-                                            </div>
+                                            <div class="chips"></div>
                                             <label class="row middle">
                                                 <span class="icon small outline">search</span>
                                                 <input type='text' id="tagInput">
@@ -283,6 +277,15 @@ class DashboardView implements IView
                                 let tasks = res.data.tasks;
                                 let tmp = '';
                                 tasks.forEach(task => {
+                                    
+                                    let tags = task.tags;
+
+                                    let tagsHTML = tags.map(tag => {
+                                        return `<div class="tag">${tag}</div>`;
+                                    }).join('');
+
+                                    console.log(tagsHTML);
+
                                     tmp += `<div class="task">
                                                 <header>
                                                     <div>
@@ -293,7 +296,6 @@ class DashboardView implements IView
                                                         <h4>${task.name}</h4>
                                                     </div>
                                                     <div>
-                                                        <div class="important">Important</div>
                                                         <button class="flat no-border icon round">more_vert</button>
                                                     </div>
                                                 </header>
@@ -303,7 +305,7 @@ class DashboardView implements IView
                                                     </div>
                                                     <div class="row">
                                                         <div class="tags">
-                                                            <div class="tag">New Client</div>
+                                                            ${tagsHTML}
                                                         </div>
                                                         <div class="row middle"><span class="space-small-right">3 Comments</span><span class="icon round">chat_bubble</span></div>
                                                     </div>

@@ -21,9 +21,10 @@ class Form
      *
      * @return  string
      */
-    public static function start(string $action = '', string $method = Request::METHOD_POST, string $classes = '')
+    public static function start(string $action = '', string $method = Request::METHOD_POST, string $classes = '', array $attributes = [])
     {
-        return "<form class='{$classes}' action='{$action}' method='{$method}'>";
+        $attributes = implode(' ', array_map(function($v, $k) { return $k . '="' . $v . '"';  }, $attributes, array_keys($attributes)));
+        return "<form class='{$classes}' action='{$action}' method='{$method}' {$attributes}>";
     }
 
     /**

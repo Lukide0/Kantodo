@@ -22,8 +22,6 @@ class AuthView implements IView
     {
         $authType = (isset($params['type']) && $params['type'] == 'register') ? 'right' : '';
         $fromURL  = (isset($params['path'])) ? '?path=' . $params['path'] : '';
-        // TODO: frontend error
-        $registerForm = new Form();
 
         $email  = Application::$APP->session->getFlashMessage('userEmail', '');
         $signInErrors = Application::$APP->session->getFlashMessage('signInErrors', []);
@@ -60,46 +58,23 @@ class AuthView implements IView
                         <?= Input::text('signInEmail', t('email', 'auth'), ['classes' => 'full-width', 'error' => $errors, 'value' => $email, 'autocomplete' => Input::AUTOCOMPLETE_EMAIL]); ?>
                         <?= Input::password('signInPassword', t('password', 'auth'), ['classes' => 'full-width', 'error' => $errors, 'autocomplete' => Input::AUTOCOMPLETE_CURRENT_PASSWORD]); ?>
                         <button class="primary full-width center big space-huge-top space-huge-bottom"><?= t('log_in', 'auth'); ?></button>
-                        <a href="?AAA" target="_blank" rel="noopener noreferrer" class="space-small-bottom"><?= t('forgotten_password', 'auth'); ?></a>
                         <p><?= t('dont_have_account', 'auth') ?> <a href="#" onclick="let x=document.querySelectorAll('.auth > .container'); x[0].style.display='none'; x[1].style.display='flex';"><?= t('register_here', 'auth') ?></a></p>
                     <?= Form::end() ?>
-                    <div class="container full-width middle" style="display: none;">
+                    
+                    <?= Form::start('/auth/create', Request::METHOD_POST, 'container full-width middle', ['style' => 'display: none;']) ?>
                         <div class="row full-width h-space-between">
-                            <label class="text-field outline space-big-right">
-                                <div class="field">
-                                    <span>Jméno</span>
-                                    <input type="text">
-                                </div>
-                            </label>
-                            <label class="text-field outline">
-                                <div class="field">
-                                    <span>Příjmení</span>
-                                    <input type="text">
-                                </div>
-                            </label>
+                            <?= Form::tokenCSRF() ?>
+                            <?= Input::text('signUpName', t('name', 'auth'), ['classes' => 'full-width space-big-right', 'error' => $errors, 'value' => $email, 'autocomplete' => Input::AUTOCOMPLETE_FORENAME]); ?>
+                            <?= Input::text('signUpSurname', t('surname', 'auth'), ['classes' => 'full-width', 'error' => $errors, 'value' => $email, 'autocomplete' => Input::AUTOCOMPLETE_SURNAME]); ?>
                         </div>
-                        <label class="text-field outline space-big-bottom space-big-top full-width">
-                            <div class="field">
-                                <span>Email</span>
-                                <input type="text">
-                            </div>
-                        </label>
+                        <?= Input::text('signUpEmail', t('email', 'auth'), ['classes' => 'space-big-bottom space-big-top full-width', 'error' => $errors, 'value' => $email, 'autocomplete' => Input::AUTOCOMPLETE_EMAIL]); ?>
                         <div class="row full-width h-space-between">
-                            <label class="text-field outline space-big-right">
-                                <div class="field">
-                                    <span>Heslo</span>
-                                    <input type="password">
-                                </div>
-                            </label>
-                            <label class="text-field outline">
-                                <div class="field">
-                                    <span>Heslo znuvu</span>
-                                    <input type="password">
-                                </div>
-                            </label>
+                            <?= Input::password('signUpPassword', t('password', 'auth'), ['classes' => 'space-big-right full-width', 'error' => $errors, 'autocomplete' => Input::AUTOCOMPLETE_NEW_PASSWORD]); ?>
+                            <?= Input::password('signUpPassword', t('password_again', 'auth'), ['classes' => 'full-width', 'error' => $errors, 'autocomplete' => Input::AUTOCOMPLETE_NEW_PASSWORD]); ?>
                         </div>
-                        <button class="primary full-width center big space-huge-top space-huge-bottom">Registrovat se</button>
-                        <p>Máte účet? <a href="#" onclick="let x=document.querySelectorAll('.auth > .container'); x[1].style.display='none'; x[0].style.display='flex';">Přihlaste se!</a></p>
+                        <button class="primary full-width center big space-huge-top space-huge-bottom"><?= t('signIn', 'auth') ?></button>
+                        <p><?= t('you_have_account', 'auth') ?> <a href="#" onclick="let x=document.querySelectorAll('.auth > .container'); x[1].style.display='none'; x[0].style.display='flex';"><?= t('login', 'auth') ?></a></p>
+                    <?= Form::end() ?>
                     <?php
                         if (isset($signInErrors['success']) && $signInErrors['success'] == false):
                     ?>
