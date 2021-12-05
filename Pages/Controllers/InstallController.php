@@ -302,8 +302,6 @@ class InstallController extends AbstractController
 
         $pass = Auth::hashPassword($pass, $email);
 
-        var_dump($firstname);
-
         $userModel = new UserModel();
         $status = $userModel->create($firstname, $lastname, $email, $pass);
 

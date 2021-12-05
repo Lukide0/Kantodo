@@ -323,23 +323,21 @@ class ProjectModel extends Model
     }
     
     /**
-     * Vrací iniciály členů týmu
+     * Vrací jména členů týmu
      *
      * @param   int  $projID  id projektu
      *
-     * @return  array<mixed>|false      iniciály
+     * @return  array<mixed>|false      jména
      */
-    public function getMembersInitials(int $projID)
+    public function getMembersFullname(int $projID)
     {
         $users    = Connection::formatTableName('users');
         $userProj = Connection::formatTableName('user_projects');
         
         $query = <<<SQL
         SELECT
-            CONCAT(
-                LEFT(u.firstname, 1),
-                LEFT(u.lastname, 1)
-            ) AS `initials`
+            u.firstname,
+            u.lastname
         FROM
             {$userProj} AS user_proj
         INNER JOIN {$users} AS u
@@ -355,7 +353,7 @@ class ProjectModel extends Model
         ]);
         
         if ($status === true) {
-            return $sth->fetchAll(PDO::FETCH_COLUMN);
+            return $sth->fetchAll(PDO::FETCH_ASSOC);
         }
         
         return false;

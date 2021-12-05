@@ -35,13 +35,6 @@ class Router
     ];
 
     /**
-     * Middleware error handler
-     *
-     * @var callable
-     */
-    protected $errorHandler = null;
-
-    /**
      * @var array<callable>
      */
     protected $errorHandlers = [];
@@ -99,7 +92,7 @@ class Router
     }
 
     /**
-     * Vratí registrovanou cestu, která se schoduje s dotazovanou cestou
+     * Vrátí registrovanou cestu, která se shoduje s dotazovanou cestou
      *
      * @param   string  $path    cesta
      * @param   string  $method  metoda
@@ -160,7 +153,7 @@ class Router
     /**
      * Spustí manipulátor chybného kódu
      *
-     * @param   int    $code    code
+     * @param   int           $code    code
      * @param   array<mixed>  $params  parametry
      *
      * @return  void
@@ -173,18 +166,6 @@ class Router
         }
 
         $this->response->setStatusCode($code);
-    }
-
-    /**
-     * Přidá manipulátor chyby
-     *
-     * @param   mixed  $callback  callback
-     *
-     * @return  void
-     */
-    public function setErrorHandler($callback)
-    {
-        $this->errorHandler = $callback;
     }
 
     /**
@@ -203,8 +184,8 @@ class Router
     /**
      * Spustí controller nebo callback
      *
-     * @param   mixed $callback  callback
-     * @param   array<mixed>  $params    parametry
+     * @param   mixed           $callback   callback
+     * @param   array<mixed>    $params     parametry
      *
      * @return  void
      */
@@ -221,10 +202,7 @@ class Router
             try {
                 $controller->executeAllMiddlewares($params);
             } catch (\Throwable $th) {
-                if ($this->errorHandler != null) {
-                    call_user_func($this->errorHandler, $th);
-                }
-                $this->response->setStatusCode($th->getCode());
+                $this->handleErrorCode($th->getCode());
                 exit;
             }
 
@@ -279,10 +257,7 @@ class Router
             try {
                 $controller->executeAllMiddlewares($params);
             } catch (\Throwable $th) {
-                if ($this->errorHandler != null) {
-                    call_user_func($this->errorHandler, $th);
-                }
-                $this->response->setStatusCode($th->getCode());
+                $this->handleErrorCode($th->getCode());
                 exit;
             }
 

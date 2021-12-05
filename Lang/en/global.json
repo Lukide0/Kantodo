@@ -7,5 +7,6 @@
     "cancel": "cancel",
     "create": "create",
     "account": "Account",
-    "project_was_created": "Project was created"
+    "project_was_created": "Project was created",
+    "members": "Members" 
 }

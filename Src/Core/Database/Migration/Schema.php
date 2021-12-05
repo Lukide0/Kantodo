@@ -38,14 +38,14 @@ class Schema
      * Vytvoří tabulku
      *
      * @param   string   $table    název tabulky
-     * @param   Closure  $closure  funkce ve které se definují její sloupce
+     * @param   callable  $closure  funkce ve které se definují její sloupce
      *
      * @return  void
      *
      * @throws SchemaException      pokud už tabulka existuje
      * @throws TableException      pokud je tabulka nevalidní
      */
-    public function create(string $table, Closure $closure)
+    public function create(string $table, callable $closure)
     {
         if ($this->hasTable($table)) {
             throw new SchemaException("Table `{$table}` already exists");
@@ -73,7 +73,7 @@ class Schema
      *
      * @throws SchemaException      pokud už tabulka existuje
      */
-    public function modify(string $table, $callback)
+    public function modify(string $table, callable $callback)
     {
         if (!$this->hasTable($table)) {
             throw new SchemaException("Table `{$table}` doesn't exists");

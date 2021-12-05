@@ -37,8 +37,17 @@ class ProjectController extends AbstractController
 
         $projUUID = base64DecodeUrl($params['projectUUID']);
 
-        $project = $projModel->getSingle(['*'], ['uuid' => $projUUID]);
+        $project = $projModel->getSingle(['project_id', 'name', 'is_open', 'is_public'], ['uuid' => $projUUID]);
 
-        //$this->renderView(ProjectView::class, $params, ClientLayout::class);
+        if ($project === false) 
+        {
+            Application::$APP->response->setLocation();
+            exit;
+        }
+
+        $params['project'] = $project;
+        $params['project']['members'] = $projModel->getMembersFullname((int)$project['project_id']);
+
+        $this->renderView(ProjectView::class, $params, ClientLayout::class);
     }
 }

@@ -111,8 +111,7 @@ class UserModel extends Model
         ]);
 
         $user = $sth->fetch(PDO::FETCH_ASSOC);
-
-        return count($user) == 1;
+        return ($user !== false && count($user) == 1);
     }
 
     /**

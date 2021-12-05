@@ -6,6 +6,7 @@ namespace Kantodo\Views\Layouts;
 
 use Kantodo\Core\Application;
 use Kantodo\Core\Base\Layout;
+use Kantodo\Models\ProjectModel;
 
 use function Kantodo\Core\Functions\base64EncodeUrl;
 use function Kantodo\Core\Functions\t;
@@ -26,6 +27,18 @@ class ClientLayout extends Layout
     public function render(string $content = '', array $params = [])
     {
         $headerContent = Application::$APP->header->getContent();
+        if (!isset($params['projects'])) 
+        {
+            $projectModel = new ProjectModel();
+            $projects = $projectModel->getUserProjects((int)Application::$APP->session->get('user')['id']);
+    
+            if ($projects === false)
+                $projects = [];
+        } else 
+        {
+            $projects = $params['projects'];
+        }
+
 
         // TODO: generovat menu z array
         //$userID = Application::$APP->session->get('user')['id'];
@@ -69,7 +82,7 @@ class ClientLayout extends Layout
                     </div>
                     <ul>
                         <?php 
-                        foreach ($params['projects'] ?? [] as $project):
+                        foreach ($projects ?? [] as $project):
                         ?>
                         <li data-project-id='<?= $project['uuid'] ?>'><a href="/project/<?= base64EncodeUrl($project['uuid']) ?>"><?= $project['name'] ?></a></li>
                         <?php endforeach; ?>

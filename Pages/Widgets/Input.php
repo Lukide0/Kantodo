@@ -269,7 +269,7 @@ class Input extends AbstractWidget
         $color   = $this->getOption("color", "");
         $classes = $this->getOption("classes", "");
         $type = $this->getOption('type', "text");
-        $errorClass = $this->getOption('error', false) === true ? 'error' : '';
+        $errorClass = $this->getOption('error', false) !== false ? 'error' : '';
 
         return <<<HTML
             <label class="text-field {$outline} {$color} space-big-bottom {$classes} {$errorClass}">

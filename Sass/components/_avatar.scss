@@ -11,4 +11,17 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
+    &.fullname 
+    {
+        width: unset;
+        height: unset;
+        padding: space(regular) space(medium);
+        font-size: fontSize(medium);
+        background-color: background(third);
+        color: fontColor(800);
+        font-weight: 600;
+        border-radius: borderRadius(medium);
+
+    }
 }

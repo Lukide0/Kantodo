@@ -174,15 +174,15 @@ class Data
             return false;
         }
 
-        if ($mustContainNumber && preg_match('/[0-9]/', $password) === false) {
+        if ($mustContainNumber && !preg_match('/[0-9]/', $password)) {
             return false;
         }
 
-        if ($mustContainSpecialChar && preg_match('/[`!@#$%^&*()_+\-=\[\]{};\':\"\\|,.<>\/?~]/', $password) === false) {
+        if ($mustContainSpecialChar && !preg_match('/[`!@#$%^&*()_+\-=\[\]{};\':\"\\|,.<>\/?~]/', $password)) {
             return false;
         }
 
-        if ($mustContainUppercaseChar && preg_match('/[A-Z]/', $password) === false) {
+        if ($mustContainUppercaseChar && !preg_match('/[A-Z]/', $password)) {
             return false;
         }
 

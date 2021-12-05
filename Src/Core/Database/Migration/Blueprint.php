@@ -60,42 +60,42 @@ class Blueprint
      *
      * @var array<string,array<string,mixed>>
      */
-    protected $columns = [];
+    private $columns = [];
 
     /**
      * Primární klíče
      *
      * @var array<string>
      */
-    protected $primary = [];
+    private $primary = [];
 
     /**
      * Unikátní klíče
      *
      * @var array<string>
      */
-    protected $unique = [];
+    private $unique = [];
 
     /**
      * Foreign klíče
      *
      * @var array<string,array<string,mixed>>
      */
-    protected $foreign = [];
+    private $foreign = [];
 
     /**
      * Název tabulky
      *
      * @var string
      */
-    protected $tableName;
+    private $tableName;
 
     /**
      * Předpona tabulky
      *
      * @var string
      */
-    protected $prefix;
+    private $prefix;
 
     public function __construct(string $tableName, string $prefix = '')
     {

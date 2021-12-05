@@ -25,8 +25,8 @@ class BaseApplication
     const ADMIN = 2;
 
     // error
-    const ERROR_NOT_AUTHORIZED = 401; // 401
-    const ERROR_NOT_FOUND      = 404; // 404
+    const ERROR_NOT_AUTHORIZED = 401;
+    const ERROR_NOT_FOUND      = 404;
 
     /**
      * @var BaseApplication
