@@ -66,7 +66,7 @@ class TaskController extends AbstractController
         $details = $projModel->getBaseDetails($user['id'], $projUUID);
         if ($details === false) 
         {
-            $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
+            $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
             return;
         }
         $priv = $projModel->getPositionPriv($details['name']);

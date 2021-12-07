@@ -1,13 +1,14 @@
 <?php
 
-declare(strict_types = 1);
+declare (strict_types = 1);
 
 namespace Kantodo\Views;
 
+use function Kantodo\Core\Functions\base64DecodeUrl;
+use function Kantodo\Core\Functions\t;
 use Kantodo\Core\Application;
 use Kantodo\Core\Base\IView;
-
-use function Kantodo\Core\Functions\t;
+use Kantodo\Models\ProjectModel;
 
 /**
  * Projekt
@@ -16,28 +17,102 @@ class ProjectView implements IView
 {
     public function render(array $params = [])
     {
-        
-        $project = $params['project'];
-        $members = $params['project']['members'] ?? [];
 
-        $icon = ((bool)$project['is_open'] === true) ? "lock_open" : "lock";
+        $project     = $params['project'];
+        $members     = $params['project']['members'] ?? [];
+        $projectUUID = base64DecodeUrl($params['projectUUID']);
 
+        $icon = ((bool) $project['is_open'] === true) ? "lock_open" : "lock";
+        $id   = Application::$APP->session->get('user')['id'];
+
+        $projModel = new ProjectModel();
+        $pos       = $projModel->getProjectPosition((int) $project['project_id'], (int) $id);
+        $priv      = $projModel->getPositionPriv($pos);
         ?>
         <div class="container">
-            <h2 style="font-size: 2.8rem"><?= $project['name']?><span class="icon big round"><?= $icon ?></span></h2>
-            
-            <h3 class="space-huge-top"><?= t('members')?></h3>
-            <div class="row space-big-top">
-                <?php foreach($members as $member): ?>
-                    <div class="avatar fullname">
-                        <?= $member['firstname'] . ' ' . $member['lastname']; ?>
-                    </div>
-                <?php endforeach ?>
+        <div class="row h-space-between">
+        <h2 style="font-size: 2.8rem"><?=$project['name'];?><span class="icon big round"><?=$icon;?></span></h2>
+            <div class="row">
+                <button data-action='task' class="filled hover-shadow"><?=t('add_task', 'dashboard');?></button>
+                <button class="flat icon outline space-medium-left">settings</button>
+                <script>
+                window.addEventListener('load', function(){
+                    let btn = document.querySelector('button[data-action=task]');
+                    let win= Modal.createTaskWindow(btn, { '%TASK_NAME%': "<?=t('task_name', 'dashboard');?>", '%ATTACHMENT%': "<?=t('attachment', 'dashboard');?>", '%SELECT_PROJECT%': "<?=t('select_project', 'dashboard');?>", '%CANCEL%': "<?=t('cancel');?>", '%CREATE%': "<?=t('create');?>"  } ,{id: "<?=$projectUUID;?>", name: "<?=$project['name'];?>"});
+
+                    let editor = win.getEditor();
+                    let input = win.getProjectInput();
+
+                    win.element.querySelector('[data-action=create]').addEventListener('click', function() {
+                        let inputName = win.element.querySelector('[data-input=task_name]');
+                        let data = {};
+
+                        data.task_name = inputName.value;
+                        data.task_desc = editor.value();
+                        data.task_proj = input.dataset.value;
+
+                        let chipsArray = win.getChips();
+                        for (let i = 0; i < chipsArray.length; i++) {
+                            data[`task_tags[${i}]`] = chipsArray[i];
+                        }
+
+                        let response = Request.Action('/api/create/task', 'POST', data);
+                        response.then(res => {
+                            let task = res.data.task;
+                            Kantodo.success(`Created task (${task.id})`);
+
+                            inputName.value = "";
+                            editor.value("");
+                            input.dataset.value = null;
+
+                            win.hide();
+
+                            let snackbar = Modal.Snackbar.create('<?=t('task_was_created');?>', null ,'success');
+
+                            snackbar.setParent(document.body.querySelector('main'));
+                            snackbar.show({center: true, top: 5}, 4000, false);
+
+                        }).catch(reason => {
+                            Kantodo.error(reason);
+                        });
+                    });
+                });
+                </script>
             </div>
+        </div>
+            <h3 class="space-huge-top"><?=t('members');?></h3>
+            <div class="row space-big-top">
+                <?php
+
+        if ($priv['addPeople']) {
+            echo "<button data-action='addPeople' class='icon hover-shadow round space-big-right'>add</button>";
+        }
+
+        foreach ($members as $member): ?>
+                    <div class="avatar fullname">
+                        <?=$member['firstname'] . ' ' . $member['lastname'];?>
+                    </div>
+                <?php endforeach;?>
+            </div>
+            <?php
+
+        if ($priv['addPeople']) {
+            ?>
+            <script>
+                document.querySelector('[data-action=addPeople]').onclick = function() 
+                {
+                    console.log("CLICK");
+
+                }
+            </script>
+            <?php
+
+        }
+        ?>
         </div>
 
 <?php
-    }
+}
 }
 
 ?>
