@@ -139,6 +139,7 @@ class Runner
             file_put_contents($output, $sql);
         }
         if ($execute) {
+
             Connection::runInTransaction($this->schema->getQueries());
             AbstractMigration::saveSchema($this->schema);
             $this->updateConfigVersion($version);

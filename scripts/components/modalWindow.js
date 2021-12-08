@@ -21,6 +21,7 @@ const EditorModalWindow = {
             this.init();
         
         let tmp = this._template.cloneNode(true);
+        console.log(tmp);
         if (content != '')
             tmp.querySelector('.editor-modal').innerHTML = content;
         tmp.querySelectorAll(".text-field > .field > input").forEach(el => {initInput(el);});
@@ -89,24 +90,39 @@ const EditorModalWindow = {
         return modalWindow;
     }
 };
-
+// TODO: preklady
 const ModalProject = Object.create(EditorModalWindow);
 ModalProject.init = function() {
     let tmp = EditorModalWindow.init();
-    tmp.querySelector('.editor-modal').innerHTML = `
+    let content = tmp.querySelector('.editor-modal');
+    content.innerHTML = `
     <div class="content">
-        <div class="title">
-            <label class="text-field">
-                <div class="field">
-                    <span>Project name</span>
-                    <input type="text">
-                </div>
-                <div class="text"></div>
-            </label>
+        <div class="container  space-big-bottom">
+            <div class="row">
+                <label class="text-field">
+                    <div class="field">
+                        <span>Project name</span>
+                        <input type="text">
+                    </div>
+                    <div class="text"></div>
+                </label>
+                <button class="hover-shadow space-big-left" style="max-height: 50px;"  data-action='create'>Create</button>
+            </div>
         </div>
-        <div class="row right space-big-top">
-            <button data-action='close' class="flat space-medium-right">Cancel</button>
-            <button class="hover-shadow" data-action='create'>Create</button>
+        <div class="container">
+            <div class="row">
+                <label class="text-field">
+                    <div class="field">
+                        <span>Project code</span>
+                        <input type="text">
+                    </div>
+                    <div class="text"></div>
+                </label>
+                <button class="hover-shadow space-big-left success" style="max-height: 50px;" data-action='join'>Join</button>
+            </div>
+        </div>
+        <div class="row h-space-around space-huge-top">
+            <button data-action='close' class=" right flat space-medium-right">Cancel</button>
         </div>
     </div>
     `;

@@ -169,7 +169,6 @@ class InstallController extends AbstractController
         // vytvoří v db tabulky a celé sql, které provede dá do souboru "migrations/Versions/{verze}.sql"
         $runner->run($installVersion, true, true);
 
-
         Application::$APP->session->set('constantsDB', $dbConstants);
         Application::$APP->response->setLocation("/install-storage");
 
@@ -206,7 +205,6 @@ class InstallController extends AbstractController
             if (!is_writable($path))
                 $notPerm[] = ['write', $key];
         }
-
         $duplicite = Data::duplicate($body[Request::METHOD_POST], $keys, true);
         
         // TODO: frontend error

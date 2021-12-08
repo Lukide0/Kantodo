@@ -13,7 +13,7 @@ $APP->registerAuth(new Auth());
 $APP->session->start();
 
 // TODO: Mobilni verze, pri vytvareni zamknout tlacitko pridat => bug 2x se prida
-
+// TODO: Nacist preklady do promene v js
 
 if (!Application::configExits()) {
     $APP->router->run([Kantodo\Controllers\InstallController::class, 'installView'], [$APP->request->getPath()]);

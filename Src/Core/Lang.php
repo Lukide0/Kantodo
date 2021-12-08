@@ -34,12 +34,21 @@ class Lang
      */
     public function load(string $group = 'global')
     {
+
         /** @phpstan-ignore-next-line */
-        $pathCache = STORAGE_CACHE . '/Lang';
         $path      = Application::$ROOT_DIR . '/Lang';
         $lang      = Application::$LANG;
 
-        $pathPHP  = "{$pathCache}/{$lang}_{$group}.php";
+        if (defined("STORAGE_CACHE")) 
+        {
+            $pathCache = STORAGE_CACHE . '/Lang';
+            $pathPHP  = "{$pathCache}/{$lang}_{$group}.php";
+        } else 
+        {
+            $pathCache = null;
+            $pathPHP = null;
+        }
+
         $pathJSON = "{$path}/{$lang}/{$group}.json";
 
         $status = true;
@@ -54,7 +63,7 @@ class Lang
             $status = false;
         }
 
-        $filePHPExists = file_exists($pathPHP);
+        $filePHPExists = $pathPHP !== null && file_exists($pathPHP);
         $fileJSONExists = file_exists($pathJSON);
 
         if (!$fileJSONExists) 
@@ -113,6 +122,11 @@ class Lang
      */
     public function cacheJson(array $json, string $lang, string $group)
     {
+
+        if (!defined("STORAGE_CACHE")) 
+        {
+            return false;
+        }
         /** @phpstan-ignore-next-line */
         $path = STORAGE_CACHE . "/Lang";
 
