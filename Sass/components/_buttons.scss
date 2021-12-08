@@ -86,11 +86,15 @@ button {
         padding: 0;
     }
 
-    &.icon,
-    & > .icon {
+    & > .icon,
+    &.icon 
+    {
         font-weight: 500;
         font-size: $icon-small;
         margin-right: space(small);
+    }
+
+    &.icon {
         color: fontColor(900);
     }
 

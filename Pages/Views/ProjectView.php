@@ -34,11 +34,16 @@ class ProjectView implements IView
         <h2 style="font-size: 2.8rem"><?=$project['name'];?><span class="icon big round"><?=$icon;?></span></h2>
             <div class="row">
                 <button data-action='task' class="filled hover-shadow"><?=t('add_task', 'dashboard');?></button>
+                <?php
+
+        if ($priv['addPeople']) {
+            ?>
                 <button class="flat icon outline space-medium-left">settings</button>
+        <?php }?>
                 <script>
                 window.addEventListener('load', function(){
                     let btn = document.querySelector('button[data-action=task]');
-                    let win= Modal.createTaskWindow(btn, { '%TASK_NAME%': "<?=t('task_name', 'dashboard');?>", '%ATTACHMENT%': "<?=t('attachment', 'dashboard');?>", '%SELECT_PROJECT%': "<?=t('select_project', 'dashboard');?>", '%CANCEL%': "<?=t('cancel');?>", '%CREATE%': "<?=t('create');?>"  } ,{id: "<?=$projectUUID;?>", name: "<?=$project['name'];?>"});
+                    let win= Modal.createTaskWindow(btn, {id: "<?=$projectUUID;?>", name: "<?=$project['name'];?>"});
 
                     let editor = win.getEditor();
                     let input = win.getProjectInput();
@@ -85,7 +90,18 @@ class ProjectView implements IView
                 <?php
 
         if ($priv['addPeople']) {
-            echo "<button data-action='addPeople' class='icon hover-shadow round space-big-right'>add</button>";
+            $text = t('create_invite_link', 'project');
+            $add  = t('create_link', 'project');
+
+            echo <<<HTML
+            <div class="banner" style="margin-bottom: 20px">
+                <span class="icon round medium">vpn_key</span>
+                <p>{$text}</p>
+                <div class="actions container">
+                    <button class='hover-shadow filled' style="border-radius: 5px"><span class="icon round">add</span>{$add}</button>
+                </div>
+            </div>
+            HTML;
         }
 
         foreach ($members as $member): ?>
@@ -99,7 +115,7 @@ class ProjectView implements IView
         if ($priv['addPeople']) {
             ?>
             <script>
-                document.querySelector('[data-action=addPeople]').onclick = function() 
+                document.querySelector('[data-action=addPeople]').onclick = function()
                 {
                     console.log("CLICK");
 

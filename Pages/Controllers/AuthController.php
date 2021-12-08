@@ -94,7 +94,7 @@ class AuthController extends AbstractController
 
             if (!empty($path)) {
                 $path = urldecode($path);
-                Application::$APP->response->setLocation("{$path}");
+                Application::$APP->response->setLocation("/{$path}");
                 exit;
             }
             Application::$APP->response->setLocation();

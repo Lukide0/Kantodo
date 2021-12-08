@@ -36,7 +36,7 @@ class DashboardView implements IView
                 <script>
                     window.addEventListener('load', function(){
                         let btn = document.querySelector('button[data-action=task]');
-                        let win = Modal.createTaskWindow(btn,  { '%TASK_NAME%': "<?= t('task_name', 'dashboard') ?>", '%ATTACHMENT%': "<?= t('attachment', 'dashboard') ?>", '%SELECT_PROJECT%': "<?= t('select_project', 'dashboard') ?>", '%CANCEL%': "<?= t('cancel') ?>", '%CREATE%': "<?= t('create') ?>"  });
+                        let win = Modal.createTaskWindow(btn);
 
                         win.element.querySelector('[data-action=create]').addEventListener('click', function() {
                             let inputName = win.element.querySelector('[data-input=task_name]');

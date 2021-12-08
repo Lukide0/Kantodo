@@ -3,7 +3,7 @@ const modalTaskHTML = `
 <div class="content">
     <label class="text-field">
         <div class="field">
-            <span>%TASK_NAME%</span>
+            <span>%task_name%</span>
             <input type="text" data-input='task_name'>
         </div>
         <div class="text"></div>
@@ -12,13 +12,13 @@ const modalTaskHTML = `
         <textarea></textarea>
     </div>
     <div class="actions">
-        <button class="flat">%ATTACHMENT%</button>
+        <button class="flat">%attachment%</button>
     </div>
 </div>
 <div class="settings">
 <label class="text-field selector outline">
     <div class="field">
-        <span>%SELECT_PROJECT%</span>
+        <span>%select_project%</span>
         <input type="text" data-input='project' data-value=''>
     </div>
     <ul class="options dropdown-menu" data-select='project' tabindex='-1'></ul>
@@ -75,15 +75,15 @@ const modalTaskHTML = `
         </div>
     </div>
     <div class="actions">
-        <button data-action="close" class="flat">%CANCEL%</button>
-        <button data-action="create" class="hover-shadow">%CREATE%</button>
+        <button data-action="close" class="flat">%cancel%</button>
+        <button data-action="create" class="hover-shadow">%create%</button>
     </div>
 </div>
 `;
 
-export default function taskWindow(btn, translation = {}, project = null) {
+export default function taskWindow(btn, project = null) {
 
-    let tmp = modalTaskHTML.allReplace(translation);
+    let tmp = modalTaskHTML.allReplace(translations);
 
     let win = Modal.EditorModalWindow.create(tmp);
     let editor = new SimpleMDE({

@@ -62,6 +62,16 @@ class ClientLayout extends Layout
             <script src="https://cdn.jsdelivr.net/highlight.js/latest/highlight.min.js"></script>
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/highlight.js/latest/styles/github.min.css">
             <!-- MD editor - END-->
+            <script>
+                const translations = {
+                    "%cancel%":  "<?= Application::$APP->lang->get('cancel') ?>",
+                    "%create%": "<?= Application::$APP->lang->get('create') ?>",
+                    "%task_name%": "<?= Application::$APP->lang->get('task_name') ?>",
+                    "%attachment%": "<?= Application::$APP->lang->get('attachment') ?>",
+                    "%select_project%": "<?= Application::$APP->lang->get('select_project') ?>"
+                };
+
+            </script>
         </head>
         <body>
             <header>
