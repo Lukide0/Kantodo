@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Kantodo;
 
 include "../Loader/autoload.php";
 
 
-use Kantodo\Websocket\Server\Console;
+use Kantodo\Websocket\Console;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\Server\IoServer;

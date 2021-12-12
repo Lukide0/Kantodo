@@ -5,7 +5,7 @@ namespace Kantodo\API\Controllers;
 use Kantodo\API\API;
 use Kantodo\Core\Base\AbstractController;
 use Kantodo\Core\Request;
-use Kantodo\API\Response;
+use Kantodo\Core\Response;
 use Kantodo\Auth\Auth;
 use Kantodo\Core\BaseApplication;
 use Kantodo\Core\Database\Connection;
@@ -115,7 +115,7 @@ class TaskController extends AbstractController
         $keyMaterial = API::getSymmetricKey();
 
         if ($keyMaterial === false)
-            return null;
+            return;
 
         /*$key = new SymmetricKey($keyMaterial);
         $paseto = (new Builder())
@@ -194,7 +194,15 @@ class TaskController extends AbstractController
         $taskModel = new TaskModel();
         $tasks = $taskModel->get(['task_id', 'name', 'description', 'priority', 'completed', 'end_date'], ['project_id' => $projectId], $limit, $offset);
         
+        if ($tasks === false) 
+        {
+            $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
+            exit;  
+        }
+
         $tagModel = new TagModel();
+
+
         
         foreach ($tasks as &$task) {
             $taskID = $task['task_id'];

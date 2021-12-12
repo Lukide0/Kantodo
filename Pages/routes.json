@@ -70,5 +70,17 @@
             "role": "USER",
             "strict": false
         }
+    },
+    {
+        "method": "GET",
+        "path": "/project/{projectUUID}/settings",
+        "controller": {
+            "class": "ProjectController",
+            "method": "settings"
+        },
+        "access": {
+            "role": "USER",
+            "strict": false
+        }
     }
 ]

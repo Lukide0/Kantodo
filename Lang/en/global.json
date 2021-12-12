@@ -1,8 +1,15 @@
 {
+
+    "name": "Name",
+    "surname": "Surname",
+    "email": "Email",
+    "position": "Position",
+    "actions": "Actions",
     "dashboard": "Dashboard",
     "calendar": "Calendar",
     "projects": "Projects",
     "task_name": "Task name",
+    "project_name": "Project name",
     "select_project": "Select project",
     "attachment": "Attachment",
     "add": "Add",
@@ -11,5 +18,9 @@
     "create": "create",
     "account": "Account",
     "project_was_created": "Project was created",
-    "members": "Members" 
+    "members": "Members",
+    "close": "Close",
+    "copy": "Copy",
+    "sign_out": "Sign out",
+    "settings": "Settings"
 }

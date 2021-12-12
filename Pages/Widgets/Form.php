@@ -18,6 +18,8 @@ class Form
      *
      * @param   string       $action  akce
      * @param   string       $method  metoda
+     * @param   string       $classes css třídy
+     * @param   array<string> $attributes atributy
      *
      * @return  string
      */

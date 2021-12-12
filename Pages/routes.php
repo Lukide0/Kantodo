@@ -4,9 +4,11 @@
 use Kantodo\Core\Application;
 use Kantodo\Core\Request;
 
+
 Application::$APP->router->addRoute(Request::METHOD_GET, '/auth', [Kantodo\Controllers\AuthController::class,'authenticate'], Application::GUEST, true);
 Application::$APP->router->addRoute(Request::METHOD_GET, '/auth/signout', [Kantodo\Controllers\AuthController::class,'signOut'], Application::USER, false);
 Application::$APP->router->addRoute(Request::METHOD_POST, '/auth/signin', [Kantodo\Controllers\AuthController::class,'signIn'], Application::GUEST, true);
 Application::$APP->router->addRoute(Request::METHOD_POST, '/auth/create', [Kantodo\Controllers\AuthController::class,'createAccount'], Application::GUEST, true);
 Application::$APP->router->addRoute(Request::METHOD_GET, '/', [Kantodo\Controllers\DashboardController::class,'view'], Application::USER, false);
 Application::$APP->router->addRoute(Request::METHOD_GET, '/project/{projectUUID}', [Kantodo\Controllers\ProjectController::class,'view'], Application::USER, false);
+Application::$APP->router->addRoute(Request::METHOD_GET, '/project/{projectUUID}/settings', [Kantodo\Controllers\ProjectController::class,'settings'], Application::USER, false);

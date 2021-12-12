@@ -10,11 +10,13 @@ use Kantodo\Core\Base\AbstractController;
 use Kantodo\Core\Request;
 use Kantodo\Core\Validation\Data;
 use Kantodo\Middlewares\ProjectAccessMiddleware;
+use Kantodo\Middlewares\ProjectMiddleware;
 use Kantodo\Models\ProjectModel;
 use Kantodo\Models\TagModel;
 use Kantodo\Models\TaskModel;
 use Kantodo\Models\TeamModel;
 use Kantodo\Views\Layouts\ClientLayout;
+use Kantodo\Views\ProjectSettingsView;
 use Kantodo\Views\ProjectsListView;
 use Kantodo\Views\ProjectView;
 
@@ -23,6 +25,10 @@ use Kantodo\Views\ProjectView;
  */
 class ProjectController extends AbstractController
 {
+
+    public function __construct() {
+        $this->registerMiddleware(new ProjectMiddleware);
+    }
 
     /**
      * Zobrazení projetu
@@ -33,21 +39,25 @@ class ProjectController extends AbstractController
      */
     public function view(array $params = [])
     {
-        $projModel = new ProjectModel();
+        $this->renderView(ProjectView::class, $params, ClientLayout::class);
+    }
 
-        $projUUID = base64DecodeUrl($params['projectUUID']);
-
-        $project = $projModel->getSingle(['project_id', 'name', 'is_open', 'is_public'], ['uuid' => $projUUID]);
-
-        if ($project === false) 
+    /**
+     * Zobrazení nastavení projektu
+     *
+     * @param   array<mixed>  $params  parametry
+     *
+     * @return  void
+     */
+    public function settings(array $params = [])
+    {
+        /** @phpstan-ignore-next-line */
+        if (!$params['priv']['changePeoplePosition'] && !$params['priv']['removePeople']) 
         {
-            Application::$APP->response->setLocation();
+            Application::$APP->response->setLocation("/project/{$params['projectUUID']}");
             exit;
         }
 
-        $params['project'] = $project;
-        $params['project']['members'] = $projModel->getMembersFullname((int)$project['project_id']);
-
-        $this->renderView(ProjectView::class, $params, ClientLayout::class);
+        $this->renderView(ProjectSettingsView::class, $params, ClientLayout::class);
     }
 }

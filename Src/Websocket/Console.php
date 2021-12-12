@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Kantodo\Websocket\Server;
+namespace Kantodo\Websocket;
 
 class Console
 {

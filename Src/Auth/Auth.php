@@ -36,6 +36,11 @@ class Auth implements IAuth
      */
     static $PASETO = false;
 
+    /**
+     * Paseto token nezpracovaný
+     *
+     * @var string|false
+     */
     static $PASETO_RAW = false;
     /**
      * Hash hesla
@@ -101,8 +106,10 @@ class Auth implements IAuth
         if ($headers === false && function_exists('apache_request_headers')) 
         {
             $requestHeaders = apache_request_headers();
+            /** @phpstan-ignore-next-line */
             $requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
 
+            /** @phpstan-ignore-next-line */
             if (isset($requestHeaders['Authorization'])) {
                 $headers = trim($requestHeaders['Authorization']);
             }
@@ -111,12 +118,17 @@ class Auth implements IAuth
         if ($headers === false)
             return $headers;
 
-        if (preg_match('/Bearer\s(\S+)/', $headers, $matches))
+        if (preg_match('/Bearer\s(\S+)/', $headers, $matches) !== false)
             return $matches[1];
 
         return false;
     }
 
+    /**
+     * Získá PASETO z požadavku
+     *
+     * @return  string|false  token
+     */
     public static function getPasetoTokenFromRequest()
     {
         $paseto = $_COOKIE[self::COOKIE_KEY] ?? false;
@@ -150,7 +162,6 @@ class Auth implements IAuth
         try {
             self::$PASETO = $parser->parse($token);
         } catch (\Throwable $th) {
-            throw $th;
             return false;
         }
 
@@ -172,7 +183,7 @@ class Auth implements IAuth
             return true;
 
         // KROK B.1 - získat session
-        $session = BaseApplication::$APP->session;
+        $session = BaseApplication::$BASE_APP->session;
         
         // KROK B.2 - zkontrolovat expiraci
         if ($session->getExpiration('user') > time())
@@ -188,7 +199,7 @@ class Auth implements IAuth
      */
     public static function refreshBySession()
     {
-        $session = BaseApplication::$APP->session;
+        $session = BaseApplication::$BASE_APP->session;
 
         if ($session->getExpiration('user') <= time())
             return;
@@ -263,7 +274,7 @@ class Auth implements IAuth
             'email'    => $email,
             'password' => Auth::hashPassword($password, $email),
         ]);
-        $session = BaseApplication::$APP->session;
+        $session = BaseApplication::$BASE_APP->session;
 
         if ($user !== false) {
             $user['email'] = $email;
@@ -295,6 +306,6 @@ class Auth implements IAuth
     {
         unset($_COOKIE[self::COOKIE_KEY]); 
         setcookie(self::COOKIE_KEY, "", -1, '/'); 
-        BaseApplication::$APP->session->cleanData('user');
+        BaseApplication::$BASE_APP->session->cleanData('user');
     }
 }

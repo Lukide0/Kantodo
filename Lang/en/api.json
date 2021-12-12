@@ -3,5 +3,6 @@
     "user_id_missing": "User ID is missing",
     "cannot_create": "Can not create",
     "api_rate_limit_exceeded": "API rate limit exceeded",
-    "you_dont_have_sufficient_privileges": "You don't have sufficient privileges"
+    "you_dont_have_sufficient_privileges": "You don't have sufficient privileges",
+    "something_went_wrong": "Something went wrong"
 }

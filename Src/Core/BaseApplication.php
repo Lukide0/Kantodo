@@ -31,7 +31,7 @@ class BaseApplication
     /**
      * @var BaseApplication
      */
-    public static $APP;
+    public static $BASE_APP;
 
     /**
      * Cesta k aplikaci
@@ -123,7 +123,7 @@ class BaseApplication
 
     public function __construct()
     {
-        self::$APP = $this;
+        self::$BASE_APP = $this;
 
         self::$ROOT_DIR = dirname(
             // src dir
@@ -313,16 +313,16 @@ class BaseApplication
      */
     public static function getRole()
     {
-        if (self::$APP->userRole !== null) {
-            return self::$APP->userRole;
+        if (self::$BASE_APP->userRole !== null) {
+            return self::$BASE_APP->userRole;
         }
 
         /** @phpstan-ignore-next-line */
         if (isset(self::$AUTH) && !self::$AUTH::isLogged()) {
-            self::$APP->userRole = self::GUEST;
+            self::$BASE_APP->userRole = self::GUEST;
             return self::GUEST;
         }
 
-        return self::$APP->userRole = self::$APP->session->get('user')['role'] ?? self::GUEST;
+        return self::$BASE_APP->userRole = self::$BASE_APP->session->get('user')['role'] ?? self::GUEST;
     }
 }

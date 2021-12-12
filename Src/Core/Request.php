@@ -31,7 +31,7 @@ class Request
             return $this->path;
         }
 
-        $path = BaseApplication::$APP->request->getBody()[Request::METHOD_GET]['PATH_URL'] ?? "";
+        $path = BaseApplication::$BASE_APP->request->getBody()[Request::METHOD_GET]['PATH_URL'] ?? "";
 
         if ($path == "") {
             $path = str_replace(BaseApplication::$URL_PATH, '', $_SERVER['REQUEST_URI']);

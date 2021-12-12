@@ -14,7 +14,7 @@ abstract class AbstractMiddleware
      *
      * @param   array<mixed>  $params  parametry
      *
-     * @return  void
+     * @return  array<mixed> upravené parametry
      */
     abstract public function execute(array $params = []);
 }

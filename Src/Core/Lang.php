@@ -35,7 +35,6 @@ class Lang
     public function load(string $group = 'global')
     {
 
-        /** @phpstan-ignore-next-line */
         $path      = Application::$ROOT_DIR . '/Lang';
         $lang      = Application::$LANG;
 
@@ -127,7 +126,7 @@ class Lang
         {
             return false;
         }
-        /** @phpstan-ignore-next-line */
+
         $path = STORAGE_CACHE . "/Lang";
 
         $fileContent = "<?php\n\nreturn [\n";

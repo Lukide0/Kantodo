@@ -14,11 +14,12 @@
 
     &.fullname 
     {
+        --color: #{background(third)};
         width: unset;
         height: unset;
         padding: space(regular) space(medium);
         font-size: fontSize(medium);
-        background-color: background(third);
+        background-color: var(--color);
         color: fontColor(800);
         font-weight: 600;
         border-radius: borderRadius(medium);

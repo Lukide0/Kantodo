@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace Kantodo\API;
 
-use Kantodo\API\Response;
+use Kantodo\Core\Response;
 use Kantodo\Core\BaseApplication;
 use Kantodo\Core\Router;
 
@@ -34,11 +34,6 @@ class API extends BaseApplication
      * @var Router
      */
     public $router;
-
-    /**
-     * @var \Kantodo\API\Response
-     */
-    public $response;
 
     public function __construct()
     {

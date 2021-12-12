@@ -11,7 +11,7 @@ class Application extends BaseApplication
 {
 
     /**
-     * @var Application
+     * @var self
      */
     public static $APP;
 

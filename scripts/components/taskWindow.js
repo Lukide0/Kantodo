@@ -52,15 +52,6 @@ const modalTaskHTML = `
                 </label>
             </div>
             <div class="attribute">
-                <div class="name">Assignee</div>
-                <div class="value disabled">Lukas Koliandr</div>
-            </div>
-            <div class="attribute">
-                <div class="name">Due date</div>
-                <div class="value"><span class="icon extra-small outline">calendar_today</span>14-01-2022</div>
-                <button class="icon outline flat no-border">close</button>
-            </div>
-            <div class="attribute">
                 <div class="name">Tags</div>
                 <div class="value">
                     <div class="chips-container">

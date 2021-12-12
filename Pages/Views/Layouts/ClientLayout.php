@@ -103,6 +103,10 @@ class ClientLayout extends Layout
                     <span class="icon outline medium">account_circle</span>
                     <span class="text"><?= t('account') ?></span>
                 </a>
+                <a class="item" href="/auth/signout">
+                    <span class="icon outline medium">logout</span>
+                    <span class="text"><?= t('sign_out') ?></span>
+                </a>
                 <script>
                     const Projects = [];
                     document.querySelectorAll('[data-project-id]').forEach(el => Projects.push({ id: el.dataset.projectId, name: el.children[0].textContent}));
@@ -123,10 +127,11 @@ class ClientLayout extends Layout
                                     return true;
                                 }
                             });
-                            win.setAction(function(data) {
+                            win.setActionCreate(function(data) {
                                 if (!data[0]) 
                                 {
                                     win.setNameError('Empty');
+                                    return;
                                 }
                                 
                                 let response = Request.Action('/api/create/project', 'POST', {name: data[0]});
@@ -154,10 +159,51 @@ class ClientLayout extends Layout
                                     Kantodo.error(reason);
                                 });
                             });
+
+
                             btn.addEventListener('click', function(e) {
                                 win.show();
                             });
+
+                            
+                            win.setActionJoin(function(data) {
+                                if (!data[0]) 
+                                {
+                                    win.setCodeError('Empty');
+                                    return;
+                                }
+                                win.clearCodeError();
+
+                                let response = Request.Action('/api/join/project', 'POST', {code: data[0]});
+                                response.then(res => {
+                                    console.log(res);
+                                    // let project = res.data.project;
+                                    // Kantodo.success(`Created project (${project.uuid})`);
+
+                                    // let addProjectItem = btn.parentElement;
+
+                                    // let newProject = document.createElement('li');
+                                    // newProject.dataset['projectId'] = project.uuid;
+                                    // newProject.innerHTML = `<a href="/project/${project.uuidSafe}">${data[0]}</a>`;
+                                    // Projects.push({id: project.uuid, name: data[0]});
+
+                                    // addProjectItem.parentElement.insertBefore(newProject, addProjectItem);
+                                    // win.clear();
+                                    // win.hide();
+
+                                    // let snackbar = Modal.Snackbar.create('<?= t('project_was_created') ?>', null, 'success');
+
+                                    // snackbar.setParent(document.body.querySelector('main'));
+                                    // snackbar.show({center: true, top: 5}, 4000, true);
+
+                                }).catch(reason => {
+                                    Kantodo.error(reason);
+                                });
+
+                            });
                         }
+
+
                     );
                 </script>
             </nav>

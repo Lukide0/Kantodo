@@ -16,5 +16,5 @@ use Kantodo\Core\BaseApplication;
  */
 function t(string $name, string $group = 'global')
 {
-    return BaseApplication::$APP->lang->get($name, $group);
+    return BaseApplication::$BASE_APP->lang->get($name, $group);
 }

@@ -46,13 +46,15 @@ abstract class AbstractController
      *
      * @param   array<mixed>  $params  parametry
      *
-     * @return  void
+     * @return  array<mixed>  upravené parametry
      */
     final public function executeAllMiddlewares(array $params = [])
     {
         foreach ($this->middlewares as $middleware) {
-            $middleware->execute($params);
+            $params = $middleware->execute($params);
         }
+
+        return $params;
     }
 
     /**

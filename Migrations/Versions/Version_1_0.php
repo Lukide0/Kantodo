@@ -93,13 +93,13 @@ class Version_1_0 extends AbstractMigration
         // TABLE PROJECT_CODES //
         /////////////////////////
         $schema->create('project_codes', function (Blueprint $table, Schema $schema) {
-            $table->addColumn('project_codes_id', 'bigint', ['unsigned' => true, 'autoincrement' => true]);
+            $table->addColumn('project_code_id', 'bigint', ['unsigned' => true, 'autoincrement' => true]);
             $table->addColumn('code', 'varchar', ['length' => 50, 'unique' => true]);
             $table->addColumn('expiration', 'datetime', ['notNull' => false]);
-            $table->addColumn('project_id', 'bigint', ['unsigned' => true]);
+            $table->addColumn('project_id', 'bigint', ['unsigned' => true, 'unique' => true]);
 
             //keys
-            $table->addPrimaryKey('project_codes_id');
+            $table->addPrimaryKey('project_code_id');
 
             $table->addForeignKey('project_id', $schema->getTable('projects'), 'project_id', Blueprint::ACTION_AFFECT);
         });

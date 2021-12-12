@@ -117,7 +117,7 @@ class TagModel extends Model
      *
      * @param   int  $taskID  id úkolu
      *
-     * @return  array<int,string>  štítky
+     * @return  array<string>|false  štítky
      */
     public function getTaskTags(int $taskID)
     {
@@ -137,6 +137,8 @@ class TagModel extends Model
             }
             return false;
         }
+
+        return false;
 
     }
 }

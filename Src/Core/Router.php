@@ -200,7 +200,7 @@ class Router
             $controller->action = $classMethod;
 
             try {
-                $controller->executeAllMiddlewares($params);
+                $params = $controller->executeAllMiddlewares($params);
             } catch (\Throwable $th) {
                 $this->handleErrorCode($th->getCode());
                 exit;
@@ -255,7 +255,7 @@ class Router
             }
 
             try {
-                $controller->executeAllMiddlewares($params);
+                $params = $controller->executeAllMiddlewares($params);
             } catch (\Throwable $th) {
                 $this->handleErrorCode($th->getCode());
                 exit;

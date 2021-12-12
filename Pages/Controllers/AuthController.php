@@ -186,6 +186,7 @@ class AuthController extends AbstractController
         {
             Application::$APP->session->addFlashMessage('authErrors', ['validation' => $errors]);
             $this->redirectBack($path);
+            exit;
         }
 
 
@@ -199,6 +200,7 @@ class AuthController extends AbstractController
             $this->redirectBack($path);
         }
 
+        /** @phpstan-ignore-next-line */
         $status = $userModel->create($firstname, $lastname, $email, Auth::hashPassword($pass, $email));
 
         if ($status === false) 
@@ -211,7 +213,14 @@ class AuthController extends AbstractController
         
     }
 
-    private function redirectBack($path)
+    /**
+     * Přesměruje uživatele 
+     *
+     * @param   string  $path  cesta
+     *
+     * @return  void
+     */
+    private function redirectBack(string $path)
     {
         // přesměrování zpět
         if (!empty($path)) {

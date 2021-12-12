@@ -21,7 +21,6 @@ const EditorModalWindow = {
             this.init();
         
         let tmp = this._template.cloneNode(true);
-        console.log(tmp);
         if (content != '')
             tmp.querySelector('.editor-modal').innerHTML = content;
         tmp.querySelectorAll(".text-field > .field > input").forEach(el => {initInput(el);});
@@ -102,7 +101,7 @@ ModalProject.init = function() {
                 <label class="text-field">
                     <div class="field">
                         <span>Project name</span>
-                        <input type="text">
+                        <input type="text" data-value="name">
                     </div>
                     <div class="text"></div>
                 </label>
@@ -114,7 +113,7 @@ ModalProject.init = function() {
                 <label class="text-field">
                     <div class="field">
                         <span>Project code</span>
-                        <input type="text">
+                        <input type="text" data-value="code">
                     </div>
                     <div class="text"></div>
                 </label>
@@ -136,21 +135,37 @@ ModalProject.create = function() {
     let tmp = EditorModalWindow.create();
 
     tmp.getName = function() {
-        return tmp.element.querySelector('.text-field input').value;
+        return tmp.element.querySelector('[data-value=name]').value;
     }
+
+    tmp.getCode = function() {
+        return tmp.element.querySelector('[data-value=code]').value;
+    }
+
     tmp.clear = function() {
-        tmp.element.querySelector('.text-field input').value = "";
+        tmp.element.querySelector('[data-value=name]').value = "";
+        tmp.element.querySelector('[data-value=code]').value = "";
     }
-    tmp.setAction = function(callback) {
+    tmp.setActionCreate = function(callback) {
         tmp.element.querySelector('button[data-action=create]').addEventListener('click', function() {
             callback([tmp.getName()]);
         });
     }
 
+    tmp.setActionJoin = function(callback) {
+        tmp.element.querySelector('button[data-action=join]').addEventListener('click', function() {
+            callback([tmp.getCode()]);
+        });
+    }
+
     tmp.setNameError = function(error) {
-        tmp.element.querySelector('.text-field').classList.add('error');
-        
-        tmp.element.querySelector('.text-field > .text').innerText = error;
+        tmp.element.querySelector('[data-value=name]').parentNode.parentNode.classList.add('error');
+        tmp.element.querySelector('[data-value=name]').parentNode.parentNode.children[1].innerText = error;
+    }
+    
+    tmp.setCodeError = function(error) {
+        tmp.element.querySelector('[data-value=code]').parentNode.parentNode.classList.add('error');
+        tmp.element.querySelector('[data-value=code]').parentNode.parentNode.children[1].innerText = error;
     }
 
     tmp.setNameValidation = function(callback)
@@ -160,8 +175,13 @@ ModalProject.create = function() {
     }
 
     tmp.clearNameError = function() {
-        tmp.element.querySelector('.text-field').classList.remove('error');
-        tmp.element.querySelector('.text-field > .text').innerText = "";
+        tmp.element.querySelector('[data-value=name]').parentNode.parentNode.classList.remove('error');
+        tmp.element.querySelector('[data-value=name]').parentNode.parentNode.children[1].innerText = "";
+    }
+
+    tmp.clearCodeError = function() {
+        tmp.element.querySelector('[data-value=code]').parentNode.parentNode.classList.remove('error');
+        tmp.element.querySelector('[data-value=code]').parentNode.parentNode.children[1].innerText = "";
     }
 
     return tmp;

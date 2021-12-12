@@ -6,7 +6,7 @@ namespace Kantodo\API\Controllers;
 use Kantodo\API\API;
 use Kantodo\Core\Base\AbstractController;
 use Kantodo\Core\Request;
-use Kantodo\API\Response;
+use Kantodo\Core\Response;
 use Kantodo\Auth\Auth;
 use Kantodo\Core\Validation\Data;
 

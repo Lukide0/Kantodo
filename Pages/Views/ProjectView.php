@@ -19,15 +19,12 @@ class ProjectView implements IView
     {
 
         $project     = $params['project'];
-        $members     = $params['project']['members'] ?? [];
+        $members     = $params['members'] ?? [];
         $projectUUID = base64DecodeUrl($params['projectUUID']);
+        $projectUrlUUID = $params['projectUUID'];
 
         $icon = ((bool) $project['is_open'] === true) ? "lock_open" : "lock";
-        $id   = Application::$APP->session->get('user')['id'];
-
-        $projModel = new ProjectModel();
-        $pos       = $projModel->getProjectPosition((int) $project['project_id'], (int) $id);
-        $priv      = $projModel->getPositionPriv($pos);
+        $priv      = $params['priv'];
         ?>
         <div class="container">
         <div class="row h-space-between">
@@ -36,9 +33,11 @@ class ProjectView implements IView
                 <button data-action='task' class="filled hover-shadow"><?=t('add_task', 'dashboard');?></button>
                 <?php
 
-        if ($priv['addPeople']) {
+        if ($priv['addPeople'] === true) {
             ?>
-                <button class="flat icon outline space-medium-left">settings</button>
+                <a href="/project/<?= $projectUrlUUID;?>/settings">
+                    <button class="flat icon outline space-medium-left">settings</button>
+                </a>
         <?php }?>
                 <script>
                 window.addEventListener('load', function(){
@@ -89,42 +88,91 @@ class ProjectView implements IView
             <div class="row space-big-top">
                 <?php
 
-        if ($priv['addPeople']) {
+        if ($priv['addPeople'] === true) {
             $text = t('create_invite_link', 'project');
-            $add  = t('create_link', 'project');
+            $add  = t('get_link', 'project');
+            $dialogTitle = t('project_code', 'project');
+            $close = t('close');
+            $copy = t('copy');
 
             echo <<<HTML
             <div class="banner" style="margin-bottom: 20px">
                 <span class="icon round medium">vpn_key</span>
                 <p>{$text}</p>
                 <div class="actions container">
-                    <button class='hover-shadow filled' style="border-radius: 5px"><span class="icon round">add</span>{$add}</button>
+                    <button data-action='project-code' class='hover-shadow filled' style="border-radius: 5px"><span class="icon round">add</span>{$add}</button>
                 </div>
+                <script>
+
+                    document.querySelector('[data-action=project-code]').addEventListener('click', function() {
+                        let response = Request.Action('/api/get/code/{$projectUrlUUID}', 'get');
+                        response.then(obj => {
+                            let dialog = Modal.Dialog.create('{$dialogTitle}', `<div style="border: 1px solid var(--font-400);border-radius: 4px;padding: 8px 10px;background: var(--font-100);">\${obj.data.code}</div>`, [
+                                {
+                                    'text': '{$close}', 
+                                    'classList': 'flat no-border',
+                                    'click': function(dialogOBJ) {
+                                        dialogOBJ.hide();
+                                    }
+                                },
+                                {
+                                    'text': '{$copy}',
+                                    'classList': 'space-big-left text',
+                                    'click': function(dialogOBJ) {
+
+                                        let text = obj.data.code;
+
+                                        if (!navigator.clipboard) {
+                                            let textArea = document.createElement("textarea");
+                                            textArea.value = text;
+                                            
+                                            // Avoid scrolling to bottom
+                                            textArea.style.top = "0";
+                                            textArea.style.left = "0";
+                                            textArea.style.position = "fixed";
+
+                                            document.body.appendChild(textArea);
+                                            textArea.focus();
+                                            textArea.select();
+
+                                            try {
+                                                document.execCommand('copy');
+                                            } catch (err) {
+                                                Kantodo.error(err);
+                                            }
+
+                                            document.body.removeChild(textArea);
+                                            dialogOBJ.hide();
+                                            return;
+                                        }
+                                        navigator.clipboard.writeText(text).catch(function(err) {
+                                            Kantodo.error(err);
+                                        });
+
+                                        dialogOBJ.hide();
+                                    }
+                                }
+                            ]);
+                            
+                            dialog.setParent(document.body.querySelector('main'));
+                            dialog.show();
+
+                        }).catch(err => {
+                            Kantodo.error(err);
+                        })
+                    });
+
+
+                </script>
             </div>
             HTML;
         }
-
         foreach ($members as $member): ?>
-                    <div class="avatar fullname">
+                    <div class="avatar fullname space-regular-right">
                         <?=$member['firstname'] . ' ' . $member['lastname'];?>
                     </div>
-                <?php endforeach;?>
+        <?php endforeach;?>
             </div>
-            <?php
-
-        if ($priv['addPeople']) {
-            ?>
-            <script>
-                document.querySelector('[data-action=addPeople]').onclick = function()
-                {
-                    console.log("CLICK");
-
-                }
-            </script>
-            <?php
-
-        }
-        ?>
         </div>
 
 <?php
