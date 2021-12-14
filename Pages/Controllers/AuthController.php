@@ -8,6 +8,7 @@ use Kantodo\Auth\Auth;
 use Kantodo\Core\Application;
 use Kantodo\Core\Base\AbstractController;
 use Kantodo\Core\Request;
+use Kantodo\Core\Response;
 use Kantodo\Core\Session;
 use Kantodo\Core\Validation\Data;
 use Kantodo\Models\UserModel;
@@ -26,8 +27,9 @@ class AuthController extends AbstractController
     public function authenticate()
     {
         $body = Application::$APP->request->getBody();
+
         // cesta z které byl uživatel přesměrován
-        if (empty($body[Request::METHOD_GET]['path']) || Data::isURLExternal($body[Request::METHOD_GET]['path'])) {
+        if ((empty($body[Request::METHOD_GET]['path']) || $body[Request::METHOD_GET]['path'] == '/') || Data::isURLExternal($body[Request::METHOD_GET]['path'])) {
             $this->renderView(AuthView::class);
             return;
         }
@@ -174,12 +176,12 @@ class AuthController extends AbstractController
 
         if ($firstname === false) 
         {
-            $errors['signUpName'] = 'surname_is_not_valid';
+            $errors['signUpName'] = 'lastname_is_not_valid';
         }
 
         if ($lastname === false) 
         {
-            $errors['signUpSurname'] = 'surname_is_not_valid';
+            $errors['signUpSurname'] = 'lastname_is_not_valid';
         }
 
         if (count($errors) != 0) 

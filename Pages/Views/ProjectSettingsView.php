@@ -2,6 +2,8 @@
 
 namespace Kantodo\Views;
 
+use Kantodo\Auth\Auth;
+use Kantodo\Core\Application;
 use Kantodo\Core\Base\IView;
 use Kantodo\Models\ProjectModel;
 use Kantodo\Widgets\Input;
@@ -13,8 +15,12 @@ class ProjectSettingsView implements IView
     public function render(array $params = [])
     {
         $project = $params['project'];
+        $projectUUID = $params['projectUUID'];
+
         $members = $params['members'];
         $positions = $params['positions'];
+
+        $email = Auth::getUser()['email'] ?? '';
 
         ?>
         <div class="container">
@@ -26,8 +32,8 @@ class ProjectSettingsView implements IView
                 <table>
                     <thead>
                         <tr>
-                            <td><?= t('name') ?></td>
-                            <td><?= t('surname') ?></td>
+                            <td><?= t('firstname') ?></td>
+                            <td><?= t('lastname') ?></td>
                             <td><?= t('email') ?></td>
                             <td><?= t('position') ?></td>
                             <td><?= t('actions') ?></td>
@@ -40,24 +46,51 @@ class ProjectSettingsView implements IView
                                 <td><?= $member['lastname'] ?></td>
                                 <td><?= $member['email'] ?></td>
                                 <td>
-                                    <select>
-                                        <?php 
-                                            foreach (array_keys(ProjectModel::POSITIONS) as $key) {
-                                                if ($positions[$member['project_position_id']] === $key)
-                                                    echo "<option selected>{$key}</option>";
-                                                else
-                                                    echo "<option>{$key}</option>";
-                                            }                                        
-                                        ?>
-                                    </select>
+                                    <?php
+                                    if ($member['email'] === $email) 
+                                    {
+                                        echo $positions[$member['project_position_id']];
+                                    }
+                                    else {
+                                        echo '<select onchange="updatePosition(event)">';
+                                        foreach (array_keys(ProjectModel::POSITIONS) as $key) {
+                                            if ($key === 'admin')
+                                                continue;
+
+                                            if ($positions[$member['project_position_id']] === $key)
+                                                echo "<option value='{$key}' selected>{$key}</option>";
+                                            else
+                                                echo "<option value='{$key}'>{$key}</option>";
+                                        }                                        
+                                        echo "</select>";
+                                    }
+                                    ?>
                                 </td>
-                                <td><button class="error icon outline">person_remove_alt_1</button></td>
+                                <td><button onclick="deleteUser(event)" class="error icon outline">person_remove_alt_1</button></td>
                             </tr>
                         <?php endforeach; ?>  
                     </tbody>
                 </table>
             </div>
+            <script>
+                function updatePosition(e) 
+                {
+                    let u = e.target.parentElement.parentElement.dataset.user;
+                    let response = Request.Action('/api/project/change_position', 'POST', { 'project': '<?= $projectUUID ?>', 'user': u, 'position': e.target.value });
+                    response.then(res => {
+                        Kantodo.info(res);
+                    }).catch(err => {
+                        Kantodo.error(err);
+                    })
 
+                }
+
+                function deleteUser(e) 
+                {
+                    console.log(this);
+                }
+
+            </script>
         </div>
 
 

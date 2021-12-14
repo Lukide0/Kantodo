@@ -10,5 +10,7 @@ Application::$APP->router->addRoute(Request::METHOD_GET, '/auth/signout', [Kanto
 Application::$APP->router->addRoute(Request::METHOD_POST, '/auth/signin', [Kantodo\Controllers\AuthController::class,'signIn'], Application::GUEST, true);
 Application::$APP->router->addRoute(Request::METHOD_POST, '/auth/create', [Kantodo\Controllers\AuthController::class,'createAccount'], Application::GUEST, true);
 Application::$APP->router->addRoute(Request::METHOD_GET, '/', [Kantodo\Controllers\DashboardController::class,'view'], Application::USER, false);
+Application::$APP->router->addRoute(Request::METHOD_GET, '/calendar', [Kantodo\Controllers\CalendarController::class,'default'], Application::USER, false);
+Application::$APP->router->addRoute(Request::METHOD_GET, '/account', [Kantodo\Controllers\AccountSettingsController::class,'settings'], Application::USER, false);
 Application::$APP->router->addRoute(Request::METHOD_GET, '/project/{projectUUID}', [Kantodo\Controllers\ProjectController::class,'view'], Application::USER, false);
 Application::$APP->router->addRoute(Request::METHOD_GET, '/project/{projectUUID}/settings', [Kantodo\Controllers\ProjectController::class,'settings'], Application::USER, false);

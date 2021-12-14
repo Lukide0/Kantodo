@@ -27,10 +27,12 @@ $API->router->registerErrorCodeHandler(API::ERROR_NOT_AUTHORIZED, function () {
 
 $API->router->post('create/project', [ProjectController::class, 'create'], API::USER);
 $API->router->post('join/project', [ProjectController::class, 'join'], API::USER);
+$API->router->get('get/code/{projectUUID}', [ProjectController::class, 'getCode'], API::USER);
+$API->router->post('project/change_position', [ProjectController::class, 'changePosition'], API::USER);
+
+
 $API->router->post('create/task', [TaskController::class, 'create'], API::USER);
 $API->router->get('get/task/{projectUUID}', [TaskController::class, 'get'], API::USER);
-$API->router->get('get/code/{projectUUID}', [ProjectController::class, 'getCode'], API::USER);
-$API->router->post('auth/refreshToken', [AuthController::class, 'refreshToken'], API::USER);
 
 $API->run();
 

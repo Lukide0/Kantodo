@@ -62,11 +62,15 @@ class Auth implements IAuth
     /**
      * Vytvoří public paseto token
      *
+     * @param   string  $id  id uživatele
      * @param   string  $secret  secret
+     * @param   string  $email  email
+     * @param   string  $role  role
+     * @param   DateTime  $expiration  expirace
      *
      * @return  string|null       Vrací null v případě, že se nepodařilo načíst klíč
      */
-    public static function getToken(string $secret, DateTime $expiration)
+    public static function createToken(string $id, string $secret, string $email, string $role, DateTime $expiration)
     {
         $keyMaterial = Application::getSymmetricKey();
 
@@ -80,7 +84,10 @@ class Auth implements IAuth
             ->setKey($key)
             // nastavení dat
             ->setClaims([
-                'secret' => $secret
+                'id' => $id,
+                'secret' => $secret,
+                'role' => $role,
+                'email' => $email
             ])
             // nastavení expirace
             ->setNotBefore()
@@ -181,55 +188,8 @@ class Auth implements IAuth
         // KROK A.2 - zkontrolovat jestli je validní
         if ($paseto !== false && self::checkToken($paseto)) 
             return true;
-
-        // KROK B.1 - získat session
-        $session = BaseApplication::$BASE_APP->session;
-        
-        // KROK B.2 - zkontrolovat expiraci
-        if ($session->getExpiration('user') > time())
-            return true;
-        
-        return false;
-    }
-
-    /**
-     * Obnoví paseto token a session pouze v případě, že je nastavená session
-     *
-     * @return  void
-     */
-    public static function refreshBySession()
-    {
-        $session = BaseApplication::$BASE_APP->session;
-
-        if ($session->getExpiration('user') <= time())
-            return;
-
-        $userModel = new UserModel();
-        $secret = $session->get('user')['secret'];
-        $userId = $session->get('user')['id'];
-
-        $search = [
-            'user_id' => $userId,
-            'email'   => $session->get('user')['email'],
-            'secret'  => $secret,
-        ];
-
-        // Uživatel neexistuje
-        if ($userModel->exists($search) === false) {
-            self::signOut();
-            return;
-        }
-
-        $expiration = (new DateTime())->modify('+' . self::EXP . ' seconds');
-        $expirationUnix = $expiration->getTimestamp();
-
-        $paseto = self::getToken($secret, $expiration);
-        
-        if ($paseto === null)
-            return;
-        
-        setcookie(self::COOKIE_KEY, $paseto, $expirationUnix, "/");
-        $session->setExpiration('user', $expirationUnix);
+        else 
+            return false;
     }
 
     /**
@@ -243,19 +203,16 @@ class Auth implements IAuth
     public static function refreshByCredentials(string $email, string $secret)
     {
         $userModel = new UserModel();
-        $search = [
-            'email' => $email,
-            'secret' => $secret,
-        ];
+
+        $user = $userModel->getSingle(['user_id'], ['email' => $email, 'secret' => $secret]);
 
         // Uživatel neexistuje
-        if ($userModel->exists($search) === false) {
+        if ($user === false) {
             return false;
         }
 
         $expiration = (new DateTime())->modify('+' . self::EXP . ' seconds');
-
-        return self::getToken($secret, $expiration);
+        return self::createToken($user['user_id'], $secret, $email, (string)BaseApplication::USER, $expiration);
     }
 
     /**
@@ -270,27 +227,21 @@ class Auth implements IAuth
     {
         $userModel = new UserModel();
 
-        $user = $userModel->getSingle(['user_id' => 'id', 'secret', 'firstname', 'lastname'], [
+        $user = $userModel->getSingle(['user_id', 'secret'], [
             'email'    => $email,
             'password' => Auth::hashPassword($password, $email),
         ]);
-        $session = BaseApplication::$BASE_APP->session;
 
         if ($user !== false) {
-            $user['email'] = $email;
-            $user['role']  = BaseApplication::USER;          
-
             $expiration = (new DateTime())->modify('+' . self::EXP . ' seconds');
             $expirationUnix = $expiration->getTimestamp();
     
-            $paseto = self::getToken($user['secret'], $expiration);
+            $paseto = self::createToken($user['user_id'], $user['secret'], $email, (string)BaseApplication::USER, $expiration);
             
             if ($paseto === null)
                 return false;
 
             setcookie(self::COOKIE_KEY, $paseto, $expirationUnix, "/");
-            $session->set("user", $user, $expirationUnix);
-
             return true;
         }
 
@@ -304,8 +255,21 @@ class Auth implements IAuth
      */
     public static function signOut(): void
     {
-        unset($_COOKIE[self::COOKIE_KEY]); 
-        setcookie(self::COOKIE_KEY, "", -1, '/'); 
-        BaseApplication::$BASE_APP->session->cleanData('user');
+        unset($_COOKIE[self::COOKIE_KEY]);
+        setcookie(self::COOKIE_KEY, "", -1, '/');
+        BaseApplication::$BASE_APP->session->cleanData();
+    }
+
+    /**
+     * Získá data z paseto
+     *
+     * @return  array<string,string>|null  data o uživateli nebo NULL
+     */
+    public static function getUser()
+    {
+        if (self::$PASETO === false)
+            return null;
+
+        return self::$PASETO->getClaims();
     }
 }

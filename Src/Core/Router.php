@@ -260,7 +260,6 @@ class Router
                 $this->handleErrorCode($th->getCode());
                 exit;
             }
-
             /** @phpstan-ignore-next-line */
             call_user_func([$controller, $classMethod], $params);
             return;

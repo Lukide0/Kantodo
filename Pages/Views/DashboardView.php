@@ -58,7 +58,7 @@ class DashboardView implements IView
                         
                                 inputName.value = "";
                                 win.getEditor().value("");
-                                input.dataset.value = null;
+                                win.getProjectInput().dataset.value = null;
 
                                 win.hide();
 

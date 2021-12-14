@@ -7,10 +7,13 @@ from Console import Console
 
 CLASS_NAME_REGEX = r"^[A-Z][a-zA-Z0-9_]*$"
 
-PATH_CONTROLLER = "./../../Pages/Controllers/"
-PATH_VIEW = "./../../Pages/Views/"
-PATH_WIDGET = "./../../Pages/Widgets/"
-PATH_MODEL = "./../../Pages/Models/"
+PATH_ABS = path.dirname(__file__)
+
+PATH_CONTROLLER = path.join(PATH_ABS, "./../../Pages/Controllers/")
+PATH_VIEW = path.join(PATH_ABS,"./../../Pages/Views/")
+PATH_WIDGET = path.join(PATH_ABS,"./../../Pages/Widgets/")
+PATH_MODEL = path.join(PATH_ABS,"./../../Pages/Models/")
+
 
 
 # CLEAR
@@ -237,11 +240,11 @@ def migration_command(commands):
     version = commands.pop(0)
     params = " ".join(commands)
 
-    chdir("../../")
+    chdir(path.join(PATH_ABS, "./../../"))
 
     system('php -f CLI/DatabaseMigration.php ' + version + " " + params)
 
-    chdir("./util/generator/")
+    chdir(PATH_ABS)
 
 
 def migration_command_help():
@@ -261,17 +264,17 @@ mig VERSION [Options]
 # GENERATE ROUTES
 
 def backup_command(commands):
-    chdir("./../../")
+    chdir(path.join(PATH_ABS, "./../../"))
 
     system('php -f CLI/AppBackup.php')
 
-    chdir("./util/generator/")
+    chdir(PATH_ABS)
 
 
 #-----------------------------------------------------------
 # GENERATE ROUTES
 def routes_command(commands):
-    chdir("./../../Pages/")
+    chdir(path.join(PATH_ABS, "./../../Pages/"))
 
 
     Console.set_style(Console.YELLOW_FG, content="Searching for 'routes.json'\n")
@@ -295,20 +298,20 @@ def routes_command(commands):
 
     for route in routesJSON:
         if check_route(route, paths, index) == False:
-            chdir("./../util/generator/")
+            chdir(PATH_ABS)
             return
         paths[route['method']].append(route['path'])
         
         status = system('php -r "include \\"./../loader/autoload.php\\";if (!class_exists(Kantodo\\Controllers\\{0}::class))exit(1);"'.format(route['controller']['class']))
         if status != 0:
             Console.set_style(Console.RED_FG, content="Controller class '{}' does not exist\n".format(route['controller']['class']))
-            chdir("./../util/generator/")
+            chdir(PATH_ABS)
             return
 
         status = system('php -r "include \\"./../loader/autoload.php\\";if (!method_exists(Kantodo\\Controllers\\{0}::class, \\"{1}\\"))exit(1);"'.format(route['controller']['class'], route['controller']['method']))
         if status != 0:
             Console.set_style(Console.RED_FG, content="Controller class '{}' does not have method '{}'\n".format(route['controller']['class'], route['controller']['method']))
-            chdir("./../util/generator/")
+            chdir(PATH_ABS)
             return
 
         route_method = "Request::METHOD_{0}".format(route['method'])
@@ -325,7 +328,7 @@ def routes_command(commands):
     
     Console.set_style(Console.GREEN_FG, content="File 'routes.php' was generated\n")
 
-    chdir("./../util/generator/")
+    chdir(PATH_ABS)
 
 def check_route(route, paths, index):
     mustContain = ['method', 'path', 'controller', 'access']

@@ -65,8 +65,8 @@ class AuthView implements IView
                     <?= Form::start('/auth/create' . $fromURL, Request::METHOD_POST, 'container full-width middle', ['style' => $authType[1]]) ?>
                         <div class="row full-width h-space-between">
                             <?= Form::tokenCSRF() ?>
-                            <?= Input::text('signUpName', t('name'), ['classes' => 'full-width space-big-right', 'error' => $errors, 'value' => $userName, 'autocomplete' => Input::AUTOCOMPLETE_FORENAME]); ?>
-                            <?= Input::text('signUpSurname', t('surname'), ['classes' => 'full-width', 'error' => $errors, 'value' => $userSurname, 'autocomplete' => Input::AUTOCOMPLETE_SURNAME]); ?>
+                            <?= Input::text('signUpName', t('firstname'), ['classes' => 'full-width space-big-right', 'error' => $errors, 'value' => $userName, 'autocomplete' => Input::AUTOCOMPLETE_FORENAME]); ?>
+                            <?= Input::text('signUpSurname', t('lastname'), ['classes' => 'full-width', 'error' => $errors, 'value' => $userSurname, 'autocomplete' => Input::AUTOCOMPLETE_SURNAME]); ?>
                         </div>
                         <?= Input::text('signUpEmail', t('email'), ['classes' => 'space-big-bottom space-big-top full-width', 'error' => $errors, 'value' => $email, 'autocomplete' => Input::AUTOCOMPLETE_EMAIL]); ?>
                         <div class="row full-width h-space-between">

@@ -1,7 +1,7 @@
 {
 
-    "name": "Name",
-    "surname": "Surname",
+    "firstname": "Firstname",
+    "lastname": "Lastname",
     "email": "Email",
     "position": "Position",
     "actions": "Actions",

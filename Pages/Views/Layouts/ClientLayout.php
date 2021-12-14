@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Kantodo\Views\Layouts;
 
+use Kantodo\Auth\Auth;
 use Kantodo\Core\Application;
 use Kantodo\Core\Base\Layout;
 use Kantodo\Models\ProjectModel;
@@ -30,7 +31,17 @@ class ClientLayout extends Layout
         if (!isset($params['projects'])) 
         {
             $projectModel = new ProjectModel();
-            $projects = $projectModel->getUserProjects((int)Application::$APP->session->get('user')['id']);
+
+            $user = Auth::getUser();
+
+            if ($user === null) 
+            {
+                Auth::signOut();
+                Application::$APP->response->setLocation('/auth');
+                exit;
+            }
+
+            $projects = $projectModel->getUserProjects((int)$user['id']);
     
             if ($projects === false)
                 $projects = [];
@@ -39,9 +50,6 @@ class ClientLayout extends Layout
             $projects = $params['projects'];
         }
 
-
-        // TODO: generovat menu z array
-        //$userID = Application::$APP->session->get('user')['id'];
         ?>
         <!DOCTYPE html>
         <html lang="en">

@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Kantodo\Core;
 
+use Kantodo\Auth\Auth;
 use Kantodo\Core\Base\AbstractController;
 use Kantodo\Core\Database\Connection;
 use ParagonIE\Paseto\Protocol\Version4;
@@ -323,6 +324,6 @@ class BaseApplication
             return self::GUEST;
         }
 
-        return self::$BASE_APP->userRole = self::$BASE_APP->session->get('user')['role'] ?? self::GUEST;
+        return self::$BASE_APP->userRole = (isset(Auth::getUser()['role'])) ? (int)Auth::getUser()['role'] : self::GUEST;
     }
 }

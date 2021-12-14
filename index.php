@@ -15,6 +15,7 @@ $APP->session->start();
 // TODO: Mobilni verze, pri vytvareni zamknout tlacitko pridat => bug 2x se prida
 // TODO: Nacist preklady do promene v js
 // TODO: Menit title ve view
+// TODO: Predelat session na PASETO
 
 if (!Application::configExits()) {
     $APP->router->run([Kantodo\Controllers\InstallController::class, 'installView'], [$APP->request->getPath()]);

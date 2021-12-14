@@ -3,9 +3,11 @@
 namespace Kantodo\API\Controllers;
 
 use Kantodo\API\API;
+use Kantodo\Auth\Auth;
 use Kantodo\Core\Base\AbstractController;
 use Kantodo\Core\Request;
 use Kantodo\Core\Response;
+use Kantodo\Core\Validation\Data;
 use Kantodo\Core\Validation\DataType;
 use Kantodo\Models\ProjectModel;
 
@@ -24,24 +26,24 @@ class ProjectController extends AbstractController
     {
         $body = API::$API->request->getBody();
         $response = API::$API->response;
-        $session = API::$API->session;
-
+    
         if (empty($body[Request::METHOD_POST]['name'])) 
         {
             $response->fail(['name' => t('empty', 'api')]);
         }
 
         $projectName = $body[Request::METHOD_POST]['name'];
-        $user = $session->get('user');
+        $user = Auth::getUser();
 
-        if (empty($user['id'])) 
+        if ($user === null || empty($user['id'])) 
         {
             $response->error(t('user_id_missing', 'api'));
+            exit;
         }
 
         $projModel = new ProjectModel();
 
-        $status = $projModel->create($user['id'], $projectName);
+        $status = $projModel->create((int)$user['id'], $projectName);
         if ($status === false) 
         {
             $response->error(t('cannot_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
@@ -68,7 +70,6 @@ class ProjectController extends AbstractController
     {
         $body = API::$API->request->getBody();
         $response = API::$API->response;
-        $session = API::$API->session;
 
         if (empty($body[Request::METHOD_POST]['code'])) 
         {
@@ -77,9 +78,9 @@ class ProjectController extends AbstractController
         }
 
         $projectCode = $body[Request::METHOD_POST]['code'];
-        $user = $session->get('user');
+        $user = Auth::getUser();
 
-        if (empty($user['id'])) 
+        if ($user === null || empty($user['id'])) 
         {
             $response->error(t('user_id_missing', 'api'));
             exit;
@@ -135,7 +136,6 @@ class ProjectController extends AbstractController
     public function getCode(array $params = [])
     {
         $response = API::$API->response;
-        $session = API::$API->session;
         
         if (empty($params['projectUUID']))
             $response->error(t('project uuid missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
@@ -147,9 +147,9 @@ class ProjectController extends AbstractController
             exit;
         }
 
-        $user = $session->get('user');
+        $user = Auth::getUser();
 
-        if (!DataType::number($user['id'])) 
+        if ($user === null || !DataType::number($user['id'])) 
         {
             $response->error(t('user_id_missing', 'api'));
             exit;
@@ -173,5 +173,43 @@ class ProjectController extends AbstractController
         else {
             $response->success(['code' => $code]);
         }
+    }
+
+
+    public function changePosition()
+    {
+        $body = API::$API->request->getBody();
+        $response = API::$API->response;
+        
+        $keys = ['project', 'user', 'position'];
+
+        $empty = Data::empty($body[Request::METHOD_POST], $keys);
+
+        if (count($empty) != 0) 
+        {
+            $response->fail(array_fill_keys($empty, t('empty', 'api')));
+        }
+
+        
+        // $projModel = new ProjectModel();
+        // $projUUID = base64DecodeUrl($params['projectUUID']);
+
+        // $project = $projModel->getSingle(['project_id', 'name', 'is_open', 'is_public'], ['uuid' => $projUUID]);
+
+        // if ($project === false) 
+        // {
+        //     Application::$APP->response->setLocation();
+        //     exit;
+        // }
+
+        // $params['project'] = $project;
+
+        // $pos       = $projModel->getProjectPosition((int) $project['project_id'], (int) $id);
+        // if ($pos === false) {
+        //     Application::$APP->response->setLocation();
+        //     exit;
+        // }
+
+        // $params['priv'] = $projModel->getPositionPriv($pos);
     }
 }

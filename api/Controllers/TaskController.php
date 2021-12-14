@@ -7,17 +7,10 @@ use Kantodo\Core\Base\AbstractController;
 use Kantodo\Core\Request;
 use Kantodo\Core\Response;
 use Kantodo\Auth\Auth;
-use Kantodo\Core\BaseApplication;
-use Kantodo\Core\Database\Connection;
 use Kantodo\Core\Validation\Data;
 use Kantodo\Models\ProjectModel;
 use Kantodo\Models\TagModel;
 use Kantodo\Models\TaskModel;
-use Kantodo\Websocket\Client\Websocket;
-use ParagonIE\Paseto\Builder;
-use ParagonIE\Paseto\Keys\Version4\SymmetricKey;
-use ParagonIE\Paseto\Protocol\Version4;
-use ParagonIE\Paseto\Purpose;
 
 use function Kantodo\Core\Functions\base64DecodeUrl;
 use function Kantodo\Core\Functions\base64EncodeUrl;
@@ -34,7 +27,6 @@ class TaskController extends AbstractController
     {
         $body = API::$API->request->getBody();
         $response = API::$API->response;
-        $session = API::$API->session;
 
         $keys = [
             'task_name',
@@ -52,39 +44,41 @@ class TaskController extends AbstractController
         $taskName = $body[Request::METHOD_POST]['task_name'];
         $taskDesc = $body[Request::METHOD_POST]['task_desc'];
         $projUUID = $body[Request::METHOD_POST]['task_proj'];
-        $user = $session->get('user');
+        $user = Auth::getUser();
 
-        if (empty($user['id'])) 
+        if ($user === null || empty($user['id'])) 
         {
             $response->error(t('user_id_missing', 'api'));
+            exit;
         }
 
 
 
         $projModel = new ProjectModel();
 
-        $details = $projModel->getBaseDetails($user['id'], $projUUID);
+        $details = $projModel->getBaseDetails((int)$user['id'], $projUUID);
         if ($details === false) 
         {
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
-            return;
+            exit;
         }
         $priv = $projModel->getPositionPriv($details['name']);
 
         if ($priv === false || !$priv['addTask']) 
         {
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
+            exit;
         }
         
         
         $taskModel = new TaskModel();
 
         // TODO: priorita, milnik a konec
-        $taskID = $taskModel->create($taskName, $user['id'], (int)$details['id'], $taskDesc);
+        $taskID = $taskModel->create($taskName, (int)$user['id'], (int)$details['id'], $taskDesc);
         if ($taskID === false) 
         {
             $response->error(t('cannot_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
-            return;
+            exit;
         }
         
 
@@ -115,7 +109,7 @@ class TaskController extends AbstractController
         $keyMaterial = API::getSymmetricKey();
 
         if ($keyMaterial === false)
-            return;
+            exit;
 
         /*$key = new SymmetricKey($keyMaterial);
         $paseto = (new Builder())
@@ -161,16 +155,16 @@ class TaskController extends AbstractController
     {
         $limit = 10;
         $response = API::$API->response;
-        $session = API::$API->session;
-        $user = $session->get('user');
+        $user = Auth::getUser();
         $body = API::$API->request->getBody();
     
         $offset = ($body[Request::METHOD_GET]['page'] ?? 0) * $limit;
 
 
-        if (empty($user['id'])) 
+        if ($user === null || empty($user['id'])) 
         {
             $response->error(t('user_id_missing', 'api'));
+            exit;
         }
 
         if (empty($params['projectUUID']))

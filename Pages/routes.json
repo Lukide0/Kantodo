@@ -61,6 +61,30 @@
     },
     {
         "method": "GET",
+        "path": "/calendar",
+        "controller": {
+            "class": "CalendarController",
+            "method": "default"
+        },
+        "access": {
+            "role": "USER",
+            "strict": false
+        }
+    },
+    {
+        "method": "GET",
+        "path": "/account",
+        "controller": {
+            "class": "AccountSettingsController",
+            "method": "settings"
+        },
+        "access": {
+            "role": "USER",
+            "strict": false
+        }
+    },
+    {
+        "method": "GET",
         "path": "/project/{projectUUID}",
         "controller": {
             "class": "ProjectController",
