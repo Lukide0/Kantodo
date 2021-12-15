@@ -10,6 +10,7 @@ use Kantodo\Core\Response;
 use Kantodo\Core\Validation\Data;
 use Kantodo\Core\Validation\DataType;
 use Kantodo\Models\ProjectModel;
+use Kantodo\Models\UserModel;
 
 use function Kantodo\Core\Functions\base64DecodeUrl;
 use function Kantodo\Core\Functions\base64EncodeUrl;
@@ -180,6 +181,7 @@ class ProjectController extends AbstractController
     {
         $body = API::$API->request->getBody();
         $response = API::$API->response;
+        $user = Auth::getUser();
         
         $keys = ['project', 'user', 'position'];
 
@@ -188,28 +190,63 @@ class ProjectController extends AbstractController
         if (count($empty) != 0) 
         {
             $response->fail(array_fill_keys($empty, t('empty', 'api')));
+            exit;
         }
 
+        if ($user === null || !DataType::number($user['id'])) 
+        {
+            $response->error(t('user_id_missing', 'api'));
+            exit;
+        }
+        $uuid = $body[Request::METHOD_POST]['project'];
+        $id   = $user['id'];
+        $email = $body[Request::METHOD_POST]['user'];
+        $position = $body[Request::METHOD_POST]['position'];
+
+
+        if (isset(ProjectModel::POSITIONS[$position]) === false) 
+        {
+            $response->error(t('position_does_not_exists', 'api'), Response::STATUS_CODE_FORBIDDEN);
+            exit;
+        }
+
+        $projModel = new ProjectModel();
+        $projectID = 0;
+
         
-        // $projModel = new ProjectModel();
-        // $projUUID = base64DecodeUrl($params['projectUUID']);
+        if (ProjectModel::hasPrivTo('changePeoplePosition', (int)$id, $uuid, $projectID) !== true) 
+        {
+            $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
+            exit;
+        }
 
-        // $project = $projModel->getSingle(['project_id', 'name', 'is_open', 'is_public'], ['uuid' => $projUUID]);
+        $userModel = new UserModel();
+        $member = $userModel->getSingle(['user_id'], ['email' => $email]);
 
-        // if ($project === false) 
-        // {
-        //     Application::$APP->response->setLocation();
-        //     exit;
-        // }
+        if ($member === false) 
+        {
+            $response->error(t('user_is_not_member', 'api'), Response::STATUS_CODE_BAD_REQUEST);
+            exit;
+        }
 
-        // $params['project'] = $project;
+        $memberID = (int)$member['user_id'];
+        
+        if ($projModel->projectMember($memberID, $uuid) === false) 
+        {
+            $response->error(t('user_is_not_member', 'api'), Response::STATUS_CODE_BAD_REQUEST);
+            exit;
+        }
 
-        // $pos       = $projModel->getProjectPosition((int) $project['project_id'], (int) $id);
-        // if ($pos === false) {
-        //     Application::$APP->response->setLocation();
-        //     exit;
-        // }
+        $status = $projModel->updatePosition($memberID, $projectID, $position);
 
-        // $params['priv'] = $projModel->getPositionPriv($pos);
+
+        if ($status) 
+        {
+            $response->success([]);
+        } 
+        else
+        {
+            $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
+        }
     }
 }

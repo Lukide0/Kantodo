@@ -16,7 +16,6 @@ use PDO;
  */
 class ProjectModel extends Model
 {
-
     /**
      * Pozice
      *
@@ -162,6 +161,53 @@ class ProjectModel extends Model
         }
 
         return false;
+    }
+
+
+    public function setPosition(int $userID, int $projectID, string $name)
+    {
+        if (isset(self::POSITIONS[$name]) === false) 
+        {
+            return false;
+        }
+        $posID  = $this->getPosition($name);
+
+        // neexistuje pozice v databázi
+        if ($posID === false) {
+            $posID = $this->createPosition($name);
+            if ($posID === false) {
+                return false;
+            }
+        }
+        return $this->setUserPosition($userID, $projectID, $posID);
+    }
+
+
+    public function updatePosition(int $userID, int $projID, string $name)
+    {
+        if (isset(self::POSITIONS[$name]) === false) 
+        {
+            return false;
+        }
+        $posID  = $this->getPosition($name);
+
+        // neexistuje pozice v databázi
+        if ($posID === false) {
+            $posID = $this->createPosition($name);
+            if ($posID === false) {
+                return false;
+            }
+        }
+
+        $userProj = Connection::formatTableName('user_projects');
+        $sth      = $this->con->prepare("UPDATE {$userProj} SET project_position_id = :posID WHERE user_id = :userID AND project_id = :projID");
+        $status   = $sth->execute([
+            ':userID' => $userID,
+            ':projID' => $projID,
+            ':posID'  => $posID,
+        ]);
+
+        return $status;
     }
 
     /**
@@ -561,10 +607,11 @@ class ProjectModel extends Model
      * @param   string  $key          akce viz. POSITIONS
      * @param   int     $userID       id uživatele
      * @param   string  $projectUUID  UUID projektu
+     * @param   int     $outProjectID reference na proměnou do které bude vloženo id projektu
      *
      * @return  bool|null             Vrací false v případě, že akce neexistuje nebo uživatel nemá přístup k akci
      */
-    public static function hasPrivTo(string $key, int $userID, string $projectUUID)
+    public static function hasPrivTo(string $key, int $userID, string $projectUUID, int &$outProjectID = 0)
     {
         $keys = [
             'addTask',
@@ -588,11 +635,14 @@ class ProjectModel extends Model
             return false;
         }
 
+
         $priv = $projModel->getPositionPriv($details['name']);
 
         if ($priv === false || !$priv[$key]) {
             return false;
         }
+
+        $outProjectID = (int)$details['id'];
 
         return true;
     }
