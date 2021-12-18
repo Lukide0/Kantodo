@@ -112,9 +112,13 @@ export default function taskWindow(btn, project = null) {
         let options;
     
         // filter
-        options = Projects.filter(proj => proj.name.toLowerCase().includes(input.value.toLowerCase()));
+        options = Object.keys(DATA.Projects).reduce(function(filtered,key) {
+            if (DATA.Projects[key].name.toLowerCase().includes(input.value.toLowerCase()))
+                filtered[key] = DATA.Projects[key];
+            return filtered;
+        }, {});
     
-        if (options.length == 0) 
+        if (Object.keys(options).length === 0) 
         {
             textField.classList.add('error');
             textField.classList.add('active')
@@ -123,19 +127,19 @@ export default function taskWindow(btn, project = null) {
             textField.classList.remove('error');
         }
     
-        options.forEach(project => {
+        for (const [uuid, project] of Object.entries(options)) {
             let item = document.createElement('li');
             item.textContent = project.name;
-            item.dataset.projectId = project.id;
+            item.dataset.projectId = uuid;
             item.onclick = function(e) {
-                input.dataset.value = project.id;
+                input.dataset.value = uuid;
                 input.value = item.textContent;
                 textField.classList.add('active');
                 e.preventDefault();
                 input.blur();
             }
             menu.appendChild(item);
-        });
+        }
     }
     createOptions(false);
 

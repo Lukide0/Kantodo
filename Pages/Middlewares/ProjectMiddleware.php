@@ -39,6 +39,12 @@ class ProjectMiddleware extends AbstractMiddleware
 
         $projUUID = base64DecodeUrl($params['projectUUID']);
 
+        if ($projUUID === false) 
+        {
+            Application::$APP->response->setLocation();
+            exit;
+        }
+
         $project = $projModel->getSingle(['project_id', 'name', 'is_open', 'is_public'], ['uuid' => $projUUID]);
 
         if ($project === false) 

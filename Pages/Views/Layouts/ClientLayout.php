@@ -98,13 +98,16 @@ class ClientLayout extends Layout
                         <span class="icon outline medium">folder</span>
                         <span class="text"><?= t('projects') ?></span>
                     </div>
-                    <ul>
+                    <div class="row center space-medium-top">
+                        <button class="flat no-border info" data-action="project"><span class="icon outline small">add_box</span><?= t('add') ?></button>
+                    </div>
+                    <ul id="projectList" style="padding: 5px 0">
                         <?php 
                         foreach ($projects ?? [] as $project):
+                            $uuid = base64EncodeUrl($project['uuid']);
                         ?>
-                        <li data-project-id='<?= $project['uuid'] ?>'><a href="/project/<?= base64EncodeUrl($project['uuid']) ?>"><?= $project['name'] ?></a></li>
+                        <li data-project-id='<?= $uuid ?>'><a href="/project/<?= $uuid ?>"><?= $project['name'] ?></a></li>
                         <?php endforeach; ?>
-                        <li class="add"><button class="flat no-border info" data-action="project"><span class="icon outline small">add_box</span><?= t('add') ?></button></li>
                     </ul>
                 </div>
                 <a class="item last" href="/account">
@@ -116,8 +119,59 @@ class ClientLayout extends Layout
                     <span class="text"><?= t('sign_out') ?></span>
                 </a>
                 <script>
-                    const Projects = [];
-                    document.querySelectorAll('[data-project-id]').forEach(el => Projects.push({ id: el.dataset.projectId, name: el.children[0].textContent}));
+
+                    const DATA = {
+                        "Projects": {},
+                        "AddProject": function(uuid, name) 
+                        {
+                            let container = document.getElementById("ProjectList");
+                            let newProject = document.createElement('li');
+                            newProject.dataset['projectId'] = uuid;
+                            newProject.innerHTML = `<a href="/project/${uuid}">${name}</a>`;
+                            container.insertBefore(newProject, container.lastChild);
+                            
+                            this.Projects[uuid] = ({name: name, tasks: []});
+                        },
+                        "AddTask": function(uuid, task, container) 
+                        {
+
+                            if (typeof this.Projects[uuid] !== "object") 
+                            {
+                                return;
+                            }
+                            this.Projects[uuid].tasks.push(task);
+                            
+                            let tags = task.tags;
+                            let tagsHTML = tags.map(tag => {
+                                return `<div class="tag">${tag}</div>`;
+                            }).join('');
+                            let tmp = `<div class="task">
+                                        <header>
+                                            <div>
+                                                <label class="checkbox">
+                                                    <input type="checkbox">
+                                                    <div class="background"></div>
+                                                </label>
+                                                <h4>${task.name}</h4>
+                                            </div>
+                                            <div>
+                                                <button class="flat no-border icon round">more_vert</button>
+                                            </div>
+                                        </header>
+                                        <footer>
+                                            <div class="row">
+                                                <div class="tags">
+                                                    ${tagsHTML}
+                                                </div>
+                                            </div>
+                                        </footer>
+                                    </div>`;
+                            container.innerHTML += tmp;
+                        }
+                    };
+                    
+                    
+                    document.querySelectorAll('[data-project-id]').forEach(el => DATA.Projects[el.dataset.projectId] = {name: el.children[0].textContent, tasks: []});
 
                     window.addEventListener('load',
                         function() {
@@ -147,19 +201,12 @@ class ClientLayout extends Layout
                                     let project = res.data.project;
                                     Kantodo.success(`Created project (${project.uuid})`);
 
-                                    let addProjectItem = btn.parentElement;
 
-                                    let newProject = document.createElement('li');
-                                    newProject.dataset['projectId'] = project.uuid;
-                                    newProject.innerHTML = `<a href="/project/${project.uuidSafe}">${data[0]}</a>`;
-                                    Projects.push({id: project.uuid, name: data[0]});
-
-                                    addProjectItem.parentElement.insertBefore(newProject, addProjectItem);
+                                    DATA.AddProject(project.uuid, data[0]);
                                     win.clear();
                                     win.hide();
 
                                     let snackbar = Modal.Snackbar.create('<?= t('project_was_created') ?>', null, 'success');
-
                                     snackbar.setParent(document.body.querySelector('main'));
                                     snackbar.show({center: true, top: 5}, 4000, true);
 
@@ -185,33 +232,23 @@ class ClientLayout extends Layout
                                 let response = Request.Action('/api/join/project', 'POST', {code: data[0]});
                                 response.then(res => {
                                     console.log(res);
-                                    // let project = res.data.project;
-                                    // Kantodo.success(`Created project (${project.uuid})`);
+                                    let project = res.data.project;
+                                    Kantodo.success(`Join project (${project.uuid})`);
 
-                                    // let addProjectItem = btn.parentElement;
+                                    DATA.AddProject(project.uuid, project.name);
+                                    win.clear();
+                                    win.hide();
 
-                                    // let newProject = document.createElement('li');
-                                    // newProject.dataset['projectId'] = project.uuid;
-                                    // newProject.innerHTML = `<a href="/project/${project.uuidSafe}">${data[0]}</a>`;
-                                    // Projects.push({id: project.uuid, name: data[0]});
+                                    let snackbar = Modal.Snackbar.create('<?= t('you_have_joined_project') ?>', null, 'success');
 
-                                    // addProjectItem.parentElement.insertBefore(newProject, addProjectItem);
-                                    // win.clear();
-                                    // win.hide();
-
-                                    // let snackbar = Modal.Snackbar.create('<?= t('project_was_created') ?>', null, 'success');
-
-                                    // snackbar.setParent(document.body.querySelector('main'));
-                                    // snackbar.show({center: true, top: 5}, 4000, true);
+                                    snackbar.setParent(document.body.querySelector('main'));
+                                    snackbar.show({center: true, top: 5}, 4000, true);
 
                                 }).catch(reason => {
                                     Kantodo.error(reason);
                                 });
-
                             });
                         }
-
-
                     );
                 </script>
             </nav>

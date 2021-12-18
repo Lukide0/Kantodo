@@ -16,7 +16,7 @@ class ProjectSettingsView implements IView
     public function render(array $params = [])
     {
         $project = $params['project'];
-        $projectUUID = base64DecodeUrl($params['projectUUID']);
+        $projectUUID = $params['projectUUID'];
 
         $members = $params['members'];
         $positions = $params['positions'];
@@ -46,51 +46,97 @@ class ProjectSettingsView implements IView
                                 <td><?= $member['firstname'] ?></td>
                                 <td><?= $member['lastname'] ?></td>
                                 <td><?= $member['email'] ?></td>
-                                <td>
-                                    <?php
-                                    if ($member['email'] === $email) 
-                                    {
-                                        echo $positions[$member['project_position_id']];
-                                    }
-                                    else {
-                                        echo '<select onchange="updatePosition(event)">';
-                                        foreach (array_keys(ProjectModel::POSITIONS) as $key) {
-                                            if ($key === 'admin')
-                                                continue;
+                                <?php
+                                if ($member['email'] === $email) 
+                                {
+                                    echo '<td>' . $positions[$member['project_position_id']] . '</td>';
+                                    echo '<td></td>';
+                                }
+                                else {
+                                    echo '<td><select onfocus="this.oldVal = this.value" onchange="updatePosition(event,this)">';
+                                    foreach (array_keys(ProjectModel::POSITIONS) as $key) {
+                                        if ($key === 'admin')
+                                            continue;
 
-                                            if ($positions[$member['project_position_id']] === $key)
-                                                echo "<option value='{$key}' selected>{$key}</option>";
-                                            else
-                                                echo "<option value='{$key}'>{$key}</option>";
-                                        }                                        
-                                        echo "</select>";
-                                    }
-                                    ?>
-                                </td>
-                                <td><button onclick="deleteUser(event)" class="error icon outline">person_remove_alt_1</button></td>
+                                        if ($positions[$member['project_position_id']] === $key)
+                                            echo "<option value='{$key}' selected>{$key}</option>";
+                                        else
+                                            echo "<option value='{$key}'>{$key}</option>";
+                                    }                                        
+                                    echo "</select></td>";
+                                    echo '<td><button onclick="deleteUser(event)" class="error icon outline">person_remove_alt_1</button></td>';
+                                }
+                                ?>
                             </tr>
                         <?php endforeach; ?>  
                     </tbody>
                 </table>
             </div>
             <script>
-                function updatePosition(e) 
+                function updatePosition(e, self) 
                 {
                     let u = e.target.parentElement.parentElement.dataset.user;
-                    let response = Request.Action('/api/project/change_position', 'POST', { 'project': '<?= $projectUUID ?>', 'user': u, 'position': e.target.value });
-                    response.then(res => {
-                        Kantodo.info(res);
-                    }).catch(err => {
-                        Kantodo.error(err);
-                    })
+
+                    let dialog = Modal.Dialog.create('<?= t("confirm") ?>', `<?= t("do_you_want_change_position_of_this_user")?> (${u})`, [
+                        {
+                            'text': '<?= t("close") ?>', 
+                            'classList': 'flat no-border',
+                            'click': function(dialogOBJ) {
+
+                                self.value = self.oldVal;
+                                dialogOBJ.hide();
+
+                                return false;
+                            }
+                        },
+                        {
+                            'text': '<?= t("yes") ?>',
+                            'classList': 'space-big-left text',
+                            'click': function(dialogOBJ) {
+                                
+                                let response = Request.Action('/api/project/change_position', 'POST', { 'project': '<?= $projectUUID ?>', 'user': u, 'position': e.target.value });
+                                response.then(res => {
+                                    Kantodo.info(res);
+                                }).catch(err => {
+                                    Kantodo.error(err);
+                                })
+                                dialogOBJ.hide();
+                            }
+                        }
+                    ]);
+                
+                    dialog.setParent(document.body.querySelector('main'));
+                    dialog.show();
+
 
                 }
 
                 function deleteUser(e) 
                 {
-                    console.log(this);
-                }
+                    let u = e.target.parentElement.parentElement.dataset.user;
+                    let dialog = Modal.Dialog.create('<?= t("confirm") ?>', `<?= t("do_you_want_remove_this_user")?> (${u})`, [
+                        {
+                            'text': '<?= t("close") ?>', 
+                            'classList': 'flat no-border',
+                            'click': function(dialogOBJ) {
+                                dialogOBJ.hide();
+                            }
+                        },
+                        {
+                            'text': '<?= t("yes") ?>',
+                            'classList': 'space-big-left text error',
+                            'click': function(dialogOBJ) {
+                                
+                                console.log(u);
 
+                                dialogOBJ.hide();
+                            }
+                        }
+                    ]);
+                
+                    dialog.setParent(document.body.querySelector('main'));
+                    dialog.show();
+                }
             </script>
         </div>
 

@@ -39,7 +39,7 @@ body > header:not(.mobile) {
             }
 
             &.dropdown {
-                display: block;
+                display: inline-block;
 
                 & > div {
                     cursor: pointer;
@@ -82,6 +82,8 @@ body > header:not(.mobile) {
                     margin-left: $icon-medium + space(regular);
                     color: fontColor(700);
                     transition: visibility 200ms ease-out, opacity 200ms ease-out;
+                    height: 500px;
+                    overflow-y: scroll;
 
                     & > li {
                         --project-color: #{color(primary)};
@@ -89,6 +91,8 @@ body > header:not(.mobile) {
                         align-items: center;
                         margin-top: space(regular);
                         font-size: fontSize(regular);
+                        padding: space(small);
+                        border-radius: borderRadius(small);
 
                         &::before {
                             display: block;
@@ -98,6 +102,17 @@ body > header:not(.mobile) {
                             border-radius: 25%;
                             background: var(--project-color);
                             margin-right: space(small);
+                        }
+
+                        & > a {
+                            text-decoration: none;
+                            color: inherit;
+                        }
+
+                        &:hover {
+                            transition: all 250ms ease;
+                            color: fontColor(900);
+                            background: background(third);
                         }
 
                         &.add {

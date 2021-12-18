@@ -54,8 +54,7 @@ class ProjectController extends AbstractController
         $response->success([
             'project' => 
                 [
-                    'uuid' => $status['uuid'],
-                    'uuidSafe' => base64EncodeUrl($status['uuid'])
+                    'uuid' => base64EncodeUrl($status['uuid'])
                 ]
             ],
             Response::STATUS_CODE_CREATED
@@ -115,14 +114,21 @@ class ProjectController extends AbstractController
         
         $status = $projectModel->setUserPosition($userID, $projectID, $posID);
         
+        $project = $projectModel->getSingle(['name', 'uuid'], ['project_id' => $projectID]);
         
-        if ($status === false) 
+        if ($status === false || $project === false) 
         {
             $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
             exit;
         } else 
         {
-            $response->success();
+            $response->success([
+                'project' => 
+                [
+                    'name' => $project['name'],
+                    'uuid' => base64EncodeUrl($project['uuid'])
+                ]
+            ]);
         }
     }
 
@@ -139,12 +145,12 @@ class ProjectController extends AbstractController
         $response = API::$API->response;
         
         if (empty($params['projectUUID']))
-            $response->error(t('project uuid missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
+            $response->error(t('project_uuid_missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
             
         $uuid = base64DecodeUrl($params['projectUUID']);
         if ($uuid === false) 
         {
-            $response->error(t('project uuid missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
+            $response->error(t('project_uuid_missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
             exit;
         }
 
@@ -177,6 +183,11 @@ class ProjectController extends AbstractController
     }
 
 
+    /**
+     * Akce na změnění pozice uživatele
+     *
+     * @return  void
+     */
     public function changePosition()
     {
         $body = API::$API->request->getBody();
@@ -198,21 +209,29 @@ class ProjectController extends AbstractController
             $response->error(t('user_id_missing', 'api'));
             exit;
         }
-        $uuid = $body[Request::METHOD_POST]['project'];
+        $uuid = base64DecodeUrl($body[Request::METHOD_POST]['project']);
         $id   = $user['id'];
         $email = $body[Request::METHOD_POST]['user'];
         $position = $body[Request::METHOD_POST]['position'];
 
+        if ($uuid === false)
+        {
+            $response->error(t('project_uuid_missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
+            exit;
+        }
 
         if (isset(ProjectModel::POSITIONS[$position]) === false) 
         {
-            $response->error(t('position_does_not_exists', 'api'), Response::STATUS_CODE_FORBIDDEN);
+            $response->error(t('position_does_not_exists', 'api'), Response::STATUS_CODE_BAD_REQUEST);
+            exit;
+        } else if ($position === 'admin') 
+        {
+            $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
             exit;
         }
 
         $projModel = new ProjectModel();
         $projectID = 0;
-
         
         if (ProjectModel::hasPrivTo('changePeoplePosition', (int)$id, $uuid, $projectID) !== true) 
         {

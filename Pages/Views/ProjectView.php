@@ -20,7 +20,6 @@ class ProjectView implements IView
 
         $project     = $params['project'];
         $members     = $params['members'] ?? [];
-        $projectUUID = base64DecodeUrl($params['projectUUID']);
         $projectUrlUUID = $params['projectUUID'];
 
         $icon = ((bool) $project['is_open'] === true) ? "lock_open" : "lock";
@@ -42,7 +41,7 @@ class ProjectView implements IView
                 <script>
                 window.addEventListener('load', function(){
                     let btn = document.querySelector('button[data-action=task]');
-                    let win= Modal.createTaskWindow(btn, {id: "<?=$projectUUID;?>", name: "<?=$project['name'];?>"});
+                    let win= Modal.createTaskWindow(btn, {id: "<?=$projectUrlUUID;?>", name: "<?=$project['name'];?>"});
 
                     let editor = win.getEditor();
                     let input = win.getProjectInput();

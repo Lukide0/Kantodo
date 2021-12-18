@@ -227,6 +227,7 @@ const Dialog = {
         let tmp = this._template.cloneNode(true);
 
         tmp.style.opacity = 0;
+        tmp.style.zIndex = 1;
         tmp.style.visibility = 'hidden';
 
         tmp.querySelector('.title').innerHTML = title;

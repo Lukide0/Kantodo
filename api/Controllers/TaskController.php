@@ -43,8 +43,14 @@ class TaskController extends AbstractController
 
         $taskName = $body[Request::METHOD_POST]['task_name'];
         $taskDesc = $body[Request::METHOD_POST]['task_desc'];
-        $projUUID = $body[Request::METHOD_POST]['task_proj'];
+        $projUUID = base64DecodeUrl($body[Request::METHOD_POST]['task_proj']);
         $user = Auth::getUser();
+
+        if ($projUUID === false) 
+        {
+            $response->error(t('project_uuid_missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
+            exit;
+        }
 
         if ($user === null || empty($user['id'])) 
         {
@@ -168,13 +174,13 @@ class TaskController extends AbstractController
         }
 
         if (empty($params['projectUUID']))
-            $response->error(t('project uuid missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
+            $response->error(t('project_uuid_missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
 
         $uuid = base64DecodeUrl($params['projectUUID']);
 
         if ($uuid === false)
         {
-            $response->error(t('project uuid missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
+            $response->error(t('project_uuid_missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
             exit;
         }
 
@@ -186,7 +192,7 @@ class TaskController extends AbstractController
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
         
         $taskModel = new TaskModel();
-        $tasks = $taskModel->get(['task_id', 'name', 'description', 'priority', 'completed', 'end_date'], ['project_id' => $projectId], $limit, $offset);
+        $tasks = $taskModel->get(['task_id' => 'id', 'name', 'description', 'priority', 'completed', 'end_date'], ['project_id' => $projectId], $limit, $offset);
         
         if ($tasks === false) 
         {
@@ -199,8 +205,7 @@ class TaskController extends AbstractController
 
         
         foreach ($tasks as &$task) {
-            $taskID = $task['task_id'];
-            unset($task['task_id']);
+            $taskID = (int)$task['id'];
             $task['tags'] = $tagModel->getTaskTags($taskID);
         }
 
