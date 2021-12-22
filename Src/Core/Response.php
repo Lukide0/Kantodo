@@ -88,7 +88,6 @@ class Response
         http_response_code($code);
         $this->setContentType(self::CONTENT_TYPE_JSON);
         echo json_encode(['status' => 'success', 'data' => $data, 'code' => $code]);
-        exit;
     }
 
     /**

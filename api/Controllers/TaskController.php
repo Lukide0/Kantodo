@@ -11,6 +11,10 @@ use Kantodo\Core\Validation\Data;
 use Kantodo\Models\ProjectModel;
 use Kantodo\Models\TagModel;
 use Kantodo\Models\TaskModel;
+use ParagonIE\Paseto\Builder;
+use ParagonIE\Paseto\Keys\Version4\SymmetricKey;
+use ParagonIE\Paseto\Protocol\Version4;
+use ParagonIE\Paseto\Purpose;
 
 use function Kantodo\Core\Functions\base64DecodeUrl;
 use function Kantodo\Core\Functions\base64EncodeUrl;
@@ -117,7 +121,16 @@ class TaskController extends AbstractController
         if ($keyMaterial === false)
             exit;
 
-        /*$key = new SymmetricKey($keyMaterial);
+        $response->success([
+            'task' => 
+            [
+                'id' => base64EncodeUrl((string)$taskID),
+                ]
+            ],
+            Response::STATUS_CODE_CREATED
+        );
+
+        $key = new SymmetricKey($keyMaterial);
         $paseto = (new Builder())
             ->setVersion(new Version4)
             ->setPurpose(Purpose::local())
@@ -125,8 +138,8 @@ class TaskController extends AbstractController
             // nastavení dat
             ->setClaims([
                 // TODO: user id
-                'task_id' => $taskID,
-                'project_uuid' => $projUUID                
+                'task_id' => (string)$taskID,
+                'project_uuid' => $projUUID    
             ])
             // nastavení vzniku
             ->setIssuedAt()
@@ -138,16 +151,6 @@ class TaskController extends AbstractController
             $conn->send($paseto);
             $conn->close();
         });
-        $response->error("SEND", Response::STATUS_CODE_BAD_REQUEST);
-        */
-        $response->success([
-            'task' => 
-                [
-                    'id' => base64EncodeUrl((string)$taskID),
-                ]
-            ],
-            Response::STATUS_CODE_CREATED
-        );
     }
 
     /**
