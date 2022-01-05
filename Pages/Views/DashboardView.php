@@ -33,6 +33,69 @@ class DashboardView implements IView
             <div class="row">
                 <button data-action='task' class="filled big hover-shadow"><?= t('add_task', 'dashboard') ?></button>
                 <script>
+                    DATA.AddTask = function(uuid, task, container) 
+                        {
+
+                            if (typeof this.Projects[uuid] !== "object") 
+                            {
+                                return;
+                            }
+                            this.Projects[uuid].tasks.push(task);
+                            
+                            let tags = task.tags;
+                            let tagsHTML = tags.map(tag => {
+                                return `<div class="tag">${tag}</div>`;
+                            }).join('');
+                            let tmp = `<div class="task">
+                                        <header>
+                                            <div>
+                                                <label class="checkbox">
+                                                    <input type="checkbox">
+                                                    <div class="background"></div>
+                                                </label>
+                                                <h4>${task.name}</h4>
+                                            </div>
+                                            <div>
+                                                <button class="flat no-border icon round" onclick="showTaskContextMenu(event);">more_vert</button>
+                                            </div>
+                                        </header>
+                                        <footer>
+                                            <div class="row">
+                                                <div class="tags">
+                                                    ${tagsHTML}
+                                                </div>
+                                            </div>
+                                        </footer>
+                                    </div>`;
+                            container.innerHTML += tmp;
+                        };
+
+                    let menu;
+                    function showTaskContextMenu(e) {
+                        if (menu)
+                            menu.element.remove();
+                        let {x, y} = e;
+
+                        menu = Dropdown.Menu.create();
+
+                        let itemEdit = Dropdown.Item.create('edit', null, {'text': 'edit'});
+                        let itemRemove = Dropdown.Item.create('remove', null, {'text': 'delete'});
+                        let itemMarkAsCompleted = Dropdown.Item.create('Mark as completed', null, {'text': 'done'});
+                        menu.items.push(itemEdit, itemRemove, itemMarkAsCompleted);
+
+                        menu.render();
+                        document.body.append(menu.element);
+                        menu.element.setAttribute("tabindex", -1);
+                        menu.element.focus();
+                        menu.element.addEventListener('blur', function() {
+                            menu.element.remove();
+                            menu = null;
+                        });
+                        let width = menu.element.offsetWidth;
+
+                        menu.move(x - width, y);
+                    }
+
                     window.addEventListener('load', function(){
                         let btn = document.querySelector('button[data-action=task]');
                         let win = Modal.createTaskWindow(btn);

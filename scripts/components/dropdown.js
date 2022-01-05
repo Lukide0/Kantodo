@@ -1,3 +1,5 @@
+import { moveAbs } from "../utils/util.js";
+
 const Menu = {
     create(items = []) {
         let element = document.createElement('ul');
@@ -6,6 +8,9 @@ const Menu = {
         return {
             element,
             items,
+            move(x,y) {
+                moveAbs({top: y, left: x}, element);
+            },
             render() {
                 element.innerHTML = "";
                 element.setAttribute('tabindex', -1);
@@ -35,6 +40,7 @@ const Item = {
             },
             render() {
                 if (this.icon !== null) {
+                    this.element.classList.add('icon');
                     let iconEl = document.createElement('span');
                     iconEl.className = ((typeof this.icon.style !== 'undefined') ? this.icon.style : "outline") + " icon medium";
                     iconEl.innerHTML = this.icon.text;
@@ -58,6 +64,7 @@ const Item = {
         
                 function recursiveRender(parent,item) {
                     if (item.icon !== null) {
+                        item.element.classList.add('icon');
                         let iconEl = document.createElement('span');
                         iconEl.className = ((typeof item.icon.style !== 'undefined') ? item.icon.style : "outlined") + " icon";
                         iconEl.innerHTML = item.icon.text;

@@ -105,7 +105,7 @@ class AuthController extends AbstractController
 
         Application::$APP->session->addFlashMessage('userEmail', $body[Request::METHOD_POST]['signInEmail']);
 
-        Application::$APP->session->addFlashMessage('authErrors', ['empty' => []]);
+        Application::$APP->session->addFlashMessage('authErrors', ['empty' => [], 'success' => false]);
 
         Application::$APP->response->setLocation("/auth?path={$path}");
         exit;

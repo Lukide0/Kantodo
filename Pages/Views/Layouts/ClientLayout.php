@@ -120,7 +120,7 @@ class ClientLayout extends Layout
                 </a>
                 <script>
 
-                    const DATA = {
+                    var DATA = {
                         "Projects": {},
                         "AddProject": function(uuid, name) 
                         {
@@ -132,42 +132,6 @@ class ClientLayout extends Layout
                             
                             this.Projects[uuid] = ({name: name, tasks: []});
                         },
-                        "AddTask": function(uuid, task, container) 
-                        {
-
-                            if (typeof this.Projects[uuid] !== "object") 
-                            {
-                                return;
-                            }
-                            this.Projects[uuid].tasks.push(task);
-                            
-                            let tags = task.tags;
-                            let tagsHTML = tags.map(tag => {
-                                return `<div class="tag">${tag}</div>`;
-                            }).join('');
-                            let tmp = `<div class="task">
-                                        <header>
-                                            <div>
-                                                <label class="checkbox">
-                                                    <input type="checkbox">
-                                                    <div class="background"></div>
-                                                </label>
-                                                <h4>${task.name}</h4>
-                                            </div>
-                                            <div>
-                                                <button class="flat no-border icon round">more_vert</button>
-                                            </div>
-                                        </header>
-                                        <footer>
-                                            <div class="row">
-                                                <div class="tags">
-                                                    ${tagsHTML}
-                                                </div>
-                                            </div>
-                                        </footer>
-                                    </div>`;
-                            container.innerHTML += tmp;
-                        }
                     };
                     
                     
