@@ -1,10 +1,16 @@
 @use "../abstracts" as *;
 
 .task {
-    padding: space(medium);
+    padding: space(regular);
     border-radius: borderRadius(medium);
     background: background(primary);
     margin-top: space(medium);
+
+    &:hover {
+       @include material-shadow(2); 
+       transition: all 250ms ease-out;
+       
+    }
 
     & > header {
         display: flex;
@@ -38,7 +44,7 @@
 
     & > footer {
         display: flex;
-        margin-top: space(big);
+        margin-top: space(small);
         align-items: center;
         justify-content: space-between;
         font-size: fontSize(regular);

@@ -14,9 +14,8 @@
             }
 
             & > .container {
-                max-height: unset;
-                visibility: visible;
-                opacity: 1;
+                height: auto;
+                overflow: auto;
             }
         }
 
@@ -50,11 +49,14 @@
         }
 
         & > .container {
-            visibility: hidden;
-            opacity: 0;
-            max-height: 0;
-            transition: opacity 300ms ease-in, visibility 300ms ease-in;
-            transition-property: opacity, visibility;
+            display: block;
+            height: 0;
+            overflow: hidden;
+            padding-left: space(big);
+
+            & > .task {
+                cursor: pointer;
+            }
         }
     }
 }

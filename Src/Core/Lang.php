@@ -103,11 +103,25 @@ class Lang
      */
     public function get(string $name, string $group = 'global')
     {
-        if (!isset($this->data[$group])) {
+        if (!isset($this->data[$group]))
             $this->load($group);
-        }
-
+    
         return $this->data[$group][$name] ?? "{$group}:{$name}";
+    }
+
+    /**
+     * Získá všechny slova ze skupiny
+     *
+     * @param   string  $group  skupina
+     *
+     * @return  array<string>          přeložené slovo
+     */
+    public function getAll(string $group)
+    {
+        if (!isset($this->data[$group]))
+            return ($this->load($group)) ? $this->data[$group] : [];
+        else
+            return $this->data[$group];
     }
 
     /**

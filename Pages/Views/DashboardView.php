@@ -25,7 +25,6 @@ class DashboardView implements IView
      */
     public function render(array $params = [])
     {
-        // TODO: pridavani ukolu
         // TODO: pridavani projektu s ukoly po vytvoreni
         ?>
         <div class="row h-space-between">
@@ -46,17 +45,17 @@ class DashboardView implements IView
                             let tagsHTML = tags.map(tag => {
                                 return `<div class="tag">${tag}</div>`;
                             }).join('');
-                            let tmp = `<div class="task">
+
+                            let taskEl = document.createElement('div');
+                            taskEl.classList.add('task');
+                            taskEl.dataset['taskId'] = task.id;
+                            taskEl.innerHTML = `
                                         <header>
                                             <div>
-                                                <label class="checkbox">
-                                                    <input type="checkbox">
-                                                    <div class="background"></div>
-                                                </label>
                                                 <h4>${task.name}</h4>
                                             </div>
                                             <div>
-                                                <button class="flat no-border icon round" onclick="showTaskContextMenu(event);">more_vert</button>
+                                                <button class="flat no-border icon round" onclick="showTaskContextMenu(event, '${uuid}', ${task.id});">more_vert</button>
                                             </div>
                                         </header>
                                         <footer>
@@ -65,35 +64,77 @@ class DashboardView implements IView
                                                     ${tagsHTML}
                                                 </div>
                                             </div>
-                                        </footer>
-                                    </div>`;
-                            container.innerHTML += tmp;
+                                        </footer>`;
+                            container.appendChild(taskEl);
+                            taskEl.addEventListener('click', function(e) {
+                                let taskID = this.dataset.taskId;
+                                let taskInfo = DATA.Projects[uuid].tasks.find(t => t.id == taskID);
+                                
+                                // TODO: remove style, tags, priority, status
+                                let desc = SimpleMDE.prototype.markdown(taskInfo.description);
+
+                                let taskDialog = Modal.Dialog.create(taskInfo.name, desc, [
+                                    {
+                                        'text': '<?= t("close") ?>', 
+                                        'classList': 'flat no-border',
+                                        'click': function(dialogOBJ) {
+
+                                            self.value = self.oldVal;
+                                            dialogOBJ.hide();
+
+                                            return false;
+                                        }
+                                    }
+                                ]);
+
+                                taskDialog.element.children[0].style.minWidth = "75%";
+                                taskDialog.setParent(document.body.querySelector('main'));
+                                taskDialog.show();
+                            })
+
                         };
 
                     let menu;
-                    function showTaskContextMenu(e) {
+                    function showTaskContextMenu(e,uuid,taskID) {
+                        console.log(uuid);
                         if (menu)
                             menu.element.remove();
                         let {x, y} = e;
 
                         menu = Dropdown.Menu.create();
 
-                        let itemEdit = Dropdown.Item.create('edit', null, {'text': 'edit'});
-                        let itemRemove = Dropdown.Item.create('remove', null, {'text': 'delete'});
-                        let itemMarkAsCompleted = Dropdown.Item.create('Mark as completed', null, {'text': 'done'});
-                        menu.items.push(itemEdit, itemRemove, itemMarkAsCompleted);
+                        let taskInfo = DATA.Projects[uuid].tasks.find(t => t.id == taskID);
+            
+                        let itemEdit = Dropdown.Item.create(translations['%edit%'], null, {'text': 'edit'});
+                        itemEdit.element.style = "color: rgb(var(--info-dark)) !important";
 
+                        let itemRemove = Dropdown.Item.create(translations['%remove%'], null, {'text': 'delete'});
+                        itemRemove.element.style = "color: rgb(var(--error)) !important";
+                        itemRemove.element.onclick = function() {
+                            console.log(taskInfo);
+                        }
+
+                        let itemMarkAsCompleted = Dropdown.Item.create(translations['%mark_as_completed%'], null, {'text': 'done'});
+                        itemMarkAsCompleted.element.style = "color: rgb(var(--success-dark)) !important";
+
+                        menu.items.push(itemMarkAsCompleted, itemEdit, itemRemove);
                         menu.render();
+
                         document.body.append(menu.element);
+
                         menu.element.setAttribute("tabindex", -1);
                         menu.element.focus();
+
                         menu.element.addEventListener('blur', function() {
                             menu.element.remove();
                             menu = null;
                         });
+
                         let width = menu.element.offsetWidth;
 
                         menu.move(x - width, y);
+
+                        e.stopPropagation();
                     }
 
                     window.addEventListener('load', function(){
@@ -181,7 +222,6 @@ class DashboardView implements IView
 
                             projectEl.dataset.loaded = true;
 
-                            // TODO: zobrazeni ukolu
                             let response = Request.Action('/api/get/task/' + projectEl.dataset.projectId, 'GET');
                             response.then(res => {
                                 let tasks = res.data.tasks;

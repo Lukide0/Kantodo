@@ -72,11 +72,11 @@ class ClientLayout extends Layout
             <!-- MD editor - END-->
             <script>
                 const translations = {
-                    "%cancel%":  "<?= Application::$APP->lang->get('cancel') ?>",
-                    "%create%": "<?= Application::$APP->lang->get('create') ?>",
-                    "%task_name%": "<?= Application::$APP->lang->get('task_name') ?>",
-                    "%attachment%": "<?= Application::$APP->lang->get('attachment') ?>",
-                    "%select_project%": "<?= Application::$APP->lang->get('select_project') ?>"
+                    <?php
+                        foreach (Application::$APP->lang->getAll('global') as $key => $value) {
+                            echo "'%{$key}%': \"$value\",";
+                        }
+                    ?>
                 };
 
             </script>

@@ -89,39 +89,38 @@ const EditorModalWindow = {
         return modalWindow;
     }
 };
-// TODO: preklady
 const ModalProject = Object.create(EditorModalWindow);
 ModalProject.init = function() {
     let tmp = EditorModalWindow.init();
     let content = tmp.querySelector('.editor-modal');
+    content.style.flexGrow = "0";
     content.innerHTML = `
     <div class="content">
-        <div class="container  space-big-bottom">
+        <div class="container v-space-around">
             <div class="row">
                 <label class="text-field">
                     <div class="field">
-                        <span>Project name</span>
+                        <span>${translations['%project_name%']}</span>
                         <input type="text" data-value="name">
                     </div>
                     <div class="text"></div>
                 </label>
-                <button class="hover-shadow space-big-left" style="max-height: 50px;"  data-action='create'>Create</button>
+                <button class="hover-shadow space-small-left" style="max-height: 50px;"  data-action='create'>${translations['%create%']}</button>
             </div>
-        </div>
-        <div class="container">
+            <div class="row v-space-around space-big" style="font-size: 2rem;color: var(--font-900);font-weight: 900;">${translations['%or%']}</div>
             <div class="row">
                 <label class="text-field">
                     <div class="field">
-                        <span>Project code</span>
+                        <span>${translations['%project_code%']}</span>
                         <input type="text" data-value="code">
                     </div>
                     <div class="text"></div>
                 </label>
-                <button class="hover-shadow space-big-left success" style="max-height: 50px;" data-action='join'>Join</button>
+                <button class="hover-shadow space-small-left success" style="max-height: 50px;" data-action='join'>${translations['%join%']}</button>
             </div>
         </div>
-        <div class="row h-space-around space-huge-top">
-            <button data-action='close' class=" right flat space-medium-right">Cancel</button>
+        <div class="row">
+            <button data-action='close' class=" right flat space-medium-top" style="margin-left: auto">${translations['%cancel%']}</button>
         </div>
     </div>
     `;

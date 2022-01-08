@@ -83,7 +83,7 @@ class TaskController extends AbstractController
         
         $taskModel = new TaskModel();
 
-        // TODO: priorita, milnik a konec
+        // TODO: priorita a konec
         $taskID = $taskModel->create($taskName, (int)$user['id'], (int)$details['id'], $taskDesc);
         if ($taskID === false) 
         {
@@ -147,6 +147,7 @@ class TaskController extends AbstractController
             ->setSubject('task_create')
             ->toString();
         $paseto = base64EncodeUrl($paseto);
+        
         $client = \Ratchet\Client\connect('ws://127.0.0.1:8443')->then(function($conn) use ($paseto){
             $conn->send($paseto);
             $conn->close();

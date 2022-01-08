@@ -31,8 +31,6 @@ class InstallController extends AbstractController
      */
     public function installView(string $path)
     {
-        // TODO: znemoznit preskoceny kroku instalace
-
         $session = Application::$APP->session;
         $page = 0;
         $action = 'install-database';
