@@ -12,7 +12,7 @@ $APP = new Application();
 $APP->registerAuth(new Auth());
 $APP->session->start();
 
-// TODO: Menit title ve view
+// TODO: Menit title ve view, mazani uzivatele, projektu, uctu, nastaveni uctu, uprava ukolu, autocomplete tag, preklad cz, kalendar, WS!!!!!!!
 
 if (!Application::configExits()) {
     $APP->router->run([Kantodo\Controllers\InstallController::class, 'installView'], [$APP->request->getPath()]);

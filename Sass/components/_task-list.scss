@@ -49,13 +49,16 @@
         }
 
         & > .container {
-            display: block;
             height: 0;
             overflow: hidden;
             padding-left: space(big);
 
             & > .task {
                 cursor: pointer;
+            }
+
+            & > button {
+                order: 99999;
             }
         }
     }

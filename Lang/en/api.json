@@ -1,7 +1,8 @@
 {
     "empty": "Empty",
     "user_id_missing": "User ID is missing",
-    "cannot_create": "Can not create",
+    "can_not_create": "Can not create",
+    "can_not_remove": "Can not remove",
     "api_rate_limit_exceeded": "API rate limit exceeded",
     "you_dont_have_sufficient_privileges": "You don't have sufficient privileges",
     "something_went_wrong": "Something went wrong"

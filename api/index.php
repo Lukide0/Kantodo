@@ -32,6 +32,7 @@ $API->router->post('project/change_position', [ProjectController::class, 'change
 
 
 $API->router->post('create/task', [TaskController::class, 'create'], API::USER);
+$API->router->post('remove/task', [TaskController::class, 'remove'], API::USER);
 $API->router->get('get/task/{projectUUID}', [TaskController::class, 'get'], API::USER);
 
 $API->run();

@@ -20,10 +20,16 @@ window.addEventListener("load", function() {
     dropdowns.forEach(el => {
         el.addEventListener('click', function(e){
             let target = e.target;
-            
-            if (target.parentElement.tagName != 'DIV' && !target.classList.contains('dropdown'))
-                return;
+            let parent1 = target.parentElement.parentElement;
+            let parent2 = target.parentElement;
 
+            // projekt v li
+            if (target.tagName == 'UL' || parent1.tagName == 'UL')
+                return;
+                
+            if (!parent1.classList.contains('dropdown') && !parent2.classList.contains('dropdown'))
+                return;
+                
             if (el.classList.contains('expanded'))
                 el.classList.remove('expanded');
             else

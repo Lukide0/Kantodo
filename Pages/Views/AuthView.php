@@ -82,11 +82,8 @@ class AuthView implements IView
                         <script>
                             let snackbar;
                             window.addEventListener('load', function(){
-                                snackbar = Modal.Snackbar.create("<?= t('wrong_log_in_details', 'auth') ?>", null, 'error');
-    
-                                snackbar.setParent(document.body);
-    
-                                snackbar.show({center: true, top: 25});
+                                snackbar = Modal.Snackbar.create("<?= t('wrong_log_in_details', 'auth') ?>", null, 'error');    
+                                snackbar.show(4000, false);
                             },{once: true});
                         </script>
                     <?php endif; ?>

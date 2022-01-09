@@ -3,9 +3,6 @@
 .snackbar {
     --color: transparent;
     @include material-shadow(8);
-    position: absolute;
-    top: 0;
-    left: 0;
     display: inline-flex;
     align-items: center;
     padding: space(medium);

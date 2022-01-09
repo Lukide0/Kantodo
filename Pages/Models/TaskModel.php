@@ -89,4 +89,21 @@ class TaskModel extends Model
 
         return false;
     }
+
+    /**
+     * Smaže úkol
+     *
+     * @param   int  $taskID    id úkolu
+     *
+     * @return  bool            status
+     */
+    public function delete(int $taskID)
+    {
+        $sth    = $this->con->prepare("DELETE FROM {$this->table} WHERE task_id = :taskID");
+        $status = $sth->execute([
+            ":taskID" => $taskID,
+        ]);
+
+        return $status;
+    }
 }

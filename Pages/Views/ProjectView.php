@@ -71,9 +71,7 @@ class ProjectView implements IView
                             win.hide();
 
                             let snackbar = Modal.Snackbar.create('<?=t('task_was_created');?>', null ,'success');
-
-                            snackbar.setParent(document.body.querySelector('main'));
-                            snackbar.show({center: true, top: 5}, 4000, false);
+                            snackbar.show();
 
                         }).catch(reason => {
                             Kantodo.error(reason);

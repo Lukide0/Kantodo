@@ -69,10 +69,21 @@ class Model
         $searchData = [];
         $queryData  = [];
 
-        foreach ($this->tableColumns as $column) {
-            if (isset($search[$column])) {
-                $searchData[]          = "{$column} = :{$column}";
-                $queryData[":$column"] = $search[$column];
+        foreach ($search as $column => $value) {
+            if (in_array($column, $this->tableColumns, true)) {
+
+                if (is_array($value)) 
+                {
+                    // 0 => operator
+                    // 1 => value
+                    $searchData[]          = "{$column} {$value[0]} :{$column}";
+                    $queryData[":$column"] = $value[1];
+                } 
+                else 
+                {
+                    $searchData[]          = "{$column} = :{$column}";
+                    $queryData[":$column"] = $value;
+                }                
             }
         }
 

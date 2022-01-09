@@ -164,6 +164,15 @@ class ProjectModel extends Model
     }
 
 
+    /**
+     * Nastaví pozici uživateli
+     *
+     * @param   int     $userID     id uživatele
+     * @param   int     $projectID  id projektu
+     * @param   string  $name       název pozice
+     *
+     * @return  int|false           id záznamu
+     */
     public function setPosition(int $userID, int $projectID, string $name)
     {
         if (isset(self::POSITIONS[$name]) === false) 
@@ -183,6 +192,15 @@ class ProjectModel extends Model
     }
 
 
+    /**
+     * Upraví pozici uživateli
+     *
+     * @param   int     $userID  id uživatele
+     * @param   int     $projID  id projektu
+     * @param   string  $name    název pozice
+     *
+     * @return  bool           status
+     */
     public function updatePosition(int $userID, int $projID, string $name)
     {
         if (isset(self::POSITIONS[$name]) === false) 

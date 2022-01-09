@@ -3,8 +3,24 @@ import { simpleAnimation } from "../utils/animation.js";
 
 
 const Snackbar = {
+    _container: null,
     _template: null,
     init() {
+        this._container = document.createElement('div');
+        document.body.querySelector('main').append(this._container);
+        this._container.style = `
+            position: fixed;
+            right: 0;
+            left: 0;
+            top: 5px;
+            display: flex;
+            gap: 5px;
+            flex-direction: column;
+            align-items: center;
+            pointer-events: none;`;
+        moveAbs({top: 5, center: true}, this._container);
+        
+
         this._template = template(`
         <div class="snackbar">
             <p></p>
@@ -23,15 +39,10 @@ const Snackbar = {
             tmp.classList.add(color);
 
         tmp.style.visibility = 'hidden';
-
+        this._container.append(tmp);
         const snackbarObj = {
             element: tmp,
-            setParent(parent) {
-                parent.appendChild(this.element);
-            },
-
-            show(move, visible = 4000, destroy = false) {
-                moveAbs(move, this.element);
+            show(visible = 4000, destroy = true) {
                 simpleAnimation(
                     this.element,
                     {

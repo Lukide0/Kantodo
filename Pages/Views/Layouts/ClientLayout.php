@@ -27,6 +27,8 @@ class ClientLayout extends Layout
      */
     public function render(string $content = '', array $params = [])
     {
+
+        // TODO: Active item v menu, odstraneni projektu WS
         $headerContent = Application::$APP->header->getContent();
         if (!isset($params['projects'])) 
         {
@@ -101,7 +103,7 @@ class ClientLayout extends Layout
                     <div class="row center space-medium-top">
                         <button class="flat no-border info" data-action="project"><span class="icon outline small">add_box</span><?= t('add') ?></button>
                     </div>
-                    <ul id="projectList" style="padding: 5px 0">
+                    <ul id="projectList">
                         <?php 
                         foreach ($projects ?? [] as $project):
                             $uuid = base64EncodeUrl($project['uuid']);
@@ -121,24 +123,38 @@ class ClientLayout extends Layout
                 <script>
 
                     var DATA = {
+                        "Container": null,
                         "Projects": {},
                         "AddProject": function(uuid, name) 
                         {
-                            let container = document.getElementById("ProjectList");
+                            let container = document.getElementById("projectList");
                             let newProject = document.createElement('li');
                             newProject.dataset['projectId'] = uuid;
                             newProject.innerHTML = `<a href="/project/${uuid}">${name}</a>`;
+                            console.log(container);
                             container.insertBefore(newProject, container.lastChild);
-                            
+
+                            let tmp = document.createElement('div');
+                            tmp.innerHTML = `
+                                <div class="project" data-project-id="${uuid}" data-loaded="false" data-last="0">
+                                    <div class="dropdown-header">
+                                        <h3>${name}</h3>
+                                        <div class="line"></div>
+                                    </div>
+                                    <div class="container">
+                                        <button onclick="loadNext(event)" class="hover-shadow flat no-border" style="margin: 10px auto"><?= t('load') ?></button>
+                                    </div>
+                                </div>`
+                            this.Container.append(tmp.children[0]);                            
                             this.Projects[uuid] = ({name: name, tasks: []});
                         },
-                    };
-                    
+                    };                    
                     
                     document.querySelectorAll('[data-project-id]').forEach(el => DATA.Projects[el.dataset.projectId] = {name: el.children[0].textContent, tasks: []});
 
                     window.addEventListener('load',
-                        function() {
+                    function() {
+                            DATA.Container = document.querySelector('.task-list');
                             let btn = document.querySelector("button[data-action=project]");
                             let win = Modal.ModalProject.create();
 
@@ -159,22 +175,24 @@ class ClientLayout extends Layout
                                     win.setNameError('Empty');
                                     return;
                                 }
-                                
                                 let response = Request.Action('/api/create/project', 'POST', {name: data[0]});
                                 response.then(res => {
                                     let project = res.data.project;
                                     Kantodo.success(`Created project (${project.uuid})`);
 
 
-                                    DATA.AddProject(project.uuid, data[0]);
                                     win.clear();
                                     win.hide();
-
+                                    
                                     let snackbar = Modal.Snackbar.create('<?= t('project_was_created') ?>', null, 'success');
-                                    snackbar.setParent(document.body.querySelector('main'));
-                                    snackbar.show({center: true, top: 5}, 4000, true);
+                                    snackbar.show();
+                                    
+                                    DATA.AddProject(project.uuid, data[0]);
 
                                 }).catch(reason => {
+                                    let snackbar = Modal.Snackbar.create(reason.statusText, null, 'error');
+                                    snackbar.show();
+                                    win.hide(true);
                                     Kantodo.error(reason);
                                 });
                             });
@@ -204,9 +222,7 @@ class ClientLayout extends Layout
                                     win.hide();
 
                                     let snackbar = Modal.Snackbar.create('<?= t('you_have_joined_project') ?>', null, 'success');
-
-                                    snackbar.setParent(document.body.querySelector('main'));
-                                    snackbar.show({center: true, top: 5}, 4000, true);
+                                    snackbar.show();
 
                                 }).catch(reason => {
                                     Kantodo.error(reason);

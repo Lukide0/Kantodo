@@ -41,7 +41,7 @@ body > header:not(.mobile) {
             &.dropdown {
                 display: inline-block;
 
-                & > div {
+                & > div:first-child {
                     cursor: pointer;
                     display: flex;
                     align-items: center;
@@ -79,7 +79,7 @@ body > header:not(.mobile) {
                 & > ul {
                     visibility: hidden;
                     opacity: 0;
-                    margin-left: $icon-medium + space(regular);
+                    padding: 5px 5px 0 $icon-medium + space(regular);
                     color: fontColor(700);
                     transition: visibility 200ms ease-out, opacity 200ms ease-out;
                     height: 500px;
@@ -89,6 +89,9 @@ body > header:not(.mobile) {
                         --project-color: #{color(primary)};
                         display: flex;
                         align-items: center;
+                        overflow-wrap: anywhere;
+                        word-break: break-all;
+                        overflow-x: hidden;
                         margin-top: space(regular);
                         font-size: fontSize(regular);
                         padding: space(small);

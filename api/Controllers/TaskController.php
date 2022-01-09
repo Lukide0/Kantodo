@@ -8,6 +8,7 @@ use Kantodo\Core\Request;
 use Kantodo\Core\Response;
 use Kantodo\Auth\Auth;
 use Kantodo\Core\Validation\Data;
+use Kantodo\Core\Validation\DataType;
 use Kantodo\Models\ProjectModel;
 use Kantodo\Models\TagModel;
 use Kantodo\Models\TaskModel;
@@ -113,7 +114,7 @@ class TaskController extends AbstractController
             $status = $tagModel->addTagsToTask($tags, $taskID);
 
             if ($status === false)
-                $response->error(t('cannot_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
+                $response->error(t('can_not_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
         }
 
         $keyMaterial = API::getSymmetricKey();
@@ -129,7 +130,7 @@ class TaskController extends AbstractController
             ],
             Response::STATUS_CODE_CREATED
         );
-
+        /*
         $key = new SymmetricKey($keyMaterial);
         $paseto = (new Builder())
             ->setVersion(new Version4)
@@ -151,7 +152,7 @@ class TaskController extends AbstractController
         $client = \Ratchet\Client\connect('ws://127.0.0.1:8443')->then(function($conn) use ($paseto){
             $conn->send($paseto);
             $conn->close();
-        });
+        });*/
     }
 
     /**
@@ -163,13 +164,18 @@ class TaskController extends AbstractController
      */
     public function get(array $params = [])
     {
-        $limit = 10;
         $response = API::$API->response;
         $user = Auth::getUser();
         $body = API::$API->request->getBody();
     
-        $offset = ($body[Request::METHOD_GET]['page'] ?? 0) * $limit;
+        $last = ($body[Request::METHOD_GET]['last'] ?? 0);
 
+        if (DataType::wholeNumber($last)) 
+        {
+            $last = (int)$last;
+        } else {
+            $last = 0;
+        }
 
         if ($user === null || empty($user['id'])) 
         {
@@ -196,7 +202,7 @@ class TaskController extends AbstractController
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
         
         $taskModel = new TaskModel();
-        $tasks = $taskModel->get(['task_id' => 'id', 'name', 'description', 'priority', 'completed', 'end_date'], ['project_id' => $projectId], $limit, $offset);
+        $tasks = $taskModel->get(['task_id' => 'id', 'name', 'description', 'priority', 'completed', 'end_date'], ['project_id' => $projectId, 'task_id' => ['>', $last]], 10);
         
         if ($tasks === false) 
         {
@@ -205,8 +211,6 @@ class TaskController extends AbstractController
         }
 
         $tagModel = new TagModel();
-
-
         
         foreach ($tasks as &$task) {
             $taskID = (int)$task['id'];
@@ -214,5 +218,68 @@ class TaskController extends AbstractController
         }
 
         $response->success(['tasks' => $tasks]);      
+    }
+
+    /**
+     * Akce na odstranění úkolu z projektu
+     *
+     * @return  void
+     */
+    public function remove()
+    {
+        $body = API::$API->request->getBody();
+        $response = API::$API->response;
+        $keys = [
+            'task_id',
+            'task_proj'
+        ];
+
+        $empty = Data::empty($body[Request::METHOD_POST], $keys);
+
+        if (count($empty) != 0) 
+        {
+            $response->fail(array_fill_keys($empty, t('empty', 'api')));
+        }
+
+        $taskID = $body[Request::METHOD_POST]['task_id'];
+        $projUUID = base64DecodeUrl($body[Request::METHOD_POST]['task_proj']);
+        $user = Auth::getUser();
+
+        if ($projUUID === false) 
+        {
+            $response->error(t('project_uuid_missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
+            exit;
+        }
+
+        if ($user === null || empty($user['id'])) 
+        {
+            $response->error(t('user_id_missing', 'api'));
+            exit;
+        }
+
+        $projModel = new ProjectModel();
+        $details = $projModel->getBaseDetails((int)$user['id'], $projUUID);
+        if ($details === false) 
+        {
+            $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
+            exit;
+        }
+        $priv = $projModel->getPositionPriv($details['name']);
+        if ($priv === false || !$priv['removeTask']) 
+        {
+            $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
+            exit;
+        }
+        
+        
+        $taskModel = new TaskModel();
+        $status = $taskModel->delete((int)$taskID);
+        if ($status === false) 
+        {
+            $response->error(t('can_not_remove', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
+            exit;
+        }
+
+        $response->success(null,Response::STATUS_CODE_OK);
     }
 }
