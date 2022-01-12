@@ -65,11 +65,11 @@ class DataType
      */
     public static function inRange($number, int $min = null, int $max = null)
     {
-        if ($min !== null && $number < $min) {
+        if ($min !== null && $number <= $min) {
             return false;
         }
 
-        if ($max !== null && $number > $max) {
+        if ($max !== null && $number >= $max) {
             return false;
         }
 

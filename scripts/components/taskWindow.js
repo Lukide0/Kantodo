@@ -27,37 +27,37 @@ const modalTaskHTML = `
         <div class="title">Attributes</div>
         <div class="attribute-list">
             <div class="attribute">
-                <div class="name">Status</div>
+                <div class="name">%status%</div>
                 <label class="text-field selector">
                     <div class="field">
-                        <input type="text" data-input='project' data-value=''>
+                        <input type="text" data-input='status' data-value='' readonly>
                     </div>
-                    <ul class="options dropdown-menu" data-select='project' tabindex='-1'>
-                        <li>Open</li>
-                        <li>Closed</li>
+                    <ul class="options dropdown-menu" data-select='status' tabindex='-1'>
+                        <li data-value='0'>%open%</li>
+                        <li data-value='1'>%closed%</li>
                     </ul>
                 </label>
             </div>
             <div class="attribute">
-                <div class="name">Priority</div>
+                <div class="name">%priority%</div>
                 <label class="text-field selector">
                     <div class="field">
-                        <input type="text" data-input='project' data-value=''>
+                        <input type="text" data-input='priority' data-value='' readonly>
                     </div>
-                    <ul class="options dropdown-menu" data-select='project' tabindex='-1'>
-                        <li>Low</li>
-                        <li>Medium</li>
-                        <li>High</li>
+                    <ul class="options dropdown-menu" data-select='priority' tabindex='-1'>
+                        <li data-value='0'>%priority_low%</li>
+                        <li data-value='1'>%priority_medium%</li>
+                        <li data-value='2'>%priority_high%</li>
                     </ul>
                 </label>
             </div>
             <div class="attribute">
-                <div class="name">Tags</div>
+                <div class="name">%tags%</div>
                 <div class="value">
                     <div class="chips-container">
                         <div class="chips"></div>
                         <label class="row middle">
-                            <span class="icon small outline">search</span>
+                            <span class="icon small outline">add</span>
                             <input type='text' id="tagInput">
                         </label>
                     </div>
@@ -86,7 +86,6 @@ export default function taskWindow(btn, project = null) {
         spellChecker: false,
         toolbar: ['bold', 'italic', 'strikethrough', '|', 'heading-1', 'heading-2', 'heading-3', '|', 'quote', 'link', 'table', '|', 'unordered-list', 'ordered-list', '|' , 'preview', 'guide']
     });
-    
     // FIX: bug -> při smazání se neposune span dolů
     let menu = win.element.querySelector('[data-select=project]');
     let input = win.element.querySelector('[data-input=project]');
@@ -96,6 +95,12 @@ export default function taskWindow(btn, project = null) {
     let chipInput = chipsContainer.querySelector('input');
     let chipsArray = [];
 
+    let statusField = win.element.querySelector('[data-input=status]');
+    let statusValues = win.element.querySelector('[data-select=status]');
+    
+    let priorityField = win.element.querySelector('[data-input=priority]');
+    let priorityValues = win.element.querySelector('[data-select=priority]');
+
     if (project) 
     {
         input.dataset.value = project.id;
@@ -103,6 +108,34 @@ export default function taskWindow(btn, project = null) {
         textField.classList.add('active');
     }
 
+    function setPriorityClick(event)
+    {
+        if (event.target.tagName != 'LI')
+            return;
+        priorityField.dataset.value = event.target.dataset.value;
+        priorityField.value = event.target.innerText;
+
+        event.preventDefault();
+
+        priorityField.blur();
+        priorityValues.blur();
+    }
+
+    function setStatusClick(event)
+    {
+        if (event.target.tagName != 'LI')
+            return;
+        statusField.dataset.value = event.target.dataset.value;
+        statusField.value = event.target.innerText;
+        
+        event.preventDefault();
+        
+        statusValues.blur();
+        statusField.blur();
+    }
+
+    priorityValues.addEventListener('click', setPriorityClick);
+    statusValues.addEventListener('click', setStatusClick);
 
     function createOptions(removeActive = true) {
         if (input.value.length != 0 && removeActive)
@@ -149,7 +182,7 @@ export default function taskWindow(btn, project = null) {
             return;
     
     
-        chipsArray.push(value)
+        chipsArray.push(value);
         let tmpEl = document.createElement('div');
         tmpEl.innerHTML = `<div class="chip"><span>${value}</span><button class="icon outline flat no-border">close</button></div>`;
         let tmpBtn = tmpEl.getElementsByTagName('button')[0];
@@ -160,8 +193,8 @@ export default function taskWindow(btn, project = null) {
             if (index !== -1)
                 chipsArray.splice(index, 1);
         });
-    chips.appendChild(tmpEl.children[0]);
-    
+        chips.appendChild(tmpEl.children[0]);
+        chips.scroll({'top': chips.scrollHeight, 'behavior': 'smooth'});
     
         chipInput.value = "";
     });
@@ -185,6 +218,27 @@ export default function taskWindow(btn, project = null) {
 
     win.getChips = function() {
         return chipsArray;
+    }
+    win.getStatus = function() {
+        return statusField.dataset.value;
+    }
+
+    win.getPriority = function() {
+        return priorityField.dataset.value;
+    }
+
+    win.clear = function() {
+        input.value = "";
+        input.dataset.value = "";
+
+        editor.getEditor().value("");
+
+        chipInput.value = "";
+        chipInput.dataset.value = "";
+        chips.innerHTML = "";
+
+        priorityField.value = "";
+        priorityField.dataset.value = "";
     }
 
     return win;

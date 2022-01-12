@@ -7,6 +7,9 @@
 
     & > .chips {
         display: flex;
+        max-height: 300px;
+        overflow-y: auto;
+        overflow-x: hidden;
         flex-wrap: wrap;
         align-content: space-between;
         padding: space(regular) space(small);
@@ -31,6 +34,7 @@
             border: none;
             padding: 0 space(regular);
             height: 100%;
+            max-width: 85%;
             font-size: fontSize(regular);
             outline: none;
         }

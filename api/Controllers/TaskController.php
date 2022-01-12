@@ -36,7 +36,9 @@ class TaskController extends AbstractController
         $keys = [
             'task_name',
             'task_desc',
-            'task_proj'
+            'task_proj',
+            'task_comp',
+            'task_priority'
         ];
 
         $empty = Data::empty($body[Request::METHOD_POST], $keys);
@@ -44,10 +46,14 @@ class TaskController extends AbstractController
         if (count($empty) != 0) 
         {
             $response->fail(array_fill_keys($empty, t('empty', 'api')));
+            exit;
         }
 
         $taskName = $body[Request::METHOD_POST]['task_name'];
         $taskDesc = $body[Request::METHOD_POST]['task_desc'];
+        $taskCompleted = $body[Request::METHOD_POST]['task_comp'];
+        $taskPriority = $body[Request::METHOD_POST]['task_priority'];
+
         $projUUID = base64DecodeUrl($body[Request::METHOD_POST]['task_proj']);
         $user = Auth::getUser();
 
@@ -63,7 +69,11 @@ class TaskController extends AbstractController
             exit;
         }
 
-
+        if (DataType::wholeNumber($taskCompleted, 0, 1) || DataType::wholeNumber($taskPriority, 0, 3)) 
+        {
+            $response->fail(['error' => t('bad_request'));
+            exit;
+        }
 
         $projModel = new ProjectModel();
 
@@ -164,6 +174,7 @@ class TaskController extends AbstractController
      */
     public function get(array $params = [])
     {
+        $limit = 10;
         $response = API::$API->response;
         $user = Auth::getUser();
         $body = API::$API->request->getBody();
@@ -202,7 +213,7 @@ class TaskController extends AbstractController
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
         
         $taskModel = new TaskModel();
-        $tasks = $taskModel->get(['task_id' => 'id', 'name', 'description', 'priority', 'completed', 'end_date'], ['project_id' => $projectId, 'task_id' => ['>', $last]], 10);
+        $tasks = $taskModel->get(['task_id' => 'id', 'name', 'description', 'priority', 'completed', 'end_date'], ['project_id' => $projectId, 'task_id' => ['>', $last]], $limit);
         
         if ($tasks === false) 
         {

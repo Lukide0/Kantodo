@@ -185,7 +185,9 @@ class DashboardView implements IView
                             data.task_name = inputName.value;
                             data.task_desc = win.getEditor().value();
                             data.task_proj = win.getProjectInput().dataset.value;
-                            
+                            data.task_comp = win.getStatus();
+                            data.task_priority = win.getPriority();
+
                             let chipsArray = win.getChips();
                             for (let i = 0; i < chipsArray.length; i++) {
                                 data[`task_tags[${i}]`] = chipsArray[i];
@@ -193,13 +195,13 @@ class DashboardView implements IView
 
                             let projectEl = document.querySelector(`main [data-project-id=${data.task_proj}] > .container`);
                             let taskData = {
-                                completed: "0",
+                                completed: data.task_comp,
                                 description: data.task_desc,
                                 tags: chipsArray,
+                                name: data.task_name,
+                                priority: data.task_priority,
                                 // TODO:
                                 end_date: null,
-                                name: data.task_name,
-                                priority: "1",
                             };
                             let response = Request.Action('/api/create/task', 'POST', data);
                             response.then(res => {
@@ -263,7 +265,8 @@ class DashboardView implements IView
                                     DATA.AddTask(projectEl.dataset.projectId, task, projectEl.querySelector('.container'));
                                 });
 
-                                projectEl.dataset['last'] = tasks[tasks.length - 1].id;
+                                if (tasks.length > 0)
+                                    projectEl.dataset['last'] = tasks[tasks.length - 1].id;
                             })
                         }
                     });

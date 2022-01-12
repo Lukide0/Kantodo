@@ -39,7 +39,10 @@ body > header:not(.mobile) {
             }
 
             &.dropdown {
-                display: inline-block;
+                display: flex;
+                flex-direction: column;
+                flex-grow: 1;
+                align-items: flex-start;
 
                 & > div:first-child {
                     cursor: pointer;
@@ -82,7 +85,6 @@ body > header:not(.mobile) {
                     padding: 5px 5px 0 $icon-medium + space(regular);
                     color: fontColor(700);
                     transition: visibility 200ms ease-out, opacity 200ms ease-out;
-                    height: 500px;
                     overflow-y: scroll;
 
                     & > li {

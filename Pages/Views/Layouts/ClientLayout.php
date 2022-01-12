@@ -100,7 +100,7 @@ class ClientLayout extends Layout
                         <span class="icon outline medium">folder</span>
                         <span class="text"><?= t('projects') ?></span>
                     </div>
-                    <div class="row center space-medium-top">
+                    <div class="row center space-medium-top space-medium-bottom" style="margin-left: auto; margin-right: auto;">
                         <button class="flat no-border info" data-action="project"><span class="icon outline small">add_box</span><?= t('add') ?></button>
                     </div>
                     <ul id="projectList">
