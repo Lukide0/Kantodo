@@ -71,7 +71,7 @@ class TaskController extends AbstractController
 
         if (DataType::wholeNumber($taskCompleted, 0, 1) || DataType::wholeNumber($taskPriority, 0, 3)) 
         {
-            $response->fail(['error' => t('bad_request'));
+            $response->fail(['error' => t('bad_request')]);
             exit;
         }
 
