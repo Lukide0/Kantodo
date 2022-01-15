@@ -238,7 +238,6 @@ const Dialog = {
         let tmp = this._template.cloneNode(true);
 
         tmp.style.opacity = 0;
-        tmp.style.zIndex = 1;
         tmp.style.visibility = 'hidden';
 
         tmp.querySelector('.title').innerHTML = title;
@@ -249,6 +248,18 @@ const Dialog = {
 
             setParent(parent) {
                 parent.appendChild(this.element);
+                let self = this;
+
+                function hideOnEscape(e) 
+                {
+                    if (e.key == 'Escape') 
+                    {
+                        self.destroy();
+                        document.removeEventListener('keydown', hideOnEscape);
+                    }
+                }
+
+                document.addEventListener('keydown', hideOnEscape);
             },
             show() {
                 simpleAnimation(
@@ -279,7 +290,8 @@ const Dialog = {
             destroy() {
                 if (this.element.style.visibility == 'visible')
                     this.hide();
-                this.element.remove();
+                
+                setTimeout(() => { this.element.remove();  }, 250);
             }
         };
 
@@ -299,7 +311,6 @@ const Dialog = {
             container.appendChild(btn);
         });
 
-
         tmp.onclick = function (e) {
             if (e.target === tmp) {
                 if (events !== null && typeof events === 'object') {
@@ -307,7 +318,7 @@ const Dialog = {
                         events.closing(dialogObj, e);
                     }
                 }
-                simpleAnimation(tmp, { opacity: 1, visibility: 'visible' }, { opacity: 0, visibility: 'hidden' });
+                dialogObj.destroy();
             }
         }
 

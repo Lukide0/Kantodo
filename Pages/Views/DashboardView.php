@@ -75,7 +75,22 @@ class DashboardView implements IView
                             let taskInfo = DATA.Projects[uuid].tasks.find(t => t.id == taskID);
                             
                             // TODO: remove style, tags, priority, status
-                            let desc = SimpleMDE.prototype.markdown(taskInfo.description);
+                            let md = SimpleMDE.prototype.markdown(taskInfo.description);
+                            let taskTags = taskInfo.tags.map(tag => {
+                                return `<div class="tag">${tag}</div>`;
+                            }).join('');
+
+                            let desc = 
+                            `
+                            <div class='container'>
+                                <div class="row space-regular-top space-big-bottom">
+                                    ${taskTags}
+                                </div>
+                                <div class="markdown-body">
+                                    ${md}
+                                </div>
+                            </div>
+                            `;
 
                             let taskDialog = Modal.Dialog.create(taskInfo.name, desc, [
                                 {

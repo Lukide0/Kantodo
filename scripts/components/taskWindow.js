@@ -11,9 +11,6 @@ const modalTaskHTML = `
     <div class="editor">
         <textarea></textarea>
     </div>
-    <div class="actions">
-        <button class="flat">%attachment%</button>
-    </div>
 </div>
 <div class="settings">
 <label class="text-field selector outline">
@@ -83,16 +80,8 @@ export default function taskWindow(btn, project = null) {
     let tmp = modalTaskHTML.allReplace(translations);
 
     let win = Modal.EditorModalWindow.create(tmp);
-    let editor = new SimpleMDE({
-        element: win.element.querySelector('textarea'),
-        renderingConfig: {
-            codeSyntaxHighlighting: true,
-        },
-        tabSize: 4,
-        spellChecker: false,
-        toolbar: ['bold', 'italic', 'strikethrough', '|', 'heading-1', 'heading-2', 'heading-3', '|', 'quote', 'link', 'table', '|', 'unordered-list', 'ordered-list', '|' , 'preview', 'guide']
-    });
-    // FIX: bug -> při smazání se neposune span dolů
+    let editor = new SimpleMDE(getMDEConfig(win.element.querySelector('textarea')));
+
     let menu = win.element.querySelector('[data-select=project]');
     let input = win.element.querySelector('[data-input=project]');
     let textField = input.parentElement.parentElement;

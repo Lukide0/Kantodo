@@ -67,6 +67,7 @@ class ClientLayout extends Layout
             <script src="<?= Application::$SCRIPT_URL ?>global.js" type="module"></script>
             <?=$headerContent;?>
             <!-- MD editor - START-->
+            <link rel="stylesheet" href="<?= Application::$STYLE_URL ?>/markdown.css">
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
             <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
             <script src="https://cdn.jsdelivr.net/highlight.js/latest/highlight.min.js"></script>
@@ -103,7 +104,7 @@ class ClientLayout extends Layout
                     <div class="row center space-medium-top space-medium-bottom" style="margin-left: auto; margin-right: auto;">
                         <button class="flat no-border info" data-action="project"><span class="icon outline small">add_box</span><?= t('add') ?></button>
                     </div>
-                    <ul id="projectList">
+                    <ul id="projectList" style="max-height: 350px;">
                         <?php 
                         foreach ($projects ?? [] as $project):
                             $uuid = base64EncodeUrl($project['uuid']);

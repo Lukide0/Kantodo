@@ -44,4 +44,38 @@ window.Request = {
 //---- Validation ----//
 window.Validation = Validation;
 
+//---- SimpleMDE config ----//
+
+window.getMDEConfig = function(element = null) 
+{
+    return  {
+        element,
+        previewClass: ['markdown-body', 'padding-medium'],
+        renderingConfig: {
+            codeSyntaxHighlighting: true,
+        },
+        tabSize: 4,
+        spellChecker: false,
+        toolbar: [
+            'bold',
+            'italic',
+            'strikethrough',
+            '|',
+            'heading-1',
+            'heading-2',
+            'heading-3',
+            '|',
+            'quote',
+            'link',
+            'table',
+            '|',
+            'unordered-list',
+            'ordered-list',
+            '|',
+            'preview',
+            'guide'
+        ]
+    }
+}
+
 Kantodo.info("Globals loaded");
