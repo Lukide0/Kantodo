@@ -94,7 +94,7 @@ class ProjectSettingsView implements IView
                             'classList': 'space-big-left text',
                             'click': function(dialogOBJ) {
                                 
-                                let response = Request.Action('/api/project/change_position', 'POST', { 'project': '<?= $projectUUID ?>', 'user': u, 'position': e.target.value });
+                                let response = Request.Action('/api/project/user/change', 'POST', { 'project': '<?= $projectUUID ?>', 'user': u, 'position': e.target.value });
                                 response.then(res => {
                                     Kantodo.info(res);
                                 }).catch(err => {
@@ -127,7 +127,12 @@ class ProjectSettingsView implements IView
                             'classList': 'space-big-left text error',
                             'click': function(dialogOBJ) {
                                 
-                                console.log(u);
+                                let response = Request.Action('/api/project/user/delete', 'POST', { 'project': '<?= $projectUUID ?>', 'user': u, 'position': e.target.value });
+                                response.then(res => {
+                                    Kantodo.info(res);
+                                }).catch(err => {
+                                    Kantodo.error(err);
+                                })
 
                                 dialogOBJ.hide();
                             }

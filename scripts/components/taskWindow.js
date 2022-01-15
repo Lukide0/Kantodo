@@ -52,6 +52,12 @@ const modalTaskHTML = `
                 </label>
             </div>
             <div class="attribute">
+                <div class="name">%date_of_completion%</div>
+                <div class="value">
+                    <input type='datetime-local' id="endDate">
+                </div>
+            </div>
+            <div class="attribute">
                 <div class="name">%tags%</div>
                 <div class="value">
                     <div class="chips-container">
@@ -100,6 +106,8 @@ export default function taskWindow(btn, project = null) {
     
     let priorityField = win.element.querySelector('[data-input=priority]');
     let priorityValues = win.element.querySelector('[data-select=priority]');
+
+    let endDateInput = win.element.querySelector('input[type=datetime-local]');
 
     if (project) 
     {
@@ -227,6 +235,10 @@ export default function taskWindow(btn, project = null) {
         return priorityField.dataset.value;
     }
 
+    win.getEndDate = function() {
+        return endDateInput.value;
+    }
+
     win.clear = function() {
         input.value = "";
         input.dataset.value = "";
@@ -239,6 +251,8 @@ export default function taskWindow(btn, project = null) {
 
         priorityField.value = "";
         priorityField.dataset.value = "";
+
+        endDateInput.value = "";
     }
 
     return win;

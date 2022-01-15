@@ -31,6 +31,14 @@
     "close": "Close",
     "copy": "Copy",
     "load": "Load",
+    "tags": "Tags",
+    "status": "Status",
+    "priority": "Priority",
+    "priority_low": "Low",
+    "priority_medium": "Medium",
+    "priority_high": "High",
+    "open": "Open",
+    "closed": "Closed",
     "sign_out": "Sign out",
     "settings": "Settings"
 }

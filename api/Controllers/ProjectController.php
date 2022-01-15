@@ -250,15 +250,108 @@ class ProjectController extends AbstractController
 
         $memberID = (int)$member['user_id'];
         
-        if ($projModel->projectMember($memberID, $uuid) === false) 
+        // není členem projektu
+        $memberPos = $projModel->getProjectPosition($projectID, $memberID);
+        if ($memberPos === false) 
         {
             $response->error(t('user_is_not_member', 'api'), Response::STATUS_CODE_BAD_REQUEST);
+            exit;
+        }
+        // admin nemůže být změněn
+        else if ($memberPos == "admin") 
+        {
+            $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
             exit;
         }
 
         $status = $projModel->updatePosition($memberID, $projectID, $position);
 
 
+        if ($status) 
+        {
+            $response->success([]);
+        } 
+        else
+        {
+            $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Akce na odstranění uživatele z projektu
+     *
+     * @return  void
+     */
+    public function deleteUser()
+    {
+        $body = API::$API->request->getBody();
+        $response = API::$API->response;
+        $user = Auth::getUser();
+        
+        $keys = ['project', 'user'];
+
+        $empty = Data::empty($body[Request::METHOD_POST], $keys);
+
+        if (count($empty) != 0) 
+        {
+            $response->fail(array_fill_keys($empty, t('empty', 'api')));
+            exit;
+        }
+
+        if ($user === null || !DataType::number($user['id'])) 
+        {
+            $response->error(t('user_id_missing', 'api'));
+            exit;
+        }
+    
+        $uuid = base64DecodeUrl($body[Request::METHOD_POST]['project']);
+        $id   = $user['id'];
+        $email = $body[Request::METHOD_POST]['user'];
+
+        
+
+        if ($uuid === false)
+        {
+            $response->error(t('project_uuid_missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
+            exit;
+        }
+
+        $projModel = new ProjectModel();
+        $projectID = 0;
+     
+        if (ProjectModel::hasPrivTo('changePeoplePosition', (int)$id, $uuid, $projectID) !== true) 
+        {
+            $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
+            exit;
+        }
+
+        $userModel = new UserModel();
+        $member = $userModel->getSingle(['user_id'], ['email' => $email]);
+
+        // neexistuje
+        if ($member === false) 
+        {
+            $response->error(t('user_is_not_member', 'api'), Response::STATUS_CODE_BAD_REQUEST);
+            exit;
+        }
+
+        $memberID = (int)$member['user_id'];
+        
+        // není členem projektu
+        $memberPos = $projModel->getProjectPosition($projectID, $memberID);
+        if ($memberPos === false) 
+        {
+            $response->error(t('user_is_not_member', 'api'), Response::STATUS_CODE_BAD_REQUEST);
+            exit;
+        } 
+        // admin nemůže být vyhozen
+        else if ($memberPos == "admin") 
+        {
+            $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
+            exit;
+        }
+
+        $status = $projModel->removeUser($memberID, $projectID);
         if ($status) 
         {
             $response->success([]);

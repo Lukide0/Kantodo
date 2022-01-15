@@ -1,7 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace Kantodo\API\Controllers;
 
+use DateTime;
 use Kantodo\API\API;
 use Kantodo\Core\Base\AbstractController;
 use Kantodo\Core\Request;
@@ -41,7 +43,7 @@ class TaskController extends AbstractController
             'task_priority'
         ];
 
-        $empty = Data::empty($body[Request::METHOD_POST], $keys);
+        $empty = Data::notSet($body[Request::METHOD_POST], $keys);
 
         if (count($empty) != 0) 
         {
@@ -53,6 +55,7 @@ class TaskController extends AbstractController
         $taskDesc = $body[Request::METHOD_POST]['task_desc'];
         $taskCompleted = $body[Request::METHOD_POST]['task_comp'];
         $taskPriority = $body[Request::METHOD_POST]['task_priority'];
+        $taskEndDate = $body[Request::METHOD_POST]['task_end_date'] ?? null;
 
         $projUUID = base64DecodeUrl($body[Request::METHOD_POST]['task_proj']);
         $user = Auth::getUser();
@@ -69,11 +72,29 @@ class TaskController extends AbstractController
             exit;
         }
 
-        if (DataType::wholeNumber($taskCompleted, 0, 1) || DataType::wholeNumber($taskPriority, 0, 3)) 
+        if (!DataType::wholeNumber($taskCompleted, 0, 1) || !DataType::wholeNumber($taskPriority, 0, 2)) 
         {
             $response->fail(['error' => t('bad_request')]);
             exit;
         }
+
+        $taskPriority = (int)$taskPriority;
+        $taskCompleted = (bool)$taskCompleted;
+
+        if ($taskEndDate !== null) 
+        {
+            $date = new DateTime($taskEndDate);
+
+            if ($date != false) 
+            {
+                $taskEndDate = $date;
+            } else 
+            {
+                $response->fail(['error' => t('bad_request')]);
+                exit;
+            }
+        }
+
 
         $projModel = new ProjectModel();
 
@@ -94,14 +115,12 @@ class TaskController extends AbstractController
         
         $taskModel = new TaskModel();
 
-        // TODO: priorita a konec
-        $taskID = $taskModel->create($taskName, (int)$user['id'], (int)$details['id'], $taskDesc);
+        $taskID = $taskModel->create($taskName, (int)$user['id'], (int)$details['id'], $taskDesc, $taskPriority, $taskEndDate, $taskCompleted);
         if ($taskID === false) 
         {
             $response->error(t('cannot_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
             exit;
-        }
-        
+        }        
 
         if (!empty($body[Request::METHOD_POST]['task_tags']) && is_array($body[Request::METHOD_POST]['task_tags'])) 
         {
@@ -127,20 +146,20 @@ class TaskController extends AbstractController
                 $response->error(t('can_not_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
         }
 
-        $keyMaterial = API::getSymmetricKey();
-
-        if ($keyMaterial === false)
-            exit;
-
+        
         $response->success([
             'task' => 
             [
-                'id' => base64EncodeUrl((string)$taskID),
-                ]
+                'id' => $taskID
+            ]
             ],
             Response::STATUS_CODE_CREATED
         );
         /*
+        $keyMaterial = API::getSymmetricKey();
+        if ($keyMaterial === false)
+            exit;
+        
         $key = new SymmetricKey($keyMaterial);
         $paseto = (new Builder())
             ->setVersion(new Version4)
@@ -204,13 +223,13 @@ class TaskController extends AbstractController
             $response->error(t('project_uuid_missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
             exit;
         }
-
-        $projectModel = new ProjectModel();
-
-        $projectId = $projectModel->projectMember((int)$user['id'], $uuid);
-
-        if ($projectId === false)
+        
+        $projectId = 0;
+        if (ProjectModel::hasPrivTo('viewTask', (int)$user['id'], $uuid, $projectId) === false)
+        {
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
+            exit;
+        }
         
         $taskModel = new TaskModel();
         $tasks = $taskModel->get(['task_id' => 'id', 'name', 'description', 'priority', 'completed', 'end_date'], ['project_id' => $projectId, 'task_id' => ['>', $last]], $limit);

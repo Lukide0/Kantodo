@@ -615,55 +615,26 @@ class ProjectModel extends Model
             return $code;
     }
 
-    //---------------------//
-    //-- Statické metody --//
-    //---------------------//
-
     /**
-     * Zjistí jestli má uživatel přístup k akci v projektu
+     * Odstraní uživatele z projektu
      *
-     * @param   string  $key          akce viz. POSITIONS
-     * @param   int     $userID       id uživatele
-     * @param   string  $projectUUID  UUID projektu
-     * @param   int     $outProjectID reference na proměnou do které bude vloženo id projektu
+     * @param   int  $userID     id uživatele
+     * @param   int  $projectID  id projektu
      *
-     * @return  bool|null             Vrací false v případě, že akce neexistuje nebo uživatel nemá přístup k akci
+     * @return  bool
      */
-    public static function hasPrivTo(string $key, int $userID, string $projectUUID, int &$outProjectID = 0)
+    public function removeUser(int $userID, int $projectID)
     {
-        $keys = [
-            'addTask',
-            'editTask',
-            'removeTask',
-            'canCloseTask',
+        $userProj = Connection::formatTableName("user_projects");
+        $sth    = $this->con->prepare("DELETE FROM {$userProj} WHERE project_id = :projID AND user_id = :userID");
+        $status = $sth->execute([
+            ":projID" => $projectID,
+            ":userID" => $userID
+        ]);
 
-            'addPeople',
-            'removePeople',
-            'changePeoplePosition',
-        ];
-
-        if (!in_array($key, $keys, true)) {
-            return null;
-        }
-
-        $projModel = new ProjectModel();
-
-        $details = $projModel->getBaseDetails($userID, $projectUUID);
-        if ($details === false) {
-            return false;
-        }
-
-
-        $priv = $projModel->getPositionPriv($details['name']);
-
-        if ($priv === false || !$priv[$key]) {
-            return false;
-        }
-
-        $outProjectID = (int)$details['id'];
-
-        return true;
+        return $status;
     }
+
 
     /**
      * Získá projekt podle kódu
@@ -690,5 +661,58 @@ class ProjectModel extends Model
             $result = $sth->fetch(PDO::FETCH_COLUMN);
             return ($result !== false && DataType::wholeNumber($result)) ? (int)$result : false;
         }
+    }
+
+
+    //---------------------//
+    //-- Statické metody --//
+    //---------------------//
+
+    /**
+     * Zjistí jestli má uživatel přístup k akci v projektu
+     *
+     * @param   string  $key          akce viz. POSITIONS
+     * @param   int     $userID       id uživatele
+     * @param   string  $projectUUID  UUID projektu
+     * @param   int     $outProjectID reference na proměnou do které bude vloženo id projektu
+     *
+     * @return  bool|null             Vrací false v případě, že akce neexistuje nebo uživatel nemá přístup k akci
+     */
+    public static function hasPrivTo(string $key, int $userID, string $projectUUID, int &$outProjectID = 0)
+    {
+        $keys = [
+            'viewTask',
+            'addTask',
+            'editTask',
+            'removeTask',
+            'canCloseTask',
+
+            'addPeople',
+            'removePeople',
+            'changePeoplePosition',
+        ];
+
+        
+        if (!in_array($key, $keys, true)) {
+            return false;
+        }
+
+        $projModel = new ProjectModel();
+
+        $details = $projModel->getBaseDetails($userID, $projectUUID);
+        if ($details === false) {
+            return false;
+        }
+
+
+        $priv = $projModel->getPositionPriv($details['name']);
+
+        if ($priv === false || !$priv[$key]) {
+            return false;
+        }
+
+        $outProjectID = (int)$details['id'];
+
+        return true;
     }
 }

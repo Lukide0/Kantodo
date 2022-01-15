@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Kantodo\Core\Validation;
 
+use DateTime;
 
 /**
  * Kontrola hodnoty
@@ -51,7 +52,7 @@ class DataType
             return false;
         }
 
-        return self::inRange($value, $min, $max);
+        return self::inRange((int)$value, $min, $max);
     }
 
     /**
@@ -65,11 +66,11 @@ class DataType
      */
     public static function inRange($number, int $min = null, int $max = null)
     {
-        if ($min !== null && $number <= $min) {
+        if ($min !== null && $number < $min) {
             return false;
         }
 
-        if ($max !== null && $number >= $max) {
+        if ($max !== null && $number > $max) {
             return false;
         }
 

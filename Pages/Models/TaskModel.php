@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Kantodo\Models;
 
+use DateTime;
 use Kantodo\Core\Base\Model;
 use Kantodo\Core\Database\Connection;
 
@@ -25,7 +26,6 @@ class TaskModel extends Model
             'completed',
             'end_date',
             'creator_id',
-            'milestone_id',
             'project_id',
         ]);
     }
@@ -38,15 +38,15 @@ class TaskModel extends Model
      * @param   int     $projectID    id projektu
      * @param   string  $desc         popis
      * @param   int     $priority     priorita (0-255)
-     * @param   string  $endDate      datum dokončení
-     * @param   int     $milestoneID  id milestone
+     * @param   DateTime  $endDate      datum dokončení
+     * @param   bool    $completed    je úkol dokončen
      *
      * @return  int|false             vrací id záznamu nebo false pokud se nepovedlo vložit do databáze
      */
-    public function create(string $name, int $creatorID, int $projectID, string $desc = null, int $priority = 1, string $endDate = null, int $milestoneID = null)
+    public function create(string $name, int $creatorID, int $projectID, string $desc = null, int $priority = 1, DateTime $endDate = null, bool $completed = false)
     {
         if ($endDate !== null) {
-            $endDate = date(Connection::DATABASE_DATE_FORMAT, (int)strtotime($endDate));
+            $endDate = date(Connection::DATABASE_DATE_FORMAT, $endDate->getTimestamp());
         }
 
         $query = <<<SQL
@@ -56,7 +56,6 @@ class TaskModel extends Model
             `priority`,
             `end_date`,
             `creator_id`,
-            `milestone_id`,
             `project_id`,
             `completed`
         )
@@ -66,9 +65,8 @@ class TaskModel extends Model
             :priority,
             :endDate,
             :creatorID,
-            :milestoneID,
             :projID,
-            0
+            :completed
         )
         SQL;
 
@@ -79,8 +77,8 @@ class TaskModel extends Model
             ':priority'    => $priority,
             ':endDate'     => $endDate,
             ':creatorID'   => $creatorID,
-            ':milestoneID' => $milestoneID,
             ':projID'      => $projectID,
+            ':completed'   => (int)$completed,
         ]);
 
         if ($status === true) {

@@ -36,6 +36,13 @@ class DashboardView implements IView
                         {
                             return;
                         }
+
+                        // úkol již existuje
+                        if (this.Projects[uuid].tasks.some(t => t.id == task.id)) 
+                        {
+                            return;
+                        }
+
                         this.Projects[uuid].tasks.push(task);
                         
                         let tags = task.tags;
@@ -187,6 +194,7 @@ class DashboardView implements IView
                             data.task_proj = win.getProjectInput().dataset.value;
                             data.task_comp = win.getStatus();
                             data.task_priority = win.getPriority();
+                            data.task_end_date = win.getEndDate();
 
                             let chipsArray = win.getChips();
                             for (let i = 0; i < chipsArray.length; i++) {
@@ -200,9 +208,10 @@ class DashboardView implements IView
                                 tags: chipsArray,
                                 name: data.task_name,
                                 priority: data.task_priority,
-                                // TODO:
-                                end_date: null,
+                                end_date: data.task_end_date,
                             };
+
+                            console.log(data);
                             let response = Request.Action('/api/create/task', 'POST', data);
                             response.then(res => {
                                 let task = res.data.task;
@@ -218,6 +227,7 @@ class DashboardView implements IView
 
                                 let snackbar = Modal.Snackbar.create('<?= t('task_was_created') ?>', null ,'success');
                                 snackbar.show();
+                                projectEl.dataset['last'] = task.id;
 
                             }).catch(reason => {
 

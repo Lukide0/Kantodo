@@ -104,22 +104,6 @@ class Version_1_0 extends AbstractMigration
             $table->addForeignKey('project_id', $schema->getTable('projects'), 'project_id', Blueprint::ACTION_AFFECT);
         });
 
-        ///////////////////////
-        // TABLE MILESTIONES //
-        ///////////////////////
-        $schema->create('milestones', function (Blueprint $table, Schema $schema) {
-            $table->addColumn('milestone_id', 'bigint', ['unsigned' => true, 'autoincrement' => true]);
-            $table->addColumn('name', 'varchar', ['length' => 150]);
-            $table->addColumn('description', 'text', ['length' => 500, 'notNull' => false]);
-            $table->addColumn('end_date', 'datetime', ['notNull' => false]);
-            $table->addColumn('project_id', 'bigint', ['unsigned' => true]);
-
-            //keys
-            $table->addPrimaryKey('milestone_id');
-
-            $table->addForeignKey('project_id', $schema->getTable('projects'), 'project_id', Blueprint::ACTION_AFFECT);
-        });
-
         /////////////////
         // TABLE TASKS //
         /////////////////
@@ -131,14 +115,12 @@ class Version_1_0 extends AbstractMigration
             $table->addColumn('completed', 'bool');
             $table->addColumn('end_date', 'datetime', ['notNull' => false]);
             $table->addColumn('creator_id', 'bigint', ['unsigned' => true]);
-            $table->addColumn('milestone_id', 'bigint', ['unsigned' => true, 'notNull' => false]);
             $table->addColumn('project_id', 'bigint', ['unsigned' => true]);
 
             //keys
             $table->addPrimaryKey('task_id');
 
             $table->addForeignKey('creator_id', $schema->getTable('users'), 'user_id', Blueprint::ACTION_AFFECT);
-            $table->addForeignKey('milestone_id', $schema->getTable('milestones'), 'milestone_id', Blueprint::ACTION_AFFECT);
             $table->addForeignKey('project_id', $schema->getTable('projects'), 'project_id', Blueprint::ACTION_AFFECT);
         });
 
