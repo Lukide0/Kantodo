@@ -8,6 +8,8 @@
 *.css
 *.map
 
+!markdown.css
+
 
 config.php
 **/routes.php
