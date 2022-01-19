@@ -23,7 +23,6 @@ class InstallLayout extends Layout
      */
     public function render(string $content = '', array $params = [])
     {
-        $title = $params['title'] ?? 'Kantodo - Install';
         $sectionName = $params['sectionName'] ?? '';
         $action = $params['action'] ?? "install-database";
         ?>
@@ -39,7 +38,7 @@ class InstallLayout extends Layout
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet">
             <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;500;700;900&display=swap" rel="stylesheet">
             <script src="<?= Application::$SCRIPT_URL ?>/main.js"></script>
-            <title><?= $title ?></title>
+            <title>Kantodo - Install</title>
         </head>
 
         <body>

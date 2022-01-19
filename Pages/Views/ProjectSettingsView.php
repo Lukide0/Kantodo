@@ -8,7 +8,6 @@ use Kantodo\Core\Base\IView;
 use Kantodo\Models\ProjectModel;
 use Kantodo\Widgets\Input;
 
-use function Kantodo\Core\Functions\base64DecodeUrl;
 use function Kantodo\Core\Functions\t;
 
 class ProjectSettingsView implements IView
@@ -22,6 +21,8 @@ class ProjectSettingsView implements IView
         $positions = $params['positions'];
 
         $email = Auth::getUser()['email'] ?? '';
+
+        Application::$APP->header->setTitle("Kantodo - Settings: " . $project['name']);
 
         ?>
         <div class="container">

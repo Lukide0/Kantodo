@@ -25,6 +25,8 @@ class DashboardView implements IView
      */
     public function render(array $params = [])
     {
+        Application::$APP->header->setTitle("Kantodo - Dashboard");
+
         ?>
         <div class="row h-space-between">
             <h2><?= t('my_work', 'dashboard') ?></h2>

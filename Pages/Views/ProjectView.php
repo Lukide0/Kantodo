@@ -17,13 +17,16 @@ class ProjectView implements IView
 {
     public function render(array $params = [])
     {
-
+        
         $project     = $params['project'];
         $members     = $params['members'] ?? [];
         $projectUrlUUID = $params['projectUUID'];
-
+        
         $icon = ((bool) $project['is_open'] === true) ? "lock_open" : "lock";
         $priv      = $params['priv'];
+
+        Application::$APP->header->setTitle("Kantodo - " . $project['name']);
+
         ?>
         <div class="container">
         <div class="row h-space-between">

@@ -2,6 +2,7 @@
 
 namespace Kantodo\Views;
 
+use Kantodo\Core\Application;
 use Kantodo\Core\Base\IView;
 use Kantodo\Widgets\Input;
 
@@ -11,6 +12,8 @@ class AccountSettingsView implements IView
 {
     public function render(array $params = [])
     {
+        Application::$APP->header->setTitle("Kantodo - Account settings");
+
         ?>
         <div class="container">
             <h2 class="row space-extreme-bottom" style="font-size: 2.8rem"><?= t('account') . ' - ' . t('settings');?></h2>
