@@ -52,6 +52,6 @@ class Console
      */
     public static function memory(bool $real = false)
     {
-        Console::log(memory_get_usage($real) / 1024 . " KB");
+        Console::log("Memory usage: " .  memory_get_usage($real) / 1024 . " KB");
     }
 }
