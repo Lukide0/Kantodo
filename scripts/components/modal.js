@@ -7,7 +7,7 @@ const Snackbar = {
     _template: null,
     init() {
         this._container = document.createElement('div');
-        document.body.querySelector('main').append(this._container);
+        document.body.append(this._container);
         this._container.style = `
             position: fixed;
             right: 0;

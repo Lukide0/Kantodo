@@ -11,8 +11,9 @@ include_once 'loader/autoload.php';
 $APP = new Application();
 $APP->registerAuth(new Auth());
 $APP->session->start();
-// TODO: Menit title ve view
-// TODO: mazani uzivatele, projektu, uctu, nastaveni uctu, uprava ukolu, autocomplete tag, preklad cz, filtrovani, odebrani prebitecnych tabulek a sloupcu ,kalendar, WS!!!!!!!
+
+// TODO: Fix pridavani projektu, ukolu - nejdou akce s pridanym ukolem napr. odstraneni hlasi bad request empty task_id
+// TODO: Menit title ve view, mazani uzivatele, projektu, uctu, nastaveni uctu, uprava ukolu, autocomplete tag, preklad cz, filtrovani, odebrani prebitecnych tabulek a sloupcu ,kalendar, WS!!!!!!!
 
 if (!Application::configExits()) {
     $APP->router->run([Kantodo\Controllers\InstallController::class, 'installView'], [$APP->request->getPath()]);

@@ -9,6 +9,7 @@ use Kantodo\Core\Base\AbstractController;
 use Kantodo\Core\Request;
 use Kantodo\Core\Response;
 use Kantodo\Auth\Auth;
+use Kantodo\Core\Application;
 use Kantodo\Core\Validation\Data;
 use Kantodo\Core\Validation\DataType;
 use Kantodo\Models\ProjectModel;
@@ -115,7 +116,9 @@ class TaskController extends AbstractController
         
         $taskModel = new TaskModel();
 
-        $taskID = $taskModel->create($taskName, (int)$user['id'], (int)$details['id'], $taskDesc, $taskPriority, $taskEndDate, $taskCompleted);
+        // TODO: remove
+        $taskID = 5;
+        //$taskID = $taskModel->create($taskName, (int)$user['id'], (int)$details['id'], $taskDesc, $taskPriority, $taskEndDate, $taskCompleted);
         if ($taskID === false) 
         {
             $response->error(t('cannot_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
@@ -146,7 +149,10 @@ class TaskController extends AbstractController
                 $response->error(t('can_not_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
         }
 
-        
+
+        // https://stackoverflow.com/a/28738208
+        ob_start();
+
         $response->success([
             'task' => 
             [
@@ -155,7 +161,18 @@ class TaskController extends AbstractController
             ],
             Response::STATUS_CODE_CREATED
         );
-        /*
+        
+
+        $size = ob_get_length();
+
+        header("Content-Encoding: none");
+        header("Content-Length: {$size}");
+        header("Connection: close");
+
+        ob_end_flush();
+        @ob_flush();
+        flush();
+
         $keyMaterial = API::getSymmetricKey();
         if ($keyMaterial === false)
             exit;
@@ -167,21 +184,21 @@ class TaskController extends AbstractController
             ->setKey($key)
             // nastavení dat
             ->setClaims([
-                // TODO: user id
+                'user_id' => $user['id'],
                 'task_id' => (string)$taskID,
                 'project_uuid' => $projUUID    
             ])
             // nastavení vzniku
             ->setIssuedAt()
             // nastavení předmětu
-            ->setSubject('task_create')
+            ->setSubject('ws_update')
             ->toString();
         $paseto = base64EncodeUrl($paseto);
         
         $client = \Ratchet\Client\connect('ws://127.0.0.1:8443')->then(function($conn) use ($paseto){
             $conn->send($paseto);
             $conn->close();
-        });*/
+        });
     }
 
     /**
