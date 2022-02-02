@@ -34,12 +34,6 @@ function moveAbs(move = {}, el) {
     el.style[vertical[0]] = vertical[1];
 }
 
-function getHeight(el) {
-    let compStyle = window.getComputedStyle(el);
-
-    return Math.ceil(el.offsetHeight + parseFloat(compStyle['marginTop']) + parseFloat(compStyle['marginBottom']));
-}
-
 function createElementFromTemplate(html) {
     let tmp = document.createElement('div');
     tmp.innerHTML = html;
@@ -58,4 +52,4 @@ function initInput(el) {
     });
 }
 
-export {moveAbs, getHeight, createElementFromTemplate, initInput}
+export {moveAbs, createElementFromTemplate, initInput}

@@ -112,7 +112,7 @@ class ProjectView implements IView
                                     'text': '{$close}', 
                                     'classList': 'flat no-border',
                                     'click': function(dialogOBJ) {
-                                        dialogOBJ.hide();
+                                        dialogOBJ.destroy(true);
                                     }
                                 },
                                 {
@@ -142,14 +142,14 @@ class ProjectView implements IView
                                             }
 
                                             document.body.removeChild(textArea);
-                                            dialogOBJ.hide();
+                                            dialogOBJ.destroy(true);
                                             return;
                                         }
                                         navigator.clipboard.writeText(text).catch(function(err) {
                                             Kantodo.error(err);
                                         });
 
-                                        dialogOBJ.hide();
+                                        dialogOBJ.destroy(true);
                                     }
                                 }
                             ]);

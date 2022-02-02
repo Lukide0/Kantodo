@@ -11,9 +11,17 @@ include_once 'loader/autoload.php';
 $APP = new Application();
 $APP->registerAuth(new Auth());
 $APP->session->start();
+// REMEMBER: Menit title ve view, preklad cz
+// TODO: nastaveni uctu, autocomplete tag, filtrovani ukolu
+// TODO: WS!!!!!!!
 
-// TODO: Fix pridavani projektu, ukolu - nejdou akce s pridanym ukolem napr. odstraneni hlasi bad request empty task_id
-// TODO: Menit title ve view, mazani uzivatele, projektu, uctu, nastaveni uctu, uprava ukolu, autocomplete tag, preklad cz, filtrovani, odebrani prebitecnych tabulek a sloupcu ,kalendar, WS!!!!!!!
+// 3.2  CT: filter tasks
+// 4.2  PA: autocomplete tags + edit task tags
+// 5.2  SO-NE: WS
+// 7.2  PO: Calendar + Comment JS, VIEWS
+// 8.2-?.2 SASS
+
+
 
 if (!Application::configExits()) {
     $APP->router->run([Kantodo\Controllers\InstallController::class, 'installView'], [$APP->request->getPath()]);

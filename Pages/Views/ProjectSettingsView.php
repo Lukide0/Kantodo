@@ -31,6 +31,9 @@ class ProjectSettingsView implements IView
                 <?= Input::text('projectName', t('project_name'), ['value' => $project['name']]) ?>
             </div>
             <div class="row">
+                <button class='hover-shadow filled error' style="border-radius: 5px" onclick="deleteProj('<?= $projectUUID ?>')"><span class="icon round">remove</span><?= t('delete_project', 'project') ?></button>
+            </div>
+            <div class="row">
                 <table>
                     <thead>
                         <tr>
@@ -85,7 +88,7 @@ class ProjectSettingsView implements IView
                             'click': function(dialogOBJ) {
 
                                 self.value = self.oldVal;
-                                dialogOBJ.hide();
+                                dialogOBJ.destroy(true);
 
                                 return false;
                             }
@@ -101,7 +104,7 @@ class ProjectSettingsView implements IView
                                 }).catch(err => {
                                     Kantodo.error(err);
                                 })
-                                dialogOBJ.hide();
+                                dialogOBJ.destroy(true);
                             }
                         }
                     ]);
@@ -120,7 +123,7 @@ class ProjectSettingsView implements IView
                             'text': '<?= t("close") ?>', 
                             'classList': 'flat no-border',
                             'click': function(dialogOBJ) {
-                                dialogOBJ.hide();
+                                dialogOBJ.destroy(true);
                             }
                         },
                         {
@@ -131,17 +134,68 @@ class ProjectSettingsView implements IView
                                 let response = Request.Action('/api/project/user/delete', 'POST', { 'project': '<?= $projectUUID ?>', 'user': u, 'position': e.target.value });
                                 response.then(res => {
                                     Kantodo.info(res);
+                                    e.target.parentElement.parentElement.remove();
                                 }).catch(err => {
                                     Kantodo.error(err);
                                 })
 
-                                dialogOBJ.hide();
+                                dialogOBJ.destroy(true);
                             }
                         }
                     ]);
                 
-                    dialog.setParent(document.body.querySelector('main'));
+                    dialog.setParent(document.body);
                     dialog.show();
+                }
+
+
+                function deleteProj(uuid) {
+
+                    let dialog = Modal.Dialog.create(
+                            '<?= t("confirm") ?>',
+                            `
+                            <p class='space-big-bottom'><?= t("do_you_want_delete_this_project")?></p>
+                            <?= Input::text("userEmail", t('email'), ['classes' => 'space-medium-top']) ?>
+                            <?= Input::password("userPassword", t('password', 'auth')) ?>
+                            `,
+                            [
+                                {
+                                    'text': '<?= t("close") ?>', 
+                                    'classList': 'flat no-border',
+                                    'click': function(dialogOBJ) {
+                                        dialogOBJ.destroy(true);
+                                        return false;
+                                    }
+                                }, {
+                                    'text': '<?= t("yes") ?>',
+                                    'classList': 'space-big-left text error',
+                                    'click': deleteProjAction
+                                }
+                            ]
+                        );
+                    dialog.setParent(document.body);
+                    dialog.show();
+
+                    function deleteProjAction(dialogOBJ) {
+                        let data = {
+                            'email': dialogOBJ.element.querySelector('[name=userEmail]').value,
+                            'password': dialogOBJ.element.querySelector('[name=userPassword]').value,
+                            'project': uuid
+                        };
+                        
+                        let response = Request.Action('/api/remove/project', 'POST', data);
+                        response.then(res => {
+                            window.location = '/';
+                        }).catch(reason => {
+                            let snackbar = Modal.Snackbar.create(reason.statusText, null ,'error');
+                            snackbar.show();
+
+                            Kantodo.error(reason);
+                        }).finally(() => {
+                            dialogOBJ.destroy(true);
+                        });
+
+                    }
                 }
             </script>
         </div>

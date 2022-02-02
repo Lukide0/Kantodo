@@ -300,7 +300,7 @@ const Dialog = {
         buttons.forEach(button => {
             let btn = document.createElement('button');
 
-            let classes = (typeof button.classList == 'string') ? button.classList : `flat primary text ${color}`;
+            let classes = (typeof button.classList == 'string') ? button.classList : `flat action primary text ${color}`;
 
             btn.className = classes;
             btn.innerHTML = button.text;

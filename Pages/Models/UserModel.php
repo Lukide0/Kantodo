@@ -68,7 +68,7 @@ class UserModel extends Model
      */
     public function delete(int $id)
     {
-        $sth = $this->con->prepare("DELETE FROM TABLE {$this->table} WHERE `user_id` = :id");
+        $sth = $this->con->prepare("DELETE FROM {$this->table} WHERE user_id = :id");
         return $sth->execute([
             ":id" => $id,
         ]);

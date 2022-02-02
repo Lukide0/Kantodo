@@ -361,4 +361,95 @@ class ProjectController extends AbstractController
             $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
         }
     }
+
+    // TODO: frontend
+    /**
+     * Akce na smazání projektu
+     *
+     * @param   array<mixed>  $params  parametry
+     *
+     * @return  void
+     */
+    public function remove(array $params = [])
+    {
+        $body = API::$API->request->getBody();
+        $response = API::$API->response;
+        $keys = [
+            'email',
+            'password',
+        ];
+
+        $empty = Data::empty($body[Request::METHOD_POST], $keys);
+
+        if (count($empty) != 0) 
+        {
+            $response->fail(array_fill_keys($empty, t('empty', 'api')));
+        }
+
+        $email = $body[Request::METHOD_POST]['email'];
+        $password = Auth::hashPassword($body[Request::METHOD_POST]['password'], $email);
+
+        $user = Auth::getUser();
+
+        if ($user == null || $user['email'] != $email) 
+        {
+            $response->error(t('invalid_credentials'), Response::STATUS_CODE_BAD_REQUEST);
+            exit;
+        }
+        
+        if (empty($body[Request::METHOD_POST]['project']))
+            $response->error(t('project_uuid_missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
+        
+        $uuid = base64DecodeUrl($body[Request::METHOD_POST]['project']);
+        if ($uuid === false) 
+        {
+            $response->error(t('project_uuid_missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
+            exit;
+        }
+
+
+
+        $userModel = new UserModel();
+        $exists = $userModel->exists(['email' => $email, 'password' => $password]);
+
+        if (!$exists) 
+        {
+            $response->error(t('invalid_credentials'), Response::STATUS_CODE_BAD_REQUEST);
+            exit;
+        }
+
+        $id = (int)$user['id'];
+
+
+        $projModel = new ProjectModel();
+
+        $project = $projModel->getSingle(['project_id'], ['uuid' => $uuid]);
+
+        if ($project === false) 
+        {
+            $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
+            exit;
+        }
+
+        $projectID = (int)$project['project_id'];
+
+        $memberPos = $projModel->getProjectPosition($projectID, $id);
+
+        if ($memberPos !== 'admin') 
+        {
+            $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
+            exit;
+        }
+
+
+        $status = $projModel->delete($projectID);
+        if ($status) 
+        {
+            $response->success([]);
+        } 
+        else
+        {
+            $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
+        }
+    }
 }

@@ -92,7 +92,7 @@ class Input extends AbstractWidget
      *
      * @param   string  $name     název
      * @param   string  $label    popisek
-     * @param   array<string,mixed>   $options  ['outline' => false, 'value' => '', 'error' => '', 'dataAttributes' => [], 'autocomplete' => 'off', 'color' => 'primary']
+     * @param   array<string,mixed>   $options  ['outline' => false, 'value' => '', 'error' => '', 'dataAttributes' => [], 'autocomplete' => 'off', 'color' => 'primary', classes => '']
      *
      * @return  string            input html
      */
@@ -107,7 +107,7 @@ class Input extends AbstractWidget
      *
      * @param   string  $name     název
      * @param   string  $label    popisek
-     * @param   array<string,mixed>   $options  ['outline' => false, 'value' => '', 'error' => '', 'dataAttributes' => [], 'autocomplete' => 'off', 'color' => 'primary']
+     * @param   array<string,mixed>   $options  ['outline' => false, 'value' => '', 'error' => '', 'dataAttributes' => [], 'autocomplete' => 'off', 'color' => 'primary', classes => '']
      *
      * @return  string            input html
      */
@@ -275,7 +275,7 @@ class Input extends AbstractWidget
             <label class="text-field {$outline} {$color} space-big-bottom {$classes} {$errorClass}">
                 <div class="field">
                     <span>{$this->getOption('label','')}</span>
-                    <input type="{$type}"  name="{$this->getOption('name')}" value="{$this->getOption('value','')}" autocomplete="{$this->getOption('autocomplete','off')}" {$disabled} {$dataAttributes}>
+                    <input type="{$type}" onchange="if(this.value == ''){ this.parentElement.classList.remove('focus');} else if (!this.parentElement.classList.contains('focus')) { this.parentElement.classList.add('focus'); }" name="{$this->getOption('name')}" value="{$this->getOption('value','')}" autocomplete="{$this->getOption('autocomplete','off')}" {$disabled} {$dataAttributes}>
                 </div>
                 <div class="text">{$this->getOption('error','')}</div>
             </label>

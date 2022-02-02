@@ -31,6 +31,9 @@ function Request(url, method = 'GET', params = {}, sentEmpty = false, contentTyp
         };
 
         xhrOBJ.xhr.onerror = function () {
+            if (this.status == 401)
+                window.location.reload(true);
+
             reject({
               status: this.status,
               statusText: xhrOBJ.xhr.statusText

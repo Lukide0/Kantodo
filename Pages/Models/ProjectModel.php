@@ -698,7 +698,6 @@ class ProjectModel extends Model
         }
 
         $projModel = new ProjectModel();
-
         $details = $projModel->getBaseDetails($userID, $projectUUID);
         if ($details === false) {
             return false;

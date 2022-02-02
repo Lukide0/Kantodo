@@ -52,6 +52,9 @@ class Console
      */
     public static function memory(bool $real = false)
     {
-        Console::log("Memory usage: " .  memory_get_usage($real) / 1024 . " KB");
+        $size = memory_get_usage($real);
+        $unit=array('B','KB','MB','GB','TB','PB');
+        $usingRAM = @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
+        Console::log("Memory usage: " . $usingRAM);
     }
 }

@@ -124,7 +124,6 @@ class ClientLayout extends Layout
                 <script>
 
                     var DATA = {
-                        "Container": null,
                         "Projects": {},
                         "AddProject": function(uuid, name) 
                         {
@@ -132,105 +131,122 @@ class ClientLayout extends Layout
                             let newProject = document.createElement('li');
                             newProject.dataset['projectId'] = uuid;
                             newProject.innerHTML = `<a href="/project/${uuid}">${name}</a>`;
-                            console.log(container);
                             container.insertBefore(newProject, container.lastChild);
-
-                            let tmp = document.createElement('div');
-                            tmp.innerHTML = `
-                                <div class="project" data-project-id="${uuid}" data-loaded="false" data-last="0">
-                                    <div class="dropdown-header">
-                                        <h3>${name}</h3>
-                                        <div class="line"></div>
-                                    </div>
-                                    <div class="container">
-                                        <button onclick="loadNext(event)" class="hover-shadow flat no-border" style="margin: 10px auto"><?= t('load') ?></button>
-                                    </div>
-                                </div>`
-                            this.Container.append(tmp.children[0]);                            
                             this.Projects[uuid] = ({name: name, tasks: []});
+
+                            if (this.AfterProjectAdd != null)
+                                this.AfterProjectAdd(uuid, name);
                         },
+                        "AddTask": function(uuid, task, meta) 
+                        {
+                            if (typeof this.Projects[uuid] !== "object") 
+                            {
+                                return;
+                            }
+
+                            // úkol již existuje
+                            if (this.Projects[uuid].tasks.some(t => t.id == task.id)) 
+                            {
+                                return;
+                            }
+
+                            this.Projects[uuid].tasks.push(task);
+
+                            if (this.AfterTaskAdd != null)
+                                this.AfterTaskAdd(uuid, task, meta);
+                        },
+                        "AfterProjectAdd": null,
+                        "AfterTaskAdd": null,
+                        "UpdateTask": function(uuid, index, data) 
+                        {
+                            if (typeof this.Projects[uuid] !== "object") 
+                            {
+                                return;
+                            }
+
+                            this.Projects[uuid].tasks[index] = data;
+                        } 
                     };                    
                     
                     document.querySelectorAll('[data-project-id]').forEach(el => DATA.Projects[el.dataset.projectId] = {name: el.children[0].textContent, tasks: []});
 
                     window.addEventListener('load',
                     function() {
-                            DATA.Container = document.querySelector('.task-list');
-                            let btn = document.querySelector("button[data-action=project]");
-                            let win = Modal.ModalProject.create();
+                        let btn = document.querySelector("button[data-action=project]");
+                        let win = Modal.ModalProject.create();
 
-                            win.setParent(document.body.querySelector('main'));
+                        win.setParent(document.body.querySelector('main'));
 
-                            win.setNameValidation(function(e, el){
-                                if (!el.value) {
-                                    win.setNameError('Empty');
-                                    return false;
-                                } else {
-                                    win.clearNameError();
-                                    return true;
-                                }
+                        win.setNameValidation(function(e, el){
+                            if (!el.value) {
+                                win.setNameError('Empty');
+                                return false;
+                            } else {
+                                win.clearNameError();
+                                return true;
+                            }
+                        });
+
+                        win.setActionCreate(function(data) {
+                            if (!data[0]) 
+                            {
+                                win.setNameError('Empty');
+                                return;
+                            }
+                            let response = Request.Action('/api/create/project', 'POST', {name: data[0]});
+                            response.then(res => {
+                                let project = res.data.project;
+                                Kantodo.success(`Created project (${project.uuid})`);
+
+
+                                win.clear();
+                                win.hide();
+                                
+                                let snackbar = Modal.Snackbar.create('<?= t('project_was_created') ?>', null, 'success');
+                                snackbar.show();
+                                
+                                DATA.AddProject(project.uuid, data[0]);
+
+                            }).catch(reason => {
+                                let snackbar = Modal.Snackbar.create(reason.statusText, null, 'error');
+                                snackbar.show();
+                                win.hide(true);
+                                Kantodo.error(reason);
                             });
-                            win.setActionCreate(function(data) {
-                                if (!data[0]) 
-                                {
-                                    win.setNameError('Empty');
-                                    return;
-                                }
-                                let response = Request.Action('/api/create/project', 'POST', {name: data[0]});
-                                response.then(res => {
-                                    let project = res.data.project;
-                                    Kantodo.success(`Created project (${project.uuid})`);
+                        });
 
 
-                                    win.clear();
-                                    win.hide();
-                                    
-                                    let snackbar = Modal.Snackbar.create('<?= t('project_was_created') ?>', null, 'success');
-                                    snackbar.show();
-                                    
-                                    DATA.AddProject(project.uuid, data[0]);
+                        btn.addEventListener('click', function(e) {
+                            win.show();
+                        });
 
-                                }).catch(reason => {
-                                    let snackbar = Modal.Snackbar.create(reason.statusText, null, 'error');
-                                    snackbar.show();
-                                    win.hide(true);
-                                    Kantodo.error(reason);
-                                });
+                        
+                        win.setActionJoin(function(data) {
+                            if (!data[0]) 
+                            {
+                                win.setCodeError('Empty');
+                                return;
+                            }
+                            win.clearCodeError();
+
+                            let response = Request.Action('/api/join/project', 'POST', {code: data[0]});
+                            response.then(res => {
+                                console.log(res);
+                                let project = res.data.project;
+                                Kantodo.success(`Join project (${project.uuid})`);
+
+                                DATA.AddProject(project.uuid, project.name);
+                                win.clear();
+                                win.hide();
+
+                                let snackbar = Modal.Snackbar.create('<?= t('you_have_joined_project') ?>', null, 'success');
+                                snackbar.show();
+
+                            }).catch(reason => {
+                                Kantodo.error(reason);
                             });
-
-
-                            btn.addEventListener('click', function(e) {
-                                win.show();
-                            });
-
-                            
-                            win.setActionJoin(function(data) {
-                                if (!data[0]) 
-                                {
-                                    win.setCodeError('Empty');
-                                    return;
-                                }
-                                win.clearCodeError();
-
-                                let response = Request.Action('/api/join/project', 'POST', {code: data[0]});
-                                response.then(res => {
-                                    console.log(res);
-                                    let project = res.data.project;
-                                    Kantodo.success(`Join project (${project.uuid})`);
-
-                                    DATA.AddProject(project.uuid, project.name);
-                                    win.clear();
-                                    win.hide();
-
-                                    let snackbar = Modal.Snackbar.create('<?= t('you_have_joined_project') ?>', null, 'success');
-                                    snackbar.show();
-
-                                }).catch(reason => {
-                                    Kantodo.error(reason);
-                                });
-                            });
-                        }
-                    );
+                        });
+                    });
                 </script>
             </nav>
         </header>

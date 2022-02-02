@@ -69,9 +69,9 @@ class Version_1_0 extends AbstractMigration
             $table->addPrimaryKey('project_position_id');
         });
 
-        ///////////////////////////////
-        // TABLE USER_TEAM_PROJECTS //
-        //////////////////////////////
+        /////////////////////////
+        // TABLE USER_PROJECTS //
+        /////////////////////////
         $schema->create('user_projects', function (Blueprint $table, Schema $schema) {
             $table->addColumn('user_id', 'bigint', ['unsigned' => true]);
             $table->addColumn('project_id', 'bigint', ['unsigned' => true]);
@@ -138,25 +138,6 @@ class Version_1_0 extends AbstractMigration
             $table->addForeignKey('task_id', $schema->getTable('tasks'), 'task_id', Blueprint::ACTION_AFFECT);
         });
 
-        /////////////////////////
-        // TABLE TASK_COMMENTS //
-        /////////////////////////
-        $schema->create('task_comments', function (Blueprint $table, Schema $schema) {
-            $table->addColumn('task_comment_id', 'bigint', ['unsigned' => true, 'autoincrement' => true]);
-            $table->addColumn('content', 'varchar');
-            $table->addColumn('edit_date', 'datetime');
-            $table->addColumn('parent_comment_id', 'bigint', ['unsigned' => true, 'notNull' => false]);
-            $table->addColumn('user_id', 'bigint', ['unsigned' => true]);
-            $table->addColumn('task_id', 'bigint', ['unsigned' => true]);
-
-            //keys
-            $table->addPrimaryKey('task_comment_id');
-
-            $table->addForeignKey('parent_comment_id', $table, 'task_comment_id', Blueprint::ACTION_NON);
-            $table->addForeignKey('user_id', $schema->getTable('users'), 'user_id', Blueprint::ACTION_AFFECT);
-            $table->addForeignKey('task_id', $schema->getTable('tasks'), 'task_id', Blueprint::ACTION_AFFECT);
-        });
-
         ////////////////
         // TABLE TAGS //
         ////////////////
@@ -179,20 +160,6 @@ class Version_1_0 extends AbstractMigration
 
             $table->addForeignKey('task_id', $schema->getTable('tasks'), 'task_id', Blueprint::ACTION_AFFECT);
             $table->addForeignKey('tag_id', $schema->getTable('tags'), 'tag_id', Blueprint::ACTION_AFFECT);
-        });
-
-        ////////////////////////////
-        // TABLE TASK_ATTACHMENTS //
-        ////////////////////////////
-        $schema->create('task_attachments', function (Blueprint $table, Schema $schema) {
-            $table->addColumn('task_attachment_id', 'bigint', ['unsigned' => true, 'autoincrement' => true]);
-            $table->addColumn('path', 'varchar');
-            $table->addColumn('task_id', 'bigint', ['unsigned' => true]);
-
-            //keys
-            $table->addPrimaryKey('task_attachment_id');
-
-            $table->addForeignKey('task_id', $schema->getTable('tasks'), 'task_id', Blueprint::ACTION_AFFECT);
         });
 
         ////////////////////////

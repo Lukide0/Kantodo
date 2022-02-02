@@ -87,6 +87,42 @@ class TaskModel extends Model
 
         return false;
     }
+    
+    /**
+     * Upraví úkol
+     *
+     * @param   int    $taskID   id úkolu
+     * @param   array<string,mixed>  $columns  sloupce s novou hodnotou
+     *
+     * @return  bool           status
+     */
+    public function update(int $taskID, array $columns)
+    {
+        $columnsTable = $this->getTableColumns();
+
+        $query = "UPDATE {$this->table} SET";
+        $data = [];
+
+        foreach ($columns as $key => $value) {
+            if (!in_array($key, $columnsTable, true)) 
+                continue;
+            
+            $query .= " {$key} = :{$key},";
+            $data[":{$key}"] = $value;
+        }
+        
+        if (count($data) == 0)
+            return false;
+
+        $query[strlen($query) - 1] = ' ';
+
+        $query .= "WHERE task_id = :taskID";
+        $data[':taskID'] = $taskID;
+
+        $sth = $this->con->prepare($query);
+        $status   = $sth->execute($data);
+        return $status;
+    }
 
     /**
      * Smaže úkol

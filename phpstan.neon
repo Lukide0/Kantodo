@@ -4,6 +4,7 @@ parameters:
         - Src
         - Pages
         - api
+        - server
     bootstrapFiles:
         - Loader/autoload.php
     ignoreErrors:

@@ -5,6 +5,7 @@ import { EditorModalWindow, ModalProject } from "./components/modalWindow.js";
 import taskWindow from "./components/taskWindow.js";
 import Kantodo from "./kantodo.js";
 import Validation from "./utils/validation.js";
+import { initInput } from "./utils/util.js";
 
 
 String.prototype.allReplace = function(obj) {
@@ -14,7 +15,6 @@ String.prototype.allReplace = function(obj) {
     }
     return retStr;
 };
-
 
 window.Kantodo = Kantodo;
 
@@ -41,11 +41,13 @@ window.Request = {
     Action
 };
 
+//---- Input ----//
+window.InitInput = initInput;
+
 //---- Validation ----//
 window.Validation = Validation;
 
 //---- SimpleMDE config ----//
-
 window.getMDEConfig = function(element = null) 
 {
     return  {
