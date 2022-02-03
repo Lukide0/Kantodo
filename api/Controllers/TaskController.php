@@ -334,6 +334,7 @@ class TaskController extends AbstractController
         if (count($taskData) == 0) 
         {
             $response->fail([]);
+            exit;
         }
 
 

@@ -15,7 +15,6 @@ $APP->session->start();
 // TODO: nastaveni uctu, autocomplete tag, filtrovani ukolu
 // TODO: WS!!!!!!!
 
-// 3.2  CT: filter tasks
 // 4.2  PA: autocomplete tags + edit task tags
 // 5.2  SO-NE: WS
 // 7.2  PO: Calendar + Comment JS, VIEWS

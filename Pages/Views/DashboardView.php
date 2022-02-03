@@ -31,9 +31,41 @@ class DashboardView implements IView
         <div class="row h-space-between">
             <h2><?= t('my_work', 'dashboard') ?></h2>
             <div class="row">
+                <button class="hover-shadow flat no-border space-medium-right" onclick="showCompletedTasks(event)"><?= t("show_completed_tasks")?></button>
                 <button data-action='task' class="filled big hover-shadow"><?= t('add_task', 'dashboard') ?></button>
                 <script>
                 let taskWin;
+                let showCompleted = false;
+
+                function showCompletedTasks(e) 
+                {
+                    if (showCompleted) 
+                    {
+                        showCompleted = false;
+                        for (const projUUID in DATA.Projects) {
+                            DATA.Projects[projUUID].tasks.forEach(task => {
+                            if (task.completed == "1") {
+                                document.querySelector(`[data-task-id="${task.id}"]`).style.display = "none";
+                            }
+                            });
+                        }
+
+                        e.target.innerText = "<?= t("show_completed_tasks")?>";
+
+                    } else {
+                        showCompleted = true;
+                        for (const projUUID in DATA.Projects) {
+                            DATA.Projects[projUUID].tasks.forEach(task => {
+                            if (task.completed == "1") 
+                            {
+                                document.querySelector(`[data-task-id="${task.id}"]`).style.display = null;
+                            }
+                            });
+                        }
+                        e.target.innerText = "<?= t("hide_completed_tasks")?>";
+                    }
+                }
+
                 DATA.AfterProjectAdd = function(uuid, name) 
                 {
                     let tmp = document.createElement('div');
@@ -58,6 +90,10 @@ class DashboardView implements IView
                     }).join('');
 
                     let taskEl = document.createElement('div');
+                    if (task.completed == '1' && showCompleted == false) 
+                    {
+                        taskEl.style.display = "none";
+                    }
                     taskEl.classList.add('task');
                     taskEl.dataset['taskId'] = task.id;
                     taskEl.innerHTML = `
@@ -239,7 +275,7 @@ class DashboardView implements IView
                             response.then(res => {
                                 if (taskData.name != taskInfo.name) 
                                 {
-                                    projectEl.querySelector(`[data-task-id="${taskInfo.id}"] > header h4`).innerText = taskData.name;
+                                    taskel.querySelector(`header h4`).innerText = taskData.name;
                                 }
 
                                 for(var p in taskData)
@@ -309,9 +345,9 @@ class DashboardView implements IView
 
                     if (taskInfo.completed == 0) 
                     {
-                        itemChangeStatus = Dropdown.Item.create(translations['%mark_as_completed%'], null, {'text': 'done'});
+                        itemChangeStatus = Dropdown.Item.create(translations['%mark_as_completed%'], switchStatusComplete, {'text': 'done'});
                     } else {
-                        itemChangeStatus = Dropdown.Item.create(translations['%mark_as_incomplete%'], null, {'text': 'close'});
+                        itemChangeStatus = Dropdown.Item.create(translations['%mark_as_incomplete%'], switchStatusUncomplete, {'text': 'close'});
                         itemChangeStatus.element.style = "color: rgb(var(--success-dark)) !important";
                     }
 
@@ -343,6 +379,56 @@ class DashboardView implements IView
 
 
                     e.stopPropagation();
+
+                    function switchStatusComplete() 
+                    {
+                        let data = {
+                            task_proj: uuid,
+                            task_id: taskInfo.id,
+                            task_comp: '1',
+                        };
+
+                        let response = Request.Action('/api/update/task', 'POST', data);
+                        response.then(res => {
+                            taskInfo.completed = 1;
+
+                            if (showCompleted == false) 
+                            {
+                                taskEl.style.display = "none";
+                            }
+
+                        }).catch(reason => {
+                            let snackbar = Modal.Snackbar.create(reason.statusText, null ,'error');
+                            snackbar.show();
+                            Kantodo.error(reason);
+                        }).finally(() => {
+                            taskWin.hide();
+                            menu.element.blur()
+                        });
+                    }
+
+                    function switchStatusUncomplete() 
+                    {
+                        let data = {
+                            task_proj: uuid,
+                            task_id: taskInfo.id,
+                            task_comp: '0',
+                        };
+
+                        let response = Request.Action('/api/update/task', 'POST', data);
+                        response.then(res => {
+                            taskInfo.completed = 0;
+                        }).catch(reason => {
+                            let snackbar = Modal.Snackbar.create(reason.statusText, null ,'error');
+                            snackbar.show();
+                            Kantodo.error(reason);
+                        }).finally(() => {
+                            taskWin.hide();
+                            menu.element.blur()
+                        });
+                    }
+
+
                 }
 
                 window.addEventListener('load', function(){
