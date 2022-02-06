@@ -253,6 +253,42 @@ class ClientLayout extends Layout
         <main>
             <?= $content ?>
         </main>
+        <script>
+
+            var url;
+            if (location.protocol == 'https:')
+                url = "wss://";
+            else
+                url = "ws://";
+            
+            url += "127.0.0.1:8443";
+            const ws = new WebSocket(url, ['access_token','<?= Auth::$PASETO_RAW ?>']);
+
+            let dataFormat = function(action, value) 
+            {
+                return JSON.stringify({ action, value})
+            };
+
+            ws.onopen = function() 
+            {
+                for (let proj in DATA.Projects) 
+                {
+                    ws.send(dataFormat('join', proj));
+                }
+
+            };
+
+            ws.onmessage = function(msg) 
+            {
+                console.log(msg.data);
+            };
+
+            ws.onclose = function() 
+            {
+                Kantodo.info("WS connection closing");
+            }
+
+        </script>
         </body>
 
         </html>

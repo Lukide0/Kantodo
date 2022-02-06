@@ -10,8 +10,8 @@ use Kantodo\Core\BaseApplication;
 use Kantodo\Core\IAuth;
 use Kantodo\Models\UserModel;
 use ParagonIE\Paseto\Builder;
+use ParagonIE\Paseto\Exception\PasetoException;
 use ParagonIE\Paseto\JsonToken;
-use ParagonIE\Paseto\Keys\Version4\AsymmetricSecretKey;
 use ParagonIE\Paseto\Keys\Version4\SymmetricKey;
 use ParagonIE\Paseto\Parser;
 use ParagonIE\Paseto\Protocol\Version4;
@@ -161,14 +161,13 @@ class Auth implements IAuth
         if ($key === false)
             return false;
         
-        
         $parser = Parser::getLocal(new SymmetricKey($key), ProtocolCollection::v4())
             ->addRule(new ValidAt)
             ->addRule(new Subject($subject));
         
         try {
             self::$PASETO = $parser->parse($token);
-        } catch (\Throwable $th) {
+        } catch (PasetoException $ex) {
             return false;
         }
 

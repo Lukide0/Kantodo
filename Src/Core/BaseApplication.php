@@ -130,7 +130,9 @@ class BaseApplication
             // src dir
             dirname(
                 // core dir
-                __DIR__
+                dirname(
+                    __FILE__
+                )
             )
         );
 
@@ -233,7 +235,7 @@ class BaseApplication
      */
     public static function createSymmetricKey() 
     {
-        $key = Version4::generateSymmetricKey()->raw();
+        $key = random_bytes(32);
 
         filePutContentSafe(Application::$KEYS_PATH . 'symmetric.key', $key, FILE_FLAG_OVERRIDE | FILE_FLAG_CREATE_DIR);
 
@@ -265,9 +267,13 @@ class BaseApplication
     {
         $path = Application::$KEYS_PATH . 'symmetric.key';
         if (file_exists($path))
+        {
             return file_get_contents($path);
-        else
+        }
+        else 
+        {
             return self::createSymmetricKey();
+        }
     }
 
     /**
