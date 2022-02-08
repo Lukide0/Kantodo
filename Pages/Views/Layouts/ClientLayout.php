@@ -155,17 +155,43 @@ class ClientLayout extends Layout
                             if (this.AfterTaskAdd != null)
                                 this.AfterTaskAdd(uuid, task, meta);
                         },
-                        "AfterProjectAdd": null,
-                        "AfterTaskAdd": null,
-                        "UpdateTask": function(uuid, index, data) 
+                        "UpdateTask": function(uuid, data) 
                         {
                             if (typeof this.Projects[uuid] !== "object") 
                             {
                                 return;
                             }
 
+                            let index = this.Projects[uuid].tasks.findIndex((t) => t.id == data.id);
+                            
+                            if (index == -1) return;
+
+
                             this.Projects[uuid].tasks[index] = data;
-                        } 
+                            
+                            if (this.AfterTaskUpdate != null)
+                                this.AfterTaskUpdate(uuid, index, data);
+                            
+                        },
+                        "RemoveTask": function(uuid, taskID) 
+                        {
+                            if (typeof this.Projects[uuid] !== "object") 
+                            {
+                                return;
+                            }
+
+                            let index = this.Projects[uuid].tasks.findIndex((t) => t.id == taskID);
+                            if (index == -1) return;
+                            
+                            this.Projects[uuid].tasks.splice(index, 1);
+                            
+                            if (this.AfterTaskRemove != null)
+                                this.AfterTaskRemove(uuid, taskID);
+                        },
+                        "AfterTaskUpdate": null, 
+                        "AfterProjectAdd": null,
+                        "AfterTaskAdd": null,
+                        "AfterTaskRemove": null,
                     };                    
                     
                     document.querySelectorAll('[data-project-id]').forEach(el => DATA.Projects[el.dataset.projectId] = {name: el.children[0].textContent, tasks: []});

@@ -83,6 +83,19 @@ class DashboardView implements IView
                     document.querySelector('.task-list').append(tmp.children[0]);
                 }
 
+                DATA.AfterTaskRemove = function(uuid, taskID)
+                {
+                    // TODO: check if user edit
+                    let el = document.querySelector(`[data-task-id='${taskID}']`);
+                    if (el)
+                        el.remove();
+                }
+
+                DATA.AfterTaskUpdate = function(uuid, index, data)
+                {
+                    // TODO: check if user edit
+                }
+
                 DATA.AfterTaskAdd = function(uuid, task, container) {
                     let tags = task.tags;
                     let tagsHTML = tags.map(tag => {
@@ -282,6 +295,7 @@ class DashboardView implements IView
                                 {
                                     taskInfo[p] = taskData[p];
                                 }
+                                DATA.UpdateTask(uuid, taskInfo);
                             }).catch(reason => {
                                 let snackbar = Modal.Snackbar.create(reason.statusText, null ,'error');
                                 snackbar.show();
@@ -323,7 +337,7 @@ class DashboardView implements IView
                             let response = Request.Action('/api/remove/task', 'POST', data);
                             response.then(res => {
                                 
-                                DATA.Projects[uuid].tasks.splice(DATA.Projects[uuid].tasks.findIndex((t) => t.id == taskID), 1);
+                                DATA.RemoveTask(uuid, taskInfo.id);
                                 taskEl.remove();
 
                                 let snackbar = Modal.Snackbar.create('<?= t('task_was_removed') ?>', null ,'success');
@@ -396,6 +410,8 @@ class DashboardView implements IView
                             {
                                 taskEl.style.display = "none";
                             }
+
+                            DATA.UpdateTask(uuid, taskInfo);
 
                         }).catch(reason => {
                             let snackbar = Modal.Snackbar.create(reason.statusText, null ,'error');
