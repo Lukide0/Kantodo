@@ -18,22 +18,11 @@ class AccountSettingsView implements IView
         <div class="container">
             <h2 class="row space-extreme-bottom" style="font-size: 2.8rem"><?= t('account') . ' - ' . t('settings');?></h2>
             <div class="row">
-                <?= Input::text('userFirstname', t('firstname'), ['value' => $params['firstname']]) ?>
-                <?= Input::text('userLastname', t('lastname'), ['value' => $params['lastname']]) ?>
+                <?= Input::text('userFirstname', t('firstname'), ['value' => $params['firstname'], 'classes' => "disabled"]) ?>
+                <?= Input::text('userLastname', t('lastname'), ['value' => $params['lastname'], 'classes' => "disabled space-medium-left"]) ?>
             </div>
             <div class="row">
-                <?= Input::text('userEmail', t('email'), ['value' => $params['email']]) ?>
-            </div>
-            <div class="row">
-                <div class="container">
-                    <div class="row">
-                        <?= Input::text('userPasswordCurrent', t('password', 'auth')) ?>
-                    </div>
-                    <div class="row">
-                        <?= Input::text('userPasswordNew', t('password_new', 'auth')) ?>
-                        <?= Input::text('userPasswordNewConfirm', t('password_confirm', 'auth')) ?>
-                    </div>
-                </div>
+                <?= Input::text('userEmail', t('email'), ['value' => $params['email'], 'classes' => "disabled"]) ?>
             </div>
             <div class="row">
                 <button class="error action" data-action='account'><?= t('delete_account', 'settings') ?></button>

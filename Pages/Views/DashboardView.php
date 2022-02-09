@@ -37,6 +37,8 @@ class DashboardView implements IView
                 let taskWin;
                 let showCompleted = false;
 
+                // TODO: fix edit task_endDate and task_tags
+
                 function showCompletedTasks(e) 
                 {
                     if (showCompleted) 
