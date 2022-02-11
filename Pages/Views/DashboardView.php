@@ -457,7 +457,7 @@ class DashboardView implements IView
 
 
                     taskWin.setActionCreate(createTask);
-             
+                    // TODO: client data valid ex. empty project
                     function createTask() {
                         let inputName = taskWin.getNameInput();
                         let data = {};
@@ -473,6 +473,8 @@ class DashboardView implements IView
                         for (let i = 0; i < chipsArray.length; i++) {
                             data[`task_tags[${i}]`] = chipsArray[i];
                         }
+                        if (!data.task_proj)
+                            return;
 
                         let projectEl = document.querySelector(`main [data-project-id=${data.task_proj}] > .container`);
                         let taskData = {
@@ -504,6 +506,8 @@ class DashboardView implements IView
                             let snackbar = Modal.Snackbar.create(reason.statusText, null ,'error');
                             snackbar.show();
                             Kantodo.error(reason);
+                        }).finally(() => {
+                            taskWin.hide();
                         });
                     };
                 });

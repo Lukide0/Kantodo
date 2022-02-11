@@ -68,7 +68,6 @@ class AccountSettingsView implements IView
                             }).catch(reason => {
                                 let snackbar = Modal.Snackbar.create(reason.statusText, null ,'error');
                                 snackbar.show();
-
                                 Kantodo.error(reason);
                             }).finally(() => {
                                 dialogOBJ.destroy(true);

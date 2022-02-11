@@ -12,12 +12,8 @@ $APP = new Application();
 $APP->registerAuth(new Auth());
 $APP->session->start();
 // REMEMBER: Menit title ve view, preklad cz
-// TODO: nastaveni uctu, autocomplete tag, filtrovani ukolu
+// TODO: tasks v projektu, validace ukolu + ~, komentare, VIEWS title, Calendar 
 // TODO: WS!!!!!!!
-
-// 4.2  PA: edit task tags - pozdeji
-// 5.2  SO-NE: WS
-// 7.2  PO: Calendar + Comment JS, VIEWS
 // 8.2-?.2 SASS
 
 

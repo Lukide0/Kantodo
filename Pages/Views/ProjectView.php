@@ -45,10 +45,10 @@ class ProjectView implements IView
                 window.addEventListener('load', function(){
                     let btn = document.querySelector('button[data-action=task]');
                     let win= Modal.createTaskWindow(btn, {id: "<?=$projectUrlUUID;?>", name: "<?=$project['name'];?>"});
-
+                    
                     let editor = win.getEditor();
                     let input = win.getProjectInput();
-
+                    input.parentElement.parentElement.classList.add('active');
                     win.element.querySelector('[data-action=create]').addEventListener('click', function() {
                         let inputName = win.element.querySelector('[data-input=task_name]');
                         let data = {};
@@ -78,6 +78,8 @@ class ProjectView implements IView
 
                         }).catch(reason => {
                             Kantodo.error(reason);
+                        }).finally(() => {
+                            win.hide();
                         });
                     });
                 });
@@ -155,11 +157,13 @@ class ProjectView implements IView
                             ]);
                             
                             dialog.setParent(document.body.querySelector('main'));
+                            
+
                             dialog.show();
 
                         }).catch(err => {
                             Kantodo.error(err);
-                        })
+                        });
                     });
 
 

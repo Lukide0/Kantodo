@@ -27,7 +27,7 @@ const modalTaskHTML = `
                 <div class="name">%status%</div>
                 <label class="text-field selector">
                     <div class="field">
-                        <input type="text" data-input='status' data-value='' readonly>
+                        <input type="text" data-input='status' data-value='0' value="%open%" readonly>
                     </div>
                     <ul class="options dropdown-menu" data-select='status' tabindex='-1'>
                         <li data-value='0'>%open%</li>
@@ -39,7 +39,7 @@ const modalTaskHTML = `
                 <div class="name">%priority%</div>
                 <label class="text-field selector">
                     <div class="field">
-                        <input type="text" data-input='priority' data-value='' readonly>
+                        <input type="text" data-input='priority' data-value='0' value="%priority_low%" readonly>
                     </div>
                     <ul class="options dropdown-menu" data-select='priority' tabindex='-1'>
                         <li data-value='0'>%priority_low%</li>
@@ -91,10 +91,10 @@ export default function taskWindow(btn, project = null) {
     let chipInput = chipsContainer.querySelector('input');
     let chipsArray = [];
 
-
+    
     let btnCreate = win.element.querySelector('[data-action=create]');
     let btnUpdate = win.element.querySelector('[data-action=update]');
-
+    
     let statusField = win.element.querySelector('[data-input=status]');
     let statusValues = win.element.querySelector('[data-select=status]');
     
@@ -102,7 +102,7 @@ export default function taskWindow(btn, project = null) {
     let priorityValues = win.element.querySelector('[data-select=priority]');
 
     let endDateInput = win.element.querySelector('input[type=datetime-local]');
-
+    
     if (project) 
     {
         input.dataset.value = project.id;

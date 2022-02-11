@@ -182,7 +182,7 @@ class WsNotification implements MessageComponentInterface, WsServerInterface
     }
 
     public function onClose(ConnectionInterface $conn) : void {
-        Console::error("Closing connection");
+        Console::memory();
         foreach ($this->channels as $channelId => $channel) {
             if ($channel->remove($conn)) 
             {

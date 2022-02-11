@@ -103,8 +103,9 @@ class ProjectSettingsView implements IView
                                     Kantodo.info(res);
                                 }).catch(err => {
                                     Kantodo.error(err);
-                                })
-                                dialogOBJ.destroy(true);
+                                }).finally(() => {
+                                    dialogOBJ.destroy(true);
+                                });
                             }
                         }
                     ]);
@@ -137,9 +138,10 @@ class ProjectSettingsView implements IView
                                     e.target.parentElement.parentElement.remove();
                                 }).catch(err => {
                                     Kantodo.error(err);
+                                }).finally(() => {
+                                    dialogOBJ.destroy(true);
                                 })
 
-                                dialogOBJ.destroy(true);
                             }
                         }
                     ]);

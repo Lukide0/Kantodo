@@ -27,7 +27,6 @@ class ClientLayout extends Layout
      */
     public function render(string $content = '', array $params = [])
     {
-
         // TODO: Active item v menu, odstraneni projektu WS
         $headerContent = Application::$APP->header->getContent();
         if (!isset($params['projects'])) 
@@ -223,10 +222,7 @@ class ClientLayout extends Layout
                             response.then(res => {
                                 let project = res.data.project;
                                 Kantodo.success(`Created project (${project.uuid})`);
-
-
                                 win.clear();
-                                win.hide();
                                 
                                 let snackbar = Modal.Snackbar.create('<?= t('project_was_created') ?>', null, 'success');
                                 snackbar.show();
@@ -236,8 +232,9 @@ class ClientLayout extends Layout
                             }).catch(reason => {
                                 let snackbar = Modal.Snackbar.create(reason.statusText, null, 'error');
                                 snackbar.show();
-                                win.hide(true);
                                 Kantodo.error(reason);
+                            }).finally(() => {
+                                win.hide();
                             });
                         });
 
@@ -263,13 +260,14 @@ class ClientLayout extends Layout
 
                                 DATA.AddProject(project.uuid, project.name);
                                 win.clear();
-                                win.hide();
-
+                                
                                 let snackbar = Modal.Snackbar.create('<?= t('you_have_joined_project') ?>', null, 'success');
                                 snackbar.show();
-
+                                
                             }).catch(reason => {
                                 Kantodo.error(reason);
+                            }).finally(() => {
+                                win.hide();
                             });
                         });
                     });
