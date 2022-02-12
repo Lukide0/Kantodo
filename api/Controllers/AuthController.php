@@ -17,12 +17,12 @@ class AuthController extends AbstractController
 {
     /**
      * Akce na obnovení paseto tokenu
+     * Není implementována na front-end
      *
      * @return  void
      */
     public function refreshToken()
     {
-        // TODO: frontend
         $body = API::$API->request->getBody();
         $response = API::$API->response;
         $keys = [

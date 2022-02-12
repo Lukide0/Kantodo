@@ -46,11 +46,19 @@ main {
     & > .day {
         @include font(900, medium, 700);
 
-        max-width: 150px;
-        max-height: 150px;
+        max-width: 300px;
+        max-height: 300px;
         border-radius: borderRadius(small);
         border: 1px solid color(border);
         padding: space(regular);
+
+        &:hover:not(.previus) {
+            transition: box-shadow 150ms ease-out;
+            cursor: pointer;
+
+            @include material-shadow(6);
+
+        }
 
         & > .tasks-count {
             margin-top: space(small);
@@ -70,8 +78,6 @@ main {
         }
 
         &.today {
-            @include material-shadow(4);
-
             border: none;
 
             background: color(primary);

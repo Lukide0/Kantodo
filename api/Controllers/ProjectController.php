@@ -362,7 +362,6 @@ class ProjectController extends AbstractController
         }
     }
 
-    // TODO: frontend
     /**
      * Akce na smazání projektu
      *

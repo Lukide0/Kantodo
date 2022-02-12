@@ -204,8 +204,9 @@ function showTaskContextMenu(e,uuid,taskID) {
             };
             
             let date = taskWin.getEndDate();
+
             if (date)
-                taskData.end_date = new Date(date).toISOString().substr(0, 16);
+                taskData.end_date = new Date(date).toJSON();
 
             for (let i = 0; i < chipsArray.length; i++) {
                 data[`task_tags[${i}]`] = chipsArray[i];

@@ -248,21 +248,20 @@ class TaskController extends AbstractController
         if (!is_null($month)) 
         {
             $search['CUSTOM_WHERE'] = [
-                "MONTH(end_date) = :month AND YEAR(end_date) = :year",
+                "MONTH(end_date) = :month AND YEAR(end_date) = :year AND end_date IS NOT NULL",
                 [
                     ":month" => $month,
                     ":year"  => $year
                 ]
             ];
+            // nacte prvnich 500
+            $limit = 500;
         }
 
         $taskModel = new TaskModel();
         $tasks = $taskModel->get(
             ['task_id' => 'id', 'name', 'description', 'priority', 'completed', 'end_date'],
-            [
-                'project_id' => $projectId,
-                'task_id'    => ['>', $last]
-            ],
+            $search,
             $limit
         );
 

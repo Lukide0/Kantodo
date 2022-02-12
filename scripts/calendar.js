@@ -1,5 +1,7 @@
 const daysContainer = document.querySelector(".days");
 
+var calendarTasks = {};
+
 function loadMonth(year, month, currentDate) {
     daysContainer.innerHTML = "";
 
@@ -25,9 +27,9 @@ function loadMonth(year, month, currentDate) {
 
     for (let i = 1; i <= monthDays; i++) {
         daysContainer.innerHTML += `
-        <div data-date="${i}" class="day">
+        <div data-date="${i}" class="day" data-count="0" onclick="showTasks(event, this)">
             <div class="name">${i}</div>
-            <div class="tasks-count">0 tasks</div>
+            <div class="tasks-count">0</div>
         </div>`;
     }
 
@@ -42,5 +44,48 @@ function loadMonth(year, month, currentDate) {
         document.querySelector(`[data-date='${currDay}']`).classList.add('today');
 }
 
+function showTasks(e, el) 
+{
+    let day = el.dataset['date'];
+    let tasks = calendarTasks[year][month][day] ?? [];
+    
+    // TODO: show tasks => copy-paste from dashboard
+}
+
+function addTaskToDay(task) 
+{
+    const date = new Date(task.end_date);
+
+    let day = date.getDate();
+    let month = date.getMonth();
+    let year = date.getFullYear();
+
+    if (calendarTasks[year] === undefined) 
+    {
+        calendarTasks[year] = {};
+        calendarTasks[year][month] = {};
+        calendarTasks[year][month][day] = [task];
+    } 
+    else if (calendarTasks[year][month] === undefined) 
+    {
+        calendarTasks[year][month] = {};
+        calendarTasks[year][month][day] = [task];
+    }
+    else if (calendarTasks[year][month][day] === undefined) 
+    {
+        calendarTasks[year][month][day] = [task];
+    }
+    else 
+    {
+        calendarTasks[year][month][day].push(task);  
+    }
+    let dayEl = document.querySelector(`[data-date="${day}"]`);
+    dayEl.querySelector('.tasks-count').innerHTML = ++dayEl.dataset['count'];
+}
+
+function isLoaded(month, year) 
+{
+    return calendarTasks[year] !== undefined && calendarTasks[year][month] !== undefined;
+}
 
 Kantodo.info("Calendar loaded");
