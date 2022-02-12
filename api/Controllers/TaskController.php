@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Kantodo\API\Controllers;
@@ -46,8 +47,7 @@ class TaskController extends AbstractController
 
         $empty = Data::notSet($body[Request::METHOD_POST], $keys);
 
-        if (count($empty) != 0) 
-        {
+        if (count($empty) != 0) {
             $response->fail(array_fill_keys($empty, t('empty', 'api')));
             exit;
         }
@@ -61,20 +61,17 @@ class TaskController extends AbstractController
         $projUUID = base64DecodeUrl($body[Request::METHOD_POST]['task_proj']);
         $user = Auth::getUser();
 
-        if ($projUUID === false) 
-        {
+        if ($projUUID === false) {
             $response->error(t('project_uuid_missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
             exit;
         }
 
-        if ($user === null || empty($user['id'])) 
-        {
+        if ($user === null || empty($user['id'])) {
             $response->error(t('user_id_missing', 'api'));
             exit;
         }
 
-        if (!DataType::wholeNumber($taskCompleted, 0, 1) || !DataType::wholeNumber($taskPriority, 0, 2)) 
-        {
+        if (!DataType::wholeNumber($taskCompleted, 0, 1) || !DataType::wholeNumber($taskPriority, 0, 2)) {
             $response->fail(['error' => t('bad_request')]);
             exit;
         }
@@ -82,15 +79,12 @@ class TaskController extends AbstractController
         $taskPriority = (int)$taskPriority;
         $taskCompleted = (bool)$taskCompleted;
 
-        if ($taskEndDate !== null) 
-        {
+        if ($taskEndDate !== null) {
             $date = new DateTime($taskEndDate);
 
-            if ($date != false) 
-            {
+            if ($date != false) {
                 $taskEndDate = $date;
-            } else 
-            {
+            } else {
                 $response->fail(['error' => t('bad_request')]);
                 exit;
             }
@@ -100,47 +94,40 @@ class TaskController extends AbstractController
         $projModel = new ProjectModel();
 
         $details = $projModel->getBaseDetails((int)$user['id'], $projUUID);
-        if ($details === false) 
-        {
+        if ($details === false) {
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
             exit;
         }
         $priv = $projModel->getPositionPriv($details['name']);
 
-        if ($priv === false || !$priv['addTask']) 
-        {
+        if ($priv === false || !$priv['addTask']) {
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
             exit;
         }
-        
-        
+
+
         $taskModel = new TaskModel();
 
         $taskID = $taskModel->create($taskName, (int)$user['id'], (int)$details['id'], $taskDesc, $taskPriority, $taskEndDate, $taskCompleted);
-        if ($taskID === false) 
-        {
+        if ($taskID === false) {
             $response->error(t('cannot_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
             exit;
-        }        
+        }
 
-        if (!empty($body[Request::METHOD_POST]['task_tags']) && is_array($body[Request::METHOD_POST]['task_tags'])) 
-        {
+        if (!empty($body[Request::METHOD_POST]['task_tags']) && is_array($body[Request::METHOD_POST]['task_tags'])) {
             $tagModel = new TagModel();
 
             $tags = [];
             foreach ($body[Request::METHOD_POST]['task_tags'] as $tag) {
                 $tagID = $tagModel->createInProject($tag, (int)$details['id']);
-                
-                if ($tagID === false) 
-                {
+
+                if ($tagID === false) {
                     $response->error(t('cannot_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
-                } 
-                else
+                } else
                     $tags[] = $tagID;
-            
             }
 
-            
+
             $status = $tagModel->addTagsToTask($tags, $taskID);
 
             //if ($status === false)
@@ -151,15 +138,16 @@ class TaskController extends AbstractController
         // https://stackoverflow.com/a/28738208
         ob_start();
 
-        $response->success([
-            'task' => 
+        $response->success(
             [
-                'id' => $taskID
-            ]
+                'task' =>
+                [
+                    'id' => $taskID
+                ]
             ],
             Response::STATUS_CODE_CREATED
         );
-        
+
 
         $size = ob_get_length();
 
@@ -174,7 +162,7 @@ class TaskController extends AbstractController
         $keyMaterial = API::getSymmetricKey();
         if ($keyMaterial === false)
             exit;
-        
+
         $key = new SymmetricKey($keyMaterial);
         $paseto = (new Builder())
             ->setVersion(new Version4)
@@ -184,7 +172,7 @@ class TaskController extends AbstractController
             ->setClaims([
                 'user_id' => $user['id'],
                 'task_id' => (string)$taskID,
-                'project_uuid' => $projUUID    
+                'project_uuid' => $projUUID
             ])
             // nastavení vzniku
             ->setIssuedAt()
@@ -192,8 +180,8 @@ class TaskController extends AbstractController
             ->setSubject('ws_update')
             ->toString();
         $paseto = base64EncodeUrl($paseto);
-        
-        $client = \Ratchet\Client\connect('ws://127.0.0.1:8443')->then(function($conn) use ($paseto){
+
+        $client = \Ratchet\Client\connect('ws://127.0.0.1:8443')->then(function ($conn) use ($paseto) {
             $conn->send($paseto);
             $conn->close();
         });
@@ -212,18 +200,26 @@ class TaskController extends AbstractController
         $response = API::$API->response;
         $user = Auth::getUser();
         $body = API::$API->request->getBody();
-    
-        $last = ($body[Request::METHOD_GET]['last'] ?? 0);
 
-        if (DataType::wholeNumber($last)) 
-        {
+        $last = ($body[Request::METHOD_GET]['last'] ?? 0);
+        $month = ($body[Request::METHOD_GET]['month'] ?? null);
+        $year = ($body[Request::METHOD_GET]['year'] ?? null);
+
+        if (DataType::wholeNumber($last)) {
             $last = (int)$last;
         } else {
             $last = 0;
         }
 
-        if ($user === null || empty($user['id'])) 
-        {
+        if (DataType::wholeNumber($month, 1, 12) && DataType::wholeNumber($year, 1)) {
+            $month = (int)$month;
+            $year = (int)$year;
+        } else {
+            $month = null;
+            $year = null;
+        }
+
+        if ($user === null || empty($user['id'])) {
             $response->error(t('user_id_missing', 'api'));
             exit;
         }
@@ -233,36 +229,56 @@ class TaskController extends AbstractController
 
         $uuid = base64DecodeUrl($params['projectUUID']);
 
-        if ($uuid === false)
-        {
+        if ($uuid === false) {
             $response->error(t('project_uuid_missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
             exit;
         }
-        
+
         $projectId = 0;
-        if (ProjectModel::hasPrivTo('viewTask', (int)$user['id'], $uuid, $projectId) === false)
-        {
+        if (ProjectModel::hasPrivTo('viewTask', (int)$user['id'], $uuid, $projectId) === false) {
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
             exit;
         }
-        
-        $taskModel = new TaskModel();
-        $tasks = $taskModel->get(['task_id' => 'id', 'name', 'description', 'priority', 'completed', 'end_date'], ['project_id' => $projectId, 'task_id' => ['>', $last]], $limit);
-        
-        if ($tasks === false) 
+
+        $search = [
+            'project_id' => $projectId,
+            'task_id'    => ['>', $last]
+        ];
+
+        if (!is_null($month)) 
         {
+            $search['CUSTOM_WHERE'] = [
+                "MONTH(end_date) = :month AND YEAR(end_date) = :year",
+                [
+                    ":month" => $month,
+                    ":year"  => $year
+                ]
+            ];
+        }
+
+        $taskModel = new TaskModel();
+        $tasks = $taskModel->get(
+            ['task_id' => 'id', 'name', 'description', 'priority', 'completed', 'end_date'],
+            [
+                'project_id' => $projectId,
+                'task_id'    => ['>', $last]
+            ],
+            $limit
+        );
+
+        if ($tasks === false) {
             $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
-            exit;  
+            exit;
         }
 
         $tagModel = new TagModel();
-        
+
         foreach ($tasks as &$task) {
             $taskID = (int)$task['id'];
             $task['tags'] = $tagModel->getTaskTags($taskID);
         }
 
-        $response->success(['tasks' => $tasks]);      
+        $response->success(['tasks' => $tasks]);
     }
 
     /**
@@ -284,37 +300,33 @@ class TaskController extends AbstractController
 
         $empty = Data::notSet($body[Request::METHOD_POST], $keys);
 
-        if (count($empty) != 0) 
-        {
+        if (count($empty) != 0) {
             $response->fail(array_fill_keys($empty, t('empty', 'api')));
             exit;
         }
 
 
-        if ($user === null || empty($user['id'])) 
-        {
+        if ($user === null || empty($user['id'])) {
             $response->error(t('user_id_missing', 'api'));
             exit;
         }
-        
+
         $taskID = $body[Request::METHOD_POST]['task_id'];
         $taskProj = $body[Request::METHOD_POST]['task_proj'];
 
 
         $uuid = base64DecodeUrl($taskProj);
 
-        if ($uuid === false)
-        {
+        if ($uuid === false) {
             $response->error(t('project_uuid_missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
             exit;
         }
-    
-        if (!DataType::wholeNumber($taskID, 1)) 
-        {
+
+        if (!DataType::wholeNumber($taskID, 1)) {
             $response->error(t('task_id_is_not_valid', 'api'), Response::STATUS_CODE_BAD_REQUEST);
             exit;
         }
-        
+
         $taskData = [
             'name' => $body[Request::METHOD_POST]['task_name'] ?? NULL,
             'description' => $body[Request::METHOD_POST]['task_desc'] ?? NULL,
@@ -322,17 +334,15 @@ class TaskController extends AbstractController
             'completed' => $body[Request::METHOD_POST]['task_comp'] ?? NULL,
             'end_date' => $body[Request::METHOD_POST]['task_end_date'] ?? NULL
         ];
-        
+
 
         foreach ($taskData as $key => $value) {
-            if ($value === NULL) 
-            {
+            if ($value === NULL) {
                 unset($taskData[$key]);
             }
         }
 
-        if (count($taskData) == 0) 
-        {
+        if (count($taskData) == 0) {
             $response->fail([]);
             exit;
         }
@@ -340,33 +350,29 @@ class TaskController extends AbstractController
 
 
         $projectId = 0;
-        if(ProjectModel::hasPrivTo('editTask', (int)$user['id'], $uuid, $projectId) !== true) 
-        {
-            
+        if (ProjectModel::hasPrivTo('editTask', (int)$user['id'], $uuid, $projectId) !== true) {
+
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
             exit;
         }
-        
+
         $taskModel = new TaskModel();
-        
+
         $exists = $taskModel->getSingle(['task_id'], ['project_id' => $projectId, 'task_id' => $taskID]);
-        
-        
-        if ($exists === false) 
-        {
+
+
+        if ($exists === false) {
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
             exit;
         }
 
         $status = $taskModel->update((int)$taskID, $taskData);
 
-        if ($status === false) 
-        {
+        if ($status === false) {
             $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
         } else {
-            $response->success(null,Response::STATUS_CODE_OK);
+            $response->success(null, Response::STATUS_CODE_OK);
         }
-        
     }
 
 
@@ -386,8 +392,7 @@ class TaskController extends AbstractController
 
         $empty = Data::notSet($body[Request::METHOD_POST], $keys);
 
-        if (count($empty) != 0) 
-        {
+        if (count($empty) != 0) {
             $response->fail(array_fill_keys($empty, t('empty', 'api')));
         }
 
@@ -395,47 +400,40 @@ class TaskController extends AbstractController
         $projUUID = base64DecodeUrl($body[Request::METHOD_POST]['task_proj']);
         $user = Auth::getUser();
 
-        if ($projUUID === false) 
-        {
+        if ($projUUID === false) {
             $response->error(t('project_uuid_missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
             exit;
         }
 
-        if (!DataType::wholeNumber($taskID, 1)) 
-        {
+        if (!DataType::wholeNumber($taskID, 1)) {
             $response->error(t('task_id_is_not_valid', 'api'), Response::STATUS_CODE_BAD_REQUEST);
             exit;
         }
 
-        if ($user === null || empty($user['id'])) 
-        {
+        if ($user === null || empty($user['id'])) {
             $response->error(t('user_id_missing', 'api'));
             exit;
         }
 
         $projModel = new ProjectModel();
         $details = $projModel->getBaseDetails((int)$user['id'], $projUUID);
-        if ($details === false) 
-        {
+        if ($details === false) {
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
             exit;
         }
         $priv = $projModel->getPositionPriv($details['name']);
-        if ($priv === false || !$priv['removeTask']) 
-        {
+        if ($priv === false || !$priv['removeTask']) {
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
             exit;
         }
-        
-        
+
+
         $taskModel = new TaskModel();
         $status = $taskModel->delete((int)$taskID);
-        if ($status === false) 
-        {
+        if ($status === false) {
             $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
         } else {
-            $response->success(null,Response::STATUS_CODE_OK);
+            $response->success(null, Response::STATUS_CODE_OK);
         }
-
     }
 }

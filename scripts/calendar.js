@@ -20,7 +20,6 @@ function loadMonth(year, month, currentDate) {
         daysContainer.innerHTML += `
         <div class="day previus">
             <div class="name">${previousMonthDays - startEmpty + i}</div>
-            <div class="tasks-count">0 tasks</div>
         </div>`;
     }
 
@@ -36,12 +35,12 @@ function loadMonth(year, month, currentDate) {
         daysContainer.innerHTML += `
         <div class="day previus">
             <div class="name">${i}</div>
-            <div class="tasks-count">0 tasks</div>
         </div>`;
     }
 
     if (showToday)
         document.querySelector(`[data-date='${currDay}']`).classList.add('today');
 }
+
 
 Kantodo.info("Calendar loaded");

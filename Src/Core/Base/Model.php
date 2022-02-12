@@ -69,7 +69,8 @@ class Model
         $searchData = [];
         $queryData  = [];
 
-        foreach ($search as $column => $value) {
+        foreach ($search as $column => $value) 
+        {
             if (in_array($column, $this->tableColumns, true)) {
 
                 if (is_array($value)) 
@@ -84,6 +85,17 @@ class Model
                     $searchData[]          = "{$column} = :{$column}";
                     $queryData[":$column"] = $value;
                 }                
+            }
+            else if ($column == 'CUSTOM_WHERE') 
+            {
+                $searchData[] = $value[0];
+                foreach($value[1] as $k => $val) 
+                {
+                    $queryData[$k] = $val;
+
+                }
+
+
             }
         }
 
