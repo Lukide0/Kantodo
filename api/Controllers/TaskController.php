@@ -401,7 +401,7 @@ class TaskController extends AbstractController
             exit;
         }
 
-        if (DataType::wholeNumber($taskID, 1)) 
+        if (!DataType::wholeNumber($taskID, 1)) 
         {
             $response->error(t('task_id_is_not_valid', 'api'), Response::STATUS_CODE_BAD_REQUEST);
             exit;

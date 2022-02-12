@@ -76,7 +76,7 @@ const modalTaskHTML = `
 </div>
 `;
 
-export default function taskWindow(btn, project = null) {
+export default function taskWindow(btn = null, project = null) {
 
     let tmp = modalTaskHTML.allReplace(translations);
 
@@ -207,9 +207,19 @@ export default function taskWindow(btn, project = null) {
 
     win.setParent(document.body.querySelector('main'));
 
-    btn.addEventListener('click', function(e) {
-        win.show();
-    });
+    if (btn) 
+    {
+        btn.addEventListener('click', function() {
+            win.show();
+        });
+    }
+
+    win.setButtonShow = function(b) 
+    {
+        b.addEventListener('click', function() {
+            win.show();
+        });
+    }
 
     win.getNameInput = function() {
         return win.element.querySelector('[data-input=task_name]');
@@ -314,6 +324,12 @@ export default function taskWindow(btn, project = null) {
 
     win.setActionUpdate = function(action) {
         btnUpdate.onclick = action;
+    }
+
+    win.validate = function() 
+    {
+        //TODO: validace dat
+        return true;
     }
 
     return win;

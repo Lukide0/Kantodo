@@ -4,6 +4,7 @@ import { simpleAnimation } from './../utils/animation.js';
 
 const EditorModalWindow = {
     _template: null,
+    _init: true,
     init() {
         let tmp = document.createElement('div');
         tmp.innerHTML = `
@@ -91,6 +92,7 @@ const EditorModalWindow = {
 };
 const ModalProject = Object.create(EditorModalWindow);
 ModalProject.init = function() {
+    this._init = false;
     let tmp = EditorModalWindow.init();
     let content = tmp.querySelector('.editor-modal');
     content.style.flexGrow = "0";
@@ -128,7 +130,7 @@ ModalProject.init = function() {
 };
 
 ModalProject.create = function() {
-    if (this._template == null)
+    if (this._template == null || this._init)
         this.init();
 
     let tmp = EditorModalWindow.create();

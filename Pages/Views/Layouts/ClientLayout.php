@@ -80,7 +80,9 @@ class ClientLayout extends Layout
                         }
                     ?>
                 };
+                var taskWin;
 
+                // TODO: check if cookie expire Inteterval 10s
             </script>
         </head>
         <body>
@@ -150,7 +152,6 @@ class ClientLayout extends Layout
                             }
 
                             this.Projects[uuid].tasks.push(task);
-
                             if (this.AfterTaskAdd != null)
                                 this.AfterTaskAdd(uuid, task, meta);
                         },
@@ -197,6 +198,8 @@ class ClientLayout extends Layout
 
                     window.addEventListener('load',
                     function() {
+                        taskWin = Modal.createTaskWindow();
+
                         let btn = document.querySelector("button[data-action=project]");
                         let win = Modal.ModalProject.create();
 
@@ -254,7 +257,6 @@ class ClientLayout extends Layout
 
                             let response = Request.Action('/api/join/project', 'POST', {code: data[0]});
                             response.then(res => {
-                                console.log(res);
                                 let project = res.data.project;
                                 Kantodo.success(`Join project (${project.uuid})`);
 

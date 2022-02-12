@@ -20,6 +20,9 @@ const Validation = Object.freeze({
     'eager': function(element, callback, obj = {}) {
         let lazy = true;
 
+        if (!element)
+            return;
+
         element.addEventListener('change', lazyFunc, false);
         function lazyFunc(event) {
             lazy = callback(event, obj);

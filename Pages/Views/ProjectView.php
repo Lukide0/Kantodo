@@ -28,6 +28,7 @@ class ProjectView implements IView
         Application::$APP->header->setTitle("Kantodo - " . $project['name']);
 
         ?>
+        <script src="<?= Application::$SCRIPT_URL?>task.js"></script>
         <div class="container">
         <div class="row h-space-between">
         <h2 style="font-size: 2.8rem"><?=$project['name'];?><span class="icon big round"><?=$icon;?></span></h2>
@@ -44,20 +45,20 @@ class ProjectView implements IView
                 <script>
                 window.addEventListener('load', function(){
                     let btn = document.querySelector('button[data-action=task]');
-                    let win= Modal.createTaskWindow(btn, {id: "<?=$projectUrlUUID;?>", name: "<?=$project['name'];?>"});
+                    taskWin = Modal.createTaskWindow(btn, {id: "<?=$projectUrlUUID;?>", name: "<?=$project['name'];?>"});
                     
-                    let editor = win.getEditor();
-                    let input = win.getProjectInput();
+                    let editor = taskWin.getEditor();
+                    let input = taskWin.getProjectInput();
                     input.parentElement.parentElement.classList.add('active');
-                    win.element.querySelector('[data-action=create]').addEventListener('click', function() {
-                        let inputName = win.element.querySelector('[data-input=task_name]');
+                    taskWin.element.querySelector('[data-action=create]').addEventListener('click', function() {
+                        let inputName = taskWin.element.querySelector('[data-input=task_name]');
                         let data = {};
 
                         data.task_name = inputName.value;
                         data.task_desc = editor.value();
                         data.task_proj = input.dataset.value;
 
-                        let chipsArray = win.getChips();
+                        let chipsArray = taskWin.getChips();
                         for (let i = 0; i < chipsArray.length; i++) {
                             data[`task_tags[${i}]`] = chipsArray[i];
                         }
@@ -71,7 +72,7 @@ class ProjectView implements IView
                             editor.value("");
                             input.dataset.value = null;
 
-                            win.hide();
+                            taskWin.hide();
 
                             let snackbar = Modal.Snackbar.create('<?=t('task_was_created');?>', null ,'success');
                             snackbar.show();
@@ -79,13 +80,46 @@ class ProjectView implements IView
                         }).catch(reason => {
                             Kantodo.error(reason);
                         }).finally(() => {
-                            win.hide();
+                            taskWin.hide();
                         });
                     });
                 });
                 </script>
             </div>
         </div>
+            <h3 class="space-huge-top"><?= t('tasks_in_project', 'project') ?></h3>
+            <div class="container space-medium-top" data-last="" style="max-height: 33%; overflow-y: scroll;flex-wrap:nowrap;">
+                <div class="container">
+                    <!-- Zde jsou ukoly projektu -->
+                </div>
+                <button onclick="loadNext(event)" class="hover-shadow flat no-border" style="margin: 10px auto"><?= t('load') ?></button>
+                <script>
+                showCompleted = true;
+                function loadNext(e) {
+                    let el = e.target;
+                    el.classList.add('disabled');
+                    let container = el.parentNode;
+
+                    loadProjectTasks(
+                        "<?=$projectUrlUUID;?>", 
+                        container.dataset['last'],
+                        function(tasks) { 
+                            if (tasks.length > 0) 
+                            {
+                                container.dataset['last'] = tasks[tasks.length - 1].id;
+                            }
+                            tasks.forEach(task => {
+                                DATA.AddTask("<?= $projectUrlUUID?>", task, container.querySelector('.container'));
+                            });
+                        },
+                        function() 
+                        {
+                            el.classList.remove('disabled');
+                        }
+                    );
+                }
+                </script>
+            </div>
             <h3 class="space-huge-top"><?=t('members');?></h3>
             <div class="row space-big-top">
                 <?php
