@@ -28,7 +28,7 @@ class ProjectSettingsView implements IView
         <div class="container">
             <h2 class="row space-extreme-bottom" style="font-size: 2.8rem"><?=$project['name'] . ' - ' . t('settings');?></h2>
             <div class="row">
-                <?= Input::text('projectName', t('project_name'), ['value' => $project['name']]) ?>
+                <?= Input::text('projectName', t('project_name'), ['value' => $project['name'], 'classes' => 'disabled']) ?>
             </div>
             <div class="row">
                 <button class='hover-shadow filled error' style="border-radius: 5px" onclick="deleteProj('<?= $projectUUID ?>')"><span class="icon round">remove</span><?= t('delete_project', 'project') ?></button>

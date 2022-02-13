@@ -152,34 +152,33 @@ function showTaskContextMenu(e,uuid,taskID) {
     itemEdit.element.onclick = function() {
 
         menu.element.blur();
-
         with (taskWin) 
         {
             actionUpdate();
-
+            
             show();
-
+            
             // Název
             let tmp = getNameInput();
             tmp.value = taskInfo.name;
             tmp.parentElement.classList.add('focus');
-
+            
             // Popisek
             getEditor().value(taskInfo.description);
-
+            
             // Projekt
             setProject(DATA.Projects[uuid].name, uuid);
-
+            
             // Status
             setStatus(taskInfo.completed);
-
+            
             // Priorita
             setPriority(taskInfo.priority);
-
+            
             // Konec
             if (taskInfo.end_date != null)
-                setEndDate(new Date(taskInfo.end_date));
-
+            setEndDate(taskInfo.end_date);
+        
             // Tagy
             setChips(taskInfo.tags);
         }
@@ -231,7 +230,7 @@ function showTaskContextMenu(e,uuid,taskID) {
                 data.task_end_date = taskData.end_date;
             
             let response = Request.Action('/api/update/task', 'POST', data);
-            response.then(res => {
+            response.then(_ => {
                 if (taskData.name != taskInfo.name) 
                 {
                     taskEl.querySelector(`header h4`).innerText = taskData.name;
@@ -281,7 +280,7 @@ function showTaskContextMenu(e,uuid,taskID) {
             e.target.classList.add('disabled');
 
             let response = Request.Action('/api/remove/task', 'POST', data);
-            response.then(res => {
+            response.then(_ => {
                 
                 DATA.RemoveTask(uuid, taskInfo.id);
                 taskEl.remove();

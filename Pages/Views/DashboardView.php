@@ -33,7 +33,6 @@ class DashboardView implements IView
                 <button class="hover-shadow flat no-border space-medium-right" onclick="showCompletedTasks(event)"><?= t("show_completed_tasks")?></button>
                 <button data-action='task' class="filled big hover-shadow"><?= t('add_task', 'dashboard') ?></button>
                 <script>
-                // TODO: fix edit task_endDate and task_tags
                 DATA.AfterProjectAdd = function(uuid, name) 
                 {
                     let tmp = document.createElement('div');

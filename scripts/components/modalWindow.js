@@ -97,7 +97,7 @@ ModalProject.init = function() {
     let content = tmp.querySelector('.editor-modal');
     content.style.flexGrow = "0";
     content.innerHTML = `
-    <div class="content">
+    <div class="content" style="max-width: unset">
         <div class="container v-space-around">
             <div class="row">
                 <label class="text-field">

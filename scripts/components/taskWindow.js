@@ -256,8 +256,11 @@ export default function taskWindow(btn = null, project = null) {
     }
 
     win.setChips = function(tags) {
+        chipInput.value = "";
+        chipInput.dataset.value = "";
+        chips.innerHTML = "";
+        
         chipsArray = tags;
-        chipsContainer
         chipsArray.forEach(chip => {
             let tmpEl = document.createElement('div');
             tmpEl.innerHTML = `<div class="chip"><span>${chip}</span><button class="icon outline flat no-border">close</button></div>`;
@@ -298,7 +301,9 @@ export default function taskWindow(btn = null, project = null) {
     }
 
     win.setEndDate = function(date) {
-        endDateInput.value = `${date.getFullYear()}-${("0" + date.getMonth()).slice(-2)}-${("0" + date.getDate()).slice(-2)}`;
+        // odstrani hod, min a sekundy
+        date = date.substring(0, 10);
+        endDateInput.value = date;
     }
 
     win.clear = function() {
@@ -327,7 +332,7 @@ export default function taskWindow(btn = null, project = null) {
 
     win.validate = function() 
     {
-        //TODO: validace dat
+        //TODO: validace dat + pouzit
         return true;
     }
 

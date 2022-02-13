@@ -1,6 +1,39 @@
 const daysContainer = document.querySelector(".days");
 
 var calendarTasks = {};
+var loadedProjects = {};
+
+function mapMonth() 
+{
+    switch(month) 
+    {
+    case 0:
+        return translationCalendar['%january%'];
+    case 1:
+        return translationCalendar['%february%'];
+    case 2:
+        return translationCalendar['%march%'];
+    case 3:
+        return translationCalendar['%april%'];
+    case 4:
+        return translationCalendar['%may%'];
+    case 5:
+        return translationCalendar['%june%'];
+    case 6:
+        return translationCalendar['%july%'];
+    case 7:
+        return translationCalendar['%august%'];
+    case 8:
+        return translationCalendar['%september%'];
+    case 9:
+        return translationCalendar['%october%'];
+    case 10:
+        return translationCalendar['%november%'];
+    case 11:
+        return translationCalendar['%december%'];
+    }
+
+}
 
 function loadMonth(year, month, currentDate) {
     daysContainer.innerHTML = "";
@@ -47,45 +80,86 @@ function loadMonth(year, month, currentDate) {
 function showTasks(e, el) 
 {
     let day = el.dataset['date'];
-    let tasks = calendarTasks[year][month][day] ?? [];
+
+    let container = document.createElement('div');
+    let tasks = [];
+    for (const uuid in calendarTasks[year][month]) 
+    {
+        if (calendarTasks[year][month][uuid][day] !== undefined 
+            && calendarTasks[year][month][uuid][day].length > 0) 
+        {
+            let projContainer = document.createElement('div');
+
+            calendarTasks[year][month][uuid][day].forEach(task => {
+                DATA.AddTask(uuid, task, projContainer);
+            });
+
+            container.appendChild(projContainer);
+        }
+    }
     
-    // TODO: show tasks => copy-paste from dashboard
+    let dialog = Modal.Dialog.create(
+        `${day}. ${mapMonth(month)}`,
+        container.innerHTML,
+        [
+            {
+                'text': translations['%close%'], 
+                'classList': 'flat no-border',
+                'click': function(dialogOBJ) {
+                    dialogOBJ.destroy(true);
+                    return false;
+                }
+            }
+        ]
+    );
+    dialog.setParent(document.body);
+    dialog.show();
+
+    
+
+
 }
 
-function addTaskToDay(task) 
+function addTaskToCalendar(task,month, year, uuid) 
 {
     const date = new Date(task.end_date);
 
     let day = date.getDate();
-    let month = date.getMonth();
-    let year = date.getFullYear();
 
-    if (calendarTasks[year] === undefined) 
-    {
-        calendarTasks[year] = {};
-        calendarTasks[year][month] = {};
-        calendarTasks[year][month][day] = [task];
-    } 
-    else if (calendarTasks[year][month] === undefined) 
-    {
-        calendarTasks[year][month] = {};
-        calendarTasks[year][month][day] = [task];
-    }
-    else if (calendarTasks[year][month][day] === undefined) 
-    {
-        calendarTasks[year][month][day] = [task];
-    }
-    else 
-    {
-        calendarTasks[year][month][day].push(task);  
-    }
+    setIfNotExist(calendarTasks, [year, month, uuid, day], []);
+
+    calendarTasks[year][month][uuid][day].push(task);
+
     let dayEl = document.querySelector(`[data-date="${day}"]`);
     dayEl.querySelector('.tasks-count').innerHTML = ++dayEl.dataset['count'];
 }
 
-function isLoaded(month, year) 
+function addTasksToCalendar(tasks,month, year, uuid) 
 {
-    return calendarTasks[year] !== undefined && calendarTasks[year][month] !== undefined;
+    setIfNotExist(calendarTasks, [year, month, uuid], {});
+    tasks.forEach(task => addTaskToCalendar(task, month, year, uuid));
+}
+
+
+function setIfNotExist(obj, path, value) 
+{
+    const lastKey = path.pop();
+
+    const nested = path.reduce((prev, curr) => {
+        if (prev[curr] === undefined)
+            return prev[curr] = {};
+        else 
+            return prev[curr];
+    }, obj);
+
+    if (!nested.hasOwnProperty(lastKey))
+        nested[lastKey] = value;
+
+}
+
+function isLoaded(month, year, uuid) 
+{
+    return calendarTasks[year] !== undefined && calendarTasks[year][month] !== undefined && calendarTasks[year][month][uuid] !== undefined;
 }
 
 Kantodo.info("Calendar loaded");

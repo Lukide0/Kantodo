@@ -11,6 +11,7 @@ use Kantodo\Core\Request;
 use Kantodo\Core\Response;
 use Kantodo\Auth\Auth;
 use Kantodo\Core\Application;
+use Kantodo\Core\Database\Connection;
 use Kantodo\Core\Validation\Data;
 use Kantodo\Core\Validation\DataType;
 use Kantodo\Models\ProjectModel;
@@ -130,8 +131,8 @@ class TaskController extends AbstractController
 
             $status = $tagModel->addTagsToTask($tags, $taskID);
 
-            //if ($status === false)
-            //    $response->error(t('can_not_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
+            if ($status === false)
+                $response->error(t('can_not_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
         }
 
 
@@ -287,14 +288,13 @@ class TaskController extends AbstractController
      */
     public function update()
     {
-        // TODO: tagy + frontend
         $body = API::$API->request->getBody();
         $response = API::$API->response;
         $user = Auth::getUser();
 
         $keys = [
             'task_id',
-            'task_proj'
+            'task_proj',
         ];
 
         $empty = Data::notSet($body[Request::METHOD_POST], $keys);
@@ -326,27 +326,50 @@ class TaskController extends AbstractController
             exit;
         }
 
+        $tags = $body[Request::METHOD_POST]['task_tags'] ?? [];
         $taskData = [
             'name' => $body[Request::METHOD_POST]['task_name'] ?? NULL,
-            'description' => $body[Request::METHOD_POST]['task_desc'] ?? NULL,
             'priority' => $body[Request::METHOD_POST]['task_priority'] ?? NULL,
             'completed' => $body[Request::METHOD_POST]['task_comp'] ?? NULL,
-            'end_date' => $body[Request::METHOD_POST]['task_end_date'] ?? NULL
+            'description' => $body[Request::METHOD_POST]['task_desc'] ?? NULL,
+            'end_date' => strtotime($body[Request::METHOD_POST]['task_end_date'] ?? NULL),
         ];
-
 
         foreach ($taskData as $key => $value) {
             if ($value === NULL) {
                 unset($taskData[$key]);
             }
         }
-
+        
         if (count($taskData) == 0) {
             $response->fail([]);
             exit;
         }
+        
+        if (isset($taskData['end_date']))
+        {
+            $taskData['end_date'] = date(Connection::DATABASE_DATE_FORMAT, $taskData['end_date']); 
+        }
 
 
+        if (isset($taskData['name']) && strlen($taskData['name']) == 0) 
+        {
+            $response->fail(['error' => t('bad_request')]);
+            exit;
+        }
+
+
+        if (isset($taskData['completed']) && !DataType::wholeNumber($taskData['completed'], 0, 1)) 
+        {
+            $response->fail(['error' => t('bad_request')]);
+            exit;
+        }
+
+        if (isset($taskData['priority']) && !DataType::wholeNumber($taskData['priority'], 0, 2)) 
+        {
+            $response->fail(['error' => t('bad_request')]);
+            exit;
+        }
 
         $projectId = 0;
         if (ProjectModel::hasPrivTo('editTask', (int)$user['id'], $uuid, $projectId) !== true) {
@@ -359,13 +382,19 @@ class TaskController extends AbstractController
 
         $exists = $taskModel->getSingle(['task_id'], ['project_id' => $projectId, 'task_id' => $taskID]);
 
-
         if ($exists === false) {
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
             exit;
         }
 
         $status = $taskModel->update((int)$taskID, $taskData);
+
+        if ($status === false) {
+            $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
+        }
+
+        $tagModal = new TagModel();
+        $status = $tagModal->setTagsToTask($tags, (int)$taskID, $projectId);
 
         if ($status === false) {
             $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);

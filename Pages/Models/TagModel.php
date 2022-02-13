@@ -113,6 +113,40 @@ class TagModel extends Model
     }
 
     /**
+     * Nastaví štítky úkolu
+     *
+     * @param   array<string>  $tags  štítky
+     * @param   int  $taskID  id úkolu
+     * @param   int  $projectID  id projektu
+     *
+     * @return  bool                   status
+     */
+    public function setTagsToTask(array $tags, int $taskID, int $projectID)
+    {
+
+        $tagsID = [];
+        foreach ($tags as $tag) {
+            $tagID = $this->createInProject($tag, $projectID);
+
+            if ($tagID == false)
+                return false;
+            $tagsID[] = $tagID;
+        }
+
+        $queries = [];
+        $taskTag = Connection::formatTableName('task_tags');
+
+        // smaže všechy štítky a poté nastaví pouze ty, které mají být
+        $queries[] = "DELETE FROM {$taskTag} WHERE task_id = {$taskID}";
+
+        foreach ($tagsID as $tagID) {
+            $queries[] = "INSERT INTO {$taskTag} (`tag_id`, `task_id`) VALUES (\"{$tagID}\", {$taskID})";
+        }
+        
+        return Connection::runInTransaction($queries);
+    }
+
+    /**
      * Získá štítky úkolu
      *
      * @param   int  $taskID  id úkolu

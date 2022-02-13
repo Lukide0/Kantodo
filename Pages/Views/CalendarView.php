@@ -19,6 +19,7 @@ class CalendarView implements IView
     {
         Application::$APP->header->setTitle("Kantodo - Calendar");
         Application::$APP->header->registerStyle("/styles/calendar.min.css");
+        Application::$APP->header->registerScript("/scripts/task.js", false, true);
         Application::$APP->header->registerScript("/scripts/calendar.js", false, true);
 
         $currMonth = (int)date('n') - 1;
@@ -90,6 +91,7 @@ class CalendarView implements IView
             <!-- Dny v kalendari  -->
         </div>
         <script>
+        // TODO: zmeny + - ~
         const translationCalendar = {
             <?php
                 foreach (Application::$APP->lang->getAll('calendar') as $key => $value) {
@@ -107,38 +109,6 @@ class CalendarView implements IView
 
         window.addEventListener('load', loadCalendar);
 
-        function mapMonth() 
-        {
-            switch(month) 
-            {
-            case 0:
-                return translationCalendar['%january%'];
-            case 1:
-                return translationCalendar['%february%'];
-            case 2:
-                return translationCalendar['%march%'];
-            case 3:
-                return translationCalendar['%april%'];
-            case 4:
-                return translationCalendar['%may%'];
-            case 5:
-                return translationCalendar['%june%'];
-            case 6:
-                return translationCalendar['%july%'];
-            case 7:
-                return translationCalendar['%august%'];
-            case 8:
-                return translationCalendar['%september%'];
-            case 9:
-                return translationCalendar['%october%'];
-            case 10:
-                return translationCalendar['%november%'];
-            case 11:
-                return translationCalendar['%december%'];
-            }
-
-        }
-
         function newMonth() 
         {
             if (month == 11)
@@ -146,16 +116,23 @@ class CalendarView implements IView
                 month = 0;
                 year++;
             }
+            else 
+            {
+                month++;
+            }
             calendarDate.innerHTML = `${mapMonth()} ${year}`;
             loadCalendar();
         }
 
         function previousMonth() 
         {
-            if (month == 11)
+            if (month == 0)
             {
-                month = 0;
-                year++;
+                month = 11;
+                year--;
+            } else 
+            {
+                month--;
             }
             calendarDate.innerHTML = `${mapMonth()} ${year}`;
             loadCalendar();
@@ -165,16 +142,11 @@ class CalendarView implements IView
         function loadCalendar() 
         {
             loadMonth(year, month, today);
-            // TODO: isLoaded
-            console.log(isLoaded(year, month));
-            if (isLoaded(year, month)) 
-                return;
-
             Object.keys(DATA.Projects).forEach(uuid => {
+                if (isLoaded(month, year, uuid))
+                    return;
                 Request.Action(`/api/get/task/${uuid}?last=${lastID}&month=${month + 1}&year=${year}`, 'GET').then(project => {
-                    project.data.tasks.forEach(task => {
-                        addTaskToDay(task, uuid);
-                    });
+                    addTasksToCalendar(project.data.tasks, month, year, uuid);
                 });
             });
         }

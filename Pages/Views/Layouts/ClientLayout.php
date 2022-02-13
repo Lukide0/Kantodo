@@ -27,7 +27,6 @@ class ClientLayout extends Layout
      */
     public function render(string $content = '', array $params = [])
     {
-        // TODO: Active item v menu, odstraneni projektu WS
         $headerContent = Application::$APP->header->getContent();
         if (!isset($params['projects'])) 
         {
@@ -82,14 +81,14 @@ class ClientLayout extends Layout
                 };
                 var taskWin;
 
-                // TODO: check if cookie expire Inteterval 10s
+                // TODO: check if cookie expire Inteterval 10s, ws odstraneni projektu z menu
             </script>
         </head>
         <body>
             <header>
             <h1>Kantodo</h1>
             <nav>
-                <a class="item active" href="/">
+                <a class="item" href="/">
                     <span class="icon outline medium">dashboard</span>
                     <span class="text"><?= t('dashboard') ?></span>
                 </a>

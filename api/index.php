@@ -15,7 +15,7 @@ include "../Loader/autoload.php";
 $API = new API();
 $API->registerAuth(new Auth());
 
-// TODO: odstranit
+// umožňuje debug aplikace => při jakékoliv chybě v SQL dotazu hodí Exception
 API::debugMode(true);
 
 $session = $API->session;
