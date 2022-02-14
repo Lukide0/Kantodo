@@ -332,7 +332,7 @@ class TaskController extends AbstractController
             'priority' => $body[Request::METHOD_POST]['task_priority'] ?? NULL,
             'completed' => $body[Request::METHOD_POST]['task_comp'] ?? NULL,
             'description' => $body[Request::METHOD_POST]['task_desc'] ?? NULL,
-            'end_date' => strtotime($body[Request::METHOD_POST]['task_end_date'] ?? NULL),
+            'end_date' => strtotime($body[Request::METHOD_POST]['task_end_date'] ?? ""),
         ];
 
         foreach ($taskData as $key => $value) {
@@ -348,7 +348,13 @@ class TaskController extends AbstractController
         
         if (isset($taskData['end_date']))
         {
-            $taskData['end_date'] = date(Connection::DATABASE_DATE_FORMAT, $taskData['end_date']); 
+            if ($taskData['end_date'] == false) 
+            {
+                unset($taskData['end_date']);
+            } else 
+            {
+                $taskData['end_date'] = date(Connection::DATABASE_DATE_FORMAT, $taskData['end_date']); 
+            }
         }
 
 
