@@ -1,4 +1,3 @@
-const TaskList = [];
 const modalTaskHTML = `
 <div class="content">
     <label class="text-field">
@@ -103,6 +102,22 @@ export default function taskWindow(btn = null, project = null) {
 
     let endDateInput = win.element.querySelector('input[type=date]');
     
+    let nameInput = win.element.querySelector('[data-input=task_name]');
+
+    Validation.eager(nameInput, function(e) {
+        if (nameInput.value.trim().length == 0) 
+        {
+            nameInput.parentElement.parentElement.classList.add('error');
+            nameInput.parentElement.parentElement.querySelector('.text').innerHTML = translations['%empty%'];
+            return false;
+        } else 
+        {
+            nameInput.parentElement.parentElement.classList.remove('error');
+            nameInput.parentElement.parentElement.querySelector('.text').innerHTML = "";
+            return true;
+        }
+    });
+
     if (project) 
     {
         input.dataset.value = project.id;
@@ -139,15 +154,17 @@ export default function taskWindow(btn = null, project = null) {
     priorityValues.addEventListener('click', setPriorityClick);
     statusValues.addEventListener('click', setStatusClick);
 
-    function createOptions() {
+    function createOptions(_, reset = true) {
+        if (reset)
+            input.dataset['value'] = "";
+
         // odstranění třídy active
         textField.classList.remove('active');
 
         menu.innerHTML = "";
-        let options;
         
         // filter
-        options = Object.keys(DATA.Projects).reduce(function(filtered,key) {
+        let options = Object.keys(DATA.Projects).reduce(function(filtered,key) {
             if (DATA.Projects[key].name.toLowerCase().includes(input.value.toLowerCase())) 
             {
                 filtered[key] = DATA.Projects[key];
@@ -163,7 +180,9 @@ export default function taskWindow(btn = null, project = null) {
             textField.classList.remove('error');
         }
 
-        for (const [uuid, project] of Object.entries(options)) {
+        let entries = Object.entries(options);
+
+        for (const [uuid, project] of entries) {
             let item = document.createElement('li');
             item.textContent = project.name;
             item.dataset.projectId = uuid;
@@ -171,14 +190,47 @@ export default function taskWindow(btn = null, project = null) {
                 input.dataset.value = uuid;
                 input.value = item.textContent;
                 textField.classList.add('active');
+                textField.classList.remove('error');
                 e.preventDefault();
                 input.blur();
             }
             menu.appendChild(item);
         }
     }
-    createOptions();
+
+    function setProject() 
+    {
+        let value = input.value;
+        let uuid = input.dataset['value'];
+
+        if (uuid.length != 0)
+            return;
+            
+        let options = Object.keys(DATA.Projects).reduce(function(filtered,key) {
+            if (DATA.Projects[key].name.toLowerCase().includes(input.value.toLowerCase())) 
+            {
+                filtered[key] = DATA.Projects[key];
+            }
+            return filtered;
+        }, {});
+
+        let entries = Object.entries(options);
+
+        if (entries.length == 1) 
+        {
+            console.log(entries[0])
+            input.dataset.value = entries[0][0];
+            input.value = entries[0][1].name;
+            textField.classList.add('active');
+            input.blur();
+        } else 
+        {
+            textField.classList.add('error');
+        }
+    }
+    createOptions(null, false);
     input.addEventListener('input', createOptions);
+    input.addEventListener('change', setProject);
 
     chipInput.addEventListener('change', function() {
         let value = chipInput.value.trim();
@@ -222,7 +274,7 @@ export default function taskWindow(btn = null, project = null) {
     }
 
     win.getNameInput = function() {
-        return win.element.querySelector('[data-input=task_name]');
+        return nameInput;
     }
 
     win.getProjectInput = function() {
@@ -330,10 +382,35 @@ export default function taskWindow(btn = null, project = null) {
         btnUpdate.onclick = action;
     }
 
-    win.validate = function() 
+    win.isError = function() 
     {
+        let isError = false;
+        if (nameInput.value.trim().length == 0) 
+        {
+            
+            nameInput.parentElement.parentElement.classList.add('error');
+            nameInput.parentElement.parentElement.querySelector('.text').innerHTML = translations['%empty%'];
+            isError = true;
+        }
+        
+        if (input.value.trim().length == 0) 
+        {
+            input.parentElement.parentElement.classList.add('error');
+            input.parentElement.parentElement.querySelector('.text').innerHTML = translations['%empty%'];
+            isError = true;    
+        } else 
+        {
+            let uuid = input.dataset['value'];
+            if (typeof DATA.Projects[uuid] === "undefined") 
+            {
+                input.parentElement.parentElement.classList.add('error');
+                input.parentElement.parentElement.querySelector('.text').innerHTML = translations['%project_does_not_exists%'];
+                isError = true;
+            }
+        }
+
         //TODO: validace dat + pouzit
-        return true;
+        return isError;
     }
 
     return win;

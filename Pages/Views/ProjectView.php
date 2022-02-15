@@ -51,6 +51,11 @@ class ProjectView implements IView
                     let input = taskWin.getProjectInput();
                     input.parentElement.parentElement.classList.add('active');
                     taskWin.element.querySelector('[data-action=create]').addEventListener('click', function() {
+                        if (taskWin.isError()) 
+                        {
+                            return;
+                        }
+
                         let inputName = taskWin.element.querySelector('[data-input=task_name]');
                         let data = {};
 

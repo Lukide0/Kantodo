@@ -186,6 +186,11 @@ function showTaskContextMenu(e,uuid,taskID) {
         taskWin.setActionUpdate(updateTask);
 
         function updateTask() {
+            if (taskWin.isError()) 
+            {
+                return;
+            }
+
             let inputName = taskWin.getNameInput();
             let chipsArray = taskWin.getChips();
 

@@ -41,7 +41,7 @@
             font-size: fontSize(medium);
             padding: space(huge) space(medium) space(small) space(medium);
 
-            border-bottom: 1px solid color(border, dark);
+            border-bottom: 2px solid color(border, dark);
         }
 
         &::after {
@@ -109,7 +109,7 @@
                 border-radius: borderRadius(small);
                 background: background(primary);
                 padding: space(medium) space(regular) space(medium) space(regular);
-                border: 1px solid color(border);
+                border: 2px solid color(border);
                 transition: border-color 200ms ease-out;
 
                 &:focus {

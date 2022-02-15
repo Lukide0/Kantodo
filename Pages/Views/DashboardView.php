@@ -61,6 +61,11 @@ class DashboardView implements IView
                     taskWin.setActionCreate(createTask);
                     // TODO: client data valid ex. empty project
                     function createTask() {
+                        if (taskWin.isError()) 
+                        {
+                            return;
+                        }
+
                         let inputName = taskWin.getNameInput();
                         let data = {};
 
