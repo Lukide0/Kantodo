@@ -11,6 +11,7 @@ use Kantodo\Core\Request;
 use Kantodo\Core\Response;
 use Kantodo\Core\Session;
 use Kantodo\Core\Validation\Data;
+use Kantodo\Models\ProjectModel;
 use Kantodo\Models\UserModel;
 use Kantodo\Views\AuthView;
 
@@ -202,6 +203,7 @@ class AuthController extends AbstractController
             $this->redirectBack($path);
         }
 
+        
         /** @phpstan-ignore-next-line */
         $status = $userModel->create($firstname, $lastname, $email, Auth::hashPassword($pass, $email));
 
@@ -210,6 +212,11 @@ class AuthController extends AbstractController
             Application::$APP->session->addFlashMessage('authErrors', ['error' => 'something_went_wrong']);
             $this->redirectBack($path);
         }
+
+        $projectModel = new ProjectModel();
+        /** @phpstan-ignore-next-line */
+        $projectModel->create((int)$status[0], "{$firstname} {$lastname}");
+
         Application::$APP->session->addFlashMessage('register', false);
         $this->redirectBack($path);
         
