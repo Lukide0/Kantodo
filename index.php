@@ -12,7 +12,7 @@ $APP = new Application();
 $APP->registerAuth(new Auth());
 $APP->session->start();
 // REMEMBER: Menit title ve view, preklad cz
-// TODO: validace ukolu + ~, komentare, VIEWS title 
+// TODO: komentare, VIEWS title 
 // TODO: WS!!!!!!!
 // 8.2-?.2 SASS
 

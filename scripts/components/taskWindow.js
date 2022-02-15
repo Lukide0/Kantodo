@@ -408,8 +408,6 @@ export default function taskWindow(btn = null, project = null) {
                 isError = true;
             }
         }
-
-        //TODO: validace dat + pouzit
         return isError;
     }
 

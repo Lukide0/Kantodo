@@ -81,7 +81,13 @@ class ClientLayout extends Layout
                 };
                 var taskWin;
 
-                // TODO: check if cookie expire Inteterval 10s, ws odstraneni projektu z menu
+                const expiration = <?= Auth::$PASETO->getExpiration()->getTimestamp()?>;
+                setInterval(function(){
+                    if (expiration <= Date.now) 
+                    {
+                        window.location = "/";
+                    }
+                }, 10000);
             </script>
         </head>
         <body>
