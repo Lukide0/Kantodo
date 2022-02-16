@@ -38,6 +38,8 @@ function mapMonth()
 function loadMonth(year, month, currentDate) {
     daysContainer.innerHTML = "";
 
+    setIfNotExist(calendarTasks, [year, month], {});
+
     const currDay = currentDate.getDate();
     const currMonth = currentDate.getMonth();
     const currYear = currentDate.getFullYear();
@@ -80,18 +82,31 @@ function loadMonth(year, month, currentDate) {
 function showTasks(e, el) 
 {
     let day = el.dataset['date'];
-
     let container = document.createElement('div');
-    let tasks = [];
     for (const uuid in calendarTasks[year][month]) 
     {
         if (calendarTasks[year][month][uuid][day] !== undefined 
             && calendarTasks[year][month][uuid][day].length > 0) 
         {
             let projContainer = document.createElement('div');
-
+            
+            console.log(calendarTasks[year][month][uuid][day]);
             calendarTasks[year][month][uuid][day].forEach(task => {
-                DATA.AddTask(uuid, task, projContainer);
+
+                DATA.AfterTaskAdd(uuid, task, projContainer, day, function(action, taskID, day) {
+                    switch(action) 
+                    {
+                    case 'remove':
+                    case 'complete':
+                        break;
+                    default:
+                        return;
+                    }
+                    document.querySelector(`[data-task-id='${taskID}']`).remove();
+                    let dayEl = document.querySelector(`[data-date='${day}']`);
+                    console.log(day, dayEl)
+                    dayEl.querySelector('.tasks-count').innerHTML = --dayEl.dataset['count'];
+                });
             });
 
             container.appendChild(projContainer);
@@ -114,10 +129,26 @@ function showTasks(e, el)
     );
     dialog.setParent(document.body);
     dialog.show();
+}
 
+// TODO: remove
+function removeTaskFromCalendar(action, taskID) 
+{
+    switch(action) 
+    {
+    case 'remove':
+    case 'complete':
+        break;
+    default:
+        return;
+
+    }
+    /*
+    let el = document.querySelector(data-task-id="taskID");
     
-
-
+    */
+    
+    console.log(action, taskID);
 }
 
 function addTaskToCalendar(task,month, year, uuid) 
@@ -129,6 +160,8 @@ function addTaskToCalendar(task,month, year, uuid)
     setIfNotExist(calendarTasks, [year, month, uuid, day], []);
 
     calendarTasks[year][month][uuid][day].push(task);
+
+    DATA.AddTask(uuid, task);
 
     let dayEl = document.querySelector(`[data-date="${day}"]`);
     dayEl.querySelector('.tasks-count').innerHTML = ++dayEl.dataset['count'];

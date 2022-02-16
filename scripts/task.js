@@ -43,7 +43,10 @@ DATA.AfterTaskUpdate = function(uuid, index, data)
     // TODO: check if user edit
 }
 
-DATA.AfterTaskAdd = function(uuid, task, container) {
+DATA.AfterTaskAdd = function(uuid, task, container, data, after = null) {
+    if (container == null)
+        return;
+
     let tags = task.tags;
     let tagsHTML = tags.map(tag => {
         return `<div class="tag">${tag}</div>`;
@@ -62,7 +65,7 @@ DATA.AfterTaskAdd = function(uuid, task, container) {
             <h4>${task.name}</h4>
         </div>
         <div>
-            <button class="flat no-border icon round" onclick="showTaskContextMenu(event, '${uuid}', ${task.id});">more_vert</button>
+            <button class="flat no-border icon round" onclick="showTaskContextMenu(event, '${uuid}', ${task.id}, ${data},${after});">more_vert</button>
         </div>
     </header>
     <footer>
@@ -138,7 +141,7 @@ DATA.AfterTaskAdd = function(uuid, task, container) {
 
 
 let menu;
-function showTaskContextMenu(e,uuid,taskID) {
+function showTaskContextMenu(e,uuid,taskID, day, after = null) {
     if (menu)
         menu.element.remove();
     let {x, y} = e;
@@ -146,6 +149,8 @@ function showTaskContextMenu(e,uuid,taskID) {
     menu = Dropdown.Menu.create();
     let taskEl = document.querySelector(`[data-task-id='${taskID}']`);
     let taskInfo = DATA.Projects[uuid].tasks.find(t => t.id == taskID);
+
+    let allowEdit = !e.target.parentElement.parentElement.parentElement.parentElement.parentElement.classList.contains('supporting-text')
 
     let itemEdit = Dropdown.Item.create(translations['%edit%'], null, {'text': 'edit'});
     itemEdit.element.style = "color: rgb(var(--info-dark)) !important";
@@ -215,8 +220,6 @@ function showTaskContextMenu(e,uuid,taskID) {
             for (let i = 0; i < chipsArray.length; i++) {
                 data[`task_tags[${i}]`] = chipsArray[i];
             }
-
-            let projectEl = document.querySelector(`main [data-project-id=${data.task_proj}] > .container`);
             
             // zmeny
             if (taskData.completed != taskInfo.completed)
@@ -270,7 +273,9 @@ function showTaskContextMenu(e,uuid,taskID) {
             }, {
                 'text': translations['%yes%'],
                 'classList': 'space-big-left text error',
-                'click': deleteTask
+                'click': function(dialogOBJ, e) {
+                    deleteTask(dialogOBJ, e);
+                }
             }
         ]);
         dialog.setParent(document.body);
@@ -292,6 +297,9 @@ function showTaskContextMenu(e,uuid,taskID) {
 
                 let snackbar = Modal.Snackbar.create(translations['%task_was_removed%'], null ,'success');
                 snackbar.show();
+
+                if (after)
+                    after('remove', taskID, day);
 
             }).catch(reason => {
                 let snackbar = Modal.Snackbar.create(reason.statusText, null ,'error');
@@ -315,8 +323,13 @@ function showTaskContextMenu(e,uuid,taskID) {
         itemChangeStatus.element.style = "color: rgb(var(--success-dark)) !important";
     }
 
+    menu.items.push(itemChangeStatus);
+    if (allowEdit) 
+    {
+        menu.items.push(itemEdit);
+    }
+    menu.items.push(itemRemove);
 
-    menu.items.push(itemChangeStatus, itemEdit, itemRemove);
     menu.render();
 
     document.body.append(menu.element);
@@ -362,7 +375,8 @@ function showTaskContextMenu(e,uuid,taskID) {
             }
 
             DATA.UpdateTask(uuid, taskInfo);
-
+            if (after)
+                after('complete', taskID, day);
         }).catch(reason => {
             let snackbar = Modal.Snackbar.create(reason.statusText, null ,'error');
             snackbar.show();

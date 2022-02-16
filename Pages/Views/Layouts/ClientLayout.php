@@ -78,7 +78,7 @@ class ClientLayout extends Layout
                             echo "'%{$key}%': \"$value\",";
                         }
                     ?>
-                };
+                }
                 var taskWin;
 
                 const expiration = <?= Auth::$PASETO->getExpiration()->getTimestamp()?>;
@@ -143,7 +143,7 @@ class ClientLayout extends Layout
                             if (this.AfterProjectAdd != null)
                                 this.AfterProjectAdd(uuid, name);
                         },
-                        "AddTask": function(uuid, task, meta) 
+                        "AddTask": function(uuid, task, meta = null) 
                         {
                             if (typeof this.Projects[uuid] !== "object") 
                             {

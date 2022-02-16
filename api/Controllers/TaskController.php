@@ -249,7 +249,7 @@ class TaskController extends AbstractController
         if (!is_null($month)) 
         {
             $search['CUSTOM_WHERE'] = [
-                "MONTH(end_date) = :month AND YEAR(end_date) = :year AND end_date IS NOT NULL",
+                "MONTH(end_date) = :month AND YEAR(end_date) = :year AND end_date IS NOT NULL AND completed = 0",
                 [
                     ":month" => $month,
                     ":year"  => $year
