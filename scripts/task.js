@@ -59,6 +59,7 @@ DATA.AfterTaskAdd = function(uuid, task, container, data, after = null) {
     }
     taskEl.classList.add('task');
     taskEl.dataset['taskId'] = task.id;
+    taskEl.onclick = function(e) {showTaskDetails(taskEl, uuid)};
     taskEl.innerHTML = `
     <header>
         <div>
@@ -76,68 +77,69 @@ DATA.AfterTaskAdd = function(uuid, task, container, data, after = null) {
         </div>
     </footer>`;
     container.appendChild(taskEl);
-    taskEl.addEventListener('click', function(e) {
-        let taskID = this.dataset.taskId;
-        let taskInfo = DATA.Projects[uuid].tasks.find(t => t.id == taskID);
-
-        let md = SimpleMDE.prototype.markdown(taskInfo.description);
-        let taskTags = taskInfo.tags.map(tag => {
-            return `<div class="tag space-small-right">${tag}</div>`;
-        }).join('');
-
-        let priority;
-        switch(taskInfo.priority) 
-        {
-        case '1':
-            priority = translations['%priority_medium%'];
-            break;
-        case '2':
-            priority = translations['%priority_high%'];
-            break;
-        default:
-            priority = translations['%priority_low%'];
-            break;
-        }
-
-        let icon = (taskInfo.completed == "0") ? "lock_open" : "lock";
-
-        let desc = 
-        `
-        <div class='container'>
-            <div class="row space-regular-top space-big-bottom">
-                <div class='space-small-right'>${translations['%priority%']}: ${priority}</div>
-                <div class="row">
-                    ${taskTags}
-                </div>    
-            </div>
-            <div class="markdown-body">
-                ${md}
-            </div>
-        </div>
-        `;
-
-        let title = `<span>${taskInfo.name}</span><span class="icon medium round">${icon}</span>`;
-
-        let taskDialog = Modal.Dialog.create(title, desc, [
-            {
-                'text':  translations['%close%'], 
-                'classList': 'flat no-border',
-                'click': function(dialogOBJ) {
-
-                    self.value = self.oldVal;
-                    dialogOBJ.destroy(true);
-
-                    return false;
-                }
-            }
-        ]);
-
-        taskDialog.element.children[0].style.minWidth = "75%";
-        taskDialog.setParent(document.body.querySelector('main'));
-        taskDialog.show();
-    });
-
 };
+
+function showTaskDetails(el, uuid) 
+{
+    let taskID = el.dataset.taskId;
+    let taskInfo = DATA.Projects[uuid].tasks.find(t => t.id == taskID);
+
+    let md = SimpleMDE.prototype.markdown(taskInfo.description);
+    let taskTags = taskInfo.tags.map(tag => {
+        return `<div class="tag space-small-right">${tag}</div>`;
+    }).join('');
+
+    let priority;
+    switch(taskInfo.priority) 
+    {
+    case '1':
+        priority = translations['%priority_medium%'];
+        break;
+    case '2':
+        priority = translations['%priority_high%'];
+        break;
+    default:
+        priority = translations['%priority_low%'];
+        break;
+    }
+
+    let icon = (taskInfo.completed == "0") ? "lock_open" : "lock";
+
+    let desc = 
+    `
+    <div class='container'>
+        <div class="row space-regular-top space-big-bottom">
+            <div class='space-small-right'>${translations['%priority%']}: ${priority}</div>
+            <div class="row">
+                ${taskTags}
+            </div>    
+        </div>
+        <div class="markdown-body">
+            ${md}
+        </div>
+    </div>
+    `;
+
+    let title = `<span>${taskInfo.name}</span><span class="icon medium round">${icon}</span>`;
+
+    let taskDialog = Modal.Dialog.create(title, desc, [
+        {
+            'text':  translations['%close%'], 
+            'classList': 'flat no-border',
+            'click': function(dialogOBJ) {
+
+                self.value = self.oldVal;
+                dialogOBJ.destroy(true);
+
+                return false;
+            }
+        }
+    ]);
+
+    taskDialog.element.children[0].style.minWidth = "75%";
+    taskDialog.setParent(document.body.querySelector('main'));
+    taskDialog.show();
+}
 
 
 let menu;
