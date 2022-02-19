@@ -39,9 +39,9 @@ class Auth implements IAuth
     /**
      * Paseto token nezpracovaný
      *
-     * @var string|false
+     * @var string
      */
-    static $PASETO_RAW = false;
+    static $PASETO_RAW = "";
     /**
      * Hash hesla
      *

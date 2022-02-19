@@ -107,14 +107,13 @@ class WsNotification implements MessageComponentInterface, WsServerInterface
             return;
         }
         // získání PASETO => "access_token, TOKEN"
-        // strlen("access_token") + 2 == "access_token" + ',' + ' '
-        $pasetoRaw = substr($header[0], strlen("access_token") + 2);
-        if ($pasetoRaw == false || !Auth::checkToken($pasetoRaw)) 
+        // strlen("access_token") + 2 == "access_token" + ','
+        $pasetoRaw = substr($header[0], strlen("access_token") + 1);
+        if ($pasetoRaw == false || !Auth::checkToken(trim($pasetoRaw))) 
         {
             $this->close($conn, 401);
             return;
         }
-
         $this->connections->attach($conn);
     }
 
@@ -132,8 +131,6 @@ class WsNotification implements MessageComponentInterface, WsServerInterface
         $action = $decodedMSG['action'];
         $value = $decodedMSG['value'];
 
-        $from->send(count($this->channels));
-
         switch($action) 
         {
         case 'join':
@@ -142,14 +139,31 @@ class WsNotification implements MessageComponentInterface, WsServerInterface
         case 'leave':
             $this->leaveChannel($from, $value);
             break;
+        case 'task_create':
+        case 'task_remove':
+        case 'task_update':
+        {
+            if (!isset($decodedMSG['project']))
+                break;
+            
+            $project = $decodedMSG['project'];
+            $message = json_encode(['action' => $action ,'data' => $value]);
+
+            if (!isset($this->channels[$project]) || $message === false)
+                break;
+            
+            $this->channels[$project]->sendAllExcept($message, $from);
+            $from->close();
+
+            $this->channels[$project]->remove($from);
+            $this->connections->detach($from);
+
+            break;
+
+        }
         default:
             return;
         }
-
-    
-
-        // TODO: types => subscribe, msg, unsubscribe,
-        Console::warning($action);
     }
 
     private function joinChannel(ConnectionInterface $con, string $channelId)

@@ -130,6 +130,8 @@ class ProjectController extends AbstractController
                 ]
             ]);
         }
+
+        // TODO: ws
     }
 
 
@@ -275,6 +277,8 @@ class ProjectController extends AbstractController
         {
             $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
         }
+
+        // TODO: ws
     }
 
     /**
@@ -360,6 +364,7 @@ class ProjectController extends AbstractController
         {
             $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
         }
+        // TODO: ws
     }
 
     /**
@@ -450,5 +455,6 @@ class ProjectController extends AbstractController
         {
             $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
         }
+        // TODO: ws
     }
 }
