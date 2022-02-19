@@ -81,11 +81,13 @@ class ClientLayout extends Layout
                 }
                 var taskWin;
 
-                const expiration = <?= Auth::$PASETO->getExpiration()->getTimestamp()?>;
+                const expiration = <?= Auth::$PASETO->getExpiration()->getTimestamp()?>000;
                 setInterval(function(){
-                    if (expiration <= Date.now) 
+
+                    if (expiration <= Date.now()) 
                     {
-                        window.location = "/";
+                        console.log(expiration, Date.now());
+                        //window.location = "/";
                     }
                 }, 10000);
             </script>

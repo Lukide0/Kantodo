@@ -61,6 +61,15 @@ class ProjectChannel
         }
     }
 
+    public function sendToUser(string $id, string $data) : void 
+    {
+        foreach($this->connections as $con) 
+        {
+            if ($con->id == $id)
+                $con->send($data);
+        }
+    }
+
     public function sendAllExcept(string $data, ConnectionInterface $sender) : void
     {
         $foundSender = false;
@@ -72,6 +81,11 @@ class ProjectChannel
             }
             $con->send($data);
         }
+    }
+
+    public function removeSelf() : void
+    {
+        $this->sendAll(json_encode(['action' => 'project_remove']));
     }
 
 }
@@ -96,8 +110,8 @@ class WsNotification implements MessageComponentInterface, WsServerInterface
     }
 
     public function onOpen(ConnectionInterface $conn, RequestInterface $request = null) : void {
-        // ConnectionInterface neobsahuje httpRequest, ale WsServer ho nastavuje
         
+        // ConnectionInterface neobsahuje httpRequest, ale je nastavené v WsServer
         $request = $conn->httpRequest;
         
         $header = $request->getHeader("Sec-Websocket-Protocol");
@@ -106,14 +120,25 @@ class WsNotification implements MessageComponentInterface, WsServerInterface
             $this->close($conn, 401);
             return;
         }
-        // získání PASETO => "access_token, TOKEN"
-        // strlen("access_token") + 2 == "access_token" + ','
+        // získání PASETO => "access_token,TOKEN"
         $pasetoRaw = substr($header[0], strlen("access_token") + 1);
-        if ($pasetoRaw == false || !Auth::checkToken(trim($pasetoRaw))) 
+        if ($pasetoRaw == false) 
         {
             $this->close($conn, 401);
             return;
         }
+
+        // občas může být za ',' mezera
+        $pasetoRaw = trim($pasetoRaw);
+
+        if (!Auth::checkToken($pasetoRaw))
+        {
+            $this->close($conn, 401);
+            return;
+        }
+
+        // ID uživatele z PASETO
+        $conn->id = Auth::$PASETO->get('id');
         $this->connections->attach($conn);
     }
 
@@ -161,11 +186,57 @@ class WsNotification implements MessageComponentInterface, WsServerInterface
             break;
 
         }
+        case 'project_remove':
+        {
+            if (!isset($decodedMSG['project']))
+                break;
+            
+            $project = $decodedMSG['project'];
+            if (!isset($this->channels[$project]))
+                break;
+
+            $this->channels[$project]->removeSelf();
+            unset($this->channels[$project]);
+
+            break;
+        }
+        case 'project_user_change':
+        {
+            if (!isset($decodedMSG['project']))
+                break;
+            
+            $project = $decodedMSG['project'];
+            if (!isset($this->channels[$project]))
+                break;
+
+            $this->channels[$project]->sendToUser($from->id, json_encode(['action' => 'user_change']));
+            break;
+        }
+        case 'project_user_remove':
+        {
+            if (!isset($decodedMSG['project']))
+                break;
+            
+            $project = $decodedMSG['project'];
+            if (!isset($this->channels[$project]))
+                break;
+
+            $this->channels[$project]->sendToUser($from->id, json_encode(['action' => 'user_remove']));
+            break;
+        }
         default:
             return;
         }
     }
 
+    /**
+     * Připojí uživatele do kanálu projektu
+     *
+     * @param   ConnectionInterface  $con        uživatel
+     * @param   string               $channelId  uuid projektu
+     *
+     * @return  void                           
+     */
     private function joinChannel(ConnectionInterface $con, string $channelId)
     {
         if (isset($this->channels[$channelId])) 
@@ -179,6 +250,14 @@ class WsNotification implements MessageComponentInterface, WsServerInterface
         }
     }
 
+    /**
+     * Odstraní uživatele z kanálu projektu
+     *
+     * @param   ConnectionInterface  $con        uživatel
+     * @param   string               $channelId  uuid projektu
+     *
+     * @return  void                           
+     */
     private function leaveChannel(ConnectionInterface $con, string $channelId) 
     {
         if (isset($this->channels[$channelId])) 
@@ -212,6 +291,11 @@ class WsNotification implements MessageComponentInterface, WsServerInterface
         $conn->close();
     }
 
+    /**
+     * Sub protokoly
+     *
+     * @return  array<string>
+     */
     final public function getSubProtocols() : array 
     {
         // Pokud chceme použít Sec-Websocket-Protocol, tak musíme implementovat WsServerInterface. Viz. poznámka WsServer konstruktor

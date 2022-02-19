@@ -12,6 +12,7 @@ use Kantodo\Core\Validation\DataType;
 use Kantodo\Models\ProjectModel;
 use Kantodo\Models\UserModel;
 
+use function Kantodo\API\connectToWebsoketServer;
 use function Kantodo\Core\Functions\base64DecodeUrl;
 use function Kantodo\Core\Functions\base64EncodeUrl;
 use function Kantodo\Core\Functions\t;
@@ -120,18 +121,16 @@ class ProjectController extends AbstractController
         {
             $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
             exit;
-        } else 
-        {
-            $response->success([
-                'project' => 
-                [
-                    'name' => $project['name'],
-                    'uuid' => base64EncodeUrl($project['uuid'])
-                ]
-            ]);
         }
 
-        // TODO: ws
+        $projectUUID = base64EncodeUrl($project['uuid']);
+        $response->success([
+        'project' => 
+            [
+                'name' => $project['name'],
+                'uuid' => $projectUUID
+            ]
+        ]);
     }
 
 
@@ -211,7 +210,8 @@ class ProjectController extends AbstractController
             $response->error(t('user_id_missing', 'api'));
             exit;
         }
-        $uuid = base64DecodeUrl($body[Request::METHOD_POST]['project']);
+        $uuidRaw = $body[Request::METHOD_POST]['project'];
+        $uuid = base64DecodeUrl($uuidRaw);
         $id   = $user['id'];
         $email = $body[Request::METHOD_POST]['user'];
         $position = $body[Request::METHOD_POST]['position'];
@@ -269,16 +269,32 @@ class ProjectController extends AbstractController
         $status = $projModel->updatePosition($memberID, $projectID, $position);
 
 
-        if ($status) 
-        {
-            $response->success([]);
-        } 
-        else
+        if (!$status) 
         {
             $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
-        }
+        } 
 
-        // TODO: ws
+        // https://stackoverflow.com/a/28738208
+        ob_start();
+
+        $response->success([]);
+
+        $size = ob_get_length();
+
+        header("Content-Encoding: none");
+        header("Content-Length: {$size}");
+        header("Connection: close");
+
+        ob_end_flush();
+        @ob_flush();
+        flush();
+
+        connectToWebsoketServer(
+            Auth::$PASETO_RAW,
+            'project_user_change',
+            ['user' => $memberID],
+            $uuidRaw
+        );
     }
 
     /**
@@ -308,7 +324,8 @@ class ProjectController extends AbstractController
             exit;
         }
     
-        $uuid = base64DecodeUrl($body[Request::METHOD_POST]['project']);
+        $uuidRaw = $body[Request::METHOD_POST]['project'];
+        $uuid = base64DecodeUrl($uuidRaw);
         $id   = $user['id'];
         $email = $body[Request::METHOD_POST]['user'];
 
@@ -356,15 +373,32 @@ class ProjectController extends AbstractController
         }
 
         $status = $projModel->removeUser($memberID, $projectID);
-        if ($status) 
-        {
-            $response->success([]);
-        } 
-        else
+        if (!$status) 
         {
             $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
         }
-        // TODO: ws
+
+        // https://stackoverflow.com/a/28738208
+        ob_start();
+
+        $response->success([]);
+
+        $size = ob_get_length();
+
+        header("Content-Encoding: none");
+        header("Content-Length: {$size}");
+        header("Connection: close");
+
+        ob_end_flush();
+        @ob_flush();
+        flush();
+
+        connectToWebsoketServer(
+            Auth::$PASETO_RAW,
+            'project_user_remove',
+            ['user' => $memberID],
+            $uuidRaw
+        );
     }
 
     /**
@@ -404,7 +438,8 @@ class ProjectController extends AbstractController
         if (empty($body[Request::METHOD_POST]['project']))
             $response->error(t('project_uuid_missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
         
-        $uuid = base64DecodeUrl($body[Request::METHOD_POST]['project']);
+        $uuidRaw = $body[Request::METHOD_POST]['project'];
+        $uuid = base64DecodeUrl($uuidRaw);
         if ($uuid === false) 
         {
             $response->error(t('project_uuid_missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
@@ -447,14 +482,31 @@ class ProjectController extends AbstractController
 
 
         $status = $projModel->delete($projectID);
-        if ($status) 
-        {
-            $response->success([]);
-        } 
-        else
+        if (!$status) 
         {
             $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
-        }
-        // TODO: ws
+        } 
+
+        // https://stackoverflow.com/a/28738208
+        ob_start();
+
+        $response->success([]);
+
+        $size = ob_get_length();
+
+        header("Content-Encoding: none");
+        header("Content-Length: {$size}");
+        header("Connection: close");
+
+        ob_end_flush();
+        @ob_flush();
+        flush();
+
+        connectToWebsoketServer(
+            Auth::$PASETO_RAW,
+            'project_remove',
+            null,
+            $uuidRaw
+        );
     }
 }
