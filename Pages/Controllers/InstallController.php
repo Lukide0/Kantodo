@@ -17,6 +17,8 @@ use Kantodo\Views\InstallView;
 use Kantodo\Views\Layouts\InstallLayout;
 use ParagonIE\Paseto\Keys\Version4\SymmetricKey;
 
+use function Kantodo\Core\Functions\t;
+
 /**
  * Třída na instalaci
  */
@@ -34,15 +36,13 @@ class InstallController extends AbstractController
         $session = Application::$APP->session;
         $page = 0;
         $action = 'install-database';
+        $sectionName = t('database', 'install');
         switch ($path) {
             case 'install-database':
-                $page = 0;
-
                 if ($session->contains('constantsDB') && !$session->contains('constantsStorage')) {
                     Application::$APP->response->setLocation('/install-storage');
                     exit;
                 }
-
                 break;
             case 'install-storage':
                 if (!$session->contains('constantsDB')) {
@@ -57,6 +57,8 @@ class InstallController extends AbstractController
 
                 $page = 1;
                 $action = 'install-storage';
+
+                $sectionName = t('storage', 'install');
                 break;
             case 'install-admin':
                 if (!$session->contains('constantsDB')) {
@@ -72,13 +74,15 @@ class InstallController extends AbstractController
 
                 $page = 2;
                 $action = 'install-admin';
+
+                $sectionName = t('account');
                 break;
             default:
                 break;
         }
 
         if (Application::$APP->request->getMethod() == Request::METHOD_GET) {
-            $this->renderView(InstallView::class, ['page' => $page, 'action' => $action], InstallLayout::class);
+            $this->renderView(InstallView::class, ['page' => $page, 'action' => $action, 'sectionName' => $sectionName], InstallLayout::class);
             exit;
         }
         else if (Application::$APP->request->getMethod() == Request::METHOD_POST) {
@@ -114,8 +118,9 @@ class InstallController extends AbstractController
 
         Data::fillEmpty($body[Request::METHOD_POST], ['dbPass', 'dbPrefix'], "");
 
+        $empty = Data::empty($body[Request::METHOD_POST], $keys);
         // TODO: frontend error
-        if (Data::isEmpty($body[Request::METHOD_POST], $keys)) {
+        if (count($empty) != 0) {
             Application::$APP->response->setLocation();
             exit;
         }
@@ -181,7 +186,7 @@ class InstallController extends AbstractController
     {
         $body = Application::$APP->request->getBody();
     
-        $keys = ['folderData', 'folderCache', 'folderTmp', 'folderBackup', 'folderPlugin'];
+        $keys = ['folderCache', 'folderBackup'];
 
         // TODO: frontend error
         if (Data::isEmpty($body[Request::METHOD_POST], $keys)) {
@@ -224,11 +229,8 @@ class InstallController extends AbstractController
         }
 
         $folderConstants = [
-            'STORAGE_DATA' => "'{$body[Request::METHOD_POST]['folderData']}'",
-            'STORAGE_TMP' => "'{$body[Request::METHOD_POST]['folderTmp']}'",
             'STORAGE_CACHE' => "'{$body[Request::METHOD_POST]['folderCache']}'",
             'STORAGE_BACKUP' => "'{$body[Request::METHOD_POST]['folderBackup']}'",
-            'STORAGE_PLUGIN' => "'{$body[Request::METHOD_POST]['folderPlugin']}'"
         ];
 
         Application::$APP->session->set('constantsStorage', $folderConstants);

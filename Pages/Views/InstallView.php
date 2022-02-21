@@ -6,6 +6,9 @@ namespace Kantodo\Views;
 
 use Kantodo\Core\Application;
 use Kantodo\Core\Base\IView;
+use Kantodo\Widgets\Input;
+
+use function Kantodo\Core\Functions\t;
 
 /**
  * Instalace
@@ -20,66 +23,17 @@ class InstallView implements IView
         $page = $params['page'] ?? 0;
 
         if ($page == 0) {
-        ?>
-        <label class="text-field outline">
-            <div class="field">
-                <span>Název databáze</span>
-                <input type="text" name="dbName">
-            </div>
-            <div class="text">
-                Lorem ipsum dolor sit amet.
-            </div>
-        </label>
-        <label class="text-field outline">
-            <div class="field">
-                <span>Uživatelké jméno</span>
-                <input type="text" name="dbUser">
-            </div>
-            <div class="text">
-                Lorem ipsum dolor sit amet.
-            </div>
-        </label>
-        <label class="text-field outline">
-            <div class="field">
-                <span>Heslo</span>
-                <input type="password" name="dbPass">
-            </div>
-            <div class="text">
-                Lorem ipsum dolor sit amet.
-            </div>
-        </label>
-        <label class="text-field outline">
-            <div class="field">
-                <span>Databázový server</span>
-                <input type="text" name="dbHost">
-            </div>
-            <div class="text">
-                Lorem ipsum dolor sit amet.
-            </div>
-        </label>
-        <label class="text-field outline">
-            <div class="field">
-                <span>Předpona tabulek</span>
-                <input type="text" name="dbPrefix">
-            </div>
-            <div class="text">
-                Lorem ipsum dolor sit amet.
-            </div>
-        </label>
+?>
+            <?= Input::text('dbName', t('name_of_db', 'install')) ?>
+            <?= Input::text('dbUser', t('username', 'install')) ?>
+            <?= Input::password('dpPass', t('password', 'auth')) ?>
+            <?= Input::text('dbHost', t('database_server', 'install')) ?>
+            <?= Input::text('dbPrefix', t('table_prefix', 'install')) ?>
 <?php
-    }
-    else if ($page == 1) 
-    {
-    ?>
-    <label class="text-field">
-        <div class="field">
-            <span>Složka s daty</span>
-            <input type="text" name="folderData" value="<?= Application::$ROOT_DIR . '/App/Data'?>">
-        </div>
-        <div class="text">
-            Lorem ipsum dolor sit amet.
-        </div>
-    </label>
+        }
+        else if ($page == 1) 
+        {
+?>
     <label class="text-field">
         <div class="field">
             <span>Složka cache</span>
@@ -91,26 +45,8 @@ class InstallView implements IView
     </label>
     <label class="text-field">
         <div class="field">
-            <span>Složka s dočasnými soubory</span>
-            <input type="text" name="folderTmp" value="<?= Application::$ROOT_DIR . '/App/TMP'?>">
-        </div>
-        <div class="text">
-            Lorem ipsum dolor sit amet.
-        </div>
-    </label>
-    <label class="text-field">
-        <div class="field">
             <span>Zálohová složka</span>
             <input type="text" name="folderBackup" value="<?= Application::$ROOT_DIR . '/App/Backup'?>">
-        </div>
-        <div class="text">
-            Lorem ipsum dolor sit amet.
-        </div>
-    </label>
-    <label class="text-field">
-        <div class="field">
-            <span>Složka s pluginy</span>
-            <input type="text" name="folderPlugin" value="<?= Application::$ROOT_DIR . '/App/Plugin'?>">
         </div>
         <div class="text">
             Lorem ipsum dolor sit amet.

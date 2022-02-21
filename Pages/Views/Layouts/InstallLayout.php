@@ -8,6 +8,8 @@ use Kantodo\Core\Application;
 use Kantodo\Core\Base\Layout;
 use Kantodo\Models\TeamModel;
 
+use function Kantodo\Core\Functions\t;
+
 /**
  * Layout na instalaci
  */
@@ -44,12 +46,12 @@ class InstallLayout extends Layout
         <body>
             <div class="container full middle padding-big">
                 <form class="install" method="POST" action="<?= $action ?>">
-                    <h2 class="space-small-bottom"><?= $title ?></h2>
+                    <h2 class="space-small-bottom"><?= t('installation', 'install') ?></h2>
                     <h3><?= $sectionName ?></h3>
                     <div class="container middle full-width">
                         <?= $content ?>
                     </div>
-                    <button class="colored big full-width center space-huge-top">Potvrdit</button>
+                    <button class="colored big full-width center space-huge-top"><?= t('confirm') ?></button>
                 </form>
             </div>
         </body>
