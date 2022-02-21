@@ -286,7 +286,7 @@ class ClientLayout extends Layout
         <main>
             <?= $content ?>
         </main>
-        <script>
+        <script defer>
 
             var url;
             if (location.protocol == 'https:')
@@ -304,6 +304,7 @@ class ClientLayout extends Layout
 
             ws.onopen = function() 
             {
+                Kantodo.info("WS connection opening");
                 for (let proj in DATA.Projects) 
                 {
                     ws.send(dataFormat('join', proj));
@@ -313,12 +314,83 @@ class ClientLayout extends Layout
 
             ws.onmessage = function(msg) 
             {
-                console.log(msg.data);
+                let data;
+                try {
+                    data = JSON.parse(msg.data);
+                    console.log(data);
+                    switch (data.action) {
+                        case 'task_create':
+                        {
+                            let projEl = document.querySelector(`main [data-project-id="${data.project_id}"] > .container`);
+                            
+                            DATA.AddTask(data.project, data.value, projEl);
+
+                            if (projEl)
+                            {
+                                projEl.dataset['last'] = data.value.id;
+                            }
+                            break;
+                        }
+                        case 'task_remove':
+                        {
+                            DATA.RemoveTask(data.project, data.value.id);
+                            let el = document.querySelector(`[data-task-id='${data.value.id}']`);
+                            
+                            if (el)
+                                el.remove();
+                            break;
+                        }
+                        case 'task_update':
+                        {
+                            let taskInfo = DATA.Projects[data.project].tasks.find(t => t.id == data.value.id);
+                            let taskData = data.value.changed;
+                            for(var p in taskData)
+                            {
+                                taskInfo[p] = taskData[p];
+                            }
+                            DATA.UpdateTask(data.project, taskInfo);
+
+                            let taskEl = document.querySelector(`[data-task-id='${data.value.id}']`);
+                            
+                            if (taskEl) 
+                            {
+                                taskEl.querySelector('header h4').innerText = taskInfo.name;
+                                
+                                if (taskInfo.completed == '1' && showCompleted == false) 
+                                {
+                                    taskEl.style.display = 'none';
+                                }
+                                else 
+                                {
+                                    taskEl.style.display = null;
+                                }
+                            }
+
+                            
+
+                            break;
+                        }
+                        case 'project_remove':
+                            break;
+                        case 'project_user_change':
+                            break;
+
+
+                        case 'project_user_remove':
+                            
+                            break;
+                        default:
+                            break;
+                    }
+                    console.log(data);
+                } catch (error) {
+                    Kantodo.error(error);
+                }
             };
 
             ws.onclose = function() 
             {
-                Kantodo.info("WS connection closing");
+                Kantodo.warn("WS connection closing");
             }
 
         </script>

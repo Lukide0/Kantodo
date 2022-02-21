@@ -164,6 +164,7 @@ class TaskController extends AbstractController
                 'priority'    => $taskPriority,
                 'completed'   => $taskCompleted,
                 'end_date'    => $taskEndDate,
+                'project_id'  => $details['id']
             ],
             $projRAW
         );

@@ -28,7 +28,10 @@ function connectToWebsoketServer(string $authToken, string $action, $value, stri
     \Ratchet\Client\connect('ws://127.0.0.1:8443', ['access_token', $authToken])->then(
         function(\Ratchet\Client\WebSocket $conn) use ($data)
         {
-            $conn->send($data);
+            if ($conn->send($data)) 
+            {
+                $conn->close();
+            }
         }
     );
 }

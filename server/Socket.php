@@ -155,7 +155,6 @@ class WsNotification implements MessageComponentInterface, WsServerInterface
         
         $action = $decodedMSG['action'];
         $value = $decodedMSG['value'];
-
         switch($action) 
         {
         case 'join':
@@ -172,7 +171,7 @@ class WsNotification implements MessageComponentInterface, WsServerInterface
                 break;
             
             $project = $decodedMSG['project'];
-            $message = json_encode(['action' => $action ,'data' => $value]);
+            $message = json_encode($decodedMSG);
 
             if (!isset($this->channels[$project]) || $message === false)
                 break;
@@ -184,7 +183,6 @@ class WsNotification implements MessageComponentInterface, WsServerInterface
             $this->connections->detach($from);
 
             break;
-
         }
         case 'project_remove':
         {
