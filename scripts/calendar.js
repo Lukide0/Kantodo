@@ -131,26 +131,6 @@ function showTasks(e, el)
     dialog.show();
 }
 
-// TODO: remove
-function removeTaskFromCalendar(action, taskID) 
-{
-    switch(action) 
-    {
-    case 'remove':
-    case 'complete':
-        break;
-    default:
-        return;
-
-    }
-    /*
-    let el = document.querySelector(data-task-id="taskID");
-    
-    */
-    
-    console.log(action, taskID);
-}
-
 function addTaskToCalendar(task,month, year, uuid) 
 {
     const date = new Date(task.end_date);

@@ -101,19 +101,6 @@ body {
     & > header.mobile {
         display: none;
     }
-
-    @include respond(mobile) {
-        display: flex;
-        flex-direction: column-reverse;
-
-        & > header:not(.mobile) {
-            display: none !important;
-        }
-
-        & > header.mobile {
-            display: block;
-        }
-    }
 }
 
 .disabled 
