@@ -49,13 +49,6 @@ class BaseApplication
     public static $URL_PATH;
 
     /**
-     * Cesta k datům
-     *
-     * @var string
-     */
-    public static $DATA_PATH;
-
-    /**
      * Cesta k klíčům
      *
      * @var string
@@ -137,7 +130,6 @@ class BaseApplication
         );
 
         self::$URL_PATH  = str_replace($_SERVER['DOCUMENT_ROOT'], '', (str_replace('\\', '/', self::$ROOT_DIR)));
-        self::$DATA_PATH = self::$ROOT_DIR . '/data/';
         self::$KEYS_PATH = self::$ROOT_DIR . '/App/Keys/';
 
         $this->request  = new Request();
