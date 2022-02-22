@@ -177,7 +177,7 @@ class AuthController extends AbstractController
 
         if ($firstname === false) 
         {
-            $errors['signUpName'] = 'lastname_is_not_valid';
+            $errors['signUpName'] = 'firstname_is_not_valid';
         }
 
         if ($lastname === false) 
