@@ -20,5 +20,13 @@ body {
     .text-field {
         width: 100%;
         margin-top: space(big);
+        margin-bottom: space(small);
     }
+}
+
+#errorMsg 
+{
+    font-size: fontSize(regular);
+    font-weight: bold;
+    color: color(error);
 }

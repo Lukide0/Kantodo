@@ -272,7 +272,7 @@ class Input extends AbstractWidget
         $errorClass = $this->getOption('error', false) !== false ? 'error' : '';
 
         return <<<HTML
-            <label class="text-field {$outline} {$color} space-big-bottom {$classes} {$errorClass}">
+            <label class="text-field {$outline} {$color} space-medium-bottom {$classes} {$errorClass}">
                 <div class="field">
                     <span>{$this->getOption('label','')}</span>
                     <input type="{$type}" onchange="if(this.value == ''){ this.parentElement.classList.remove('focus');} else if (!this.parentElement.classList.contains('focus')) { this.parentElement.classList.add('focus'); }" name="{$this->getOption('name')}" value="{$this->getOption('value','')}" autocomplete="{$this->getOption('autocomplete','off')}" {$disabled} {$dataAttributes}>

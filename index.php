@@ -11,10 +11,9 @@ include_once 'loader/autoload.php';
 $APP = new Application();
 $APP->registerAuth(new Auth());
 $APP->session->start();
-// REMEMBER: Menit title ve view, preklad cz
+// REMEMBER: Menit title ve view, preklad
 // TODO: komentare, VIEWS title 
 // TODO: WS!!!!!!!
-// 8.2-?.2 SASS
 
 
 

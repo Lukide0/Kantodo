@@ -112,6 +112,7 @@ class InstallController extends AbstractController
     public function installDatabase() 
     {
         Application::$INSTALLING = true;
+        $session = Application::$APP->session;
         $body = Application::$APP->request->getBody();
 
         $keys = ['dbName', 'dbHost', 'dbUser'];
@@ -119,8 +120,9 @@ class InstallController extends AbstractController
         Data::fillEmpty($body[Request::METHOD_POST], ['dbPass', 'dbPrefix'], "");
 
         $empty = Data::empty($body[Request::METHOD_POST], $keys);
-        // TODO: frontend error
+
         if (count($empty) != 0) {
+            $session->addFlashMessage('errors', array_fill_keys($empty, t('empty', 'api')));
             Application::$APP->response->setLocation();
             exit;
         }
@@ -137,8 +139,8 @@ class InstallController extends AbstractController
          */
         $connectionStatus = Connection::tryConnect("mysql:host={$dbHost};dbname={$dbName}", $dbUser, $dbPass);
 
-        // TODO: frontend error
         if (!$connectionStatus) {
+            $session->addFlashMessage('error-msg', t('could_not_connect_to_db', 'install'));
             Application::$APP->response->setLocation();
             exit;
         }
@@ -184,46 +186,82 @@ class InstallController extends AbstractController
      */
     public function installStorage()
     {
+        $session = Application::$APP->session;
         $body = Application::$APP->request->getBody();
-    
+
         $keys = ['folderCache', 'folderBackup'];
 
-        // TODO: frontend error
-        if (Data::isEmpty($body[Request::METHOD_POST], $keys)) {
+        $empty = Data::empty($body[Request::METHOD_POST], $keys);
+
+        if (count($empty) != 0) {
+            $session->addFlashMessage('errors', array_fill_keys($empty, t('empty', 'api')));
             Application::$APP->response->setLocation('/install-storage');
             exit;
         }
 
+        $notReadable = 0b01;
+        $notWritable = 0b10;
+        
         $notDir = [];
         $notPerm = [];
         foreach ($keys as $key) {
             $path = $body[Request::METHOD_POST][$key];
 
-            if (!is_dir($path))
+            if (!is_dir($path)) 
+            {
                 $notDir[] = $key;
+                continue;
+            }
 
-            if (!is_readable($path))
-                $notPerm[] = ['read', $key];
+            if (!is_readable($path)) 
+            {
+                if (isset($notPerm[$key]))
+                    $notPerm[$key] |= $notReadable;
+                else 
+                    $notPerm[$key] = $notReadable;
+            }
             
-            if (!is_writable($path))
-                $notPerm[] = ['write', $key];
+            if (!is_writable($path)) 
+            {
+                if (isset($notPerm[$key]))
+                    $notPerm[$key] |= $notWritable;
+                else 
+                    $notPerm[$key] = $notWritable;
+            } 
+                
         }
         $duplicite = Data::duplicate($body[Request::METHOD_POST], $keys, true);
         
-        // TODO: frontend error
         if (count($notDir) != 0) {
+            $session->addFlashMessage('errors', array_fill_keys($notDir, t('is_not_folder', 'install')));
             Application::$APP->response->setLocation('/install-storage');
             exit;
         }
 
-        // TODO: frontend error
         if (count($duplicite) != 0) {
+            $session->addFlashMessage('errors', array_fill_keys($duplicite, t('folders_can_not_be_the_same', 'install')));
             Application::$APP->response->setLocation('/install-storage');
             exit;
         }
 
-        // TODO: frontend error
         if (count($notPerm) != 0) {
+            $errors = [];
+
+            foreach ($notPerm as $key => $value) {
+                if (($value & $notReadable) == $notReadable && ($value & $notWritable) == $notWritable)
+                {
+                    $errors[$key] = t('could_not_read_and_write', 'install');
+                }
+                else if (($value & $notReadable) == $notReadable)
+                {
+                    $errors[$key] = t('could_not_read', 'install');
+                }
+                else 
+                {
+                    $errors[$key] = t('could_not_write', 'install');
+                }
+            }
+            $session->addFlashMessage('errors', $errors);
             Application::$APP->response->setLocation('/install-storage');
             exit;
         }
@@ -246,12 +284,14 @@ class InstallController extends AbstractController
     {
         Application::$INSTALLING = true;
 
+        $session = Application::$APP->session;
         $body = Application::$APP->request->getBody();
     
         $keys = ['firstname', 'lastname', 'email', 'password', 'controlPassword'];
 
-        // TODO: frontend error
-        if (Data::isEmpty($body[Request::METHOD_POST], $keys)) {
+        $empty = Data::empty($body[Request::METHOD_POST], $keys);
+        if (count($empty) != 0) {
+            $session->addFlashMessage('errors', array_fill_keys($empty, t('empty', 'api')));
             Application::$APP->response->setLocation('/install-admin');
             exit;
         }
@@ -262,32 +302,37 @@ class InstallController extends AbstractController
         $pass = $body[Request::METHOD_POST]['password'];
         $passControl = $body[Request::METHOD_POST]['controlPassword'];
 
-        // TODO: frontend error
         if (!Data::isValidEmail($email)){
+            $session->addFlashMessage('errors', ['email' => t('email_is_not_valid', 'auth')]);
+            Application::$APP->response->setLocation('/install-admin');
+            exit;
+        }
+        
+        if ($pass != $passControl) {
+            $session->addFlashMessage('errors', ['password' => t('passwords_do_not_match', 'auth'), 'controlPassword' => t('passwords_do_not_match', 'auth')]);
+            Application::$APP->response->setLocation('/install-admin');
+            exit;
+        }
+        
+        if ($firstname == false) {
+            $session->addFlashMessage('errors', ['firstname' => t('firstname_is_not_valid')]);
             Application::$APP->response->setLocation('/install-admin');
             exit;
         }
 
-        // TODO: frontend error
-        if ($pass != $passControl) {
+        if ($lastname == false) {
+            $session->addFlashMessage('errors', ['lastname' => t('lastname_is_not_valid')]);
             Application::$APP->response->setLocation('/install-admin');
             exit;
         }
         
-        // TODO: frontend error
-        if ($firstname == false || $lastname == false) {
-            Application::$APP->response->setLocation('/install-admin');
-            exit;
-        }
-        
-        // TODO: frontend error
         if (!Data::isValidPassword($pass, true, true, true)) {
+            $session->addFlashMessage('errors', ['password' => t('password_is_not_valid')]);
             Application::$APP->response->setLocation('/install-admin');
             exit;
         }
 
         $dbConstants = Application::$APP->session->get('constantsDB');
-
         
         // TMP konstanty
         define('DB_NAME', $dbConstants['DB_NAME']);
@@ -304,19 +349,18 @@ class InstallController extends AbstractController
         $status = $userModel->create($firstname, $lastname, $email, $pass);
 
 
-
-        // TODO: frontend error
         if ($status == false) {
+            $session->addFlashMessage('error-msg', t('something_went_wront', 'api'));
             Application::$APP->response->setLocation('/install-admin');
             exit;
         }
 
         [$id] = $status;
 
-        // TODO: frontend error
         if ($userModel->addMeta('position', 'admin', $id) == false) {
             $userModel->delete($id);
 
+            $session->addFlashMessage('error-msg', t('something_went_wront', 'api'));
             Application::$APP->response->setLocation('/install-admin');
             exit;
         }

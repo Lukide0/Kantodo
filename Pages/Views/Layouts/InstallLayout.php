@@ -27,6 +27,7 @@ class InstallLayout extends Layout
     {
         $sectionName = $params['sectionName'] ?? '';
         $action = $params['action'] ?? "install-database";
+        $errorMsg = Application::$APP->session->getFlashMessage('error-msg', '');
         ?>
         <!DOCTYPE html>
         <html lang="en">
@@ -49,9 +50,10 @@ class InstallLayout extends Layout
                     <h2 class="space-small-bottom"><?= t('installation', 'install') ?></h2>
                     <h3><?= $sectionName ?></h3>
                     <div class="container middle full-width">
+                        <div class="row space-medium-top" id="errorMsg"><?= $errorMsg ?></div>
                         <?= $content ?>
                     </div>
-                    <button class="colored big full-width center space-huge-top"><?= t('confirm') ?></button>
+                    <button class="colored big full-width center space-regular-top"><?= t('confirm') ?></button>
                 </form>
             </div>
         </body>

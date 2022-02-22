@@ -21,90 +21,39 @@ class InstallView implements IView
         $lang->load('install');
 
         $page = $params['page'] ?? 0;
+        $opt = [
+            'error' => Application::$APP->session->getFlashMessage('errors', [])
+        ];
 
         if ($page == 0) {
 ?>
-            <?= Input::text('dbName', t('name_of_db', 'install')) ?>
-            <?= Input::text('dbUser', t('username', 'install')) ?>
-            <?= Input::password('dpPass', t('password', 'auth')) ?>
-            <?= Input::text('dbHost', t('database_server', 'install')) ?>
-            <?= Input::text('dbPrefix', t('table_prefix', 'install')) ?>
+            <?= Input::text('dbName', t('name_of_db', 'install'), $opt) ?>
+            <?= Input::text('dbUser', t('username', 'install'), $opt) ?>
+            <?= Input::password('dpPass', t('password', 'auth'), $opt) ?>
+            <?= Input::text('dbHost', t('database_server', 'install'), $opt) ?>
+            <?= Input::text('dbPrefix', t('table_prefix', 'install'), $opt) ?>
 <?php
         }
         else if ($page == 1) 
         {
+            $defaultCache = Application::$ROOT_DIR . '/App/Cache';
+            $defaultBackup = Application::$ROOT_DIR . '/App/Backup';
 ?>
-    <label class="text-field">
-        <div class="field">
-            <span>Složka cache</span>
-            <input type="text" name="folderCache" value="<?= Application::$ROOT_DIR . '/App/Cache'?>">
-        </div>
-        <div class="text">
-            Lorem ipsum dolor sit amet.
-        </div>
-    </label>
-    <label class="text-field">
-        <div class="field">
-            <span>Zálohová složka</span>
-            <input type="text" name="folderBackup" value="<?= Application::$ROOT_DIR . '/App/Backup'?>">
-        </div>
-        <div class="text">
-            Lorem ipsum dolor sit amet.
-        </div>
-    </label>
+            <?= Input::text('folderCache', t('cache_folder', 'install'), array_merge($opt, ['value' => $defaultCache])) ?>
+            <?= Input::text('folderBackup', t('backup_folder', 'install'), array_merge($opt, ['value' => $defaultBackup])) ?>
 <?php
-    }
-    else {
-    ?>
-    <label class="text-field outline">
-        <div class="field">
-            <span>Jméno</span>
-            <input type="text" name="firstname">
-        </div>
-        <div class="text">
-            Lorem ipsum dolor sit amet.
-        </div>
-    </label>
-    <label class="text-field outline">
-        <div class="field">
-            <span>Příjmení</span>
-            <input type="text" name="lastname">
-        </div>
-        <div class="text">
-            Lorem ipsum dolor sit amet.
-        </div>
-    </label>
-    <label class="text-field outline">
-        <div class="field">
-            <span>email</span>
-            <input type="email" name="email">
-        </div>
-        <div class="text">
-            Lorem ipsum dolor sit amet.
-        </div>
-    </label>
-    <label class="text-field outline">
-        <div class="field">
-            <span>Heslo</span>
-            <input type="password" name="password">
-        </div>
-        <div class="text">
-            Lorem ipsum dolor sit amet.
-        </div>
-    </label>
-    <label class="text-field outline">
-        <div class="field">
-            <span>Heslo znovu</span>
-            <input type="password" name="controlPassword">
-        </div>
-        <div class="text">
-            Lorem ipsum dolor sit amet.
-        </div>
-    </label>
+        }
+        else {
+?>
+            <?= Input::text('firstname', t('firstname'), $opt) ?>
+            <?= Input::text('lastname', t('lastname'), $opt) ?>
+            <?= Input::text('email', t('email'), $opt) ?>
+            <?= Input::password('password', t('password', 'auth'), $opt) ?>
+            <?= Input::password('controlPassword', t('password_again', 'auth'), $opt) ?>
 <?php
-    }
+        }
         
-}
+    }
 }
 
 ?>
