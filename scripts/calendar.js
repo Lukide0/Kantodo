@@ -90,7 +90,6 @@ function showTasks(e, el)
         {
             let projContainer = document.createElement('div');
             
-            console.log(calendarTasks[year][month][uuid][day]);
             calendarTasks[year][month][uuid][day].forEach(task => {
 
                 DATA.AfterTaskAdd(uuid, task, projContainer, day, function(action, taskID, day) {
@@ -98,6 +97,8 @@ function showTasks(e, el)
                     {
                     case 'remove':
                     case 'complete':
+                        // TODO:
+                        console.log(task);
                         break;
                     default:
                         return;
@@ -127,6 +128,8 @@ function showTasks(e, el)
             }
         ]
     );
+    dialog.element.children[0].style.width = "50%";
+    dialog.element.children[0].style.height = "50%";
     dialog.setParent(document.body);
     dialog.show();
 }

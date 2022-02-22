@@ -256,14 +256,20 @@ export default function taskWindow(btn = null, project = null) {
     });
 
 
-
+    
     win.setParent(document.body.querySelector('main'));
-
+    
     if (btn) 
     {
         btn.addEventListener('click', function() {
             win.show();
         });
+    }
+    win.setTaskId = function (id) { 
+        win.taskID = id; 
+    }
+    win.getTaskId = function () {
+        return win.taskID
     }
 
     win.setButtonShow = function(b) 
@@ -359,6 +365,8 @@ export default function taskWindow(btn = null, project = null) {
     }
 
     win.clear = function() {
+        nameInput.value = "";
+
         input.value = "";
         input.dataset.value = "";
 
@@ -368,13 +376,17 @@ export default function taskWindow(btn = null, project = null) {
         chipInput.dataset.value = "";
         chips.innerHTML = "";
 
-        priorityField.value = "";
-        priorityField.dataset.value = "";
+        priorityField.value = translations['%priority_low%'];
+        priorityField.dataset.value = "0";
+        
+        statusField.value = translations['%open%'];
+        statusField.dataset.value = "0";
 
         endDateInput.value = "";
     }
 
     win.setActionCreate = function(action) {
+        win.setTaskId(null);
         btnCreate.onclick = action;
     }
 

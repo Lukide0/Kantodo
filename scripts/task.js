@@ -30,17 +30,60 @@ function showCompletedTasks(e)
 }
 
 
-DATA.AfterTaskRemove = function(uuid, taskID)
+DATA.AfterTaskRemove = function(uuid, taskID, isWs)
 {
-    // TODO: check if user edit
     let el = document.querySelector(`[data-task-id='${taskID}']`);
     if (el)
         el.remove();
+
+    if (isWs) 
+    {
+        if (taskWin.getTaskId() != taskID) 
+            return;
+        
+        let dialog = Modal.Dialog.create(translations['%warning%'], translations['%current_task_has_been_deleted%'], [
+            {
+                'text':  translations['%close%'], 
+                'classList': 'flat no-border',
+                'click': function(dialogOBJ) {
+                    taskWin.clear();
+                    taskWin.hide();
+                    dialogOBJ.destroy(true);
+                    return false;
+                }
+            }
+        ]);
+        dialog.element.style.zIndex = "99999999999999999";
+        dialog.setParent(document.body);
+        dialog.show();
+    }
+
+    
 }
 
-DATA.AfterTaskUpdate = function(uuid, index, data)
+DATA.AfterTaskUpdate = function(uuid, index, data, isWs)
 {
-    // TODO: check if user edit
+    if (isWs) 
+    {
+        if (taskWin.getTaskId() != data.id) 
+            return;
+
+        let dialog = Modal.Dialog.create(translations['%warning%'], translations['%current_task_has_been_edited%'], [
+            {
+                'text':  translations['%close%'], 
+                'classList': 'flat no-border',
+                'click': function(dialogOBJ) {
+                    taskWin.clear();
+                    taskWin.hide();
+                    dialogOBJ.destroy(true);
+                    return false;
+                }
+            }
+        ]);
+        dialog.element.style.zIndex = "99999999999999999";
+        dialog.setParent(document.body);
+        dialog.show();
+    }
 }
 
 DATA.AfterTaskAdd = function(uuid, task, container, data, after = null) {
@@ -48,9 +91,13 @@ DATA.AfterTaskAdd = function(uuid, task, container, data, after = null) {
         return;
 
     let tags = task.tags;
-    let tagsHTML = tags.map(tag => {
-        return `<div class="tag">${tag}</div>`;
-    }).join('');
+    let tagsHTML = "";
+    if (tags) {
+        tagsHTML = tags.map(tag => {
+            return `<div class="tag">${tag}</div>`;
+        }).join('');
+
+    }
 
     let taskEl = document.createElement('div');
     if (task.completed == '1' && showCompleted == false) 
@@ -189,7 +236,7 @@ function showTaskContextMenu(e,uuid,taskID, day, after = null) {
             // Tagy
             setChips(taskInfo.tags);
         }
-
+        taskWin.setTaskId(taskInfo.id);
         taskWin.setActionUpdate(updateTask);
 
         function updateTask() {

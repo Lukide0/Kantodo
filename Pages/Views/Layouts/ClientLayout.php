@@ -60,6 +60,7 @@ class ClientLayout extends Layout
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet">
             <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+            <link rel="icon" href="icon.png" type="image/png">
             <link rel="stylesheet" href="<?= Application::$STYLE_URL ?>/main.min.css">
             <script src="<?= Application::$SCRIPT_URL ?>main.js"></script>
             <script src="<?= Application::$SCRIPT_URL ?>global.js" type="module"></script>
@@ -83,11 +84,9 @@ class ClientLayout extends Layout
 
                 const expiration = <?= Auth::$PASETO->getExpiration()->getTimestamp()?>000;
                 setInterval(function(){
-
                     if (expiration <= Date.now()) 
                     {
-                        console.log(expiration, Date.now());
-                        //window.location = "/";
+                        window.location = "/";
                     }
                 }, 10000);
             </script>
@@ -152,7 +151,6 @@ class ClientLayout extends Layout
                                 return;
                             }
 
-                            // úkol již existuje
                             if (this.Projects[uuid].tasks.some(t => t.id == task.id)) 
                             {
                                 return;
@@ -162,7 +160,7 @@ class ClientLayout extends Layout
                             if (this.AfterTaskAdd != null)
                                 this.AfterTaskAdd(uuid, task, meta);
                         },
-                        "UpdateTask": function(uuid, data) 
+                        "UpdateTask": function(uuid, data, meta = null) 
                         {
                             if (typeof this.Projects[uuid] !== "object") 
                             {
@@ -177,10 +175,10 @@ class ClientLayout extends Layout
                             this.Projects[uuid].tasks[index] = data;
                             
                             if (this.AfterTaskUpdate != null)
-                                this.AfterTaskUpdate(uuid, index, data);
+                                this.AfterTaskUpdate(uuid, index, data, meta);
                             
                         },
-                        "RemoveTask": function(uuid, taskID) 
+                        "RemoveTask": function(uuid, taskID, meta) 
                         {
                             if (typeof this.Projects[uuid] !== "object") 
                             {
@@ -193,7 +191,7 @@ class ClientLayout extends Layout
                             this.Projects[uuid].tasks.splice(index, 1);
                             
                             if (this.AfterTaskRemove != null)
-                                this.AfterTaskRemove(uuid, taskID);
+                                this.AfterTaskRemove(uuid, taskID, meta);
                         },
                         "AfterTaskUpdate": null, 
                         "AfterProjectAdd": null,
@@ -286,112 +284,157 @@ class ClientLayout extends Layout
         <main>
             <?= $content ?>
         </main>
-        <script defer>
-
-            var url;
-            if (location.protocol == 'https:')
-                url = "wss://";
-            else
-                url = "ws://";
-            
-            url += "127.0.0.1:8443";
-            const ws = new WebSocket(url, ['access_token','<?= Auth::$PASETO_RAW ?>']);
-
-            let dataFormat = function(action, value) 
+        <script>
+            if (Notification.permission == "default") 
             {
-                return JSON.stringify({ action, value})
-            };
-
-            ws.onopen = function() 
-            {
-                Kantodo.info("WS connection opening");
-                for (let proj in DATA.Projects) 
-                {
-                    ws.send(dataFormat('join', proj));
-                }
-
-            };
-
-            ws.onmessage = function(msg) 
-            {
-                let data;
-                try {
-                    data = JSON.parse(msg.data);
-                    console.log(data);
-                    switch (data.action) {
-                        case 'task_create':
-                        {
-                            let projEl = document.querySelector(`main [data-project-id="${data.project_id}"] > .container`);
-                            
-                            DATA.AddTask(data.project, data.value, projEl);
-
-                            if (projEl)
-                            {
-                                projEl.dataset['last'] = data.value.id;
-                            }
-                            break;
+                let permDialog = Modal.Dialog.create(translations['%notifications%'], translations['%please_enable_notifications%'], [
+                    {
+                        'text':  translations['%close%'], 
+                        'classList': 'flat no-border',
+                        'click': function(dialogOBJ) {
+                            dialogOBJ.destroy(true);
+                            return false;
                         }
-                        case 'task_remove':
-                        {
-                            DATA.RemoveTask(data.project, data.value.id);
-                            let el = document.querySelector(`[data-task-id='${data.value.id}']`);
-                            
-                            if (el)
-                                el.remove();
-                            break;
+                    },
+                    {
+                        'text':  translations['%ok%'], 
+                        'classList': 'flat no-border',
+                        'click': function(dialogOBJ) {
+                            Notification.requestPermission();
+                            dialogOBJ.destroy(true);
+                            return false;
                         }
-                        case 'task_update':
-                        {
-                            let taskInfo = DATA.Projects[data.project].tasks.find(t => t.id == data.value.id);
-                            let taskData = data.value.changed;
-                            for(var p in taskData)
-                            {
-                                taskInfo[p] = taskData[p];
-                            }
-                            DATA.UpdateTask(data.project, taskInfo);
-
-                            let taskEl = document.querySelector(`[data-task-id='${data.value.id}']`);
-                            
-                            if (taskEl) 
-                            {
-                                taskEl.querySelector('header h4').innerText = taskInfo.name;
-                                
-                                if (taskInfo.completed == '1' && showCompleted == false) 
-                                {
-                                    taskEl.style.display = 'none';
-                                }
-                                else 
-                                {
-                                    taskEl.style.display = null;
-                                }
-                            }
-
-                            
-
-                            break;
-                        }
-                        case 'project_remove':
-                            break;
-                        case 'project_user_change':
-                            break;
-
-
-                        case 'project_user_remove':
-                            
-                            break;
-                        default:
-                            break;
                     }
-                    console.log(data);
-                } catch (error) {
-                    Kantodo.error(error);
-                }
-            };
-
-            ws.onclose = function() 
-            {
-                Kantodo.warn("WS connection closing");
+                ]);
+                permDialog.setParent(document.body);
+                permDialog.show();
             }
+
+            async function sendNotification(title,message) 
+            {
+                let notif = new Notification("Kantodo: " +  title, {'body': message, 'icon': "<?= Application::$URL_PATH ?>/icon.png"});
+            }
+
+            window.addEventListener('load', async function(){
+                var url;
+                if (location.protocol == 'https:')
+                    url = "wss://";
+                else
+                    url = "ws://";
+                
+                url += "127.0.0.1:8443";
+                const ws = new WebSocket(url, ['access_token','<?= Auth::$PASETO_RAW ?>']);
+    
+                let dataFormat = function(action, value) 
+                {
+                    return JSON.stringify({ action, value})
+                };
+    
+                ws.onopen = function() 
+                {
+                    Kantodo.info("WS connection opening");
+                    for (let proj in DATA.Projects) 
+                    {
+                        ws.send(dataFormat('join', proj));
+                    }
+    
+                };
+    
+                ws.onmessage = function(msg) 
+                {
+                    let data;
+                    try {
+                        data = JSON.parse(msg.data);
+                        switch (data.action) {
+                            case 'task_create':
+                            {
+                                let projEl = document.querySelector(`main [data-project-id="${data.project}"] > .container`);
+                                
+                                console.log(data, projEl);
+                                DATA.AddTask(data.project, data.value, projEl);
+                                if (projEl)
+                                {
+                                    if (projEl.dataset['last'] !== undefined && projEl.dataset['last'] > data.value.id)
+                                        break;
+                                    
+                                    projEl.dataset['last'] = data.value.id;
+                                    sendNotification(translations['%new_task_was_added%'], translations['%project%'] + ": " + DATA.Projects[data.project].name);
+                                }
+                                break;
+                            }
+                            case 'task_remove':
+                            {
+                                DATA.RemoveTask(data.project, data.value.id, true);
+                                break;
+                            }
+                            case 'task_update':
+                            {
+                                let taskInfo = DATA.Projects[data.project].tasks.find(t => t.id == data.value.id);
+                                let taskData = data.value.changed;
+    
+                                if (!taskInfo)
+                                    return;
+    
+                                for(var p in taskData)
+                                {
+                                    taskInfo[p] = taskData[p];
+                                }
+                                DATA.UpdateTask(data.project, taskInfo, true);
+    
+                                let taskEl = document.querySelector(`[data-task-id='${data.value.id}']`);
+                                
+                                if (taskEl) 
+                                {
+                                    taskEl.querySelector('header h4').innerText = taskInfo.name;
+                                    
+                                    if (taskInfo.completed == '1' && showCompleted == false) 
+                                    {
+                                        taskEl.style.display = 'none';
+                                    }
+                                    else 
+                                    {
+                                        taskEl.style.display = null;
+                                    }
+                                }
+
+                                sendNotification(translations['%task_was_edited%'], translations['%project%'] + ": " + DATA.Projects[data.project].name);
+                                break;
+                            }
+                            case 'project_user_change':
+                                break;
+                            case 'project_remove':
+                            case 'project_user_remove':
+                            {
+                                let dialog = Modal.Dialog.create(translations['%warning%'], translations['%project_has_been_changed%'], [
+                                    {
+                                        'text':  translations['%close%'], 
+                                        'classList': 'flat no-border',
+                                        'click': function(dialogOBJ) {
+                                            window.location.reload();
+                                            dialogOBJ.destroy(true);
+                                            return false;
+                                        }
+                                    }
+                                ]);
+                                dialog.setParent(document.body);
+                                dialog.show();
+
+                                sendNotification(translations['%you_have_been_removed_from_project%'], translations['%project%'] + ": " + DATA.Projects[data.project].name);
+                                break;
+                            }
+                            default:
+                                break;
+                        }
+                    } catch (error) {
+                        Kantodo.error(error);
+                    }
+                };
+    
+                ws.onclose = function() 
+                {
+                    Kantodo.warn("WS connection closing");
+                }
+            });
 
         </script>
         </body>

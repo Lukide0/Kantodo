@@ -83,9 +83,9 @@ class ProjectChannel
         }
     }
 
-    public function removeSelf() : void
+    public function removeSelf(string $project) : void
     {
-        $this->sendAll(json_encode(['action' => 'project_remove']));
+        $this->sendAll(json_encode(['action' => 'project_remove', 'project' => $project]));
     }
 
 }
@@ -155,6 +155,7 @@ class WsNotification implements MessageComponentInterface, WsServerInterface
         
         $action = $decodedMSG['action'];
         $value = $decodedMSG['value'];
+
         switch($action) 
         {
         case 'join':
@@ -193,7 +194,7 @@ class WsNotification implements MessageComponentInterface, WsServerInterface
             if (!isset($this->channels[$project]))
                 break;
 
-            $this->channels[$project]->removeSelf();
+            $this->channels[$project]->removeSelf($project);
             unset($this->channels[$project]);
 
             break;
@@ -219,7 +220,7 @@ class WsNotification implements MessageComponentInterface, WsServerInterface
             if (!isset($this->channels[$project]))
                 break;
 
-            $this->channels[$project]->sendToUser($from->id, json_encode(['action' => 'user_remove']));
+            $this->channels[$project]->sendToUser($from->id, json_encode(['action' => 'user_remove', 'project' => $project]));
             break;
         }
         default:

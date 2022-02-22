@@ -24,6 +24,7 @@
     "task_was_removed": "The task has been removed",
     "or": "or",
     "yes": "Yes",
+    "ok": "Ok",
     "cancel": "cancel",
     "create": "create",
     "account": "Account",
@@ -43,5 +44,16 @@
     "open": "Open",
     "closed": "Closed",
     "sign_out": "Sign out",
-    "settings": "Settings"
+    "settings": "Settings",
+    "warning": "Warning",
+    "notifications": "Notifications",
+    "current_task_has_been_edited": "Current task has been edited. Editor window will be closed.",
+    "current_task_has_been_deleted": "Current task has been deleted. Editor window will be closed.",
+    "project_has_been_changed": "Project has been changed. Current tab will be reloaded.",
+    "do_you_want_delete_this_project": "Do you want delete this project?",
+    "please_enable_notifications": "Please enable notifications.",
+    "new_task_was_added": "New task was added.",
+    "task_was_edited": "Task was edited.",
+    "you_have_been_removed_from_project": "You have been removed from project.",
+    "project": "Project"
 }

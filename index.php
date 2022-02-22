@@ -13,7 +13,6 @@ $APP->registerAuth(new Auth());
 $APP->session->start();
 // REMEMBER: Menit title ve view, preklad
 // TODO: komentare, VIEWS title 
-// TODO: WS!!!!!!!
 
 
 

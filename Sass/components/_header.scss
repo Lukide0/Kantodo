@@ -96,7 +96,6 @@ body > header:not(.mobile) {
                         overflow-x: hidden;
                         margin-top: space(regular);
                         font-size: fontSize(regular);
-                        padding: space(small);
                         border-radius: borderRadius(small);
 
                         &::before {
@@ -112,6 +111,7 @@ body > header:not(.mobile) {
                         & > a {
                             text-decoration: none;
                             color: inherit;
+                            padding: space(small) 0;
                         }
 
                         &:hover {

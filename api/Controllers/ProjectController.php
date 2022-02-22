@@ -505,7 +505,7 @@ class ProjectController extends AbstractController
         connectToWebsoketServer(
             Auth::$PASETO_RAW,
             'project_remove',
-            null,
+            "_",
             $uuidRaw
         );
     }
