@@ -99,10 +99,6 @@ class ClientLayout extends Layout
                     <span class="icon outline medium">dashboard</span>
                     <span class="text"><?= t('dashboard') ?></span>
                 </a>
-                <a class="item" href="/calendar">
-                    <span class="icon outline medium">event</span>
-                    <span class="text"><?= t('calendar') ?></span>
-                </a>
                 <div class="item dropdown expanded">
                     <div>
                         <span class="icon outline medium">folder</span>
@@ -285,37 +281,56 @@ class ClientLayout extends Layout
             <?= $content ?>
         </main>
         <script>
-            if (Notification.permission == "default") 
+            var tabHash = new Date().getTime();
+            function sendNotification(title,message)
             {
-                let permDialog = Modal.Dialog.create(translations['%notifications%'], translations['%please_enable_notifications%'], [
-                    {
-                        'text':  translations['%close%'], 
-                        'classList': 'flat no-border',
-                        'click': function(dialogOBJ) {
-                            dialogOBJ.destroy(true);
-                            return false;
-                        }
-                    },
-                    {
-                        'text':  translations['%ok%'], 
-                        'classList': 'flat no-border',
-                        'click': function(dialogOBJ) {
-                            Notification.requestPermission();
-                            dialogOBJ.destroy(true);
-                            return false;
-                        }
-                    }
-                ]);
-                permDialog.setParent(document.body);
-                permDialog.show();
+                let tabs = JSON.parse(localStorage.getItem('kantodo_tabs_open') || {});
+                let hashes = Object.keys(tabs);
+
+                if (hashes.length > 0 && hashes[0] == tabHash) 
+                {
+                    let notif = new Notification("Kantodo: " +  title, {'body': message, 'icon': "<?= Application::$URL_PATH ?>/icon.png"});
+                }
             }
 
-            async function sendNotification(title,message) 
+            window.onunload = function() 
             {
-                let notif = new Notification("Kantodo: " +  title, {'body': message, 'icon': "<?= Application::$URL_PATH ?>/icon.png"});
+                let tabs = JSON.parse(localStorage.getItem('kantodo_tabs_open')||'{}');
+                delete tabs[tabHash];
+                localStorage.setItem('kantodo_tabs_open',JSON.stringify(tabs));
             }
 
-            window.addEventListener('load', async function(){
+            window.addEventListener('load', function(){
+                if (Notification.permission == "default") 
+                {
+                    let permDialog = Modal.Dialog.create(translations['%notifications%'], translations['%please_enable_notifications%'], [
+                        {
+                            'text':  translations['%close%'], 
+                            'classList': 'flat no-border',
+                            'click': function(dialogOBJ) {
+                                dialogOBJ.destroy(true);
+                                return false;
+                            }
+                        },
+                        {
+                            'text':  translations['%ok%'], 
+                            'classList': 'flat no-border',
+                            'click': function(dialogOBJ) {
+                                Notification.requestPermission();
+                                dialogOBJ.destroy(true);
+                                return false;
+                            }
+                        }
+                    ]);
+                    permDialog.setParent(document.body);
+                    permDialog.show();
+                }
+
+                // přidá tab do localstorage
+                let tabs = JSON.parse(localStorage.getItem('kantodo_tabs_open')||'{}');
+                tabs[tabHash] = true;
+                localStorage.setItem('kantodo_tabs_open',JSON.stringify(tabs));
+
                 var url;
                 if (location.protocol == 'https:')
                     url = "wss://";
@@ -349,8 +364,7 @@ class ClientLayout extends Layout
                             case 'task_create':
                             {
                                 let projEl = document.querySelector(`main [data-project-id="${data.project}"] > .container`);
-                                
-                                console.log(data, projEl);
+
                                 DATA.AddTask(data.project, data.value, projEl);
                                 if (projEl)
                                 {
@@ -372,6 +386,7 @@ class ClientLayout extends Layout
                                 let taskInfo = DATA.Projects[data.project].tasks.find(t => t.id == data.value.id);
                                 let taskData = data.value.changed;
     
+                                sendNotification(translations['%task_was_edited%'], translations['%project%'] + ": " + DATA.Projects[data.project].name);
                                 if (!taskInfo)
                                     return;
     
@@ -397,7 +412,6 @@ class ClientLayout extends Layout
                                     }
                                 }
 
-                                sendNotification(translations['%task_was_edited%'], translations['%project%'] + ": " + DATA.Projects[data.project].name);
                                 break;
                             }
                             case 'project_user_change':

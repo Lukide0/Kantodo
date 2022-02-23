@@ -7,9 +7,9 @@ function showCompletedTasks(e)
         showCompleted = false;
         for (const projUUID in DATA.Projects) {
             DATA.Projects[projUUID].tasks.forEach(task => {
-            if (task.completed == "1") {
-                document.querySelector(`[data-task-id="${task.id}"]`).style.display = "none";
-            }
+                if (task.completed == "1") {
+                    document.querySelector(`[data-task-id="${task.id}"]`).style.display = "none";
+                }
             });
         }
 

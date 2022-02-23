@@ -72,11 +72,9 @@ class ProjectChannel
 
     public function sendAllExcept(string $data, ConnectionInterface $sender) : void
     {
-        $foundSender = false;
         foreach ($this->connections as $con) {
-            if ($foundSender || $sender == $con) 
+            if ($sender == $con)
             {
-                $foundSender = true;
                 continue;
             }
             $con->send($data);
