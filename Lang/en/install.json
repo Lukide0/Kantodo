@@ -1,0 +1,18 @@
+{
+    "database": "Database",
+    "storage": "Storage",
+    "could_not_connect_to_db": "Could not connect to database",
+    "is_not_folder": "is not folder",
+    "folders_can_not_be_the_same": "Folders can not be the same",
+
+    "could_not_read_and_write": "Could not read and write",
+    "could_not_read": "Could not read",
+    "could_not_write": "Could not write",
+
+    "name_of_db": "Name of database",
+    "username": "Username",
+    "database_server": "Database server",
+    "table_prefix": "Table prefix",
+    "cache_folder": "Cache folder",
+    "backup_folder": "Backup folder"
+}

@@ -30,7 +30,7 @@ class AuthView implements IView
 
         $errors = [];
         foreach ($authErrors['empty'] ?? [] as $name) {
-            $errors[$name] = t('empty_field', 'auth');
+            $errors[$name] = t('empty', 'api');
         }
 
         foreach ($authErrors['validation'] ?? [] as $name => $message) {

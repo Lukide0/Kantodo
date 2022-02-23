@@ -81,7 +81,7 @@ class ProjectSettingsView implements IView
                 {
                     let u = e.target.parentElement.parentElement.dataset.user;
 
-                    let dialog = Modal.Dialog.create('<?= t("confirm") ?>', `<?= t("do_you_want_change_position_of_this_user")?> (${u})`, [
+                    let dialog = Modal.Dialog.create('<?= t("confirm") ?>', `<?= t("do_you_want_change_position_of_this_user", "project")?> (${u})`, [
                         {
                             'text': '<?= t("close") ?>', 
                             'classList': 'flat no-border',
@@ -119,7 +119,7 @@ class ProjectSettingsView implements IView
                 function deleteUser(e) 
                 {
                     let u = e.target.parentElement.parentElement.dataset.user;
-                    let dialog = Modal.Dialog.create('<?= t("confirm") ?>', `<?= t("do_you_want_remove_this_user")?> (${u})`, [
+                    let dialog = Modal.Dialog.create('<?= t("confirm") ?>', `<?= t("do_you_want_remove_this_user", "project")?> (${u})`, [
                         {
                             'text': '<?= t("close") ?>', 
                             'classList': 'flat no-border',
@@ -156,7 +156,7 @@ class ProjectSettingsView implements IView
                     let dialog = Modal.Dialog.create(
                             '<?= t("confirm") ?>',
                             `
-                            <p class='space-big-bottom'><?= t("do_you_want_delete_this_project")?></p>
+                            <p class='space-big-bottom'><?= t("do_you_want_delete_this_project", 'project')?></p>
                             <?= Input::text("userEmail", t('email'), ['classes' => 'space-medium-top']) ?>
                             <?= Input::password("userPassword", t('password', 'auth')) ?>
                             `,

@@ -33,7 +33,7 @@ class AccountSettingsView implements IView
                         let dialog = Modal.Dialog.create(
                                 '<?= t("confirm") ?>',
                                 `
-                                <p class='space-big-bottom'><?= t("do_you_want_delete_your_account")?></p>
+                                <p class='space-big-bottom'><?= t("do_you_want_delete_your_account", "settings")?></p>
                                 <?= Input::text("userEmail", t('email'), ['classes' => 'space-medium-top']) ?>
                                 <?= Input::password("userPassword", t('password', 'auth')) ?>
                                 `,
