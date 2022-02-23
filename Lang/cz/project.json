@@ -1,0 +1,17 @@
+{
+    "delete_project": "Smazat projekt",
+    "create_invite_link": "Vytvoři pozvánku, která bude platná 24 hodin.",
+    "get_link": "Získat kód",
+    "tasks_in_project": "Úkoly v projektu",
+    "project_code": "Kód projektu",
+    "do_you_want_change_position_of_this_user": "Opravdu chcete změnit pozici tomuto uživateli?",
+    "do_you_want_remove_this_user": "Opravdu chcete odstrani tohoto uživatele?",
+    "do_you_want_delete_this_project": "Opravdu chce smazat tento projekt?",
+
+    "view_task": "Zobrazení úkolu",
+    "add_task": "Přidání úkolu",
+    "edit_task": "Úprava úkolu",
+    "remove_task": "Smazání úkolu",
+    "add_or_remove_people": "Přidání nebo smazání členů",
+    "edit_people_position": "Upravení pozice člena"
+}

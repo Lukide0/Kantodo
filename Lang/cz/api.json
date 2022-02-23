@@ -1,0 +1,10 @@
+{
+    "empty": "Prázdné",
+    "user_id_missing": "Nebylo zadáno User ID",
+    "can_not_create": "Nelze vytvořit",
+    "can_not_remove": "Nelze smazat",
+    "bad_request": "Špatný dotaz",
+    "you_dont_have_sufficient_privileges": "Nemáte dostatečné pravomoce na tuto akci",
+    "something_went_wrong": "Něco se pokazilo",
+    "project_code_is_not_valid": "Kód projektu není validní"
+}

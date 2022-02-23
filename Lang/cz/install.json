@@ -1,0 +1,18 @@
+{
+    "database": "Databáze",
+    "storage": "Uložiště",
+    "could_not_connect_to_db": "Nepodařilo se spojit s databází",
+    "is_not_folder": "není složka",
+    "folders_can_not_be_the_same": "Složky nemohou být stejné",
+
+    "could_not_read_and_write": "Není možné číst ani psát",
+    "could_not_read": "Není možné číst",
+    "could_not_write": "Není možné psát",
+
+    "name_of_db": "Název databáze",
+    "username": "Uživatelské jméno",
+    "database_server": "Databázový server",
+    "table_prefix": "Předpona tabulek",
+    "cache_folder": "Cache složka",
+    "backup_folder": "Backup složka"
+}

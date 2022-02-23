@@ -4,7 +4,6 @@
     "can_not_create": "Can not create",
     "can_not_remove": "Can not remove",
     "bad_request": "Bad request",
-    "api_rate_limit_exceeded": "API rate limit exceeded",
     "you_dont_have_sufficient_privileges": "You don't have sufficient privileges",
     "something_went_wrong": "Something went wrong",
     "project_code_is_not_valid": "Project code is not valid"

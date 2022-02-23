@@ -103,7 +103,7 @@ class BaseApplication
      *
      * @var string
      */
-    public static $LANG = 'en';
+    public static $LANG = 'cz';
 
     /**
      * @var Lang
