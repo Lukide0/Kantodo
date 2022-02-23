@@ -91,12 +91,11 @@ class ProjectController extends AbstractController
 
         $projectModel = new ProjectModel();
         
-        
         $projectID = $projectModel->getProjectByCode($projectCode);
 
         if ($projectID === false) 
         {
-            $response->error(t('project_code_is_not_valid', 'api'));
+            $response->error(t('project_code_is_not_valid', 'api'), Response::STATUS_CODE_BAD_REQUEST);
             exit;
         }
 
@@ -165,7 +164,7 @@ class ProjectController extends AbstractController
 
         $id   = $user['id'];
         
-        if (ProjectModel::hasPrivTo('addPeople', (int)$id, $uuid) !== true) 
+        if (ProjectModel::hasPrivTo('addOrRemovePeople', (int)$id, $uuid) !== true) 
         {
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
         }

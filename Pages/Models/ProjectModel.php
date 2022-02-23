@@ -4,7 +4,9 @@ declare (strict_types = 1);
 
 namespace Kantodo\Models;
 
+use DateInterval;
 use DateTime;
+use DateTimeZone;
 use Kantodo\Core\Base\Model;
 use Kantodo\Core\Database\Connection;
 use Kantodo\Core\Generator;
@@ -28,44 +30,39 @@ class ProjectModel extends Model
             'addTask'              => true,
             'editTask'             => true,
             'removeTask'           => true,
-            'canCloseTask'         => true,
             
-            'addPeople'            => true,
-            'removePeople'         => true,
-            'changePeoplePosition' => true,
+            'addOrRemovePeople'    => true,
+            'changePeoplePosition' => true
         ],
         'user'   => [           
             'viewTask'             => true,
             'addTask'              => true,
             'editTask'             => true,
             'removeTask'           => true,
-            'canCloseTask'         => true,
 
-            'addPeople'            => false,
-            'removePeople'         => false,
-            'changePeoplePosition' => false,
+            'addOrRemovePeople'    => false,
+            'changePeoplePosition' => false
+
         ],
         'viewer' => [
             'viewTask'             => true,
             'addTask'              => false,
             'editTask'             => false,
             'removeTask'           => false,
-            'canCloseTask'         => false,
 
-            'addPeople'            => false,
-            'removePeople'         => false,
-            'changePeoplePosition' => false,
+            'addOrRemovePeople'    => false,
+            'changePeoplePosition' => false
+
         ],
         'guest' => [
             'viewTask'             => false,
             'addTask'              => false,
             'editTask'             => false,
             'removeTask'           => false,
-            'canCloseTask'         => false,
 
-            'addPeople'            => false,
-            'removePeople'         => false,
-            'changePeoplePosition' => false,
+            'addOrRemovePeople'    => false,
+            'changePeoplePosition' => false
+
         ]
     ];
 
@@ -572,10 +569,13 @@ class ProjectModel extends Model
         ]);
 
         $result = $sth->fetch(PDO::FETCH_ASSOC);
+
+        $now = new DateTime("now", new DateTimeZone("UTC"));
+        $tomorrow = (clone $now)->add(DateInterval::createFromDateString('+1 day'))->format(Connection::DATABASE_DATE_FORMAT);
+        
         if ($status === true && $result !== false && count($result) != 0) 
         {
             $exp = DateTime::createFromFormat(Connection::DATABASE_DATE_FORMAT, $result['expiration']);
-            $now = new DateTime("now");
 
             if ($exp !== false && $exp->getTimestamp() > $now->getTimestamp()) 
             {
@@ -588,7 +588,7 @@ class ProjectModel extends Model
                 $sth = $this->con->prepare($update);
                 $status = $sth->execute([
                     ':code' => $code,
-                    ':expiration' =>  date(Connection::DATABASE_DATE_FORMAT, strtotime("+ 1 day", time())),
+                    ':expiration' =>  $tomorrow,
                     ':projCodeID' => $result['project_code_id']
                 ]);
 
@@ -605,7 +605,7 @@ class ProjectModel extends Model
         $sth = $this->con->prepare($insert);
         $status = $sth->execute([
             ':code' => $code,
-            ':expiration' =>  date(Connection::DATABASE_DATE_FORMAT, strtotime("+ 1 day", time())),
+            ':expiration' => $tomorrow,
             ':projectID' => $projectID
         ]);
 
@@ -647,11 +647,12 @@ class ProjectModel extends Model
     {
         $projectCode = Connection::formatTableName('project_codes');
 
-        $query = "SELECT project_id FROM {$projectCode} WHERE code = :code AND expiration > NOW() LIMIT 1";
+        $query = "SELECT project_id FROM {$projectCode} WHERE code = :code AND expiration > :now LIMIT 1";
 
         $sth = $this->con->prepare($query);
         $status = $sth->execute([
-            ':code' => $code
+            ':code' => $code,
+            ':now'  => (new DateTime("now", new DateTimeZone("UTC")))->format(Connection::DATABASE_DATE_FORMAT)
         ]);
 
         if ($status === false)
@@ -685,11 +686,8 @@ class ProjectModel extends Model
             'addTask',
             'editTask',
             'removeTask',
-            'canCloseTask',
-
-            'addPeople',
-            'removePeople',
-            'changePeoplePosition',
+            'addOrRemovePeople',
+            'changePeoplePosition'
         ];
 
         

@@ -1,9 +1,17 @@
 {
+    "delete_project": "Delete project",
     "create_invite_link": "Create a new invite link, which will expire after 24 hours.",
     "get_link": "Get link",
     "tasks_in_project": "Tasks in project",
     "project_code": "Project code",
     "do_you_want_change_position_of_this_user": "Do you want change position of this user?",
     "do_you_want_remove_this_user": "Do you want remove this user?",
-    "do_you_want_delete_this_project": "Do you want delete this project?"
+    "do_you_want_delete_this_project": "Do you want delete this project?",
+
+    "view_task": "View task",
+    "add_task": "Add task",
+    "edit_task": "Edit task",
+    "remove_task": "Remove task",
+    "add_or_remove_people": "Add or remove people",
+    "edit_people_position": "Edit people position"
 }

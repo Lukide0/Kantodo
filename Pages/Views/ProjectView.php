@@ -36,7 +36,7 @@ class ProjectView implements IView
                 <button data-action='task' class="filled hover-shadow"><?=t('add_task', 'dashboard');?></button>
                 <?php
 
-        if ($priv['addPeople'] === true) {
+        if ($priv['addOrRemovePeople'] === true) {
             ?>
                 <a href="/project/<?= $projectUrlUUID;?>/settings">
                     <button class="flat icon outline space-medium-left">settings</button>
@@ -129,7 +129,7 @@ class ProjectView implements IView
             <div class="row space-big-top">
                 <?php
 
-        if ($priv['addPeople'] === true) {
+        if ($priv['addOrRemovePeople'] === true) {
             $text = t('create_invite_link', 'project');
             $add  = t('get_link', 'project');
             $dialogTitle = t('project_code', 'project');

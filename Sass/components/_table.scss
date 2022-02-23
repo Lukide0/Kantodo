@@ -1,0 +1,30 @@
+@use "../abstracts" as *;
+
+table {
+    @include font(900, regular);
+
+    border-collapse: collapse;
+
+    td {
+        padding: space(regular) space(medium);
+    }
+
+    thead {
+        @include font(900, medium, 700);
+
+        tr {
+            background: background(third);
+        }
+        
+    }
+
+    tbody {
+        tr:nth-child(even) {
+            background: background(secondary);
+        }
+        
+        tr:nth-child(odd) {
+            background: background(primary);
+        }
+    }
+}
