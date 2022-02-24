@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace Kantodo\API\Controllers;
 
@@ -32,18 +33,15 @@ class AuthController extends AbstractController
 
         $empty = Data::empty($body[Request::METHOD_POST], $keys);
 
-        if (count($empty) != 0) 
-        {
+        if (count($empty) != 0) {
             $response->fail(array_fill_keys($empty, t('empty', 'api')));
         }
 
         $token = Auth::refreshByCredentials($body[Request::METHOD_POST]['email'], $body[Request::METHOD_POST]['secret']);
 
-        if ($token === null) 
-        {
+        if ($token === null) {
             $response->error(t('cannot_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
-        } else if ($token === false) 
-        {
+        } else if ($token === false) {
             $response->error(t('invalid_credentials'), Response::STATUS_CODE_BAD_REQUEST);
         } else {
             $response->success(['token' => $token]);
@@ -66,8 +64,7 @@ class AuthController extends AbstractController
 
         $empty = Data::empty($body[Request::METHOD_POST], $keys);
 
-        if (count($empty) != 0) 
-        {
+        if (count($empty) != 0) {
             $response->fail(array_fill_keys($empty, t('empty', 'api')));
         }
 
@@ -76,8 +73,7 @@ class AuthController extends AbstractController
 
         $user = Auth::getUser();
 
-        if ($user == null || $user['email'] != $email) 
-        {
+        if ($user == null || $user['email'] != $email) {
             $response->error(t('invalid_credentials'), Response::STATUS_CODE_BAD_REQUEST);
             exit;
         }
@@ -85,21 +81,17 @@ class AuthController extends AbstractController
         $userModel = new UserModel();
         $exists = $userModel->exists(['email' => $email, 'password' => $password]);
 
-        if (!$exists) 
-        {
+        if (!$exists) {
             $response->error(t('invalid_credentials'), Response::STATUS_CODE_BAD_REQUEST);
             exit;
         }
 
 
         $status = $userModel->delete((int)$user['id']);
-        if ($status) 
-        {
+        if ($status) {
             Auth::signOut();
             $response->success([]);
-        } 
-        else
-        {
+        } else {
             $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
         }
     }

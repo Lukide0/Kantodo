@@ -1,6 +1,6 @@
 <?php
 
-declare (strict_types = 1);
+declare(strict_types=1);
 
 namespace Kantodo\Models;
 
@@ -30,11 +30,11 @@ class ProjectModel extends Model
             'addTask'              => true,
             'editTask'             => true,
             'removeTask'           => true,
-            
+
             'addOrRemovePeople'    => true,
             'changePeoplePosition' => true
         ],
-        'user'   => [           
+        'user'   => [
             'viewTask'             => true,
             'addTask'              => true,
             'editTask'             => true,
@@ -172,8 +172,7 @@ class ProjectModel extends Model
      */
     public function setPosition(int $userID, int $projectID, string $name)
     {
-        if (isset(self::POSITIONS[$name]) === false) 
-        {
+        if (isset(self::POSITIONS[$name]) === false) {
             return false;
         }
         $posID  = $this->getPosition($name);
@@ -200,8 +199,7 @@ class ProjectModel extends Model
      */
     public function updatePosition(int $userID, int $projID, string $name)
     {
-        if (isset(self::POSITIONS[$name]) === false) 
-        {
+        if (isset(self::POSITIONS[$name]) === false) {
             return false;
         }
         $posID  = $this->getPosition($name);
@@ -301,7 +299,6 @@ class ProjectModel extends Model
         }
 
         return false;
-
     }
 
     /**
@@ -468,7 +465,6 @@ class ProjectModel extends Model
             } else {
                 return false;
             }
-
         } else {
             return false;
         }
@@ -530,7 +526,6 @@ class ProjectModel extends Model
             return $sth->fetchAll(PDO::FETCH_ASSOC);
         }
         return false;
-
     }
 
     /**
@@ -546,8 +541,7 @@ class ProjectModel extends Model
 
         $project = $this->getSingle(['project_id'], ['uuid' => $projectUUID]);
 
-        if ($project === false) 
-        {
+        if ($project === false) {
             return false;
         }
 
@@ -572,16 +566,13 @@ class ProjectModel extends Model
 
         $now = new DateTime("now", new DateTimeZone("UTC"));
         $tomorrow = (clone $now)->add(DateInterval::createFromDateString('+1 day'))->format(Connection::DATABASE_DATE_FORMAT);
-        
-        if ($status === true && $result !== false && count($result) != 0) 
-        {
+
+        if ($status === true && $result !== false && count($result) != 0) {
             $exp = DateTime::createFromFormat(Connection::DATABASE_DATE_FORMAT, $result['expiration']);
 
-            if ($exp !== false && $exp->getTimestamp() > $now->getTimestamp()) 
-            {
+            if ($exp !== false && $exp->getTimestamp() > $now->getTimestamp()) {
                 return $result['code'];
-            } else
-            {
+            } else {
                 $code = Generator::uuidV4();
 
                 $update = "UPDATE {$projectCode} SET code = :code, expiration = :expiration WHERE project_code_id = :projCodeID";
@@ -594,7 +585,7 @@ class ProjectModel extends Model
 
                 if ($status === false)
                     return false;
-                else 
+                else
                     return $code;
             }
         }
@@ -657,8 +648,7 @@ class ProjectModel extends Model
 
         if ($status === false)
             return false;
-        else 
-        {
+        else {
             $result = $sth->fetch(PDO::FETCH_COLUMN);
             return ($result !== false && DataType::wholeNumber($result)) ? (int)$result : false;
         }
@@ -690,7 +680,7 @@ class ProjectModel extends Model
             'changePeoplePosition'
         ];
 
-        
+
         if (!in_array($key, $keys, true)) {
             return false;
         }

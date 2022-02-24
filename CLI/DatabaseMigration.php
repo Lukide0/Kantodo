@@ -7,12 +7,14 @@ use Kantodo\Core\Database\Migration\Runner;
 
 include 'Loader/autoload.php';
 
+// jsou potřeba 3 argumenty
 if ($argc < 3) {
     exit;
 }
 
 $APP = new Application();
 
+// 1.0 => 1_0
 $version = str_replace('.', '_', $argv[1]);
 $actions = array_slice($argv, 2);
 
@@ -26,11 +28,11 @@ for ($i = 0, $size = count($actions); $i < $size; $i++) {
 
     if ($action == '-o') {
         $outputFile = true;
-    } elseif ($action == '-e') {
+    } else if ($action == '-e') {
         $execute = true;
-    } elseif ($action == '-n') {
+    } else if ($action == '-n') {
         $loadSchema = false;
-    } elseif ($action == '-c') {
+    } else if ($action == '-c') {
         $setCurrentVer = $actions[$i + 1];
         $i++;
     }
@@ -38,4 +40,5 @@ for ($i = 0, $size = count($actions); $i < $size; $i++) {
 
 $r = new Runner($loadSchema, $setCurrentVer);
 
+// Spustí migraci
 $r->run($version, $execute, $outputFile, $setCurrentVer);

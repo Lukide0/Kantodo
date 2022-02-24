@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Kantodo\Auth;
 
@@ -110,8 +110,7 @@ class Auth implements IAuth
         // https://stackoverflow.com/a/40582472
         $headers = (isset($_SERVER['Authorization'])) ? trim($_SERVER['Authorization']) : ((isset($_SERVER['HTTP_AUTHORIZATION'])) ? trim($_SERVER["HTTP_AUTHORIZATION"]) : false);
 
-        if ($headers === false && function_exists('apache_request_headers')) 
-        {
+        if ($headers === false && function_exists('apache_request_headers')) {
             $requestHeaders = apache_request_headers();
             /** @phpstan-ignore-next-line */
             $requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
@@ -139,10 +138,10 @@ class Auth implements IAuth
     public static function getPasetoTokenFromRequest()
     {
         $paseto = $_COOKIE[self::COOKIE_KEY] ?? false;
-        
-        if ($paseto === false) 
+
+        if ($paseto === false)
             $paseto = self::getBearerToken();
-        
+
         self::$PASETO_RAW = $paseto;
         return $paseto;
     }
@@ -160,11 +159,11 @@ class Auth implements IAuth
 
         if ($key === false)
             return false;
-        
+
         $parser = Parser::getLocal(new SymmetricKey($key), ProtocolCollection::v4())
             ->addRule(new ValidAt)
             ->addRule(new Subject($subject));
-        
+
         try {
             self::$PASETO = $parser->parse($token);
         } catch (PasetoException $ex) {
@@ -185,9 +184,9 @@ class Auth implements IAuth
         $paseto = self::getPasetoTokenFromRequest();
 
         // KROK A.2 - zkontrolovat jestli je validní
-        if ($paseto !== false && self::checkToken($paseto)) 
+        if ($paseto !== false && self::checkToken($paseto))
             return true;
-        else 
+        else
             return false;
     }
 
@@ -234,9 +233,9 @@ class Auth implements IAuth
         if ($user !== false) {
             $expiration = (new DateTime())->modify('+' . self::EXP . ' seconds');
             $expirationUnix = $expiration->getTimestamp();
-    
+
             $paseto = self::createToken($user['user_id'], $user['secret'], $email, (string)BaseApplication::USER, $expiration);
-            
+
             if ($paseto === null)
                 return false;
 

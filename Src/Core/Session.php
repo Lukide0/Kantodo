@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Kantodo\Core;
 
@@ -28,7 +28,7 @@ class Session
     {
         if (!$this->started) {
             $this->configure();
-            
+
             if (session_status() !== PHP_SESSION_ACTIVE) {
                 session_start();
             }
@@ -193,7 +193,6 @@ class Session
         } else {
             $_SESSION['__KAN']['DATA'][$key]['value'][$innerKey] = $value;
         }
-
     }
 
     /**
@@ -209,7 +208,6 @@ class Session
         if (isset($_SESSION['__KAN']['DATA'][$key])) {
             $_SESSION['__KAN']['DATA'][$key]['exp'] = $exp;
         }
-
     }
 
     /**
@@ -356,7 +354,6 @@ class Session
             if (empty($kan['META'][$key])) {
                 unset($kan['META'][$key]);
             }
-
         }
     }
 
@@ -372,7 +369,6 @@ class Session
             if ($message['remove'] === true) {
                 unset($_SESSION['__KAN']['FLASH'][$key]);
             }
-
         }
     }
 }

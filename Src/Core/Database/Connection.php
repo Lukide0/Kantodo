@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Kantodo\Core\Database;
 
@@ -37,7 +37,8 @@ class Connection
         return self::$instance;
     }
     private function __clone()
-    {}
+    {
+    }
 
     /**
      * @throws ConfigException pokud není načten config.php a zároveň neprobíhá instalace
@@ -60,7 +61,6 @@ class Connection
         $errorMode = (Application::$DEBUG_MODE) ? PDO::ERRMODE_EXCEPTION : PDO::ERRMODE_SILENT;
         $con->setAttribute(PDO::ATTR_ERRMODE, $errorMode);
         self::$instance = $con;
-
     }
 
     /**
@@ -146,7 +146,6 @@ class Connection
             }
 
             return true;
-
         } catch (\Throwable $th) {
             if ($errorMode != PDO::ERRMODE_EXCEPTION) {
                 $con->setAttribute(PDO::ATTR_ERRMODE, $errorMode);

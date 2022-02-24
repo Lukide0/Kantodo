@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Kantodo\Core;
 
@@ -38,12 +38,10 @@ class Lang
         $path      = Application::$ROOT_DIR . '/Lang';
         $lang      = Application::$LANG;
 
-        if (defined("STORAGE_CACHE")) 
-        {
+        if (defined("STORAGE_CACHE")) {
             $pathCache = STORAGE_CACHE . '/Lang';
             $pathPHP  = "{$pathCache}/{$lang}_{$group}.php";
-        } else 
-        {
+        } else {
             $pathCache = null;
             $pathPHP = null;
         }
@@ -65,12 +63,11 @@ class Lang
         $filePHPExists = $pathPHP !== null && file_exists($pathPHP);
         $fileJSONExists = file_exists($pathJSON);
 
-        if (!$fileJSONExists) 
+        if (!$fileJSONExists)
             return false;
 
-        
-        if (!$filePHPExists || Application::$DEBUG_MODE) 
-        {
+
+        if (!$filePHPExists || Application::$DEBUG_MODE) {
             /** @phpstan-ignore-next-line */
             $json               = json_decode(file_get_contents($pathJSON), true);
             $this->data[$group] = $json;
@@ -89,8 +86,6 @@ class Lang
             $this->data[$group] = include $pathPHP;
             return true;
         }
-
-
     }
 
     /**
@@ -105,7 +100,7 @@ class Lang
     {
         if (!isset($this->data[$group]))
             $this->load($group);
-    
+
         return $this->data[$group][$name] ?? "{$group}:{$name}";
     }
 
@@ -136,8 +131,7 @@ class Lang
     public function cacheJson(array $json, string $lang, string $group)
     {
 
-        if (!defined("STORAGE_CACHE")) 
-        {
+        if (!defined("STORAGE_CACHE")) {
             return false;
         }
 

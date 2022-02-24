@@ -1,14 +1,12 @@
 <?php
 
-declare (strict_types = 1);
+declare (strict_types=1);
 
 namespace Kantodo\Views;
 
-use function Kantodo\Core\Functions\base64DecodeUrl;
 use function Kantodo\Core\Functions\t;
 use Kantodo\Core\Application;
 use Kantodo\Core\Base\IView;
-use Kantodo\Models\ProjectModel;
 
 /**
  * Projekt

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Kantodo\Core\Database\Migration;
 
@@ -96,7 +96,9 @@ class TableChanges
 
         // primary key
         if (count($this->update['primary']) != 0) {
-            $tmpSQL .= "ALTER TABLE {$table} DROP PRIMARY KEY, ADD PRIMARY KEY (" . implode(",", array_map(function ($key) {return "`{$key}`";}, $this->update['primary'])) . ");";
+            $tmpSQL .= "ALTER TABLE {$table} DROP PRIMARY KEY, ADD PRIMARY KEY (" . implode(",", array_map(function ($key) {
+                return "`{$key}`";
+            }, $this->update['primary'])) . ");";
         }
 
         // drop unikátní klíče
@@ -268,7 +270,6 @@ class TableChanges
                     break;
                 }
             }
-
         }
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Kantodo\Core\Validation;
 
@@ -22,7 +22,8 @@ class Data
      *
      * @return  array<mixed>         klíče
      */
-    public static function empty(array $data, array $keys) {
+    public static function empty(array $data, array $keys)
+    {
 
         $emptyKeys = [];
         foreach ($keys as $key) {
@@ -48,7 +49,6 @@ class Data
             if (empty($data[$key])) {
                 return true;
             }
-
         }
 
         return false;
@@ -155,7 +155,6 @@ class Data
         }
 
         return $duplicit;
-
     }
 
     /**

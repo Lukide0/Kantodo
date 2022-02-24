@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Kantodo\Models;
 
@@ -8,9 +8,13 @@ use Kantodo\Core\Database\Connection;
 use Kantodo\Core\Base\Model;
 use PDO;
 
+/**
+ * Model na štítky
+ */
 class TagModel extends Model
 {
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->table = Connection::formatTableName('tags');
 
@@ -52,18 +56,18 @@ class TagModel extends Model
      */
     public function createInProject(string $name, int $projectID)
     {
-        $tagID = $this->getSingle(['tag_id'],['name' => $name]);
+        $tagID = $this->getSingle(['tag_id'], ['name' => $name]);
 
         if ($tagID === false)
             $tagID = $this->create($name);
-        else 
+        else
             $tagID = (int)$tagID['tag_id'];
 
-        
+
         if (!is_int($tagID))
             return false;
 
-            
+
         $tagProject = Connection::formatTableName('tag_projects');
 
         $exists = "SELECT tag_id FROM {$tagProject} WHERE tag_id = :tagID AND project_id = :projectID LIMIT 1";
@@ -77,7 +81,7 @@ class TagModel extends Model
         if ($status && $result !== false)
             return $tagID;
 
-            
+
         $query = "INSERT INTO {$tagProject} (`tag_id`, `project_id`) VALUES(:tagID, :projectID)";
         $sth    = $this->con->prepare($query);
         $status = $sth->execute([
@@ -108,7 +112,7 @@ class TagModel extends Model
         foreach ($tags as $tagID) {
             $queries[] = "INSERT INTO {$taskTag} (`tag_id`, `task_id`) VALUES ({$tagID}, {$taskID})";
         }
-        
+
         return Connection::runInTransaction($queries);
     }
 
@@ -142,7 +146,7 @@ class TagModel extends Model
         foreach ($tagsID as $tagID) {
             $queries[] = "INSERT INTO {$taskTag} (`tag_id`, `task_id`) VALUES (\"{$tagID}\", {$taskID})";
         }
-        
+
         return Connection::runInTransaction($queries);
     }
 
@@ -163,8 +167,7 @@ class TagModel extends Model
             ':taskID' => $taskID,
         ]);
 
-        if ($status === true) 
-        {
+        if ($status === true) {
             $result = $sth->fetchAll(PDO::FETCH_COLUMN);
             if ($result !== false) {
                 return $result;
@@ -173,9 +176,5 @@ class TagModel extends Model
         }
 
         return false;
-
     }
 }
-
-
-?>

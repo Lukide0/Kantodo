@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Kantodo\Core;
 
@@ -225,7 +225,7 @@ class BaseApplication
      *
      * @return  string klíč
      */
-    public static function createSymmetricKey() 
+    public static function createSymmetricKey()
     {
         $key = random_bytes(32);
 
@@ -240,7 +240,7 @@ class BaseApplication
      *
      * @return  string klíč
      */
-    public static function createAsymmetricSecretKey() 
+    public static function createAsymmetricSecretKey()
     {
         $key = Version4::generateAsymmetricSecretKey()->raw();
 
@@ -258,12 +258,9 @@ class BaseApplication
     public static function getSymmetricKey()
     {
         $path = Application::$KEYS_PATH . 'symmetric.key';
-        if (file_exists($path))
-        {
+        if (file_exists($path)) {
             return file_get_contents($path);
-        }
-        else 
-        {
+        } else {
             return self::createSymmetricKey();
         }
     }

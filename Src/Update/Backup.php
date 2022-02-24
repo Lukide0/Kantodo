@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Kantodo\Update;
 
@@ -65,7 +65,6 @@ class Backup
 
             if (is_file($filePath)) {
                 $zipObj->addFile($filePath, $localPath);
-
             } else if (is_dir($filePath)) {
                 $zipObj->addEmptyDir($localPath);
 

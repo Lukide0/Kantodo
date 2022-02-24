@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Kantodo\Core;
 
@@ -129,7 +129,6 @@ class Router
                 } elseif ($routeParts[$i] !== $pathParts[$i]) {
                     continue 2;
                 }
-
             }
 
             return [$callback, $tmp];

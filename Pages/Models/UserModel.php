@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Kantodo\Models;
 
@@ -81,7 +81,7 @@ class UserModel extends Model
      * @param   string  $value   hodnota
      * @param   int     $userID  id uživatele
      *
-     * @return  int|false           vrací id záznamu nebo false pokud se nepovedlo vložit do databáze
+     * @return  int|false        vrací id záznamu nebo false pokud se nepovedlo vložit do databáze
      */
     public function addMeta(string $key, string $value, int $userID)
     {

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Kantodo\API;
 
@@ -44,7 +44,6 @@ class API extends BaseApplication
 
         $this->response = new Response();
         $this->router   = new Router($this->request, $this->response);
-
     }
 
     /**

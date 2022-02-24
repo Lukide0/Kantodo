@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Kantodo\Core\Database\Migration;
 
@@ -49,7 +49,7 @@ abstract class AbstractMigration
 
         $objSer = serialize($schema);
 
-        return filePutContentSafe(Application::$MIGRATION_DIR . '/currentSchema.ser', $objSer, FILE_FLAG_OVERRIDE ) !== false;
+        return filePutContentSafe(Application::$MIGRATION_DIR . '/currentSchema.ser', $objSer, FILE_FLAG_OVERRIDE) !== false;
     }
 
     /**

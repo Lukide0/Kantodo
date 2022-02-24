@@ -41,5 +41,3 @@ function filePutContentSafe(string $filename,string $content, int $flags = FILE_
 
     return file_put_contents($filename, $content) !== false;
 }
-
-?>

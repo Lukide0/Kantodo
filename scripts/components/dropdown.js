@@ -1,5 +1,8 @@
 import { moveAbs } from "../utils/util.js";
 
+/**
+ * Dropdown menu
+ */
 const Menu = {
     create(items = []) {
         let element = document.createElement('ul');
@@ -23,7 +26,13 @@ const Menu = {
     }
 };
 
+/**
+ * Item
+ */
 const Item = {
+    /**
+     * Vytvoří item
+     */
     create(text, action = null,icon = null, items = []) {
         let element = document.createElement('li');
         if (typeof action === 'function')
@@ -39,7 +48,9 @@ const Item = {
                     this.element.addEventListener('click', callback);
             },
             render() {
+
                 if (this.icon !== null) {
+                    // vytvoření ikony
                     this.element.classList.add('icon');
                     let iconEl = document.createElement('span');
                     iconEl.className = ((typeof this.icon.style !== 'undefined') ? this.icon.style : "outline") + " icon medium";
@@ -49,6 +60,7 @@ const Item = {
 
                 this.element.innerHTML += `<div class="text">${this.text}</div>`;
                 
+                // pokud máme items 
                 if (this.items.length > 0) {
                     this.element.classList.add('dropdown');
                     
@@ -63,7 +75,9 @@ const Item = {
                 }
         
                 function recursiveRender(parent,item) {
+
                     if (item.icon !== null) {
+                        // přidání ikony
                         item.element.classList.add('icon');
                         let iconEl = document.createElement('span');
                         iconEl.className = ((typeof item.icon.style !== 'undefined') ? item.icon.style : "outlined") + " icon";
@@ -71,6 +85,7 @@ const Item = {
                         item.element.appendChild(iconEl);
                     }
                     item.element.innerHTML += `<div class="text">${item.text}</div>`;
+                    
                     if (item.items.length > 0) {
                         item.element.classList.add('dropdown');
                         

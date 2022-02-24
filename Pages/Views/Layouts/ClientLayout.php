@@ -81,7 +81,7 @@ class ClientLayout extends Layout
                     ?>
                 }
                 var taskWin;
-
+                // kontrola, jestli je uživatle přihlášen
                 const expiration = <?= Auth::$PASETO->getExpiration()->getTimestamp()?>000;
                 setInterval(function(){
                     if (expiration <= Date.now()) 
