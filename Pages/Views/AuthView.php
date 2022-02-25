@@ -73,6 +73,7 @@ class AuthView implements IView
                             <?= Input::password('signUpPassword', t('password', 'auth'), ['classes' => 'space-big-right full-width', 'error' => $errors, 'autocomplete' => Input::AUTOCOMPLETE_NEW_PASSWORD]); ?>
                             <?= Input::password('signUpPasswordAgain', t('password_again', 'auth'), ['classes' => 'full-width', 'error' => $errors, 'autocomplete' => Input::AUTOCOMPLETE_NEW_PASSWORD]); ?>
                         </div>
+                        <div class="row full-width center" style="font-size: 1.4rem; color: rgb(var(--primary))"><?= t("password_must_contain", 'auth') ?></div>
                         <button class="primary full-width center big space-huge-top space-huge-bottom"><?= t('sign_in', 'auth') ?></button>
                         <p><?= t('you_have_account', 'auth') ?> <a href="#" onclick="let x=document.querySelectorAll('.auth > .container'); x[1].style.display='none'; x[0].style.display='flex';"><?= t('log_in', 'auth') ?></a></p>
                     <?= Form::end() ?>

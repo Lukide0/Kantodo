@@ -48,7 +48,6 @@ class ProjectChannel
     public function remove(ConnectionInterface $con) : bool
     {
         $this->connections->detach($con);
-
         if ($this->connections->count() == 0)
             return true;
         return false;
@@ -295,7 +294,6 @@ class WsNotification implements MessageComponentInterface, WsServerInterface
      */
     final public function getSubProtocols() : array 
     {
-        // Pokud chceme použít Sec-Websocket-Protocol, tak musíme implementovat WsServerInterface. Viz. poznámka WsServer konstruktor
         return ['access_token'];
     }
 }
