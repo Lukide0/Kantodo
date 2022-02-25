@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Kantodo\Models;
 
@@ -38,8 +38,8 @@ class TaskModel extends Model
      * @param   int     $projectID    id projektu
      * @param   string  $desc         popis
      * @param   int     $priority     priorita (0-255)
-     * @param   DateTime  $endDate      datum dokončení
-     * @param   bool    $completed    je úkol dokončen
+     * @param   DateTime  $endDate    datum dokončení
+     * @param   bool    $completed    úkol dokončen
      *
      * @return  int|false             vrací id záznamu nebo false pokud se nepovedlo vložit do databáze
      */
@@ -87,7 +87,7 @@ class TaskModel extends Model
 
         return false;
     }
-    
+
     /**
      * Upraví úkol
      *
@@ -104,13 +104,13 @@ class TaskModel extends Model
         $data = [];
 
         foreach ($columns as $key => $value) {
-            if (!in_array($key, $columnsTable, true)) 
+            if (!in_array($key, $columnsTable, true))
                 continue;
-            
+
             $query .= " {$key} = :{$key},";
             $data[":{$key}"] = $value;
         }
-        
+
         if (count($data) == 0)
             return false;
 

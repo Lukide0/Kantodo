@@ -1,6 +1,6 @@
 <?php
 
-declare (strict_types = 1);
+declare(strict_types=1);
 
 namespace Kantodo\API\Controllers;
 
@@ -109,6 +109,8 @@ class TaskController extends AbstractController
         }
 
         if (!empty($body[Request::METHOD_POST]['task_tags']) && is_array($body[Request::METHOD_POST]['task_tags'])) {
+
+            // vytvoření štítků
             $tagModel = new TagModel();
 
             $tags = [];
@@ -120,7 +122,6 @@ class TaskController extends AbstractController
                 } else {
                     $tags[] = $tagID;
                 }
-
             }
 
             $status = $tagModel->addTagsToTask($tags, $taskID);
@@ -128,7 +129,6 @@ class TaskController extends AbstractController
             if ($status === false) {
                 $response->error(t('can_not_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
             }
-
         }
 
         // https://stackoverflow.com/a/28738208
@@ -155,7 +155,7 @@ class TaskController extends AbstractController
         flush();
 
         connectToWebsoketServer(
-            Auth::$PASETO_RAW, 
+            Auth::$PASETO_RAW,
             'task_create',
             [
                 'id'          => $taskID,
@@ -315,6 +315,7 @@ class TaskController extends AbstractController
             'end_date'    => strtotime($body[Request::METHOD_POST]['task_end_date'] ?? ""),
         ];
 
+        // odstranění klíčů s null
         foreach ($taskData as $key => $value) {
             if ($value === null) {
                 unset($taskData[$key]);

@@ -6,7 +6,6 @@ namespace Kantodo\Views\Layouts;
 
 use Kantodo\Core\Application;
 use Kantodo\Core\Base\Layout;
-use Kantodo\Models\TeamModel;
 
 use function Kantodo\Core\Functions\t;
 

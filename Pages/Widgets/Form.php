@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Kantodo\Widgets;
 
@@ -25,7 +25,9 @@ class Form
      */
     public static function start(string $action = '', string $method = Request::METHOD_POST, string $classes = '', array $attributes = [])
     {
-        $attributes = implode(' ', array_map(function($v, $k) { return $k . '="' . $v . '"';  }, $attributes, array_keys($attributes)));
+        $attributes = implode(' ', array_map(function ($v, $k) {
+            return $k . '="' . $v . '"';
+        }, $attributes, array_keys($attributes)));
         return "<form class='{$classes}' action='{$action}' method='{$method}' {$attributes}>";
     }
 

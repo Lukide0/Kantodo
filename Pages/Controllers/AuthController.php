@@ -8,8 +8,6 @@ use Kantodo\Auth\Auth;
 use Kantodo\Core\Application;
 use Kantodo\Core\Base\AbstractController;
 use Kantodo\Core\Request;
-use Kantodo\Core\Response;
-use Kantodo\Core\Session;
 use Kantodo\Core\Validation\Data;
 use Kantodo\Models\ProjectModel;
 use Kantodo\Models\UserModel;
@@ -35,7 +33,6 @@ class AuthController extends AbstractController
             return;
         }
         $this->renderView(AuthView::class, ['path' => urlencode($body[Request::METHOD_GET]['path'])]);
-
     }
 
     /**
@@ -60,14 +57,14 @@ class AuthController extends AbstractController
 
         $path = (isset($body[Request::METHOD_GET]['path']) && Data::isURLExternal($body[Request::METHOD_GET]['path']) === false) ? $body[Request::METHOD_GET]['path'] : '';
         if (!Application::$APP->request->isValidTokenCSRF()) {
-            $path = urlencode($path); 
+            $path = urlencode($path);
             Application::$APP->response->setLocation("/auth?path={$path}");
             exit;
         }
         // prázdné email nebo heslo
         if (Data::isEmpty($body[Request::METHOD_POST], ['signInEmail', 'signInPassword'])) {
             $empty = [];
-            
+
             // email
             if (!empty($body[Request::METHOD_POST]['signInEmail'])) {
                 Application::$APP->session->addFlashMessage('userEmail', $body[Request::METHOD_POST]['signInEmail']);
@@ -90,7 +87,7 @@ class AuthController extends AbstractController
          * @var bool true => pokud je zadáno správné heslo i email
          */
         $status = Auth::signIn($body[Request::METHOD_POST]['signInEmail'], $body[Request::METHOD_POST]['signInPassword']);
-        
+
         if ($status) {
 
             Application::$APP->session->regenerateID();
@@ -121,10 +118,10 @@ class AuthController extends AbstractController
     {
         $body = Application::$APP->request->getBody();
         Application::$APP->session->addFlashMessage('register', true);
-        
+
         $path = (isset($body[Request::METHOD_GET]['path']) && Data::isURLExternal($body[Request::METHOD_GET]['path']) === false) ? $body[Request::METHOD_GET]['path'] : '';
         if (!Application::$APP->request->isValidTokenCSRF()) {
-            $path = urlencode($path); 
+            $path = urlencode($path);
             Application::$APP->response->setLocation("/auth?path={$path}");
             exit;
         }
@@ -145,7 +142,7 @@ class AuthController extends AbstractController
         }
 
         $empty = Data::empty($body[Request::METHOD_POST], ['signUpName', 'signUpSurname', 'signUpEmail', 'signUpPassword', 'signUpPasswordAgain']);
-        if (count($empty) != 0) {        
+        if (count($empty) != 0) {
 
             Application::$APP->session->addFlashMessage('authErrors', ['empty' => $empty]);
 
@@ -159,34 +156,28 @@ class AuthController extends AbstractController
         $passAgain = $body[Request::METHOD_POST]['signUpPasswordAgain'];
 
         $errors = [];
-        if ($pass != $passAgain) 
-        {
+        if ($pass != $passAgain) {
             $errors['signUpPassword'] = 'passwords_do_not_match';
             $errors['signUpPasswordAgain'] = 'passwords_do_not_match';
         }
 
-        if (!Data::isValidEmail($email)) 
-        {
+        if (!Data::isValidEmail($email)) {
             $errors['signUpEmail'] = 'email_is_not_valid';
         }
 
-        if (!Data::isValidPassword($pass, true, true, true))
-        {
+        if (!Data::isValidPassword($pass, true, true, true)) {
             $errors['signUpPassword'] = 'password_is_not_valid';
         }
 
-        if ($firstname === false) 
-        {
+        if ($firstname === false) {
             $errors['signUpName'] = 'firstname_is_not_valid';
         }
 
-        if ($lastname === false) 
-        {
+        if ($lastname === false) {
             $errors['signUpSurname'] = 'lastname_is_not_valid';
         }
 
-        if (count($errors) != 0) 
-        {
+        if (count($errors) != 0) {
             Application::$APP->session->addFlashMessage('authErrors', ['validation' => $errors]);
             $this->redirectBack($path);
             exit;
@@ -197,18 +188,16 @@ class AuthController extends AbstractController
 
         $emailExists = $userModel->existsEmail($email);
 
-        if ($emailExists) 
-        {
+        if ($emailExists) {
             Application::$APP->session->addFlashMessage('authErrors', ['validation' => ['signUpEmail' => 'email_is_already_taken']]);
             $this->redirectBack($path);
         }
 
-        
+
         /** @phpstan-ignore-next-line */
         $status = $userModel->create($firstname, $lastname, $email, Auth::hashPassword($pass, $email));
 
-        if ($status === false) 
-        {
+        if ($status === false) {
             Application::$APP->session->addFlashMessage('authErrors', ['error' => 'something_went_wrong']);
             $this->redirectBack($path);
         }
@@ -219,7 +208,6 @@ class AuthController extends AbstractController
 
         Application::$APP->session->addFlashMessage('register', false);
         $this->redirectBack($path);
-        
     }
 
     /**

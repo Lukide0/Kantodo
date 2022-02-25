@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Kantodo\Widgets;
 
@@ -80,7 +80,6 @@ class Input extends AbstractWidget
         if (isset($options['classes'])) {
             $this->setOption('classes', $options['classes']);
         }
-
     }
 
     ////////////////////
@@ -256,7 +255,8 @@ class Input extends AbstractWidget
             $disabled = 'disabled';
         }
 
-        $dataAttributes = implode(' ',
+        $dataAttributes = implode(
+            ' ',
             array_map(
                 function ($value, $key) {
                     return "data-{$key}='{$value}'";
@@ -274,10 +274,10 @@ class Input extends AbstractWidget
         return <<<HTML
             <label class="text-field {$outline} {$color} space-medium-bottom {$classes} {$errorClass}">
                 <div class="field">
-                    <span>{$this->getOption('label','')}</span>
-                    <input type="{$type}" onchange="if(this.value == ''){ this.parentElement.classList.remove('focus');} else if (!this.parentElement.classList.contains('focus')) { this.parentElement.classList.add('focus'); }" name="{$this->getOption('name')}" value="{$this->getOption('value','')}" autocomplete="{$this->getOption('autocomplete','off')}" {$disabled} {$dataAttributes}>
+                    <span>{$this->getOption('label', '')}</span>
+                    <input type="{$type}" onchange="if(this.value == ''){ this.parentElement.classList.remove('focus');} else if (!this.parentElement.classList.contains('focus')) { this.parentElement.classList.add('focus'); }" name="{$this->getOption('name')}" value="{$this->getOption('value', '')}" autocomplete="{$this->getOption('autocomplete', 'off')}" {$disabled} {$dataAttributes}>
                 </div>
-                <div class="text">{$this->getOption('error','')}</div>
+                <div class="text">{$this->getOption('error', '')}</div>
             </label>
         HTML;
     }

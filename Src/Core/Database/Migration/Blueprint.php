@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Kantodo\Core\Database\Migration;
 
@@ -219,7 +219,6 @@ class Blueprint
 
         $this->removeAllKeys($column);
         unset($this->columns[$column]);
-
     }
 
     /**
@@ -308,7 +307,6 @@ class Blueprint
             if (!$this->columnExits($column)) {
                 throw new ColumnException("Column `$column` doesn't exists in table `{$this->tableName}`");
             }
-
         }
 
         $key = implode(';', $columns);
@@ -397,9 +395,11 @@ class Blueprint
         $columnDataType    = $this->getColumn($column);
         $referenceDataType = $reference->getColumn($referenceColumn);
 
-        if ($columnDataType['type'] != $referenceDataType['type'] ||
+        if (
+            $columnDataType['type'] != $referenceDataType['type'] ||
             $columnDataType['length'] != $referenceDataType['length'] ||
-            $columnDataType['unsigned'] != $referenceDataType['unsigned']) {
+            $columnDataType['unsigned'] != $referenceDataType['unsigned']
+        ) {
             throw new ColumnException("Column {$column} must have same data type as reference column {$referenceColumn} in table {$reference->getName()}.");
         }
 
@@ -462,7 +462,6 @@ class Blueprint
     public function columnExits(string $column)
     {
         return isset($this->columns[$column]);
-
     }
 
     /**
@@ -586,7 +585,6 @@ class Blueprint
             if ($original[$option] !== $modified[$option]) {
                 $changes[$option] = $modified[$option];
             }
-
         }
 
         return $changes;

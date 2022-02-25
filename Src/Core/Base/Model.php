@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Kantodo\Core\Base;
 
@@ -44,7 +44,7 @@ class Model
      * @return  array<mixed>|false                 vrací false pokud se nepodařilo získat data z tabulky
      */
     public function get(array $select = ['*'], array $search = [], int $limit = 0, int $offset = 0)
-    {        
+    {
         if (count($select) == 0) {
             return [];
         }
@@ -69,33 +69,23 @@ class Model
         $searchData = [];
         $queryData  = [];
 
-        foreach ($search as $column => $value) 
-        {
+        foreach ($search as $column => $value) {
             if (in_array($column, $this->tableColumns, true)) {
 
-                if (is_array($value)) 
-                {
+                if (is_array($value)) {
                     // 0 => operator
                     // 1 => value
                     $searchData[]          = "{$column} {$value[0]} :{$column}";
                     $queryData[":$column"] = $value[1];
-                } 
-                else 
-                {
+                } else {
                     $searchData[]          = "{$column} = :{$column}";
                     $queryData[":$column"] = $value;
-                }                
-            }
-            else if ($column == 'CUSTOM_WHERE') 
-            {
-                $searchData[] = $value[0];
-                foreach($value[1] as $k => $val) 
-                {
-                    $queryData[$k] = $val;
-
                 }
-
-
+            } else if ($column == 'CUSTOM_WHERE') {
+                $searchData[] = $value[0];
+                foreach ($value[1] as $k => $val) {
+                    $queryData[$k] = $val;
+                }
             }
         }
 
@@ -106,13 +96,9 @@ class Model
 
         if ($limit >= 1 && $offset >= 1) {
             $query .= " LIMIT {$offset},{$limit}";
-        } 
-        else if ($offset >= 1) 
-        {
+        } else if ($offset >= 1) {
             $query .= " OFFSET {$offset}";
-        } 
-        else if ($limit >= 1) 
-        {
+        } else if ($limit >= 1) {
             $query .= " LIMIT {$limit}";
         }
         $sth = $this->con->prepare($query);

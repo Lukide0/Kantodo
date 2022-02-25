@@ -28,7 +28,3 @@ class AccountSettingsController extends AbstractController
         $this->renderView(AccountSettingsView::class, $userDetails, ClientLayout::class);
     }
 }
-
-
-
-?>

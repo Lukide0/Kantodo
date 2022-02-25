@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Kantodo\Controllers;
 
@@ -15,7 +15,6 @@ use Kantodo\Core\Validation\Data;
 use Kantodo\Models\UserModel;
 use Kantodo\Views\InstallView;
 use Kantodo\Views\Layouts\InstallLayout;
-use ParagonIE\Paseto\Keys\Version4\SymmetricKey;
 
 use function Kantodo\Core\Functions\t;
 
@@ -37,6 +36,7 @@ class InstallController extends AbstractController
         $page = 0;
         $action = 'install-database';
         $sectionName = t('database', 'install');
+
         switch ($path) {
             case 'install-database':
                 if ($session->contains('constantsDB') && !$session->contains('constantsStorage')) {
@@ -84,8 +84,7 @@ class InstallController extends AbstractController
         if (Application::$APP->request->getMethod() == Request::METHOD_GET) {
             $this->renderView(InstallView::class, ['page' => $page, 'action' => $action, 'sectionName' => $sectionName], InstallLayout::class);
             exit;
-        }
-        else if (Application::$APP->request->getMethod() == Request::METHOD_POST) {
+        } else if (Application::$APP->request->getMethod() == Request::METHOD_POST) {
             switch ($path) {
                 case 'install-database':
                     $this->installDatabase();
@@ -101,7 +100,6 @@ class InstallController extends AbstractController
                     break;
             }
         }
-
     }
 
     /**
@@ -109,7 +107,7 @@ class InstallController extends AbstractController
      *
      * @return  void
      */
-    public function installDatabase() 
+    public function installDatabase()
     {
         Application::$INSTALLING = true;
         $session = Application::$APP->session;
@@ -176,7 +174,6 @@ class InstallController extends AbstractController
 
         Application::$APP->session->set('constantsDB', $dbConstants);
         Application::$APP->response->setLocation("/install-storage");
-
     }
 
     /**
@@ -199,39 +196,38 @@ class InstallController extends AbstractController
             exit;
         }
 
+        // použití flags např. $notReadable & $notWritable == 0b01 & 0b10 == 0b11
         $notReadable = 0b01;
         $notWritable = 0b10;
-        
+
+
+
         $notDir = [];
         $notPerm = [];
         foreach ($keys as $key) {
             $path = $body[Request::METHOD_POST][$key];
 
-            if (!is_dir($path)) 
-            {
+            if (!is_dir($path)) {
                 $notDir[] = $key;
                 continue;
             }
 
-            if (!is_readable($path)) 
-            {
+            if (!is_readable($path)) {
                 if (isset($notPerm[$key]))
                     $notPerm[$key] |= $notReadable;
-                else 
+                else
                     $notPerm[$key] = $notReadable;
             }
-            
-            if (!is_writable($path)) 
-            {
+
+            if (!is_writable($path)) {
                 if (isset($notPerm[$key]))
                     $notPerm[$key] |= $notWritable;
-                else 
+                else
                     $notPerm[$key] = $notWritable;
-            } 
-                
+            }
         }
         $duplicite = Data::duplicate($body[Request::METHOD_POST], $keys, true);
-        
+
         if (count($notDir) != 0) {
             $session->addFlashMessage('errors', array_fill_keys($notDir, t('is_not_folder', 'install')));
             Application::$APP->response->setLocation('/install-storage');
@@ -248,16 +244,11 @@ class InstallController extends AbstractController
             $errors = [];
 
             foreach ($notPerm as $key => $value) {
-                if (($value & $notReadable) == $notReadable && ($value & $notWritable) == $notWritable)
-                {
+                if (($value & $notReadable) == $notReadable && ($value & $notWritable) == $notWritable) {
                     $errors[$key] = t('could_not_read_and_write', 'install');
-                }
-                else if (($value & $notReadable) == $notReadable)
-                {
+                } else if (($value & $notReadable) == $notReadable) {
                     $errors[$key] = t('could_not_read', 'install');
-                }
-                else 
-                {
+                } else {
                     $errors[$key] = t('could_not_write', 'install');
                 }
             }
@@ -274,7 +265,7 @@ class InstallController extends AbstractController
         Application::$APP->session->set('constantsStorage', $folderConstants);
         Application::$APP->response->setLocation('/install-admin');
     }
-    
+
     /**
      *  Akce vytvoření admin účtu
      *
@@ -286,7 +277,7 @@ class InstallController extends AbstractController
 
         $session = Application::$APP->session;
         $body = Application::$APP->request->getBody();
-    
+
         $keys = ['firstname', 'lastname', 'email', 'password', 'controlPassword'];
 
         $empty = Data::empty($body[Request::METHOD_POST], $keys);
@@ -302,18 +293,18 @@ class InstallController extends AbstractController
         $pass = $body[Request::METHOD_POST]['password'];
         $passControl = $body[Request::METHOD_POST]['controlPassword'];
 
-        if (!Data::isValidEmail($email)){
+        if (!Data::isValidEmail($email)) {
             $session->addFlashMessage('errors', ['email' => t('email_is_not_valid', 'auth')]);
             Application::$APP->response->setLocation('/install-admin');
             exit;
         }
-        
+
         if ($pass != $passControl) {
             $session->addFlashMessage('errors', ['password' => t('passwords_do_not_match', 'auth'), 'controlPassword' => t('passwords_do_not_match', 'auth')]);
             Application::$APP->response->setLocation('/install-admin');
             exit;
         }
-        
+
         if ($firstname == false) {
             $session->addFlashMessage('errors', ['firstname' => t('firstname_is_not_valid')]);
             Application::$APP->response->setLocation('/install-admin');
@@ -325,7 +316,7 @@ class InstallController extends AbstractController
             Application::$APP->response->setLocation('/install-admin');
             exit;
         }
-        
+
         if (!Data::isValidPassword($pass, true, true, true)) {
             $session->addFlashMessage('errors', ['password' => t('password_is_not_valid')]);
             Application::$APP->response->setLocation('/install-admin');
@@ -333,7 +324,7 @@ class InstallController extends AbstractController
         }
 
         $dbConstants = Application::$APP->session->get('constantsDB');
-        
+
         // TMP konstanty
         define('DB_NAME', $dbConstants['DB_NAME']);
         define('DB_HOST', $dbConstants['DB_HOST']);
@@ -365,19 +356,20 @@ class InstallController extends AbstractController
             exit;
         }
 
-        $constantsDB = array_map(function($value) { return "'{$value}'";}, Application::$APP->session->get('constantsDB'));
+        $constantsDB = array_map(function ($value) {
+            return "'{$value}'";
+        }, Application::$APP->session->get('constantsDB'));
         $constantsFolder = Application::$APP->session->get('constantsStorage');
 
         Application::createSymmetricKey();
         Application::createAsymmetricSecretKey();
 
         $constants = array_merge($constantsDB, $constantsFolder);
-        
+
         Application::overrideConfig($constants);
 
         Application::$APP->session->destroy();
 
         Application::$APP->response->setLocation();
-        
     }
 }

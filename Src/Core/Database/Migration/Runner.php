@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Kantodo\Core\Database\Migration;
 
@@ -48,7 +48,6 @@ class Runner
         } else {
             $this->schema = new Schema(Application::$DB_TABLE_PREFIX);
         }
-
     }
 
     /**
@@ -105,7 +104,6 @@ class Runner
             if ($tmp == 2) {
                 break;
             }
-
         }
 
         if ($mode == self::MIG_DOWN) {

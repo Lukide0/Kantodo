@@ -28,17 +28,15 @@ class ProjectController extends AbstractController
     {
         $body = API::$API->request->getBody();
         $response = API::$API->response;
-    
-        if (empty($body[Request::METHOD_POST]['name'])) 
-        {
+
+        if (empty($body[Request::METHOD_POST]['name'])) {
             $response->fail(['name' => t('empty', 'api')]);
         }
 
         $projectName = $body[Request::METHOD_POST]['name'];
         $user = Auth::getUser();
 
-        if ($user === null || empty($user['id'])) 
-        {
+        if ($user === null || empty($user['id'])) {
             $response->error(t('user_id_missing', 'api'));
             exit;
         }
@@ -46,14 +44,14 @@ class ProjectController extends AbstractController
         $projModel = new ProjectModel();
 
         $status = $projModel->create((int)$user['id'], $projectName);
-        if ($status === false) 
-        {
+        if ($status === false) {
             $response->error(t('cannot_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
             return;
         }
 
-        $response->success([
-            'project' => 
+        $response->success(
+            [
+                'project' =>
                 [
                     'uuid' => base64EncodeUrl($status['uuid'])
                 ]
@@ -72,8 +70,7 @@ class ProjectController extends AbstractController
         $body = API::$API->request->getBody();
         $response = API::$API->response;
 
-        if (empty($body[Request::METHOD_POST]['code'])) 
-        {
+        if (empty($body[Request::METHOD_POST]['code'])) {
             $response->fail(['code' => t('empty', 'api')]);
             exit;
         }
@@ -81,8 +78,7 @@ class ProjectController extends AbstractController
         $projectCode = $body[Request::METHOD_POST]['code'];
         $user = Auth::getUser();
 
-        if ($user === null || empty($user['id'])) 
-        {
+        if ($user === null || empty($user['id'])) {
             $response->error(t('user_id_missing', 'api'));
             exit;
         }
@@ -90,41 +86,36 @@ class ProjectController extends AbstractController
         $userID = (int)$user['id'];
 
         $projectModel = new ProjectModel();
-        
         $projectID = $projectModel->getProjectByCode($projectCode);
 
-        if ($projectID === false) 
-        {
+        if ($projectID === false) {
             $response->error(t('project_code_is_not_valid', 'api'), Response::STATUS_CODE_BAD_REQUEST);
             exit;
         }
 
         $posID = $projectModel->getPosition('guest');
 
-        if ($posID === false) 
-        {
+        if ($posID === false) {
             $posID = $projectModel->createPosition('guest');
 
-            if ($posID === false) 
-            {
+            if ($posID === false) {
                 $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
                 exit;
             }
         }
-        
+
         $status = $projectModel->setUserPosition($userID, $projectID, $posID);
-        
+
         $project = $projectModel->getSingle(['name', 'uuid'], ['project_id' => $projectID]);
-        
-        if ($status === false || $project === false) 
-        {
+
+        if ($status === false || $project === false) {
             $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
             exit;
         }
 
         $projectUUID = base64EncodeUrl($project['uuid']);
         $response->success([
-        'project' => 
+            'project' =>
             [
                 'name' => $project['name'],
                 'uuid' => $projectUUID
@@ -143,41 +134,36 @@ class ProjectController extends AbstractController
     public function getCode(array $params = [])
     {
         $response = API::$API->response;
-        
+
         if (empty($params['projectUUID']))
             $response->error(t('project_uuid_missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
-            
+
         $uuid = base64DecodeUrl($params['projectUUID']);
-        if ($uuid === false) 
-        {
+        if ($uuid === false) {
             $response->error(t('project_uuid_missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
             exit;
         }
 
         $user = Auth::getUser();
 
-        if ($user === null || !DataType::number($user['id'])) 
-        {
+        if ($user === null || !DataType::number($user['id'])) {
             $response->error(t('user_id_missing', 'api'));
             exit;
         }
 
         $id   = $user['id'];
-        
-        if (ProjectModel::hasPrivTo('addOrRemovePeople', (int)$id, $uuid) !== true) 
-        {
+
+        if (ProjectModel::hasPrivTo('addOrRemovePeople', (int)$id, $uuid) !== true) {
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
         }
 
         $projModel = new ProjectModel();
-        
+
         $code = $projModel->getOrCreateCode($uuid);
-        
-        if ($code === false) 
-        {
+
+        if ($code === false) {
             $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
-        }
-        else {
+        } else {
             $response->success(['code' => $code]);
         }
     }
@@ -193,19 +179,17 @@ class ProjectController extends AbstractController
         $body = API::$API->request->getBody();
         $response = API::$API->response;
         $user = Auth::getUser();
-        
+
         $keys = ['project', 'user', 'position'];
 
         $empty = Data::empty($body[Request::METHOD_POST], $keys);
 
-        if (count($empty) != 0) 
-        {
+        if (count($empty) != 0) {
             $response->fail(array_fill_keys($empty, t('empty', 'api')));
             exit;
         }
 
-        if ($user === null || !DataType::number($user['id'])) 
-        {
+        if ($user === null || !DataType::number($user['id'])) {
             $response->error(t('user_id_missing', 'api'));
             exit;
         }
@@ -215,27 +199,23 @@ class ProjectController extends AbstractController
         $email = $body[Request::METHOD_POST]['user'];
         $position = $body[Request::METHOD_POST]['position'];
 
-        if ($uuid === false)
-        {
+        if ($uuid === false) {
             $response->error(t('project_uuid_missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
             exit;
         }
 
-        if (isset(ProjectModel::POSITIONS[$position]) === false) 
-        {
+        if (isset(ProjectModel::POSITIONS[$position]) === false) {
             $response->error(t('position_does_not_exists', 'api'), Response::STATUS_CODE_BAD_REQUEST);
             exit;
-        } else if ($position === 'admin') 
-        {
+        } else if ($position === 'admin') {
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
             exit;
         }
 
         $projModel = new ProjectModel();
         $projectID = 0;
-        
-        if (ProjectModel::hasPrivTo('changePeoplePosition', (int)$id, $uuid, $projectID) !== true) 
-        {
+
+        if (ProjectModel::hasPrivTo('changePeoplePosition', (int)$id, $uuid, $projectID) !== true) {
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
             exit;
         }
@@ -243,24 +223,21 @@ class ProjectController extends AbstractController
         $userModel = new UserModel();
         $member = $userModel->getSingle(['user_id'], ['email' => $email]);
 
-        if ($member === false) 
-        {
+        if ($member === false) {
             $response->error(t('user_is_not_member', 'api'), Response::STATUS_CODE_BAD_REQUEST);
             exit;
         }
 
         $memberID = (int)$member['user_id'];
-        
+
         // není členem projektu
         $memberPos = $projModel->getProjectPosition($projectID, $memberID);
-        if ($memberPos === false) 
-        {
+        if ($memberPos === false) {
             $response->error(t('user_is_not_member', 'api'), Response::STATUS_CODE_BAD_REQUEST);
             exit;
         }
         // admin nemůže být změněn
-        else if ($memberPos == "admin") 
-        {
+        else if ($memberPos == "admin") {
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
             exit;
         }
@@ -268,10 +245,9 @@ class ProjectController extends AbstractController
         $status = $projModel->updatePosition($memberID, $projectID, $position);
 
 
-        if (!$status) 
-        {
+        if (!$status) {
             $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
-        } 
+        }
 
         // https://stackoverflow.com/a/28738208
         ob_start();
@@ -306,41 +282,37 @@ class ProjectController extends AbstractController
         $body = API::$API->request->getBody();
         $response = API::$API->response;
         $user = Auth::getUser();
-        
+
         $keys = ['project', 'user'];
 
         $empty = Data::empty($body[Request::METHOD_POST], $keys);
 
-        if (count($empty) != 0) 
-        {
+        if (count($empty) != 0) {
             $response->fail(array_fill_keys($empty, t('empty', 'api')));
             exit;
         }
 
-        if ($user === null || !DataType::number($user['id'])) 
-        {
+        if ($user === null || !DataType::number($user['id'])) {
             $response->error(t('user_id_missing', 'api'));
             exit;
         }
-    
+
         $uuidRaw = $body[Request::METHOD_POST]['project'];
         $uuid = base64DecodeUrl($uuidRaw);
         $id   = $user['id'];
         $email = $body[Request::METHOD_POST]['user'];
 
-        
 
-        if ($uuid === false)
-        {
+
+        if ($uuid === false) {
             $response->error(t('project_uuid_missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
             exit;
         }
 
         $projModel = new ProjectModel();
         $projectID = 0;
-     
-        if (ProjectModel::hasPrivTo('changePeoplePosition', (int)$id, $uuid, $projectID) !== true) 
-        {
+
+        if (ProjectModel::hasPrivTo('changePeoplePosition', (int)$id, $uuid, $projectID) !== true) {
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
             exit;
         }
@@ -349,31 +321,27 @@ class ProjectController extends AbstractController
         $member = $userModel->getSingle(['user_id'], ['email' => $email]);
 
         // neexistuje
-        if ($member === false) 
-        {
+        if ($member === false) {
             $response->error(t('user_is_not_member', 'api'), Response::STATUS_CODE_BAD_REQUEST);
             exit;
         }
 
         $memberID = (int)$member['user_id'];
-        
+
         // není členem projektu
         $memberPos = $projModel->getProjectPosition($projectID, $memberID);
-        if ($memberPos === false) 
-        {
+        if ($memberPos === false) {
             $response->error(t('user_is_not_member', 'api'), Response::STATUS_CODE_BAD_REQUEST);
             exit;
-        } 
+        }
         // admin nemůže být vyhozen
-        else if ($memberPos == "admin") 
-        {
+        else if ($memberPos == "admin") {
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
             exit;
         }
 
         $status = $projModel->removeUser($memberID, $projectID);
-        if (!$status) 
-        {
+        if (!$status) {
             $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
         }
 
@@ -418,8 +386,7 @@ class ProjectController extends AbstractController
 
         $empty = Data::empty($body[Request::METHOD_POST], $keys);
 
-        if (count($empty) != 0) 
-        {
+        if (count($empty) != 0) {
             $response->fail(array_fill_keys($empty, t('empty', 'api')));
         }
 
@@ -428,19 +395,17 @@ class ProjectController extends AbstractController
 
         $user = Auth::getUser();
 
-        if ($user == null || $user['email'] != $email) 
-        {
+        if ($user == null || $user['email'] != $email) {
             $response->error(t('invalid_credentials'), Response::STATUS_CODE_BAD_REQUEST);
             exit;
         }
-        
+
         if (empty($body[Request::METHOD_POST]['project']))
             $response->error(t('project_uuid_missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
-        
+
         $uuidRaw = $body[Request::METHOD_POST]['project'];
         $uuid = base64DecodeUrl($uuidRaw);
-        if ($uuid === false) 
-        {
+        if ($uuid === false) {
             $response->error(t('project_uuid_missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
             exit;
         }
@@ -450,8 +415,7 @@ class ProjectController extends AbstractController
         $userModel = new UserModel();
         $exists = $userModel->exists(['email' => $email, 'password' => $password]);
 
-        if (!$exists) 
-        {
+        if (!$exists) {
             $response->error(t('invalid_credentials'), Response::STATUS_CODE_BAD_REQUEST);
             exit;
         }
@@ -463,8 +427,7 @@ class ProjectController extends AbstractController
 
         $project = $projModel->getSingle(['project_id'], ['uuid' => $uuid]);
 
-        if ($project === false) 
-        {
+        if ($project === false) {
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
             exit;
         }
@@ -473,18 +436,16 @@ class ProjectController extends AbstractController
 
         $memberPos = $projModel->getProjectPosition($projectID, $id);
 
-        if ($memberPos !== 'admin') 
-        {
+        if ($memberPos !== 'admin') {
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
             exit;
         }
 
 
         $status = $projModel->delete($projectID);
-        if (!$status) 
-        {
+        if (!$status) {
             $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
-        } 
+        }
 
         // https://stackoverflow.com/a/28738208
         ob_start();

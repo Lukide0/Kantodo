@@ -10,7 +10,3 @@ $APP = new Application();
 
 $backup = new Backup();
 $backup->createZip();
-
-
-
-?>

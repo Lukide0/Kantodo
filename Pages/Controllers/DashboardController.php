@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Kantodo\Controllers;
 
@@ -8,15 +8,13 @@ use Kantodo\Auth\Auth;
 use Kantodo\Core\Application;
 use Kantodo\Core\Base\AbstractController;
 use Kantodo\Models\ProjectModel;
-use Kantodo\Models\TaskModel;
-use Kantodo\Models\UserModel;
 use Kantodo\Views\DashboardView;
 use Kantodo\Views\Layouts\ClientLayout;
 
 class DashboardController extends AbstractController
 {
     /**
-     * Homapage
+     * Homepage
      *
      * @return  void
      */
@@ -25,8 +23,7 @@ class DashboardController extends AbstractController
         $projectModel = new ProjectModel();
         $user = Auth::getUser();
 
-        if ($user === null) 
-        {
+        if ($user === null) {
             Auth::signOut();
             Application::$APP->response->setLocation('/auth');
             exit;
@@ -38,10 +35,7 @@ class DashboardController extends AbstractController
 
         if ($projects === false)
             $projects = [];
+
         $this->renderView(DashboardView::class, ['projects' => $projects], ClientLayout::class);
     }
 }
-
-
-
-?>

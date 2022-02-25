@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Kantodo\Controllers;
 
@@ -17,7 +17,8 @@ use Kantodo\Views\ProjectView;
 class ProjectController extends AbstractController
 {
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->registerMiddleware(new ProjectMiddleware);
     }
 
@@ -43,8 +44,7 @@ class ProjectController extends AbstractController
     public function settings(array $params = [])
     {
         /** @phpstan-ignore-next-line */
-        if (!$params['priv']['changePeoplePosition'] && !$params['priv']['removePeople']) 
-        {
+        if (!$params['priv']['changePeoplePosition'] && !$params['priv']['removePeople']) {
             Application::$APP->response->setLocation("/project/{$params['projectUUID']}");
             exit;
         }

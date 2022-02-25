@@ -1,12 +1,11 @@
 class Commands:
-
     def __init__(self):
         self.commands = {}
 
     def register_command(self, name, callback):
         self.commands[name] = callback
-    
-    def handle_command(self, name, params = []):
+
+    def handle_command(self, name, params=[]):
         if name in self.commands:
             self.commands[name](params)
             return True

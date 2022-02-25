@@ -10,10 +10,12 @@ use Kantodo\Core\Base\AbstractMiddleware;
 use Kantodo\Core\Exception\KantodoException;
 use Kantodo\Core\Validation\DataType;
 use Kantodo\Models\ProjectModel;
-use Kantodo\Models\UserModel;
 
 use function Kantodo\Core\Functions\base64DecodeUrl;
 
+/**
+ * Middleware na autentizaci
+ */
 class ProjectMiddleware extends AbstractMiddleware 
 {
     public function execute(array $params = [])

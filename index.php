@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 use Kantodo\Auth\Auth;
 use Kantodo\Core\Application;
@@ -11,9 +12,6 @@ include_once 'loader/autoload.php';
 $APP = new Application();
 $APP->registerAuth(new Auth());
 $APP->session->start();
-// TODO: komentare, VIEWS title 
-
-
 
 if (!Application::configExits()) {
     $APP->router->run([Kantodo\Controllers\InstallController::class, 'installView'], [$APP->request->getPath()]);
@@ -24,7 +22,6 @@ if (file_exists($APP::$PAGES_DIR . '/routes.php')) {
     include $APP::$PAGES_DIR . '/routes.php';
 }
 
-// errors
 $APP->router->registerErrorCodeHandler(Application::ERROR_NOT_AUTHORIZED, function (int $role, int $userRole) {
     if (Request::METHOD_POST === Application::$APP->request->getMethod()) {
         Application::$APP->response->setStatusCode(Response::STATUS_CODE_UNAUTHORIZED);

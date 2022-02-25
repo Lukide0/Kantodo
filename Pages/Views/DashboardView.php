@@ -6,7 +6,6 @@ namespace Kantodo\Views;
 
 use Kantodo\Core\Application;
 use Kantodo\Core\Base\IView;
-use Kantodo\Widgets\Task;
 
 use function Kantodo\Core\Functions\base64EncodeUrl;
 use function Kantodo\Core\Functions\t;
