@@ -34,10 +34,7 @@ class TaskController extends AbstractController
 
         $keys = [
             'task_name',
-            'task_desc',
-            'task_proj',
-            'task_comp',
-            'task_priority',
+            'task_proj'
         ];
 
         $empty = Data::notSet($body[Request::METHOD_POST], $keys);
@@ -48,9 +45,9 @@ class TaskController extends AbstractController
         }
 
         $taskName      = $body[Request::METHOD_POST]['task_name'];
-        $taskDesc      = $body[Request::METHOD_POST]['task_desc'];
-        $taskCompleted = $body[Request::METHOD_POST]['task_comp'];
-        $taskPriority  = $body[Request::METHOD_POST]['task_priority'];
+        $taskDesc      = $body[Request::METHOD_POST]['task_desc'] ?? "";
+        $taskCompleted = $body[Request::METHOD_POST]['task_comp'] ?? 0;
+        $taskPriority  = $body[Request::METHOD_POST]['task_priority'] ?? 0;
         $taskEndDate   = $body[Request::METHOD_POST]['task_end_date'] ?? null;
 
         $projRAW  = $body[Request::METHOD_POST]['task_proj'];

@@ -60,6 +60,8 @@ class ProjectView implements IView
                         data.task_name = inputName.value;
                         data.task_desc = editor.value();
                         data.task_proj = input.dataset.value;
+                        data.task_comp = taskWin.getStatus();
+                        data.task_priority = taskWin.getPriority();
 
                         let chipsArray = taskWin.getChips();
                         for (let i = 0; i < chipsArray.length; i++) {
