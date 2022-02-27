@@ -42,6 +42,7 @@
     
     "do_you_want_delete_this_task": "Chcete opravdu smazat tento úkol?",
     
+    "task_was_created": "Úkol byl vytvořen.",
     "new_task_was_added": "Nový úkol byl přidán.",
     "task_was_edited": "Úkol byl upraven.",
     "task_was_removed": "Úkol byl smazán",
