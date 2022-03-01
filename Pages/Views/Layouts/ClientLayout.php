@@ -208,7 +208,7 @@ class ClientLayout extends Layout
 
                         win.setNameValidation(function(e, el){
                             if (!el.value) {
-                                win.setNameError('Empty');
+                                win.setNameError('<?= t('empty', 'api') ?>');
                                 return false;
                             } else {
                                 win.clearNameError();
@@ -219,7 +219,7 @@ class ClientLayout extends Layout
                         win.setActionCreate(function(data) {
                             if (!data[0]) 
                             {
-                                win.setNameError('Empty');
+                                win.setNameError('<?= t('empty', 'api') ?>');
                                 return;
                             }
                             let response = Request.Action('/api/create/project', 'POST', {name: data[0]});
@@ -251,7 +251,7 @@ class ClientLayout extends Layout
                         win.setActionJoin(function(data) {
                             if (!data[0]) 
                             {
-                                win.setCodeError('Empty');
+                                win.setCodeError('<?= t('empty', 'api') ?>');
                                 return;
                             }
                             win.clearCodeError();
