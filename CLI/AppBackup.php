@@ -3,7 +3,7 @@
 use Kantodo\Core\Application;
 use Kantodo\Update\Backup;
 
-include "Loader/autoload.php";
+include "loader/autoload.php";
 
 
 $APP = new Application();

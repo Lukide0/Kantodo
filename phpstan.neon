@@ -6,7 +6,7 @@ parameters:
         - api
         - server
     bootstrapFiles:
-        - Loader/autoload.php
+        - loader/autoload.php
     ignoreErrors:
         -
             message: '#Construct empty\(\) is not allowed. Use more strict comparison.#'
