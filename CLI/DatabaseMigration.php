@@ -5,7 +5,7 @@ namespace Kantodo\Core\Database\Migration;
 use Kantodo\Core\Application;
 use Kantodo\Core\Database\Migration\Runner;
 
-include 'Loader/autoload.php';
+include 'loader/autoload.php';
 
 // jsou potřeba 3 argumenty
 if ($argc < 3) {

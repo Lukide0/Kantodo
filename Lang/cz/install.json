@@ -1,4 +1,5 @@
 {
+    "installation": "Instalace",
     "database": "Databáze",
     "storage": "Uložiště",
     "could_not_connect_to_db": "Nepodařilo se spojit s databází",

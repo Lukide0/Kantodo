@@ -1,4 +1,5 @@
 {
+    "installation": "Installation",
     "database": "Database",
     "storage": "Storage",
     "could_not_connect_to_db": "Could not connect to database",

@@ -8,7 +8,7 @@ use Kantodo\API\Controllers\TaskController;
 
 use function Kantodo\Core\Functions\t;
 
-include "../Loader/autoload.php";
+include "../loader/autoload.php";
 
 
 $API = new API();

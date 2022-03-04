@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Kantodo;
 
 
-include dirname(__FILE__) ."/../Loader/autoload.php";
+include dirname(__FILE__) ."/../loader/autoload.php";
 
 use Kantodo\Auth\Auth;
 use Kantodo\Core\Application;
