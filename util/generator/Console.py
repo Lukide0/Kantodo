@@ -45,10 +45,9 @@ class Console:
         self.commands = Commands()
 
         self.commands.register_command("add", add_command)
-        self.commands.register_command("rename", rename_command)
         self.commands.register_command("clear", clear_command)
-        self.commands.register_command("mig", migration_command)
-        self.commands.register_command("generate", routes_command)
+        self.commands.register_command("migrate", migration_command)
+        self.commands.register_command("gen-routes", routes_command)
         self.commands.register_command("backup", backup_command)
 
     @classmethod
@@ -108,10 +107,14 @@ class Console:
             f"""
 Commands:
   {commands}
+  help
+  exit
 """
         )
 
 
 if __name__ == "__main__":
+    clear_command()
+    
     console = Console()
     console.run()

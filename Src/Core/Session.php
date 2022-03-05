@@ -100,12 +100,12 @@ class Session
     {
         $kan = &$_SESSION['__KAN'];
 
-        // different browser
+        // jiný prohlížeč
         if ($kan['META']['USER_AGENT'] != $_SERVER['HTTP_USER_AGENT']) {
             return false;
         }
 
-        // older than 30 minutes
+        // starší 30 min
         if ($kan['META']['LAST_ACCESS'] < time() + 30 * 60) {
             return false;
         }

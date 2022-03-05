@@ -23,7 +23,7 @@ class Version_1_0 extends AbstractMigration
             $table->addColumn('secret', 'varchar', ['length' => 50, 'unique' => true]);
             $table->addColumn('nickname', 'varchar', ['length' => 100, 'notNull' => false]);
 
-            //keys
+
             $table->addPrimaryKey('user_id');
         });
 
@@ -37,7 +37,6 @@ class Version_1_0 extends AbstractMigration
             $table->addColumn('key', 'varchar', ['length' => 50]);
             $table->addColumn('value', 'text');
 
-            //keys
             $table->addPrimaryKey('meta_id');
 
             $table->addForeignKey('user_id', $schema->getTable('users'), 'user_id', $table::ACTION_AFFECT);
@@ -53,7 +52,6 @@ class Version_1_0 extends AbstractMigration
             $table->addColumn("uuid", 'varchar', ['length' => 36, 'unique' => true]);
             $table->addColumn('is_public', 'bool');
 
-            //keys
             $table->addPrimaryKey('project_id');
         });
 
@@ -65,7 +63,6 @@ class Version_1_0 extends AbstractMigration
             $table->addColumn('project_position_id', 'bigint', ['unsigned' => true, 'autoincrement' => true]);
             $table->addColumn('name', 'varchar', ['unique' => true]);
 
-            //keys
             $table->addPrimaryKey('project_position_id');
         });
 
@@ -77,7 +74,6 @@ class Version_1_0 extends AbstractMigration
             $table->addColumn('project_id', 'bigint', ['unsigned' => true]);
             $table->addColumn('project_position_id', 'bigint', ['unsigned' => true]);
 
-            //keys
             $table->addPrimaryKey('user_id');
             $table->addPrimaryKey('project_id');
 
@@ -98,7 +94,6 @@ class Version_1_0 extends AbstractMigration
             $table->addColumn('expiration', 'datetime', ['notNull' => false]);
             $table->addColumn('project_id', 'bigint', ['unsigned' => true, 'unique' => true]);
 
-            //keys
             $table->addPrimaryKey('project_code_id');
 
             $table->addForeignKey('project_id', $schema->getTable('projects'), 'project_id', Blueprint::ACTION_AFFECT);
@@ -117,25 +112,10 @@ class Version_1_0 extends AbstractMigration
             $table->addColumn('creator_id', 'bigint', ['unsigned' => true]);
             $table->addColumn('project_id', 'bigint', ['unsigned' => true]);
 
-            //keys
             $table->addPrimaryKey('task_id');
 
             $table->addForeignKey('creator_id', $schema->getTable('users'), 'user_id', Blueprint::ACTION_AFFECT);
             $table->addForeignKey('project_id', $schema->getTable('projects'), 'project_id', Blueprint::ACTION_AFFECT);
-        });
-
-        //////////////////////
-        // TABLE USER_TASKS //
-        //////////////////////
-        $schema->create('user_tasks', function (Blueprint $table, Schema $schema) {
-            $table->addColumn('user_id', 'bigint', ['unsigned' => true]);
-            $table->addColumn('task_id', 'bigint', ['unsigned' => true]);
-
-            $table->addPrimaryKey('user_id');
-            $table->addPrimaryKey('task_id');
-
-            $table->addForeignKey('user_id', $schema->getTable('users'), 'user_id', Blueprint::ACTION_AFFECT);
-            $table->addForeignKey('task_id', $schema->getTable('tasks'), 'task_id', Blueprint::ACTION_AFFECT);
         });
 
         ////////////////
@@ -144,7 +124,6 @@ class Version_1_0 extends AbstractMigration
         $schema->create('tags', function (Blueprint $table) {
             $table->addColumn('tag_id', 'bigint', ['unsigned' => true, 'autoincrement' => true]);
             $table->addColumn('name', 'varchar', ['length' => 50, 'unique' => true]);
-            //keys
             $table->addPrimaryKey('tag_id');
         });
 

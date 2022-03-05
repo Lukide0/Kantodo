@@ -169,7 +169,7 @@ class InstallController extends AbstractController
 
         $dbConstants['VERSION'] = $installVersion;
 
-        // vytvoří v db tabulky a celé sql, které provede dá do souboru "migrations/Versions/{verze}.sql"
+        // vytvoří v db tabulky a provede SQL, které provede dá do souboru "migrations/Versions/{verze}.sql"
         $runner->run($installVersion, true, true);
 
         Application::$APP->session->set('constantsDB', $dbConstants);
