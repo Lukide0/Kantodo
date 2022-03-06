@@ -366,10 +366,11 @@ class InstallController extends AbstractController
 
         $constants = array_merge($constantsDB, $constantsFolder);
 
-        Application::overrideConfig($constants);
-
-        Application::$APP->session->destroy();
-
+        if (Application::overrideConfig($constants)) 
+        {
+            Application::$APP->session->destroy();
+        }
+        
         Application::$APP->response->setLocation();
     }
 }

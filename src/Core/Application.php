@@ -78,7 +78,7 @@ class Application extends BaseApplication
      *
      * @param   array<string,string>  $constants  konstanty
      *
-     * @return  void
+     * @return  bool                  status
      */
     public static function overrideConfig(array $constants)
     {
@@ -90,7 +90,7 @@ class Application extends BaseApplication
 
         $content = "<?php\n{$content}\n?>";
 
-        file_put_contents(self::$ROOT_DIR . '/config.php', $content);
+        return file_put_contents(self::$ROOT_DIR . '/config.php', $content) != false;
     }
 
     /**
