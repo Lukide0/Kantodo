@@ -67,7 +67,7 @@ class Application extends BaseApplication
         self::$MIGRATION_DIR = self::$ROOT_DIR . '/migrations';
         self::$SCRIPT_URL    = self::$URL_PATH . '/scripts/';
         self::$STYLE_URL     = self::$URL_PATH . '/styles/';
-        self::$PAGES_DIR     = self::$ROOT_DIR . '/Pages';
+        self::$PAGES_DIR     = self::$ROOT_DIR . '/pages';
 
         $this->header = new HeaderHTML();
         $this->router = new Router($this->request, $this->response);

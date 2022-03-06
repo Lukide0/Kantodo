@@ -35,11 +35,11 @@ class Lang
     public function load(string $group = 'global')
     {
 
-        $path      = Application::$ROOT_DIR . '/Lang';
+        $path      = Application::$ROOT_DIR . '/lang';
         $lang      = Application::$LANG;
 
         if (defined("STORAGE_CACHE")) {
-            $pathCache = STORAGE_CACHE . '/Lang';
+            $pathCache = STORAGE_CACHE . '/lang';
             $pathPHP  = "{$pathCache}/{$lang}_{$group}.php";
         } else {
             $pathCache = null;
@@ -135,7 +135,7 @@ class Lang
             return false;
         }
 
-        $path = STORAGE_CACHE . "/Lang";
+        $path = STORAGE_CACHE . "/lang";
 
         $fileContent = "<?php\n\nreturn [\n";
 

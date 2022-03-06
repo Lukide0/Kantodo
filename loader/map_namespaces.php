@@ -6,11 +6,11 @@ return [
     'Kantodo\\'              => $dir . '/src/',
 
     // Pages
-    'Kantodo\\Controllers\\' => $dir . '/Pages/Controllers/',
-    'Kantodo\\Models\\'      => $dir . '/Pages/Models/',
-    'Kantodo\\Views\\'       => $dir . '/Pages/Views/',
-    'Kantodo\\Middlewares\\' => $dir . '/Pages/Middlewares/',
-    'Kantodo\\Widgets\\'     => $dir . '/Pages/Widgets/',
+    'Kantodo\\Controllers\\' => $dir . '/pages/Controllers/',
+    'Kantodo\\Models\\'      => $dir . '/pages/Models/',
+    'Kantodo\\Views\\'       => $dir . '/pages/Views/',
+    'Kantodo\\Middlewares\\' => $dir . '/pages/Middlewares/',
+    'Kantodo\\Widgets\\'     => $dir . '/pages/Widgets/',
 
     // API
     'Kantodo\\API\\Controllers\\' => $dir . '/api/Controllers/',

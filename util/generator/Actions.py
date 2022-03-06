@@ -9,10 +9,10 @@ CLASS_NAME_REGEX = r"^[A-Z][a-zA-Z0-9_]*$"
 
 PATH_ABS = path.dirname(__file__)
 
-PATH_CONTROLLER = path.join(PATH_ABS, "./../../Pages/Controllers/")
-PATH_VIEW = path.join(PATH_ABS, "./../../Pages/Views/")
-PATH_WIDGET = path.join(PATH_ABS, "./../../Pages/Widgets/")
-PATH_MODEL = path.join(PATH_ABS, "./../../Pages/Models/")
+PATH_CONTROLLER = path.join(PATH_ABS, "./../../pages/Controllers/")
+PATH_VIEW = path.join(PATH_ABS, "./../../pages/Views/")
+PATH_WIDGET = path.join(PATH_ABS, "./../../pages/Widgets/")
+PATH_MODEL = path.join(PATH_ABS, "./../../pages/Models/")
 
 
 # CLEAR
@@ -214,7 +214,7 @@ def backup_command(commands):
 # -----------------------------------------------------------
 # GENERATE ROUTES
 def routes_command(commands):
-    chdir(path.join(PATH_ABS, "./../../Pages/"))
+    chdir(path.join(PATH_ABS, "./../../pages/"))
 
     Console.set_style(Console.YELLOW_FG, content="Searching for 'routes.json'\n")
     if path.isfile("./routes.json") == False:

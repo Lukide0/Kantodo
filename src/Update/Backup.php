@@ -9,7 +9,7 @@ use ZipArchive;
 
 class Backup
 {
-    const FOLDERS = ['Lang', 'loader', 'migrations', 'Pages', 'Sass', 'scripts', 'styles', 'src', 'util'];
+    const FOLDERS = ['lang', 'loader', 'migrations', 'pages', 'Sass', 'scripts', 'styles', 'src', 'util'];
 
     /**
      * Vytvoří archiv se zdroj. soubory
