@@ -218,7 +218,6 @@ export default function taskWindow(btn = null, project = null) {
 
         if (entries.length == 1) 
         {
-            console.log(entries[0])
             input.dataset.value = entries[0][0];
             input.value = entries[0][1].name;
             textField.classList.add('active');

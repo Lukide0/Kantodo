@@ -9,6 +9,7 @@
     "actions": "Actions",
     "dashboard": "Dashboard",
 
+
     "task_name": "Task name",
     "project_name": "Project name",
     "select_project": "Select project",
@@ -29,7 +30,8 @@
     "or": "or",
     "yes": "Yes",
     "ok": "Ok",
-    "cancel": "cancel",
+    "cancel": "Cancel",
+    "update": "Update",
     "create": "create",
     "join": "Join",
     "close": "Close",

@@ -288,7 +288,7 @@ class ClientLayout extends Layout
                 let hashes = Object.keys(tabs);
 
                 if (hashes.length > 0 && hashes[0] == tabHash) 
-                {
+                {  
                     let notif = new Notification("Kantodo: " +  title, {'body': message, 'icon': "<?= Application::$URL_PATH ?>/icon.png"});
                 }
             }
@@ -337,7 +337,7 @@ class ClientLayout extends Layout
                 else
                     url = "ws://";
                 
-                url += "127.0.0.1:8443";
+                url += "<?= $_SERVER['SERVER_NAME'] ?>:8443";
                 const ws = new WebSocket(url, ['access_token','<?= Auth::$PASETO_RAW ?>']);
     
                 let dataFormat = function(action, value) 
