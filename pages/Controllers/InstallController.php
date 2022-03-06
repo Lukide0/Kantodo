@@ -341,7 +341,7 @@ class InstallController extends AbstractController
 
 
         if ($status == false) {
-            $session->addFlashMessage('error-msg', t('something_went_wront', 'api'));
+            $session->addFlashMessage('error-msg', t('something_went_wrong', 'api'));
             Application::$APP->response->setLocation('/install-admin');
             exit;
         }
@@ -351,7 +351,7 @@ class InstallController extends AbstractController
         if ($userModel->addMeta('position', 'admin', $id) == false) {
             $userModel->delete($id);
 
-            $session->addFlashMessage('error-msg', t('something_went_wront', 'api'));
+            $session->addFlashMessage('error-msg', t('something_went_wrong', 'api'));
             Application::$APP->response->setLocation('/install-admin');
             exit;
         }
