@@ -45,7 +45,7 @@ class AuthView implements IView
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Kantodo - Auth</title>
-            <link rel="stylesheet" href="<?= Application::$STYLE_URL ?>/main.css">
+            <link rel="stylesheet" href="<?= Application::$STYLE_URL ?>/main.min.css">
             <link rel="stylesheet" href="<?= Application::$STYLE_URL ?>/auth.min.css">
             <script src="<?= Application::$SCRIPT_URL ?>/main.js" ></script>
             <script src="<?= Application::$SCRIPT_URL ?>/global.js" type="module"></script>
