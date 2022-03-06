@@ -6,6 +6,7 @@ namespace Kantodo\Core\Base;
 
 use InvalidArgumentException;
 use Kantodo\Core\Application;
+use Kantodo\Core\BaseApplication;
 
 abstract class AbstractController
 {
@@ -122,7 +123,7 @@ abstract class AbstractController
      */
     final public function hasAccess(bool $strict = false)
     {
-        $role = Application::getRole();
+        $role = BaseApplication::getRole();
 
         if ($strict) {
             if ($role !== $this->access) {

@@ -29,7 +29,7 @@ class InstallView implements IView
 ?>
             <?= Input::text('dbName', t('name_of_db', 'install'), $opt) ?>
             <?= Input::text('dbUser', t('username', 'install'), $opt) ?>
-            <?= Input::password('dpPass', t('password', 'auth'), $opt) ?>
+            <?= Input::password('dbPass', t('password', 'auth'), $opt) ?>
             <?= Input::text('dbHost', t('database_server', 'install'), $opt) ?>
             <?= Input::text('dbPrefix', t('table_prefix', 'install'), $opt) ?>
 <?php
