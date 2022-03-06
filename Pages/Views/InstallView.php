@@ -36,8 +36,8 @@ class InstallView implements IView
         }
         else if ($page == 1) 
         {
-            $defaultCache = Application::$ROOT_DIR . '/App/Cache';
-            $defaultBackup = Application::$ROOT_DIR . '/App/Backup';
+            $defaultCache = Application::$ROOT_DIR . '/app/Cache';
+            $defaultBackup = Application::$ROOT_DIR . '/app/Backup';
 ?>
             <?= Input::text('folderCache', t('cache_folder', 'install'), array_merge($opt, ['value' => $defaultCache])) ?>
             <?= Input::text('folderBackup', t('backup_folder', 'install'), array_merge($opt, ['value' => $defaultBackup])) ?>

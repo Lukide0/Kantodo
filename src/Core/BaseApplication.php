@@ -130,7 +130,7 @@ class BaseApplication
         );
 
         self::$URL_PATH  = str_replace($_SERVER['DOCUMENT_ROOT'], '', (str_replace('\\', '/', self::$ROOT_DIR)));
-        self::$KEYS_PATH = self::$ROOT_DIR . '/App/Keys/';
+        self::$KEYS_PATH = self::$ROOT_DIR . '/app/Keys/';
 
         $this->request  = new Request();
         $this->response = new Response();

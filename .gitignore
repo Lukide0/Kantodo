@@ -15,6 +15,6 @@ config.php
 **/config.json
 /Tests
 /Data
-/App
+/app
 /vendor
 composer.lock

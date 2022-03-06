@@ -1,7 +1,7 @@
 parameters:
     level: 8
     paths:
-        - Src
+        - src
         - Pages
         - api
         - server
@@ -11,7 +11,7 @@ parameters:
         -
             message: '#Construct empty\(\) is not allowed. Use more strict comparison.#'
             paths:
-                - Src
+                - src
                 - Pages
                 - api
 includes:

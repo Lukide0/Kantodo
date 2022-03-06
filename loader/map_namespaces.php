@@ -3,7 +3,7 @@
 $dir = dirname(dirname(__FILE__));
 
 return [
-    'Kantodo\\'              => $dir . '/Src/',
+    'Kantodo\\'              => $dir . '/src/',
 
     // Pages
     'Kantodo\\Controllers\\' => $dir . '/Pages/Controllers/',
@@ -16,5 +16,5 @@ return [
     'Kantodo\\API\\Controllers\\' => $dir . '/api/Controllers/',
 
     // Migrations
-    'Migrations\\'           => $dir . '/Migrations/Versions',
+    'Migrations\\'           => $dir . '/migrations/Versions',
 ];

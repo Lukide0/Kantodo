@@ -132,7 +132,7 @@ class Runner
 
         if ($outputFile) {
             $sql    = $this->schema->getSQL();
-            $output = Application::$ROOT_DIR . "/Migrations/Versions/{$version}.sql";
+            $output = Application::$MIGRATION_DIR . "/Versions/{$version}.sql";
 
             file_put_contents($output, $sql);
         }
