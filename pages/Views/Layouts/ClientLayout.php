@@ -78,6 +78,8 @@ class ClientLayout extends Layout
                         foreach (Application::$APP->lang->getAll('global') as $key => $value) {
                             echo "'%{$key}%': \"$value\",";
                         }
+                        $empty = t('empty', 'api');
+                        echo "'%empty%': \"{$empty}\"";
                     ?>
                 }
                 var taskWin;

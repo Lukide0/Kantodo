@@ -231,7 +231,7 @@ function showTaskContextMenu(e,uuid,taskID, day, after = null) {
             
             // Konec
             if (taskInfo.end_date != null)
-            setEndDate(taskInfo.end_date);
+                setEndDate(taskInfo.end_date);
         
             // Tagy
             setChips(taskInfo.tags);
@@ -293,10 +293,13 @@ function showTaskContextMenu(e,uuid,taskID, day, after = null) {
                     taskEl.querySelector(`header h4`).innerText = taskData.name;
                 }
 
+                // TODO: Tags
+
                 for(var p in taskData)
                 {
                     taskInfo[p] = taskData[p];
                 }
+
                 DATA.UpdateTask(uuid, taskInfo);
             }).catch(reason => {
                 let snackbar = Modal.Snackbar.create(reason.statusText, null ,'error');

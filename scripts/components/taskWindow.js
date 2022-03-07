@@ -325,7 +325,7 @@ export default function taskWindow(btn = null, project = null) {
 
             tmpBtn.addEventListener('click', function() {
                 tmpBtn.parentElement.remove();
-                let index = chipsArray.indexOf(value);
+                let index = chipsArray.indexOf(chip);
                 if (index !== -1)
                     chipsArray.splice(index, 1);
             });

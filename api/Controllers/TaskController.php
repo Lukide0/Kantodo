@@ -356,17 +356,28 @@ class TaskController extends AbstractController
 
         $taskModel = new TaskModel();
 
-        $exists = $taskModel->getSingle(['task_id'], ['project_id' => $projectId, 'task_id' => $taskID]);
+        $data = $taskModel->getSingle(['task_id', 'name', 'priority', 'completed', 'description', 'end_date'], ['project_id' => $projectId, 'task_id' => $taskID]);
 
-        if ($exists === false) {
+        if ($data === false) {
             $response->error(t('you_dont_have_sufficient_privileges', 'api'), Response::STATUS_CODE_FORBIDDEN);
             exit;
         }
 
-        $status = $taskModel->update((int) $taskID, $taskData);
+        foreach ($data as $key => $value) {
+            if (isset($taskData[$key]) && $taskData[$key] == $value) 
+            {
+                unset($taskData[$key]);
+            }
+        }
 
-        if ($status === false) {
-            $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
+        if (count($taskData) != 0) 
+        {
+            $status = $taskModel->update((int) $taskID, $taskData);
+    
+            if ($status === false) {
+                $response->error(t('somethingwent_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
+                exit;
+            }
         }
 
         $tagModal = new TagModel();
@@ -375,6 +386,8 @@ class TaskController extends AbstractController
         if ($status === false) {
             $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
         }
+
+        $taskData['tags'] = $tags;
 
         // https://stackoverflow.com/a/28738208
         ob_start();
@@ -390,7 +403,6 @@ class TaskController extends AbstractController
         ob_end_flush();
         @ob_flush();
         flush();
-
         connectToWebsoketServer(
             Auth::$PASETO_RAW,
             'task_update',
