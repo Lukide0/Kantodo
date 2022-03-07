@@ -55,7 +55,7 @@ class Session
         $kan['META']['LAST_ACCESS'] = time();
 
         if (empty($kan['META']['USER_AGENT'])) {
-            $kan['META']['USER_AGENT'] = $_SERVER['HTTP_USER_AGENT'];
+            $kan['META']['USER_AGENT'] = $_SERVER['HTTP_USER_AGENT'] ?? time();
         }
 
         foreach ($kan['FLASH'] ?? [] as $key => $message) {
@@ -100,8 +100,9 @@ class Session
     {
         $kan = &$_SESSION['__KAN'];
 
+        $agent = $_SERVER['HTTP_USER_AGENT'] ?? time();
         // jiný prohlížeč
-        if ($kan['META']['USER_AGENT'] != $_SERVER['HTTP_USER_AGENT']) {
+        if ($kan['META']['USER_AGENT'] != $agent) {
             return false;
         }
 
@@ -120,7 +121,7 @@ class Session
      */
     public function updateUserAgent()
     {
-        $_SESSION['__KAN']['META']['USER_AGENT'] = $_SERVER['HTTP_USER_AGENT'];
+        $_SESSION['__KAN']['META']['USER_AGENT'] = $_SERVER['HTTP_USER_AGENT'] ?? time();
     }
 
     /**
