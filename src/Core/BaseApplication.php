@@ -103,7 +103,7 @@ class BaseApplication
      *
      * @var string
      */
-    public static $LANG = 'cz';
+    public static $LANG = 'en';
 
     /**
      * @var Lang
@@ -131,11 +131,22 @@ class BaseApplication
 
         self::$URL_PATH  = str_replace($_SERVER['DOCUMENT_ROOT'], '', (str_replace('\\', '/', self::$ROOT_DIR)));
         self::$KEYS_PATH = self::$ROOT_DIR . '/app/Keys/';
+        
+        if (file_exists(self::$ROOT_DIR . '/lang/lang.php')) 
+        {
+            $config = include self::$ROOT_DIR . '/lang/lang.php';
 
+            if (isset($config['lang'])) 
+            {
+                self::$LANG = $config['lang'];
+            }
+        }
+        
         $this->request  = new Request();
         $this->response = new Response();
         $this->session  = new Session();
         $this->lang     = new Lang();
+        
 
         if (self::configExits()) {
             $this->loadConfig();
