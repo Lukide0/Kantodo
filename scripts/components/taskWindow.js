@@ -374,6 +374,7 @@ export default function taskWindow(btn = null, project = null) {
         chipInput.value = "";
         chipInput.dataset.value = "";
         chips.innerHTML = "";
+        chipsArray = [];
 
         priorityField.value = translations['%priority_low%'];
         priorityField.dataset.value = "0";
