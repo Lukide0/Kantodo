@@ -1,4 +1,5 @@
 {
+    "not_authorized": "Neoprávnění přístup",
     "empty": "Prázdné",
     "user_id_missing": "Nebylo zadáno User ID",
     "can_not_create": "Nelze vytvořit",

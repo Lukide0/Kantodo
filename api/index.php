@@ -22,7 +22,7 @@ $session->start();
 
 // funkce, která je zavolána pokud není uživatel přihlášen
 $API->router->registerErrorCodeHandler(API::ERROR_NOT_AUTHORIZED, function () {
-    API::$API->response->error(t('not_authorized'));
+    API::$API->response->error(t('not_authorized', 'api'));
 });
 
 //-----------//

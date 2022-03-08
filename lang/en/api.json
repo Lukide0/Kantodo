@@ -1,4 +1,5 @@
 {
+    "not_authorized": "Not authorized",
     "empty": "Empty",
     "user_id_missing": "User ID is missing",
     "can_not_create": "Can not create",
