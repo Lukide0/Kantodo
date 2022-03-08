@@ -116,6 +116,7 @@ class TaskController extends AbstractController
 
                 if ($tagID === false) {
                     $response->error(t('cannot_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
+                    exit;
                 } else {
                     $tags[] = $tagID;
                 }
@@ -125,6 +126,7 @@ class TaskController extends AbstractController
 
             if ($status === false) {
                 $response->error(t('can_not_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
+                exit;
             }
         }
 
@@ -206,6 +208,7 @@ class TaskController extends AbstractController
 
         if (empty($params['projectUUID'])) {
             $response->error(t('project_uuid_missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
+            exit;
         }
 
         $uuid = base64DecodeUrl($params['projectUUID']);
@@ -385,6 +388,7 @@ class TaskController extends AbstractController
 
         if ($status === false) {
             $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
+            exit;
         }
 
         $taskData['tags'] = $tags;
@@ -432,6 +436,7 @@ class TaskController extends AbstractController
 
         if (count($empty) != 0) {
             $response->fail(array_fill_keys($empty, t('empty', 'api')));
+            exit;
         }
 
         $taskID   = $body[Request::METHOD_POST]['task_id'];
@@ -470,6 +475,7 @@ class TaskController extends AbstractController
         $status    = $taskModel->delete((int) $taskID);
         if ($status === false) {
             $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
+            exit;
         }
 
         // https://stackoverflow.com/a/28738208

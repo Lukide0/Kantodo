@@ -31,6 +31,7 @@ class ProjectController extends AbstractController
 
         if (empty($body[Request::METHOD_POST]['name'])) {
             $response->fail(['name' => t('empty', 'api')]);
+            exit;
         }
 
         $projectName = $body[Request::METHOD_POST]['name'];
@@ -46,7 +47,7 @@ class ProjectController extends AbstractController
         $status = $projModel->create((int)$user['id'], $projectName);
         if ($status === false) {
             $response->error(t('cannot_create', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
-            return;
+            exit;
         }
 
         $response->success(
@@ -247,6 +248,7 @@ class ProjectController extends AbstractController
 
         if (!$status) {
             $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
+            exit;
         }
 
         // https://stackoverflow.com/a/28738208
@@ -343,6 +345,7 @@ class ProjectController extends AbstractController
         $status = $projModel->removeUser($memberID, $projectID);
         if (!$status) {
             $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
+            exit;
         }
 
         // https://stackoverflow.com/a/28738208
@@ -388,6 +391,7 @@ class ProjectController extends AbstractController
 
         if (count($empty) != 0) {
             $response->fail(array_fill_keys($empty, t('empty', 'api')));
+            exit;
         }
 
         $email = $body[Request::METHOD_POST]['email'];
@@ -400,8 +404,11 @@ class ProjectController extends AbstractController
             exit;
         }
 
-        if (empty($body[Request::METHOD_POST]['project']))
+        if (empty($body[Request::METHOD_POST]['project'])) 
+        {
             $response->error(t('project_uuid_missing', 'api'), Response::STATUS_CODE_BAD_REQUEST);
+            exit;
+        }
 
         $uuidRaw = $body[Request::METHOD_POST]['project'];
         $uuid = base64DecodeUrl($uuidRaw);
@@ -445,6 +452,7 @@ class ProjectController extends AbstractController
         $status = $projModel->delete($projectID);
         if (!$status) {
             $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
+            exit;
         }
 
         // https://stackoverflow.com/a/28738208

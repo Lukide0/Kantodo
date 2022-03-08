@@ -102,7 +102,7 @@ class Response
         http_response_code($code);
         $this->setContentType(self::CONTENT_TYPE_JSON);
         echo json_encode(['status' => 'fail', 'data' => $data, 'code' => $code]);
-        exit;
+
     }
 
     /**
@@ -117,6 +117,5 @@ class Response
         http_response_code($code);
         $this->setContentType(self::CONTENT_TYPE_JSON);
         echo json_encode(['status' => 'error', 'error' => $message, 'code' => $code]);
-        exit;
     }
 }

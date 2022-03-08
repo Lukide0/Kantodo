@@ -35,6 +35,7 @@ class AuthController extends AbstractController
 
         if (count($empty) != 0) {
             $response->fail(array_fill_keys($empty, t('empty', 'api')));
+            exit;
         }
 
         $token = Auth::refreshByCredentials($body[Request::METHOD_POST]['email'], $body[Request::METHOD_POST]['secret']);
@@ -66,6 +67,7 @@ class AuthController extends AbstractController
 
         if (count($empty) != 0) {
             $response->fail(array_fill_keys($empty, t('empty', 'api')));
+            exit;
         }
 
         $email = $body[Request::METHOD_POST]['email'];
