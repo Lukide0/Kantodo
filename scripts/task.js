@@ -38,7 +38,7 @@ DATA.AfterTaskRemove = function(uuid, taskID, isWs)
 
     if (isWs) 
     {
-        if (taskWin.getTaskId() != taskID) 
+        if (taskWin.getTaskId() != taskID || taskWin.isHidden) 
             return;
         
         let dialog = Modal.Dialog.create(translations['%warning%'], translations['%current_task_has_been_deleted%'], [
@@ -65,7 +65,7 @@ DATA.AfterTaskUpdate = function(uuid, index, data, isWs)
 {
     if (isWs) 
     {
-        if (taskWin.getTaskId() != data.id) 
+        if (taskWin.getTaskId() != data.id || taskWin.isHidden) 
             return;
 
         let dialog = Modal.Dialog.create(translations['%warning%'], translations['%current_task_has_been_edited%'], [
@@ -293,21 +293,27 @@ function showTaskContextMenu(e,uuid,taskID, day, after = null) {
                     taskEl.querySelector(`header h4`).innerText = taskData.name;
                 }
 
-                // TODO: Tags
+                taskEl.querySelector('.tags').innerHTML =  taskData.tags.map(tag => {
+                    return `<div class="tag">${tag}</div>`;
+                }).join('');
 
                 for(var p in taskData)
                 {
                     taskInfo[p] = taskData[p];
                 }
 
+                taskWin.isHidden = true;
                 DATA.UpdateTask(uuid, taskInfo);
+
             }).catch(reason => {
+
                 let snackbar = Modal.Snackbar.create(reason.statusText, null ,'error');
                 snackbar.show();
                 Kantodo.error(reason);
+
             }).finally(() => {
                 taskWin.hide();
-            });
+            })
         }
     }
 
@@ -434,7 +440,6 @@ function showTaskContextMenu(e,uuid,taskID, day, after = null) {
             snackbar.show();
             Kantodo.error(reason);
         }).finally(() => {
-            taskWin.hide();
             menu.element.blur()
         });
     }

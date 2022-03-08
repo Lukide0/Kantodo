@@ -30,6 +30,7 @@ const EditorModalWindow = {
 
         let modalWindow = {
             element: tmp,
+            isHidden: true,
             setContent(c) {
                 tmp.querySelector('.content').innerHTML = c;
             },
@@ -43,6 +44,7 @@ const EditorModalWindow = {
                 parent.appendChild(this.element);
             },
             show() {
+                this.isHidden = false;
                 simpleAnimation(
                     this.element,
                     {
@@ -57,10 +59,16 @@ const EditorModalWindow = {
             },
             hide(self) {
                 let element;
-                if (this.element === undefined)
+                if (this.element === undefined) 
+                {
                     element = self.element;
-                else
+                    self.isHidden = true;
+                }
+                else 
+                {
                     element = this.element;
+                    this.isHidden = true;
+                }
 
                 simpleAnimation(
                     element,

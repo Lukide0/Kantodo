@@ -358,6 +358,9 @@ export default function taskWindow(btn = null, project = null) {
     }
 
     win.setEndDate = function(date) {
+        if (!data)
+            return;
+
         // odstrani hod, min a sekundy
         date = date.substring(0, 10);
         endDateInput.value = date;

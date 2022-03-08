@@ -60,7 +60,7 @@ class ClientLayout extends Layout
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet">
             <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-            <link rel="icon" href="<? Application::$URL_PATH ?>icon.png" type="image/png">
+            <link rel="icon" href="<?= Application::$URL_PATH ?>/icon.png" type="image/png">
             <link rel="stylesheet" href="<?= Application::$STYLE_URL ?>/main.min.css">
             <script src="<?= Application::$SCRIPT_URL ?>main.js"></script>
             <script src="<?= Application::$SCRIPT_URL ?>global.js" type="module"></script>
@@ -412,6 +412,11 @@ class ClientLayout extends Layout
                                     {
                                         taskEl.style.display = null;
                                     }
+
+                                    taskEl.querySelector('.tags').innerHTML =  taskInfo.tags.map(tag => {
+                                        return `<div class="tag">${tag}</div>`;
+                                    }).join('');
+
                                 }
 
                                 break;
