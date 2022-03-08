@@ -17,20 +17,6 @@ class API extends BaseApplication
     public static $API;
 
     /**
-     * Cesta k akcím
-     *
-     * @var string
-     */
-    public static $ACTIONS_PATH;
-
-    /**
-     * Max počet požadavků za 1min
-     *
-     * @var int
-     */
-    public static $MAX_REQUEST_COUNT_PER_MIN = 20;
-
-    /**
      * @var Router
      */
     public $router;
@@ -40,7 +26,6 @@ class API extends BaseApplication
         parent::__construct();
 
         self::$API          = $this;
-        self::$ACTIONS_PATH = self::$ROOT_DIR . '/api/Actions';
 
         $this->response = new Response();
         $this->router   = new Router($this->request, $this->response);
