@@ -307,7 +307,7 @@ function showTaskContextMenu(e,uuid,taskID, day, after = null) {
 
             }).catch(reason => {
 
-                let snackbar = Modal.Snackbar.create(reason.statusText, null ,'error');
+                let snackbar = Modal.Snackbar.create(reason.error, null ,'error');
                 snackbar.show();
                 Kantodo.error(reason);
 
@@ -360,7 +360,7 @@ function showTaskContextMenu(e,uuid,taskID, day, after = null) {
                     after('remove', taskID, day);
 
             }).catch(reason => {
-                let snackbar = Modal.Snackbar.create(reason.statusText, null ,'error');
+                let snackbar = Modal.Snackbar.create(reason.error, null ,'error');
                 snackbar.show();
 
                 Kantodo.error(reason);
@@ -436,7 +436,7 @@ function showTaskContextMenu(e,uuid,taskID, day, after = null) {
             if (after)
                 after('complete', taskID, day);
         }).catch(reason => {
-            let snackbar = Modal.Snackbar.create(reason.statusText, null ,'error');
+            let snackbar = Modal.Snackbar.create(reason.error, null ,'error');
             snackbar.show();
             Kantodo.error(reason);
         }).finally(() => {
@@ -456,7 +456,7 @@ function showTaskContextMenu(e,uuid,taskID, day, after = null) {
         response.then(res => {
             taskInfo.completed = 0;
         }).catch(reason => {
-            let snackbar = Modal.Snackbar.create(reason.statusText, null ,'error');
+            let snackbar = Modal.Snackbar.create(reason.error, null ,'error');
             snackbar.show();
             Kantodo.error(reason);
         }).finally(() => {

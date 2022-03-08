@@ -108,7 +108,7 @@ class DashboardView implements IView
 
                         }).catch(reason => {
 
-                            let snackbar = Modal.Snackbar.create(reason.statusText, null ,'error');
+                            let snackbar = Modal.Snackbar.create(reason.error, null ,'error');
                             snackbar.show();
                             Kantodo.error(reason);
                         }).finally(() => {

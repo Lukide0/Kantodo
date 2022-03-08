@@ -1,5 +1,3 @@
-
-
 const CONTENT_TYPE = {
     'FORM': 'application/x-www-form-urlencoded',
     'TEXT': 'application/text',
@@ -18,14 +16,16 @@ function Request(url, method = 'GET', params = {}, sentEmpty = false, contentTyp
                     reject({
                         status: xhrOBJ.xhr.status,
                         statusText: "JSON ERROR",
-                        response: xhrOBJ.xhr.responseText
+                        response: xhrOBJ.xhr.responseText,
+                        error: ""
                     });
                 }
             } else {
                 reject({
                     status: xhrOBJ.xhr.status,
                     statusText: xhrOBJ.xhr.statusText,
-                    response: xhrOBJ.xhr.responseText
+                    response: xhrOBJ.xhr.responseText,
+                    error: JSON.parse(xhrOBJ.xhr.response).error
                 });
             }
         };

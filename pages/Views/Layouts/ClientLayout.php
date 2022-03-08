@@ -236,7 +236,7 @@ class ClientLayout extends Layout
                                 DATA.AddProject(project.uuid, data[0]);
 
                             }).catch(reason => {
-                                let snackbar = Modal.Snackbar.create(reason.statusText, null, 'error');
+                                let snackbar = Modal.Snackbar.create(reason.error, null, 'error');
                                 snackbar.show();
                                 Kantodo.error(reason);
                             }).finally(() => {
