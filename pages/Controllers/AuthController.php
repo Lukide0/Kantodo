@@ -28,7 +28,9 @@ class AuthController extends AbstractController
         $body = Application::$APP->request->getBody();
 
         // cesta z které byl uživatel přesměrován
-        if ((empty($body[Request::METHOD_GET]['path']) || $body[Request::METHOD_GET]['path'] == '/') || Data::isURLExternal($body[Request::METHOD_GET]['path'])) {
+        if ((empty($body[Request::METHOD_GET]['path']) || $body[Request::METHOD_GET]['path'] == '/') 
+            || Data::isURLExternal($body[Request::METHOD_GET]['path'])
+        ) {
             $this->renderView(AuthView::class);
             return;
         }

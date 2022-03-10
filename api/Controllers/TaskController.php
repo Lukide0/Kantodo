@@ -5,9 +5,6 @@ declare(strict_types=1);
 namespace Kantodo\API\Controllers;
 
 use DateTime;
-use function Kantodo\API\connectToWebsoketServer;
-use function Kantodo\Core\Functions\base64DecodeUrl;
-use function Kantodo\Core\Functions\t;
 use Kantodo\API\API;
 use Kantodo\Auth\Auth;
 use Kantodo\Core\Base\AbstractController;
@@ -19,6 +16,10 @@ use Kantodo\Core\Validation\DataType;
 use Kantodo\Models\ProjectModel;
 use Kantodo\Models\TagModel;
 use Kantodo\Models\TaskModel;
+
+use function Kantodo\API\connectToWebsoketServer;
+use function Kantodo\Core\Functions\base64DecodeUrl;
+use function Kantodo\Core\Functions\t;
 
 class TaskController extends AbstractController
 {
@@ -64,6 +65,7 @@ class TaskController extends AbstractController
             exit;
         }
 
+        // úkol musí mít status 0-1 a prioritu 0-2
         if (!DataType::wholeNumber($taskCompleted, 0, 1) || !DataType::wholeNumber($taskPriority, 0, 2)) {
             $response->fail(['error' => t('bad_request')]);
             exit;
@@ -78,6 +80,7 @@ class TaskController extends AbstractController
             if ($date != false) {
                 $taskEndDate = $date;
             } else {
+                // datum není validní
                 $response->fail(['error' => t('bad_request')]);
                 exit;
             }
@@ -183,7 +186,16 @@ class TaskController extends AbstractController
         $user     = Auth::getUser();
         $body     = API::$API->request->getBody();
 
+        /*
+            Díky tomu, že v databázi se primární klíč většuje, tak můžeme zjistit
+        jaké další úkoly následují. 
+
+            Např. klient pošle ID 5, tak víme že hledáme úkoli v daném projektu, které
+        mají ID větší než 5.
+        */
         $last  = ($body[Request::METHOD_GET]['last'] ?? 0);
+
+        // Klient může poslat, že chce získat úkoly z určitého měsíce
         $month = ($body[Request::METHOD_GET]['month'] ?? null);
         $year  = ($body[Request::METHOD_GET]['year'] ?? null);
 
@@ -193,6 +205,7 @@ class TaskController extends AbstractController
             $last = 0;
         }
 
+        // Kontrola měsíce a roku
         if (DataType::wholeNumber($month, 1, 12) && DataType::wholeNumber($year, 1)) {
             $month = (int) $month;
             $year  = (int) $year;
@@ -230,6 +243,12 @@ class TaskController extends AbstractController
         ];
 
         if (!is_null($month)) {
+
+            /* 
+                Abychom mohli zjisti úkoly v daném měsíci, musíme 
+            přidat do dotazu tuto podmínku, kvůli tomu že nám Model
+            neumožňuje pracovat s daty (datum)
+            */
             $search['CUSTOM_WHERE'] = [
                 "MONTH(end_date) = :month AND YEAR(end_date) = :year AND end_date IS NOT NULL AND completed = 0",
                 [
@@ -237,8 +256,8 @@ class TaskController extends AbstractController
                     ":year"  => $year,
                 ],
             ];
-            // nacte prvnich 500
-            $limit = 500;
+            // načte prvních 100
+            $limit = 100;
         }
 
         $taskModel = new TaskModel();
@@ -301,6 +320,7 @@ class TaskController extends AbstractController
             exit;
         }
 
+        // ID úkolu musí být celé číslo a nesmí být menší než 1
         if (!DataType::wholeNumber($taskID, 1)) {
             $response->error(t('task_id_is_not_valid', 'api'), Response::STATUS_CODE_BAD_REQUEST);
             exit;
@@ -378,7 +398,7 @@ class TaskController extends AbstractController
             $status = $taskModel->update((int) $taskID, $taskData);
     
             if ($status === false) {
-                $response->error(t('somethingwent_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
+                $response->error(t('something_went_wrong', 'api'), Response::STATUS_CODE_INTERNAL_SERVER_ERROR);
                 exit;
             }
         }

@@ -25,9 +25,8 @@ $API->router->registerErrorCodeHandler(API::ERROR_NOT_AUTHORIZED, function () {
     API::$API->response->error(t('not_authorized', 'api'));
 });
 
-//-----------//
+
 //-- Cesty --//
-//-----------//
 
 $API->router->post('create/project', [ProjectController::class, 'create'], API::USER);
 $API->router->post('join/project', [ProjectController::class, 'join'], API::USER);
