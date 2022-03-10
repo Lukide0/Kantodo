@@ -1,6 +1,5 @@
 <?php 
 
-
 namespace Kantodo\Controllers;
 
 use Kantodo\Core\Base\AbstractController;
@@ -9,7 +8,3 @@ class {{NAME}}Controller extends AbstractController
 {
 
 }
-
-
-
-?>

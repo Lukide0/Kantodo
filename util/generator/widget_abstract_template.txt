@@ -1,6 +1,5 @@
 <?php 
 
-
 namespace Kantodo\Widgets;
 
 use Kantodo\Core\Base\AbstractWidget;
@@ -12,7 +11,3 @@ class {{NAME}} extends AbstractWidget
 
     }
 }
-
-
-
-?>

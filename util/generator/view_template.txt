@@ -11,5 +11,3 @@ class {{NAME}}View implements IView
         
     }
 }
-
-?>
